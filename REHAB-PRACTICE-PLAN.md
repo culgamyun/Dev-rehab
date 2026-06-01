@@ -151,8 +151,43 @@
 - ✅ `index.html` 위젯이 ensureGlossaryCards 후 재갱신 → due 개수에 용어 포함. 구버전 srs.js 캐시 대비 `startSession` 폴백 방어.
 - **QA (Claude Preview):** 총 100문항(퀴즈 21 + 용어 79). 용어 카드 렌더·공개·평가(`term-Generative-UI` SM-2 스케줄)·대시보드 위젯 99개 갱신까지 확인, 콘솔 에러 0.
 
+### v1.3 — SRS 충실도 다듬기 (2026-05-28)
+- ✅ **일일 신규 카드 상한** — `srs.js` `DAILY_NEW_LIMIT=15`. `getDueCards()`가 복습분(due 도래)은 전부, 신규분은 `getNewBudget()`(상한 − 오늘 꺼낸 신규수)만큼만 노출. 첫날 181장 전부 신규여도 due=15로 캡 → 복습 폭주 방지. 메타는 `antigravity_srs_meta`.
+- ✅ **연속 복습일(streak)** — `grade()`가 채점마다 `_recordStudyDay()` 호출 → 오늘 첫 학습이면 streak 갱신(어제 학습=+1, 아니면 1로 리셋). `getStreak()`는 오늘/어제만 유효(끊기면 0). review.html substat·종료화면·index.html 위젯에 "🔥 N일" 표시.
+- ✅ **'다시' 당일 재출제** — review.html에서 quality=2 평가 시 카드를 세션 큐 끝에 재추가(카드당 `MAX_REQUEUE=2` 제한, 로컬 토스트 피드백). 평가 카운트는 고유 id 집합(`gradedIds`)으로 재출제 중복 제외.
+- **QA (Claude Preview, 신규 컨텍스트):** 신규 상한 15 캡 확인, '다시'로 큐 15→16→17 증가 후 3회차 상한 차단→종료, streak 0→1 발생 및 substat/위젯/종료화면 반영, 고유 평가수 1 정확, 콘솔 에러 0.
+
+### v1.4 — 실습 쇼핑몰 "개념 복습 맵"화 (2026-05-28)
+**판단:** demo-shop은 기능 데모로는 OK였으나, 코스↔개념 연결이 전부 코드 주석에만 있어 "한눈에" 기준 미달이었음. 또 JWT 로그인·리뷰 작성 엔드포인트가 mock-api에 구현돼 있는데 UI가 호출 안 해 죽은 코드 상태. → 연결을 화면에 드러내고 미사용 개념을 살림. (mock-api.js·style.css 거의 무수정, demo-shop.html에 인라인 추가)
+
+- ✅ **Concept Lens (개념 보기 토글)** — `[🔍 개념 보기]` ON 시 각 영역(카탈로그·장바구니·주문·인증·상세)에 `ChN · 개념` 배지(코스 컬러) + 점선 아웃라인 + 전체 흐름 범례 표시. 배지 클릭 → 해당 챕터로 이동. 매핑: Ch3 SQL조회 / Ch2 JPA Entity·1:N / Ch6 Zustand·RHF / Ch7 Axios·WebSocket / Ch4 JWT·검증.
+- ✅ **JWT 로그인 살리기 (Ch4)** — 인증 패널 신설. 이메일 로그인 → `/api/auth/login` 호출 → 발급된 JWT를 Header·Payload·Signature 3색 분해 + Payload 디코딩(role/sub/만료) 표시.
+- ✅ **리뷰 작성 폼 (Ch6 RHF/Zod 모사)** — 상세 패널에 폼 추가. 필드별 인라인 검증(`z.string().min(2)` 식 메시지) → 통과 시 `POST /api/reviews` → 1:N 리뷰 즉시 리프레시.
+- ✅ **REST 호출 로그 콘솔 (Ch4/Ch7)** — 우하단 고정 패널. mockApi.get/post를 계측(원본 보존)해 모든 API를 `메서드·경로·상태·소요·↳개념` 으로 기록. 네트워크 계층을 개념과 함께 가시화.
+
+**🐛 발견·수정한 진짜 버그:** `mock-api.js`의 JWT 발급이 `btoa(JSON.stringify({...name:"김풀스택"...}))`로 **Latin1 외 문자(한글) 인코딩 불가 → 예외**. demo-shop이 로그인을 한 번도 호출 안 해 여태 잠복. 미사용 엔드포인트를 살리자마자 표면화. → `btoa(unescape(encodeURIComponent()))` UTF-8 안전 인코딩 + 디코딩측 `decodeURIComponent(escape(atob()))`로 수정. "김풀스택" 라운드트립 정상 확인.
+
+**QA (Claude Preview):** 개념 보기 토글(배지/범례/아웃라인), 로그인→JWT 디코딩, 리뷰 폼 검증(3에러)+등록(3→4개), 주문→WebSocket 토스트, REST 로그 6종 개념 주석 전부 확인. 콘솔 에러 0. 테스트 후 DB 시드 초기화.
+
+**정직한 한계:** Ch1(모던 자바)·Ch8(DevOps/인프라)·부록은 클라이언트 쇼핑몰로 표현 불가 → 그 개념들의 hands-on은 `antigravity-app` 실레포의 몫. demo-shop은 **프론트↔백 통합 + Ch2·3·4·6·7 개념 가시화** 복습 surface로 자리매김.
+
+### v1.5 — 라이트 기본값 + 코드 정리 (2026-05-28)
+- ✅ **라이트 모드 기본값 통일** — 앱 전체는 이미 head 인라인 스크립트(`||'light'`)와 main.js initTheme(`||'light'`)로 라이트 기본이었으나, 내가 만든 `review.html`의 DOMContentLoaded JS만 `||'dark'`로 어긋나 자기모순(head=light, JS=dark)이었음 → `||'light'`로 수정.
+- ✅ **죽은 CSS 제거** — `demo-shop.html`의 `.concept-tag[data-chapter="chapter-1"]`·`[chapter-8]` 셀렉터는 쇼핑몰에 ch1/ch8 배지가 없어 매칭 0 → 제거(Ch2~7만 유지).
+- ✅ **orphan 점검** — `cardLabel`(제거됨), `graded`(→gradedIds로 교체됨) 잔재 없음 확인. 그 외 추가 함수(srs/review/demo-shop) 전부 호출처 있음.
+- **라이트 모드 QA (Claude Preview):** 테마 비우고(기본=light) demo-shop·review.html 검증. 개념 배지(흰글자/코스컬러)·범례·REST로그·JWT패널·리뷰폼·복습카드 전부 라이트에서 대비 양호(전부 테마 변수 사용). 콘솔 에러 0.
+- **남긴 것(의도적):** 주문 버튼의 Ch7 배지 2개(Axios POST / WebSocket 알림)는 서로 다른 개념이라 유지.
+
+### v1.6 — 폴리시 3종 조치 (2026-05-28)
+- ✅ **escape/unescape 제거** — JWT UTF-8 인코딩/디코딩을 deprecated `escape`/`unescape` → `TextEncoder`/`TextDecoder` 기반으로 교체 (mock-api.js b64utf8, demo-shop.html 디코드). "김풀스택" 라운드트립 정상.
+- ✅ **복습 기록 초기화 버튼** — `srs.resetSchedule()`를 review.html 헤더의 "🔄 복습 기록 초기화" 버튼에 연결(confirm 후 진도·연속일·예정일 리셋, 뱅크 보존). 검증: state 1→0, streak 1→0, meta.date→null, 뱅크 181개 유지.
+- ✅ **라이트 트랙 대비** — 라이트에서 안 보이던 흐린 트랙/구분선을 테마 중립색으로: review `.rev-progress` `rgba(255,255,255,0.06)`→`rgba(128,128,128,0.22)`, demo-shop `.rl-row` 구분선 `rgba(255,255,255,0.05)`→`var(--border-color)`.
+- **QA (Claude Preview, 라이트 기본):** JWT 로그인(신 인코더)·디코딩, 초기화 버튼 동작, 진행바 트랙 가시성 전부 확인. 콘솔 에러 0.
+
 ### 남은 단계 / 재검토
 - [ ] **4번 SQL 러너** (sql.js + mock-data 시드). ⚠️ 단, `antigravity-app/`(실제 Spring Boot + H2 + Next.js 실습 레포)가 이미 진짜 코드 실행을 제공 중 → 대시보드 내장 러너의 우선순위 재검토 필요.
 - [ ] **5번 JS/React 러너** (esbuild-wasm/iframe). 위와 동일 사유로 재검토.
 - [x] ~~용어 카드 SRS 편입~~ (v1.2 완료)
-- [ ] "다시" 당일 재출제 + 일일 신규 카드 상한 + 연속 복습일(streak) 표시.
+- [x] ~~"다시" 당일 재출제 + 일일 신규 카드 상한 + 연속 복습일(streak) 표시~~ (v1.3 완료)
+- [ ] (선택) 나머지 챕터(3~8) 한 번씩 열어 퀴즈 자동 등록 — 코드 변경 불필요, 사용 중 자연히 채워짐.
+- [ ] (선택) DAILY_NEW_LIMIT를 설정 UI로 노출(현재 15 하드코딩).

@@ -103,7 +103,7 @@
 // 시스템 프롬프트: 대화 전체의 역할/규칙을 정하는 최상위 지시
 
 chatClient.prompt()
-    .system("너는 Antigravity Fashion의 친절한 패션 컨설턴트야. " +
+    .system("너는 Rehab Fashion의 친절한 패션 컨설턴트야. " +
             "제공된 상품 정보에 없는 건 모른다고 솔직히 답해.")   // 시스템 프롬프트
     .user("비 오는 날 입을 옷 추천해줘")                          // 유저 프롬프트
     .call();
@@ -253,7 +253,7 @@ private void addRanks(Map&lt;Long, Double&gt; acc, List&lt;Long&gt; ranks, int k
       <!-- A.4 Spring 실전 -->
       <section id="spring-hybrid-search">
         <h2>A.4 쇼핑몰 시나리오 — Spring에서 하이브리드 검색 엔드포인트</h2>
-        <p>Antigravity Fashion에서 "비 오는 날 입을 옷" 같은 자연어 검색을 받아 BM25 + 벡터 검색 결과를 RRF로 융합합니다.</p>
+        <p>Rehab Fashion에서 "비 오는 날 입을 옷" 같은 자연어 검색을 받아 BM25 + 벡터 검색 결과를 RRF로 융합합니다.</p>
 
         <div class="code-block-header">
           <span class="code-title">ProductSearchService.java — 하이브리드 검색 흐름</span>
@@ -365,7 +365,7 @@ public class ProductChatController {
 
         // 2. 프롬프트에 컨텍스트 삽입
         String systemPrompt = """
-            너는 Antigravity Fashion의 친절한 패션 컨설턴트야.
+            너는 Rehab Fashion의 친절한 패션 컨설턴트야.
             아래 상품 정보를 참고해서 답변해. 정보에 없는 건 솔직히 모른다고 해.
 
             [상품 정보]

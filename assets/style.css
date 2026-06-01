@@ -350,9 +350,13 @@ header {
    ========================================================================== */
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  /* 카드 4개 기준 2x2 균형 배열 (auto-fit 3열 시 4번째 카드가 외톨이로 떨어지던 문제 해결) */
+  grid-template-columns: repeat(2, 1fr);
   gap: 20px;
   width: 100%;
+}
+@media (max-width: 560px) {
+  .stats-grid { grid-template-columns: 1fr; }
 }
 
 .stat-card {
@@ -899,6 +903,24 @@ svg line {
 /* ==========================================================================
    13. Responsive Adaptations
    ========================================================================== */
+/* 모바일 햄버거 토글 — 데스크탑에선 숨김, JS(initMobileNav)가 사이드바에 주입 */
+.mobile-nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  background: transparent;
+  border: 1px solid var(--border-color);
+  color: var(--text-color);
+  border-radius: 8px;
+  font-size: 18px;
+  cursor: pointer;
+  transition: var(--transition);
+}
+.mobile-nav-toggle:hover { border-color: var(--accent-color); }
+
 @media (max-width: 1024px) {
   #sidebar {
     width: 80px;
@@ -930,20 +952,50 @@ svg line {
     border-right: none;
     border-bottom: 1px solid var(--border-color);
     padding: 16px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
   }
   .sidebar-logo {
     margin-bottom: 0;
   }
-  .nav-menu {
-    display: none; /* Mobile navigation toggle can be added later */
-  }
+  /* 모바일: 햄버거 노출, 브랜드 풀네임 복원, 메뉴/푸터는 열렸을 때만 표시 */
+  .mobile-nav-toggle { display: inline-flex; }
+  .sidebar-logo span { display: inline; }
+  .nav-menu,
   .sidebar-footer {
     display: none;
+    width: 100%;
   }
+  #sidebar.mobile-open .nav-menu { display: block; margin-top: 4px; }
+  #sidebar.mobile-open .sidebar-footer { display: flex; margin-top: 8px; }
+  #sidebar.mobile-open .nav-item-text,
+  #sidebar.mobile-open .btn-sidebar span { display: inline; }
   #main-content {
     margin-left: 0;
     width: 100%;
     padding: 20px;
+  }
+  /* 헤더가 좁은 폭에서 제목/검색을 가로로 욱여넣어 제목이 한 글자씩 깨지던 문제 → 세로 스택 */
+  header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+  }
+  .header-controls {
+    width: 100%;
+    flex-wrap: wrap;
+  }
+  .search-box {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .search-input,
+  .search-input:focus {
+    width: 100%;
+    box-sizing: border-box;
   }
   .learning-visual {
     margin: 14px 0 20px;

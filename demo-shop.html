@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Antigravity Fashion - Demo Shop</title>
+  <title>Rehab Fashion - Demo Shop</title>
   <!-- 공통 명품 스타일 연동 -->
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
   <link rel="stylesheet" href="assets/style.css">
@@ -63,6 +63,80 @@
       border-left: 3px solid var(--frontend);
       margin-bottom: 8px;
     }
+
+    /* ===== Concept Lens (개념 보기) ===== */
+    .concept-tag {
+      display: none; align-items: center; gap: 5px;
+      font-size: 11px; font-weight: 700; padding: 3px 9px;
+      border-radius: 999px; background: var(--accent-color); color: #fff;
+      cursor: pointer; text-decoration: none; box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+      white-space: nowrap; vertical-align: middle;
+    }
+    .concept-tag:hover { filter: brightness(1.12); }
+    .concept-tag .ct-ch { font-weight: 800; opacity: 0.9; }
+    body.lens-on .concept-tag { display: inline-flex; }
+    body.lens-on [data-concept-region] {
+      outline: 2px dashed var(--accent-color); outline-offset: 4px; border-radius: 14px;
+    }
+    /* 코스 정체성 컬러로 배지 구분 (쇼핑몰에 등장하는 Ch2~7만) */
+    .concept-tag[data-chapter="chapter-2"],
+    .concept-tag[data-chapter="chapter-3"],
+    .concept-tag[data-chapter="chapter-4"] { background: var(--backend); }
+    .concept-tag[data-chapter="chapter-5"],
+    .concept-tag[data-chapter="chapter-6"],
+    .concept-tag[data-chapter="chapter-7"] { background: var(--frontend); }
+    .concept-legend {
+      display: none; margin-top: 14px; padding: 14px 18px;
+      border: 1px solid var(--border-color); border-radius: 12px;
+      background: var(--bg-card); font-size: 12.5px; line-height: 1.75;
+    }
+    body.lens-on .concept-legend { display: block; }
+    .concept-legend b { color: var(--accent-color); }
+    .concept-legend .lg-row { display: flex; gap: 8px; align-items: baseline; margin-top: 4px; }
+    .concept-legend .lg-ch { flex-shrink: 0; font-weight: 800; min-width: 84px; }
+
+    /* 검색 개념 설명 (접이식) */
+    .concept-note { font-size: 12.5px; border: 1px solid var(--border-color); border-radius: 10px; background: var(--bg-card); overflow: hidden; }
+    .concept-note summary { cursor: pointer; padding: 9px 13px; font-weight: 700; color: var(--accent-color); list-style: none; user-select: none; }
+    .concept-note summary::-webkit-details-marker { display: none; }
+    .concept-note summary::before { content: '▸ '; }
+    .concept-note[open] summary::before { content: '▾ '; }
+    .concept-note-body { padding: 0 14px 13px; line-height: 1.75; color: var(--text-muted); }
+    .concept-note-body b { color: var(--text-color); }
+    .concept-note-body code { background: rgba(128,128,128,0.16); padding: 1px 5px; border-radius: 4px; font-family: var(--font-mono); font-size: 11.5px; color: var(--text-color); }
+
+    /* ===== 로그인 / JWT (Ch4) ===== */
+    .auth-form { display: flex; flex-direction: column; gap: 8px; }
+    .auth-form input { padding: 9px 11px; border-radius: 7px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); font-size: 13px; font-family: inherit; }
+    .jwt-view { font-family: var(--font-mono); font-size: 11px; word-break: break-all; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; line-height: 1.65; margin-top: 4px; }
+    .jwt-h { color: var(--interview); } .jwt-p { color: var(--frontend); } .jwt-s { color: var(--text-muted); }
+    .jwt-decoded { margin-top: 8px; font-family: var(--font-sans); font-size: 12px; color: var(--text-muted); }
+    .jwt-decoded code { color: var(--text-color); }
+
+    /* ===== 리뷰 작성 폼 (Ch6 RHF/Zod 모사) ===== */
+    .rv-form { display: flex; flex-direction: column; gap: 8px; margin-top: 14px; border-top: 1px dashed var(--border-color); padding-top: 14px; }
+    .rv-form input, .rv-form textarea, .rv-form select { width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); font-size: 12.5px; font-family: inherit; }
+    .rv-form input.invalid, .rv-form textarea.invalid { border-color: var(--interview); }
+    .rv-err { color: var(--interview); font-size: 11px; min-height: 13px; }
+
+    /* ===== REST 호출 로그 콘솔 (Ch4/Ch7) ===== */
+    .rest-log {
+      position: fixed; right: 16px; bottom: 16px; width: 350px; max-height: 320px;
+      background: var(--bg-glass); backdrop-filter: blur(18px);
+      border: 1px solid var(--border-color); border-radius: 12px;
+      box-shadow: 0 14px 44px var(--shadow); font-size: 11.5px; z-index: 8000;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+    .rest-log-head { display: flex; justify-content: space-between; align-items: center; padding: 9px 13px; border-bottom: 1px solid var(--border-color); font-weight: 700; cursor: pointer; user-select: none; }
+    .rest-log-body { overflow-y: auto; padding: 4px 12px; font-family: var(--font-mono); }
+    .rest-log.collapsed .rest-log-body { display: none; }
+    .rl-row { padding: 5px 0; border-bottom: 1px solid var(--border-color); line-height: 1.5; }
+    .rl-method { font-weight: 800; margin-right: 5px; }
+    .rl-get { color: var(--frontend); } .rl-post { color: var(--devops); } .rl-ws { color: var(--ai); }
+    .rl-ok { color: var(--devops); } .rl-err { color: var(--interview); }
+    .rl-concept { display: block; color: var(--accent-color); font-size: 10.5px; margin-top: 1px; }
+    @media (max-width: 600px) { .rest-log { display: none; } }
+
     @media (max-width: 900px) {
       .shop-grid {
         grid-template-columns: 1fr;
@@ -183,35 +257,81 @@
     
     <header>
       <div class="header-title">
-        <h1 style="color: var(--frontend);">🛍️ Antigravity Fashion - 가상 실습 쇼핑몰</h1>
-        <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">백엔드와 프론트엔드가 데이터를 연동하는 실제 REST 통신과 실시간 웹소켓 주문 알림을 직접 확인합니다.</p>
+        <h1 style="color: var(--frontend);">🛍️ Rehab Fashion - 가상 실습 쇼핑몰</h1>
+        <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">각 영역이 어떤 코스·개념과 연결되는지 <strong style="color:var(--accent-color);">[🔍 개념 보기]</strong>로 한눈에 확인하세요.</p>
       </div>
-      <div class="header-controls">
-        <div style="font-size: 13.5px; font-weight:700; background:var(--bg-card); padding:8px 16px; border-radius:10px; border:1px solid var(--border-color); color:var(--text-muted);">
-          👤 접속 회원: <strong style="color:var(--text-color);">김풀스택 (VIP)</strong>
+      <div class="header-controls" style="gap:10px;">
+        <button id="btn-lens" class="btn-sidebar" style="width:auto; white-space:nowrap; border-color:var(--accent-color); color:var(--accent-color); font-weight:700;">🔍 개념 보기</button>
+        <div id="auth-status" style="font-size: 13px; font-weight:700; background:var(--bg-card); padding:8px 14px; border-radius:10px; border:1px solid var(--border-color); color:var(--text-muted); white-space:nowrap;">
+          🔓 비로그인
         </div>
       </div>
     </header>
+
+    <!-- 개념 보기 ON 시 노출되는 전체 흐름 범례 -->
+    <div class="concept-legend">
+      <b>🗺️ 이 쇼핑몰 ↔ 코스 개념 지도</b> — 점선으로 표시된 각 영역의 배지를 누르면 해당 챕터로 이동합니다.
+      <div class="lg-row"><span class="lg-ch" style="color:var(--backend);">Ch2·3·4</span><span>상품 목록 = SQL 조회/카테고리 필터 → JPA Entity 매핑. 상세 = JPA 1:N 리뷰 지연 로딩. 로그인 = JWT 발급.</span></div>
+      <div class="lg-row"><span class="lg-ch" style="color:var(--frontend);">Ch6·7</span><span>장바구니 = Zustand 전역 스토어. 주문 = Axios POST → 실시간 WebSocket(STOMP) 토스트. 리뷰 작성 = react-hook-form + Zod 검증.</span></div>
+      <div class="lg-row"><span class="lg-ch" style="color:var(--accent-color);">우하단</span><span>REST 호출 로그 콘솔 = 실제 오가는 API 요청/응답을 개념과 함께 추적(Ch4 REST · Ch7 통신).</span></div>
+    </div>
 
     <!-- 쇼핑몰 주 구조 -->
     <div class="shop-grid">
       
       <!-- 좌측 칼럼: 상품 카탈로그 목록 영역 -->
-      <div style="display:flex; flex-direction:column; gap:20px;">
-        <h3 style="font-size:18px; font-weight:800; border-left:4px solid var(--frontend); padding-left:10px;">👕 의류 상품 카탈로그</h3>
-        
+      <div style="display:flex; flex-direction:column; gap:20px;" data-concept-region>
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap;">
+          <h3 style="font-size:18px; font-weight:800; border-left:4px solid var(--frontend); padding-left:10px;">👕 의류 상품 카탈로그</h3>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <a class="concept-tag" data-chapter="chapter-3" href="chapter-3.html"><span class="ct-ch">Ch3</span> SQL 조회·필터</a>
+            <a class="concept-tag" data-chapter="chapter-2" href="chapter-2.html"><span class="ct-ch">Ch2</span> JPA Entity</a>
+          </div>
+        </div>
+
+        <!-- 상품 검색 필터 + 개념 설명 (Ch3 SQL LIKE / Ch5·6 controlled input) -->
+        <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="position:relative;">
+            <input id="prod-search" type="text" placeholder="상품 이름·카테고리 검색 (예: 셔츠, 코트, outer)..." autocomplete="off"
+              style="width:100%; padding:11px 14px 11px 38px; border-radius:10px; border:1px solid var(--border-color); background:var(--bg-card); color:var(--text-color); font-size:14px; box-sizing:border-box;">
+            <span style="position:absolute; left:13px; top:50%; transform:translateY(-50%); pointer-events:none; opacity:.65;">🔍</span>
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap; align-items:center;">
+            <a class="concept-tag" data-chapter="chapter-3" href="chapter-3.html"><span class="ct-ch">Ch3</span> SQL LIKE 검색</a>
+            <a class="concept-tag" data-chapter="chapter-5" href="chapter-5.html"><span class="ct-ch">Ch5</span> Controlled Input</a>
+            <span id="prod-search-count" style="font-size:12px; color:var(--text-muted);"></span>
+          </div>
+          <details class="concept-note">
+            <summary>💡 이 검색은 어떤 개념일까?</summary>
+            <div class="concept-note-body">
+              지금은 <b>이미 받아온 상품 배열을 프론트엔드에서 <code>filter()</code>로 즉시 거르는</b> 방식입니다. 입력값이 곧 상태가 되고(Ch5·6 <b>controlled input</b> — 입력→상태→리렌더), 그 상태로 목록을 다시 그립니다. 상품이 적을 땐 빠르고 단순하죠.
+              <br><br>
+              실무에서 상품이 수만 개라면 전부 받아와 거를 수 없습니다. 그땐 <b>백엔드가 <code>WHERE name LIKE '%검색어%'</code>(SQL) 또는 QueryDSL <code>containsIgnoreCase()</code></b>로 DB에서 걸러 일부만 내려줍니다(Ch3). 키 입력마다 요청하면 과하니 <b>debounce</b>로 묶어 호출 수를 줄이고요.
+            </div>
+          </details>
+        </div>
+
         <div id="product-list" class="prod-list-container">
           <!-- JS에 의해 동적으로 데이터 드로잉 수행 -->
         </div>
       </div>
 
-      <!-- 우측 칼럼: 장바구니 & 주문 결제 패널 -->
+      <!-- 우측 칼럼: 인증 & 장바구니 & 주문 결제 패널 -->
       <div style="display:flex; flex-direction:column; gap:24px;">
-        
+
+        <!-- 로그인 / JWT 패널 (Ch4) -->
+        <div id="auth-panel" class="glass-panel" data-concept-region style="border-top:3px solid var(--backend); display:flex; flex-direction:column; gap:14px;">
+          <h3 style="font-size:16px; font-weight:800; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <span>🔐 회원 인증</span>
+            <a class="concept-tag" data-chapter="chapter-4" href="chapter-4.html"><span class="ct-ch">Ch4</span> JWT 인증</a>
+          </h3>
+          <div id="auth-panel-body"><!-- 로그인 폼 / JWT 디코딩 뷰 (JS 렌더) --></div>
+        </div>
+
         <!-- 장바구니 패널 (Zustand 상태관리 유사 동화) -->
-        <div class="glass-panel" style="border-top:3px solid var(--frontend); display:flex; flex-direction:column; gap:16px;">
-          <h3 style="font-size:16px; font-weight:800; display:flex; justify-content:space-between; align-items:center;">
-            <span>🛒 전역 장바구니</span>
+        <div class="glass-panel" data-concept-region style="border-top:3px solid var(--frontend); display:flex; flex-direction:column; gap:16px;">
+          <h3 style="font-size:16px; font-weight:800; display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <span style="display:inline-flex; align-items:center; gap:8px;">🛒 전역 장바구니 <a class="concept-tag" data-chapter="chapter-6" href="chapter-6.html"><span class="ct-ch">Ch6</span> Zustand Store</a></span>
             <span id="cart-count-badge" style="font-size:11.5px; padding:3px 8px; border-radius:12px; background:var(--frontend); color:white; font-weight:bold;">0개 상품</span>
           </h3>
           
@@ -225,11 +345,17 @@
             <span id="cart-total-price" style="font-size:18px; color:var(--frontend);">0원</span>
           </div>
 
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <a class="concept-tag" data-chapter="chapter-7" href="chapter-7.html"><span class="ct-ch">Ch7</span> Axios POST</a>
+            <a class="concept-tag" data-chapter="chapter-7" href="chapter-7.html"><span class="ct-ch">Ch7</span> WebSocket 알림</a>
+            <a class="concept-tag" data-chapter="chapter-4" href="chapter-4.html"><span class="ct-ch">Ch4</span> 검증</a>
+            <a class="concept-tag" data-chapter="chapter-2" href="chapter-2.html"><span class="ct-ch">Ch2</span> 트랜잭션·재고</a>
+          </div>
           <button id="btn-submit-order" class="btn-submit-quiz" style="width:100%; padding:14px; background:var(--frontend);">주문 접수 및 결제하기 ⚡</button>
         </div>
 
         <!-- 상품 세부정보 및 1:N 실시간 리뷰 로더 (JPA Entity 연동) -->
-        <div id="product-detail-panel" class="glass-panel" style="border-top:3px solid var(--backend); display:none; flex-direction:column; gap:16px;">
+        <div id="product-detail-panel" class="glass-panel" data-concept-region style="border-top:3px solid var(--backend); display:none; flex-direction:column; gap:16px;">
           <!-- 상품 디테일 및 자식 리뷰 목록 출력 -->
         </div>
 
@@ -338,11 +464,22 @@
 
     // 2. 초기 기동 시 데이터 로드
     document.addEventListener("DOMContentLoaded", () => {
+      // [개념 복습 강화] REST 로그 콘솔 + mockApi 계측 → loadCatalog 전에 먼저
+      initRestLog();
+      instrumentApi();
+      initLens();
+      renderAuth();
+
       loadCatalog();
-      
+
+      // 상품 검색 필터 — 입력마다 캐시 배열을 즉시 거름 (controlled input 패턴)
+      const prodSearch = document.getElementById("prod-search");
+      if (prodSearch) prodSearch.addEventListener("input", applyProductSearch);
+
       // 🔔 7챕터 웹소켓 주문 수신기 모사 결합 바인딩
       window.mockApi.ws("/topic/orders", (eventPayload) => {
         // 소켓 브로드캐스팅 수신 시 에메랄드빛 명품 토스터 작동!
+        logRest("WS", "/topic/orders", { status: 200 }, 0);
         window.showToast(`🔔 [실시간주문] ${eventPayload.message}`, "success");
       });
 
@@ -393,40 +530,74 @@
     });
 
     /**
-     * REST API GET /api/products 연동 목록 로드
+     * REST API GET /api/products 연동 목록 로드 (+ 검색어 필터 유지)
+     * loadCatalog: 전체 상품을 fetch해 캐시 → 현재 검색어 기준으로 렌더
+     * applyProductSearch: 캐시 배열을 입력값으로 filter (Ch3 SQL LIKE의 클라이언트 버전)
+     * renderProducts: 주어진 목록만 카드로 렌더
      */
+    let shopProducts = []; // 받아온 전체 상품 캐시 (검색은 이 배열을 거름)
+
     function loadCatalog() {
       const prodList = document.getElementById("product-list");
       prodList.innerHTML = "<div class='text-muted' style='grid-column:1/-1; text-align:center;'>카탈로그 로드 중...</div>";
 
       window.mockApi.get("/api/products").then(products => {
-        prodList.innerHTML = "";
-        products.forEach(p => {
-          const card = document.createElement("div");
-          card.className = "glass-panel prod-card";
-          
-          let stockBadge = `<span style="color:var(--devops); font-weight:bold; font-size:12px;">재고: ${p.stock}개</span>`;
-          if (p.stock === 0) {
-            stockBadge = `<span style="color:var(--interview); font-weight:bold; font-size:12px;">[품절] Out of Stock</span>`;
-          }
+        shopProducts = products;
+        applyProductSearch(); // 주문/리셋 후 재호출 시에도 현재 검색어 유지
+      });
+    }
 
-          card.innerHTML = `
-            <img src="${p.image}" class="prod-img" alt="${p.name}" />
-            <div>
-              <span style="font-size:11px; padding:2px 8px; border-radius:10px; background:rgba(255,255,255,0.06); font-weight:600; color:var(--frontend);">${p.category.toUpperCase()}</span>
-            </div>
-            <h4 style="font-size:14.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.name}</h4>
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
-              <span style="font-weight:800; font-size:15px; color:var(--accent-color);">${p.price.toLocaleString()}원</span>
-              ${stockBadge}
-            </div>
-            <div style="display:flex; gap:8px; margin-top:8px;">
-              <button class="btn-sidebar btn-detail" style="flex:1; padding:6px; font-size:12px; border-radius:6px;" onclick="event.stopPropagation(); showProductDetails(${p.id})">상세/리뷰</button>
-              <button class="btn-submit-quiz btn-add" style="flex:1.2; padding:6px; font-size:12px; border-radius:6px; background:var(--frontend);" onclick="event.stopPropagation(); addToCartHandler(${JSON.stringify(p).replace(/"/g, '&quot;')})">담기</button>
-            </div>
-          `;
-          prodList.appendChild(card);
-        });
+    function applyProductSearch() {
+      const input = document.getElementById("prod-search");
+      const q = (input ? input.value : "").trim().toLowerCase();
+      const filtered = q
+        ? shopProducts.filter(p =>
+            p.name.toLowerCase().includes(q) || (p.category || "").toLowerCase().includes(q))
+        : shopProducts;
+      renderProducts(filtered, q);
+    }
+
+    function renderProducts(list, query) {
+      const prodList = document.getElementById("product-list");
+      const countEl = document.getElementById("prod-search-count");
+      if (countEl) countEl.textContent = query ? `${list.length}개 일치` : `전체 ${shopProducts.length}개`;
+
+      if (list.length === 0) {
+        prodList.innerHTML = "";
+        const empty = document.createElement("div");
+        empty.className = "text-muted";
+        empty.style.cssText = "grid-column:1/-1; text-align:center; padding:30px;";
+        empty.textContent = `🔍 "${query}"에 맞는 상품이 없습니다.`; // textContent → XSS 안전
+        prodList.appendChild(empty);
+        return;
+      }
+
+      prodList.innerHTML = "";
+      list.forEach(p => {
+        const card = document.createElement("div");
+        card.className = "glass-panel prod-card";
+
+        let stockBadge = `<span style="color:var(--devops); font-weight:bold; font-size:12px;">재고: ${p.stock}개</span>`;
+        if (p.stock === 0) {
+          stockBadge = `<span style="color:var(--interview); font-weight:bold; font-size:12px;">[품절] Out of Stock</span>`;
+        }
+
+        card.innerHTML = `
+          <img src="${p.image}" class="prod-img" alt="${p.name}" />
+          <div>
+            <span style="font-size:11px; padding:2px 8px; border-radius:10px; background:rgba(255,255,255,0.06); font-weight:600; color:var(--frontend);">${p.category.toUpperCase()}</span>
+          </div>
+          <h4 style="font-size:14.5px; font-weight:700; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${p.name}</h4>
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-top:auto;">
+            <span style="font-weight:800; font-size:15px; color:var(--accent-color);">${p.price.toLocaleString()}원</span>
+            ${stockBadge}
+          </div>
+          <div style="display:flex; gap:8px; margin-top:8px;">
+            <button class="btn-sidebar btn-detail" style="flex:1; padding:6px; font-size:12px; border-radius:6px;" onclick="event.stopPropagation(); showProductDetails(${p.id})">상세/리뷰</button>
+            <button class="btn-submit-quiz btn-add" style="flex:1.2; padding:6px; font-size:12px; border-radius:6px; background:var(--frontend);" onclick="event.stopPropagation(); addToCartHandler(${JSON.stringify(p).replace(/"/g, '&quot;')})">담기</button>
+          </div>
+        `;
+        prodList.appendChild(card);
       });
     }
 
@@ -465,7 +636,10 @@
         }
 
         panel.innerHTML = `
-          <h3 style="font-size:16px; font-weight:800; border-left:4px solid var(--backend); padding-left:10px; color:var(--accent-color);">🔎 상품 상세 및 고객 리뷰</h3>
+          <h3 style="font-size:16px; font-weight:800; border-left:4px solid var(--backend); padding-left:10px; color:var(--accent-color); display:flex; justify-content:space-between; align-items:center; gap:8px;">
+            <span>🔎 상품 상세 및 고객 리뷰</span>
+            <a class="concept-tag" data-chapter="chapter-2" href="chapter-2.html"><span class="ct-ch">Ch2</span> JPA 1:N 지연로딩</a>
+          </h3>
           <div style="display:flex; gap:16px; margin-top:8px;">
             <img src="${product.image}" style="width:70px; height:70px; object-fit:cover; border-radius:8px;" />
             <div>
@@ -473,14 +647,213 @@
               <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px; display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;">${product.description}</p>
             </div>
           </div>
-          
+
           <div style="border-top:1px solid var(--border-color); padding-top:14px;">
             <h5 style="font-size:13px; font-weight:700; margin-bottom:10px;">⭐ 구매 고객 리뷰 (${product.reviews ? product.reviews.length : 0}개)</h5>
-            <div style="max-height:220px; overflow-y:auto; padding-right:4px;">
+            <div style="max-height:200px; overflow-y:auto; padding-right:4px;">
               ${reviewsHtml}
             </div>
           </div>
+
+          <form id="rv-form" class="rv-form" novalidate>
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+              <strong style="font-size:13px;">✍️ 리뷰 작성</strong>
+              <a class="concept-tag" data-chapter="chapter-6" href="chapter-6.html"><span class="ct-ch">Ch6</span> RHF + Zod 검증</a>
+            </div>
+            <input name="userName" placeholder="이름 (2자 이상)" autocomplete="off" />
+            <div class="rv-err" data-for="userName"></div>
+            <select name="rating">
+              <option value="">평점 선택 (1~5)</option>
+              <option value="5">⭐⭐⭐⭐⭐ (5)</option>
+              <option value="4">⭐⭐⭐⭐ (4)</option>
+              <option value="3">⭐⭐⭐ (3)</option>
+              <option value="2">⭐⭐ (2)</option>
+              <option value="1">⭐ (1)</option>
+            </select>
+            <div class="rv-err" data-for="rating"></div>
+            <textarea name="content" rows="2" placeholder="리뷰 내용 (10자 이상)"></textarea>
+            <div class="rv-err" data-for="content"></div>
+            <button type="submit" class="btn-submit-quiz" style="background:var(--backend);">리뷰 등록</button>
+          </form>
         `;
+
+        wireReviewForm(id);
+      });
+    }
+
+    /**
+     * 리뷰 작성 폼 — react-hook-form + Zod 검증 패턴 모사 (Ch6)
+     * 필드별 인라인 에러 표시 → 통과 시 POST /api/reviews
+     */
+    function validateReview(d) {
+      const e = {};
+      if (!d.userName || d.userName.length < 2) e.userName = "이름은 2자 이상이어야 합니다. (z.string().min(2))";
+      if (!d.rating) e.rating = "평점을 선택하세요. (z.number().min(1).max(5))";
+      if (!d.content || d.content.length < 10) e.content = "내용은 10자 이상이어야 합니다. (z.string().min(10))";
+      return e;
+    }
+
+    function wireReviewForm(productId) {
+      const form = document.getElementById("rv-form");
+      if (!form) return;
+      form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const data = {
+          userName: form.userName.value.trim(),
+          rating: form.rating.value,
+          content: form.content.value.trim()
+        };
+        // 이전 에러 초기화
+        form.querySelectorAll(".rv-err").forEach(el => el.textContent = "");
+        form.querySelectorAll("input, textarea, select").forEach(el => el.classList.remove("invalid"));
+
+        const errors = validateReview(data);
+        if (Object.keys(errors).length > 0) {
+          Object.keys(errors).forEach(k => {
+            const errEl = form.querySelector('.rv-err[data-for="' + k + '"]');
+            if (errEl) errEl.textContent = errors[k];
+            const field = form.querySelector('[name="' + k + '"]');
+            if (field) field.classList.add("invalid");
+          });
+          return;
+        }
+
+        window.mockApi.post("/api/reviews", {
+          productId: productId,
+          rating: parseInt(data.rating),
+          content: data.content,
+          userName: data.userName
+        }).then(res => {
+          if (res.status === 201) {
+            showToast("✍️ 리뷰가 등록되었습니다! (평점 평균 재계산됨)", "success");
+            showProductDetails(productId); // 1:N 자식 리뷰 리프레시
+          } else {
+            showToast("❌ " + (res.message || "리뷰 등록 실패"), "warning");
+          }
+        });
+      });
+    }
+    /* ======================================================================
+       회원 인증 / JWT (Ch4) — /api/auth/login 으로 토큰 발급받고 구조 확인
+       ====================================================================== */
+    let authToken = null;
+
+    function renderAuth() {
+      const body = document.getElementById("auth-panel-body");
+      const status = document.getElementById("auth-status");
+      if (!body || !status) return;
+
+      if (!authToken) {
+        status.textContent = "🔓 비로그인";
+        body.innerHTML = `
+          <form id="login-form" class="auth-form">
+            <input name="email" type="email" value="dev-rehab@antigravity.fashion" />
+            <button type="submit" class="btn-submit-quiz" style="background:var(--backend);">로그인 (JWT 발급)</button>
+            <p style="font-size:11.5px; color:var(--text-muted); margin:0;">이메일로 로그인하면 서버가 <strong>JWT</strong>를 발급합니다. 점(.)으로 3등분된 <strong>Header·Payload·Signature</strong> 구조를 직접 확인하세요.</p>
+          </form>`;
+        const f = document.getElementById("login-form");
+        f.addEventListener("submit", (e) => { e.preventDefault(); doLogin(f.email.value.trim()); });
+      } else {
+        const parts = authToken.split(".");
+        let payload = {};
+        // UTF-8 안전 디코딩 (한글 이름 복원) — TextDecoder 기반
+        try {
+          const bin = atob(parts[1]);
+          const bytes = Uint8Array.from(bin, (c) => c.charCodeAt(0));
+          payload = JSON.parse(new TextDecoder().decode(bytes));
+        } catch (_) {}
+        status.textContent = `👤 ${payload.name || "회원"} · ${payload.role || ""}`;
+        const expDate = payload.exp ? new Date(payload.exp * 1000).toLocaleTimeString("ko-KR") : "-";
+        body.innerHTML = `
+          <div style="font-size:12.5px;">로그인됨: <strong>${payload.name || ""}</strong> <span style="color:var(--text-muted);">(${payload.email || ""})</span></div>
+          <div style="font-size:11.5px; color:var(--text-muted);">발급된 JWT — 색으로 구분된 3개 세그먼트:</div>
+          <div class="jwt-view"><span class="jwt-h">${parts[0]}</span><span class="jwt-s">.</span><span class="jwt-p">${parts[1]}</span><span class="jwt-s">.${parts[2]}</span></div>
+          <div class="jwt-decoded">🔓 <strong>Payload 디코딩</strong>: role=<code>${payload.role}</code> · sub=<code>${payload.sub}</code> · 만료=<code>${expDate}</code></div>
+          <button id="btn-logout" class="btn-sidebar" style="width:auto; padding:6px 12px; font-size:12px;">로그아웃</button>`;
+        const lo = document.getElementById("btn-logout");
+        if (lo) lo.addEventListener("click", () => { authToken = null; renderAuth(); });
+      }
+    }
+
+    function doLogin(email) {
+      window.mockApi.post("/api/auth/login", { email: email }).then(res => {
+        if (res.status === 200 && res.token) {
+          authToken = res.token;
+          renderAuth();
+          showToast("🔐 JWT 토큰이 발급되었습니다! 우측 패널에서 구조를 확인하세요.", "success");
+        } else {
+          showToast("❌ " + (res.message || "로그인 실패"), "warning");
+        }
+      });
+    }
+
+    /* ======================================================================
+       REST 호출 로그 콘솔 — 실제 오가는 API를 개념과 함께 추적 (Ch4/Ch7)
+       ====================================================================== */
+    const REST_CONCEPT = {
+      "GET /api/products": "Ch3 SQL SELECT · Ch2 Entity 매핑",
+      "GET /api/products/:id": "Ch2 JPA 1:N 지연 로딩",
+      "POST /api/orders": "Ch7 Axios · Ch4 검증 · Ch2 트랜잭션",
+      "POST /api/auth/login": "Ch4 JWT 토큰 발급",
+      "POST /api/reviews": "Ch6 폼검증 · Ch2 영속성 전이",
+      "WS /topic/orders": "Ch7 WebSocket(STOMP) 브로드캐스트"
+    };
+    function conceptFor(method, url) {
+      let key = method + " " + url;
+      if (/\/api\/products\/\d+/.test(url)) key = method + " /api/products/:id";
+      return REST_CONCEPT[key] || "";
+    }
+    function initRestLog() {
+      const el = document.createElement("div");
+      el.className = "rest-log";
+      el.innerHTML = `
+        <div class="rest-log-head"><span>📡 REST 호출 로그</span><span id="rl-toggle" style="color:var(--text-muted);">─</span></div>
+        <div class="rest-log-body" id="rest-log-body"><div class="rl-empty" style="color:var(--text-muted); padding:8px 0;">상품을 보거나 주문하면 API 호출이 개념과 함께 기록됩니다.</div></div>`;
+      document.body.appendChild(el);
+      el.querySelector(".rest-log-head").addEventListener("click", () => {
+        el.classList.toggle("collapsed");
+        el.querySelector("#rl-toggle").textContent = el.classList.contains("collapsed") ? "+" : "─";
+      });
+    }
+    function logRest(method, url, res, ms) {
+      const body = document.getElementById("rest-log-body");
+      if (!body) return;
+      const empty = body.querySelector(".rl-empty");
+      if (empty) empty.remove();
+      const status = Array.isArray(res) ? 200 : (res && res.status ? res.status : 200);
+      const ok = status >= 200 && status < 400;
+      const mClass = method === "GET" ? "rl-get" : (method === "POST" ? "rl-post" : "rl-ws");
+      const row = document.createElement("div");
+      row.className = "rl-row";
+      row.innerHTML = `<span class="rl-method ${mClass}">${method}</span><span>${url}</span> <span class="${ok ? "rl-ok" : "rl-err"}">${status}</span> <span style="color:var(--text-muted);">${ms ? Math.round(ms) + "ms" : ""}</span><span class="rl-concept">↳ ${conceptFor(method, url)}</span>`;
+      body.insertBefore(row, body.firstChild);
+    }
+    function instrumentApi() {
+      if (!window.mockApi) return;
+      const rg = window.mockApi.get.bind(window.mockApi);
+      const rp = window.mockApi.post.bind(window.mockApi);
+      window.mockApi.get = function (url) {
+        const t = performance.now();
+        return rg(url).then(r => { logRest("GET", url, r, performance.now() - t); return r; });
+      };
+      window.mockApi.post = function (url, b) {
+        const t = performance.now();
+        return rp(url, b).then(r => { logRest("POST", url, r, performance.now() - t); return r; });
+      };
+    }
+
+    /* ======================================================================
+       개념 보기(Concept Lens) 토글
+       ====================================================================== */
+    function initLens() {
+      const btn = document.getElementById("btn-lens");
+      if (!btn) return;
+      btn.addEventListener("click", () => {
+        document.body.classList.toggle("lens-on");
+        const on = document.body.classList.contains("lens-on");
+        btn.textContent = on ? "✖ 개념 보기 끄기" : "🔍 개념 보기";
+        btn.style.background = on ? "var(--accent-color)" : "";
+        btn.style.color = on ? "#fff" : "var(--accent-color)";
       });
     }
   </script>
