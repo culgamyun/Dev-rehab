@@ -1,0 +1,558 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Antigravity Fullstack Rehab Dashboard</title>
+  <!-- 로컬 라이브러리 및 공통 스타일시트 연동 -->
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+  <!-- ==========================================================================
+       1. Left Navigation Sidebar
+       ========================================================================== -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <span>Antigravity</span> Rehab
+    </div>
+    
+    <ul class="nav-menu">
+      <li class="nav-item active" data-chapter-class="backend">
+        <a href="index.html">
+          <span class="nav-item-text">🏠 대시보드 홈</span>
+        </a>
+      </li>
+      
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      
+      <li class="nav-item" data-chapter-class="backend">
+        <a href="chapter-1.html">
+          <span class="nav-item-text">01. 모던 자바 핵심</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()">
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="backend">
+        <a href="chapter-2.html">
+          <span class="nav-item-text">02. 스프링 부트 3 & JPA</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()">
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="backend">
+        <a href="chapter-3.html">
+          <span class="nav-item-text">03. DB & SQL + QueryDSL</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()">
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="backend">
+        <a href="chapter-4.html">
+          <span class="nav-item-text">04. Security & Redis JWT</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()">
+        </a>
+      </li>
+
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+
+      <li class="nav-item" data-chapter-class="frontend">
+        <a href="chapter-5.html">
+          <span class="nav-item-text">05. React & Next.js 기초</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()">
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="frontend">
+        <a href="chapter-6.html">
+          <span class="nav-item-text">06. 고급 React & Zustand</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()">
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="frontend">
+        <a href="chapter-7.html">
+          <span class="nav-item-text">07. 풀스택 통합 & 소켓</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()">
+        </a>
+      </li>
+
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+
+      <li class="nav-item" data-chapter-class="devops">
+        <a href="chapter-8.html">
+          <span class="nav-item-text">08. DevOps & AWS & MSA</span>
+          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()">
+        </a>
+      </li>
+
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+
+      <li class="nav-item" data-chapter-class="test">
+        <a href="appendix-test.html">
+          <span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span>
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="interview">
+        <a href="appendix-interview.html">
+          <span class="nav-item-text">💬 부록 B. 면접 단골 CS & 심화</span>
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="algo">
+        <a href="appendix-algorithm.html">
+          <span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span>
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="ai">
+        <a href="appendix-ai.html">
+          <span class="nav-item-text">🤖 부록 D. AI-Native 통합</span>
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="interview">
+        <a href="appendix-e.html">
+          <span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span>
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="frontend">
+        <a href="appendix-f.html">
+          <span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span>
+        </a>
+      </li>
+      <li class="nav-item" data-chapter-class="devops">
+        <a href="appendix-g.html">
+          <span class="nav-item-text">📡 부록 G. 백엔드 운영</span>
+        </a>
+      </li>
+    </ul>
+
+    <!-- 사이드바 하단 도구함 -->
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary">
+        <span>📖 용어 사전 (Ctrl+K)</span>
+      </button>
+      <button class="btn-sidebar theme-toggle">
+        <span>☀️ Mode</span>
+      </button>
+      <button class="btn-sidebar btn-reset">
+        <span>🔄 데이터 초기화</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- ==========================================================================
+       2. Main Dashboard Panel
+       ========================================================================== -->
+  <main id="main-content">
+    
+    <!-- 2.1 Top Search Bar & Greeting -->
+    <header>
+      <div class="header-title">
+        <h1>풀스택 개발자 재활 마스터 코스</h1>
+        <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">복귀 준비 완료! 기초부터 핵심 최신 우대 스택까지 하나씩 차례대로 정복해 나갑니다.</p>
+      </div>
+      
+      <div class="header-controls">
+        <div class="search-box">
+          <input type="text" class="search-input" placeholder="키워드 검색 (예: JPA, JWT, 훅)...">
+        </div>
+        <button id="btn-run-guide" class="btn-sidebar" style="width:auto; white-space:nowrap; border-color:var(--devops); color:var(--devops); font-weight:700;">🚀 실행 방법</button>
+      </div>
+    </header>
+
+    <!-- 2.2 Statistics Dashboard Widgets -->
+    <section class="stats-grid">
+      <!-- 위젯 1: 전체 누적 진행도 -->
+      <div class="glass-panel stat-card" style="position:relative; overflow:hidden;">
+        <div class="stat-info">
+          <h3>전체 누적 학습률</h3>
+          <p class="progress-percent-text">0%</p>
+          <button id="btn-continue-study" class="btn-submit-quiz" style="margin-top: 14px; padding: 6px 12px; font-size:12px; border-radius:6px;">이어 학습하기 ⚡</button>
+        </div>
+        <div class="progress-ring-container">
+          <svg class="progress-ring" width="80" height="80">
+            <circle class="progress-ring__circle-bg" stroke="rgba(255,255,255,0.05)" stroke-width="6" fill="transparent" r="34" cx="40" cy="40"/>
+            <circle class="progress-ring__circle" stroke="var(--accent-color)" stroke-width="6" fill="transparent" r="34" cx="40" cy="40"/>
+          </svg>
+          <div class="progress-percent-text" style="font-size:13px; font-weight:800;">0%</div>
+        </div>
+      </div>
+
+      <!-- 위젯 2: 완성한 코스 개수 -->
+      <div class="glass-panel stat-card">
+        <div class="stat-info">
+          <h3>완수한 커리큘럼</h3>
+          <p id="stats-chapter-count">0 / 8 챕터</p>
+          <div style="font-size:12px; color:var(--text-muted); margin-top:14px;">퀴즈와 학습을 완료한 챕터 수</div>
+        </div>
+        <div style="font-size: 40px; filter: grayscale(0.2);">📚</div>
+      </div>
+
+      <!-- 위젯 3: 가짜 쇼핑몰 상태 게이지 -->
+      <div class="glass-panel stat-card">
+        <div class="stat-info">
+          <h3>실습 쇼핑몰 상태</h3>
+          <p id="stats-shop-orders" style="color:var(--frontend);">100% 작동 중</p>
+          <button onclick="window.location.href='demo-shop.html'" class="btn-sidebar" style="margin-top:10px; padding:6px 10px; font-size:11.5px; border-radius:6px; display:inline-flex; width:auto; border-color:var(--frontend); color:var(--frontend);">🛍️ 미니 쇼핑몰 실행</button>
+        </div>
+        <div style="font-size: 40px;">🛍️</div>
+      </div>
+
+      <!-- 위젯 4: 오늘의 복습 (SRS 간격 반복) -->
+      <div class="glass-panel stat-card">
+        <div class="stat-info">
+          <h3>오늘의 복습</h3>
+          <p id="srs-due-count" style="color:var(--interview);">0개</p>
+          <button id="btn-start-review" class="btn-submit-quiz" style="margin-top: 14px; padding: 6px 12px; font-size:12px; border-radius:6px;">복습 시작 🔁</button>
+        </div>
+        <div style="font-size: 40px;">🔁</div>
+      </div>
+    </section>
+
+    <!-- 2.3 Chapters Catalog List Grid -->
+    <section style="display:flex; flex-direction:column; gap:16px;">
+      <h2 style="font-size: 20px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📑 정규 학습 커리큘럼 로드맵</h2>
+      
+      <div class="chapters-grid">
+        
+        <!-- Chapter 1 Card -->
+        <div class="glass-panel chapter-card backend" onclick="window.location.href='chapter-1.html'">
+          <div class="chapter-badge">Chapter 01</div>
+          <h3>자바 17 & 21 최신 핵심 스펙</h3>
+          <p>레거시 자바 8에서 탈피하여 코드 다이어트의 핵심인 Record, 패턴 매칭 스위치, 텍스트 블록 등 생산성 3대 스펙을 정밀 학습합니다.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-1">진척도: 시작 전</span>
+            <span>Acc: Java 21</span>
+          </div>
+        </div>
+
+        <!-- Chapter 2 Card -->
+        <div class="glass-panel chapter-card backend" onclick="window.location.href='chapter-2.html'">
+          <div class="chapter-badge">Chapter 02</div>
+          <h3>스프링 부트 3.4+ & JPA · Virtual Threads</h3>
+          <p>Bean 라이프사이클을 짚고 레이어드 아키텍처(Controller→Service→Repository→DTO) 위에서 JPA N+1을 Fetch Join으로 제압. Virtual Threads로 대량 주문 처리까지.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-2">진척도: 시작 전</span>
+            <span>Acc: Spring Boot 3.4+</span>
+          </div>
+        </div>
+
+        <!-- Chapter 3 Card -->
+        <div class="glass-panel chapter-card backend" onclick="window.location.href='chapter-3.html'">
+          <div class="chapter-badge">Chapter 03</div>
+          <h3>데이터베이스 인덱싱 & QueryDSL</h3>
+          <p>B-Tree 인덱스의 물리 스캔 원리를 뚫어보고, 실무 복잡 다단한 의류 동적 다중 검색을 타입 안정성이 높은 QueryDSL로 극복합니다.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-3">진척도: 시작 전</span>
+            <span>Acc: DB/SQL</span>
+          </div>
+        </div>
+
+        <!-- Chapter 4 Card -->
+        <div class="glass-panel chapter-card backend" onclick="window.location.href='chapter-4.html'">
+          <div class="chapter-badge">Chapter 04</div>
+          <h3>REST API & Redis JWT 보안</h3>
+          <p>Spring Security 6 필터 체인의 대대적 변화와 JWT 이중 구조 인증을 설계하고, Redis를 활용한 무효화 토큰 블랙리스트를 구현합니다.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-4">진척도: 시작 전</span>
+            <span>Acc: Security</span>
+          </div>
+        </div>
+
+        <!-- Chapter 5 Card -->
+        <div class="glass-panel chapter-card frontend" onclick="window.location.href='chapter-5.html'">
+          <div class="chapter-badge">Chapter 05</div>
+          <h3>React 19 & Next.js 15 · TypeScript</h3>
+          <p>App Router + Server/Client Component 멘탈 모델. React 19 Compiler로 useMemo/useCallback 종말, Next.js 15 Uncached by default와 Turbopack, TypeScript 전이 가이드까지.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-5">진척도: 시작 전</span>
+            <span>Acc: Next.js 15 · TS</span>
+          </div>
+        </div>
+
+        <!-- Chapter 6 Card -->
+        <div class="glass-panel chapter-card frontend" onclick="window.location.href='chapter-6.html'">
+          <div class="chapter-badge">Chapter 06</div>
+          <h3>고급 React · Zustand · react-hook-form</h3>
+          <p>useActionState 등 React 19 신규 훅 활용. Zustand 기반 전역 장바구니 DB 구현. react-hook-form + Zod로 쇼핑몰 주문 폼까지 — useState 폼의 한계 탈출.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-6">진척도: 시작 전</span>
+            <span>Acc: Zustand · RHF</span>
+          </div>
+        </div>
+
+        <!-- Chapter 7 Card -->
+        <div class="glass-panel chapter-card frontend" onclick="window.location.href='chapter-7.html'">
+          <div class="chapter-badge">Chapter 07</div>
+          <h3>풀스택 통합 및 WebSocket 실시간 통신</h3>
+          <p>Axios Interceptor로 무적의 토큰 요청 헤더를 삽입하고, WebSocket & STOMP로 주문 시 관리자용 실시간 토스트 브로드가 퍼지는 로직을 설계합니다.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-7">진척도: 시작 전</span>
+            <span>Acc: WebSocket</span>
+          </div>
+        </div>
+
+        <!-- Chapter 8 Card -->
+        <div class="glass-panel chapter-card devops" onclick="window.location.href='chapter-8.html'">
+          <div class="chapter-badge">Chapter 08</div>
+          <h3>DevOps · Spring Modulith · GitHub Actions</h3>
+          <p>멀티 스테이지 Docker로 배포판 경량화, AWS VPC 토폴로지, Spring Modulith로 모놀리식→MSA 중간 단계, Saga 패턴, 그리고 GitHub Actions CI/CD까지.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-8">진척도: 시작 전</span>
+            <span>Acc: Modulith · CI/CD</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 2.4 Sub Appendix Grid -->
+    <section style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
+      <h2 style="font-size: 20px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📂 취업 구인 마켓 관통 스페셜 부록</h2>
+      
+      <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+        
+        <!-- Appendix A Card -->
+        <div class="glass-panel chapter-card test" onclick="window.location.href='appendix-test.html'">
+          <div class="chapter-badge">부록 A</div>
+          <h3>실무 JUnit 5 & RTL 테스트 검증론</h3>
+          <p>백엔드 JUnit 5 / Mockito 모의 객체 검증 패턴과 프론트엔드 React Testing Library(RTL) 컴포넌트 행위 주도 테스트 코드를 집대성해 다룹니다.</p>
+          <div class="chapter-meta">
+            <span>JUnit 5 / Mockito / RTL</span>
+            <span>Acc: Testing</span>
+          </div>
+        </div>
+
+        <!-- Appendix B Card -->
+        <div class="glass-panel chapter-card interview" onclick="window.location.href='appendix-interview.html'">
+          <div class="chapter-badge">부록 B</div>
+          <h3>기술 면접 0순위 단골 질문 백과</h3>
+          <p>DB 트랜잭션 격리 수준, 멀티스레드 동시성 ReentrantLock, 자바 JVM GC(Garbage Collector) 튜닝 포인트 등 단골 CS 면접을 모았습니다.</p>
+          <div class="chapter-meta">
+            <span>CS / JVM / Lock / DB Transaction</span>
+            <span>Acc: Interview</span>
+          </div>
+        </div>
+
+        <!-- Appendix C Card -->
+        <div class="glass-panel chapter-card algo" onclick="window.location.href='appendix-algorithm.html'">
+          <div class="chapter-badge">부록 C</div>
+          <h3>코딩 테스트 합격 알고리즘 패키지</h3>
+          <p>자바 알고리즘 코딩 템플릿 제공 및 BFS/DFS 탐색, DP(동적계획법) 패턴, 슬라이딩 윈도우 등 프로그래머스 빈출 20~30선을 엄선 수록했습니다.</p>
+          <div class="chapter-meta">
+            <span>BFS / DFS / DP / Big-O / BFS</span>
+            <span>Acc: Algorithm</span>
+          </div>
+        </div>
+
+        <!-- Appendix D Card -->
+        <div class="glass-panel chapter-card ai" onclick="window.location.href='appendix-ai.html'" style="border-left: 3px solid var(--ai);">
+          <div class="chapter-badge" style="background: var(--ai); color: white;">부록 D</div>
+          <h3>AI-Native 통합 (pgvector · Spring AI · Generative UI)</h3>
+          <p>2026 시니어 면접의 핵심 차별화. 의미 기반 벡터 검색(pgvector + RRF), 에이전트가 도구를 직접 결정하는 Agentic RAG, LLM이 React 컴포넌트를 반환하는 Generative UI까지.</p>
+          <div class="chapter-meta">
+            <span>pgvector / Spring AI / Vercel AI SDK</span>
+            <span>Acc: AI-Native</span>
+          </div>
+        </div>
+
+        <!-- Appendix E Card -->
+        <div class="glass-panel chapter-card interview" onclick="window.location.href='appendix-e.html'">
+          <div class="chapter-badge">부록 E</div>
+          <h3>시스템 설계 면접 — 확장·캐시·신뢰성</h3>
+          <p>대용량 트래픽 확장 순서, 캐시 계층(LRU·스탬피드 방어), DB 복제/샤딩, 멱등성·Rate Limiting과 단골 설계 문제(URL 단축기·피드·채팅·이커머스 주문) 압축 풀이.</p>
+          <div class="chapter-meta">
+            <span>Scale / Cache / Shard / Idempotency</span>
+            <span>Acc: System Design</span>
+          </div>
+        </div>
+
+        <!-- Appendix F Card -->
+        <div class="glass-panel chapter-card frontend" onclick="window.location.href='appendix-f.html'" style="border-left: 3px solid var(--frontend);">
+          <div class="chapter-badge" style="background: var(--frontend); color: white;">부록 F</div>
+          <h3>프론트엔드 품질 — 렌더링·성능·접근성</h3>
+          <p>CSR/SSR/SSG/ISR/PPR 렌더링 전략 선택, Hydration 비용 줄이기, Core Web Vitals(LCP·INP·CLS) 진단, 코드 스플리팅·next/image·Lighthouse, 접근성·Tailwind 실전까지 프론트 면접 단골을 압축했습니다.</p>
+          <div class="chapter-meta">
+            <span>Rendering / CWV / Hydration / a11y</span>
+            <span>Acc: Frontend</span>
+          </div>
+        </div>
+
+        <!-- Appendix G Card -->
+        <div class="glass-panel chapter-card devops" onclick="window.location.href='appendix-g.html'" style="border-left: 3px solid var(--devops);">
+          <div class="chapter-badge" style="background: var(--devops); color: white;">부록 G</div>
+          <h3>백엔드 운영 — 이벤트 메시징 & 관측성</h3>
+          <p>Kafka 토픽·파티션·순서 보장, at-least-once + 멱등 컨슈머·DLQ, 관측성 3 기둥(로그·메트릭·트레이스)과 Actuator→Prometheus→Grafana, 분산 추적(Trace ID)까지 백엔드 운영 단골을 압축했습니다.</p>
+          <div class="chapter-meta">
+            <span>Kafka / Observability / Tracing</span>
+            <span>Acc: Backend Ops</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- ==========================================================================
+       3. Glossary Slide-out Sidebar Modal
+       ========================================================================== -->
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: Bean)...">
+    <div class="glossary-list">
+      <!-- JS에 의해 동적으로 glossay.json 기반 카드 렌더링 -->
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       3.5 실행 방법 안내 모달 (Run Guide)
+       ========================================================================== -->
+  <div id="run-guide-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.55); backdrop-filter:blur(4px); z-index:9000; align-items:flex-start; justify-content:center; padding:40px 16px; overflow-y:auto;">
+    <div id="run-guide-modal" style="background:var(--bg-glass); backdrop-filter:blur(24px); border:1px solid var(--border-color); border-radius:16px; box-shadow:0 20px 60px var(--shadow); max-width:760px; width:100%; padding:28px 30px; color:var(--text-color);">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+        <h2 style="font-size:20px; font-weight:800; margin:0;">🚀 실행 방법</h2>
+        <button class="btn-close-run-guide" style="background:transparent; border:none; color:var(--text-muted); font-size:20px; cursor:pointer;">✕</button>
+      </div>
+      <p style="font-size:13px; color:var(--text-muted); margin:0 0 20px;">읽기만 할지, 실제로 돌려보며 만들지 두 갈래가 있습니다. Docker는 안 써도 됩니다.</p>
+
+      <!-- 1. 학습 대시보드 -->
+      <div style="border-left:4px solid var(--backend); padding:4px 0 4px 16px; margin-bottom:22px;">
+        <h3 style="font-size:15px; font-weight:800; color:var(--backend); margin:0 0 8px;">📖 1. 지금 이 학습 사이트 보기</h3>
+        <p style="font-size:13px; margin:0 0 10px;">글·다이어그램·퀴즈는 <strong>index.html 더블클릭</strong>만으로 OK. 검색(Ctrl+K)·용어 hover 툴팁·데모샵까지 쓰려면 로컬 서버가 필요합니다(파일 직접 열기는 브라우저 CORS로 막힘).</p>
+        <div class="run-cmd"><code>python -m http.server 5500</code><button class="run-copy" onclick="copyRunCmd(this)">복사</button></div>
+        <p style="font-size:12px; color:var(--text-muted); margin:6px 0 0;">→ 브라우저에서 <code>http://localhost:5500</code> 접속. (또는 VS Code <strong>Live Server</strong> 확장 → index.html 우클릭 → "Open with Live Server")</p>
+      </div>
+
+      <!-- 2. 실습 레포 (Docker 없이) -->
+      <div style="border-left:4px solid var(--devops); padding:4px 0 4px 16px; margin-bottom:22px;">
+        <h3 style="font-size:15px; font-weight:800; color:var(--devops); margin:0 0 8px;">🛠️ 2. 실습 레포 실행 — Docker 없이 (권장)</h3>
+        <p style="font-size:13px; margin:0 0 10px;"><code>antigravity-app/</code>에서 빌드 체크포인트를 직접 구현합니다. PostgreSQL·Redis·Docker <strong>전부 불필요</strong>(H2 인메모리).</p>
+        <p style="font-size:12.5px; font-weight:700; margin:8px 0 4px;">백엔드 (Spring Boot · H2)</p>
+        <div class="run-cmd"><code>cd antigravity-app/backend &amp;&amp; ./gradlew bootRun --args="--spring.profiles.active=dev"</code><button class="run-copy" onclick="copyRunCmd(this)">복사</button></div>
+        <p style="font-size:12px; color:var(--text-muted); margin:6px 0 12px;">→ <code>http://localhost:8080/api/products</code> (시드 상품) · <code>/swagger-ui.html</code> (API 문서)<br>※ 최초 1회만 <code>gradle wrapper</code>로 gradlew 생성, 또는 IntelliJ로 열면 자동</p>
+        <p style="font-size:12.5px; font-weight:700; margin:8px 0 4px;">프론트엔드 (Next.js)</p>
+        <div class="run-cmd"><code>cd antigravity-app/frontend &amp;&amp; npm install &amp;&amp; npm run dev</code><button class="run-copy" onclick="copyRunCmd(this)">복사</button></div>
+        <p style="font-size:12px; color:var(--text-muted); margin:6px 0 0;">→ <code>http://localhost:3000</code></p>
+      </div>
+
+      <!-- 3. Docker (선택) -->
+      <div style="border-left:4px solid var(--algo); padding:4px 0 4px 16px; margin-bottom:8px;">
+        <h3 style="font-size:15px; font-weight:800; color:var(--algo); margin:0 0 8px;">🐳 3. (선택) Docker 풀스택 — Ch8 학습 때만</h3>
+        <p style="font-size:13px; margin:0 0 10px;">Ch8(데브옵스)에서 컨테이너·CI를 배울 때만 사용. 평소엔 위 2번으로 충분합니다.</p>
+        <div class="run-cmd"><code>cd antigravity-app &amp;&amp; docker compose up --build</code><button class="run-copy" onclick="copyRunCmd(this)">복사</button></div>
+      </div>
+
+      <p style="font-size:12px; color:var(--text-muted); margin:18px 0 0; padding-top:14px; border-top:1px solid var(--border-color);">💡 자세한 챕터↔파일↔TODO 매핑은 <code>antigravity-app/CHECKPOINTS.md</code> 참고.</p>
+    </div>
+  </div>
+
+  <style>
+    #run-guide-modal .run-cmd { display:flex; align-items:center; gap:8px; background:var(--bg-card); border:1px solid var(--border-color); border-radius:8px; padding:10px 12px; margin:4px 0; }
+    #run-guide-modal .run-cmd code { flex:1; font-family:var(--font-mono); font-size:12.5px; color:var(--text-color); word-break:break-all; }
+    #run-guide-modal .run-copy { flex-shrink:0; background:transparent; border:1px solid var(--border-color); color:var(--text-muted); border-radius:6px; padding:4px 10px; font-size:11.5px; cursor:pointer; }
+    #run-guide-modal .run-copy:hover { border-color:var(--devops); color:var(--devops); }
+  </style>
+
+  <!-- ==========================================================================
+       4. Real-time Toast Messages & Dynamic Seeding Script
+       ========================================================================== -->
+  <div id="toast-container"></div>
+
+  <!-- 라이브러리 및 주요 유틸리티들 순서대로 연동 -->
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/srs.js"></script>
+  <script src="assets/search.js"></script>
+
+  <!-- 메인 대시보드 전용 '이어 학습하기' 라우터 바인딩 -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const continueBtn = document.getElementById("btn-continue-study");
+      
+      // 통계 위젯 내 누적 합격 챕터 수 동적 계산
+      updateStatsWidget();
+      window.addEventListener("mockDbReset", updateStatsWidget);
+
+      // [SRS v3.3] 오늘의 복습 위젯 갱신 (+ 용어 카드 병합 후 재갱신) + 복습 페이지 라우팅
+      updateReviewWidget();
+      if (window.srs && typeof srs.ensureGlossaryCards === "function") {
+        srs.ensureGlossaryCards(updateReviewWidget);
+      }
+      const startReviewBtn = document.getElementById("btn-start-review");
+      if (startReviewBtn) {
+        startReviewBtn.addEventListener("click", () => { window.location.href = "review.html"; });
+      }
+
+      // 🚀 실행 방법 모달 제어
+      const runBtn = document.getElementById("btn-run-guide");
+      const runOverlay = document.getElementById("run-guide-overlay");
+      const runClose = document.querySelector(".btn-close-run-guide");
+      const openRun = () => { runOverlay.style.display = "flex"; };
+      const closeRun = () => { runOverlay.style.display = "none"; };
+      if (runBtn) runBtn.addEventListener("click", openRun);
+      if (runClose) runClose.addEventListener("click", closeRun);
+      if (runOverlay) runOverlay.addEventListener("click", (e) => { if (e.target === runOverlay) closeRun(); });
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape" && runOverlay.style.display === "flex") closeRun(); });
+
+      if (continueBtn) {
+        continueBtn.addEventListener("click", () => {
+          const progress = JSON.parse(localStorage.getItem("antigravity_progress") || "{}");
+          const chapterOrder = [
+            "chapter-1", "chapter-2", "chapter-3", "chapter-4",
+            "chapter-5", "chapter-6", "chapter-7", "chapter-8"
+          ];
+          
+          // 아직 완주(읽기 완료 및 퀴즈 통과)하지 못한 가장 첫 번째 챕터 찾기
+          let targetChapter = "chapter-1.html";
+          for (const ch of chapterOrder) {
+            if (!progress[ch] || !progress[ch].read || !progress[ch].quizPassed) {
+              targetChapter = `${ch}.html`;
+              break;
+            }
+          }
+          
+          showToast(`⚡ 최신 학습 지점으로 순간이동합니다...`);
+          setTimeout(() => {
+            window.location.href = targetChapter;
+          }, 600);
+        });
+      }
+    });
+
+    // 실행 명령 클립보드 복사
+    function copyRunCmd(btn) {
+      const code = btn.parentElement.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const orig = btn.textContent;
+        btn.textContent = "복사됨 ✓";
+        btn.style.borderColor = "var(--devops)";
+        btn.style.color = "var(--devops)";
+        if (window.showToast) showToast("📋 명령어가 복사되었습니다!", "success");
+        setTimeout(() => { btn.textContent = orig; btn.style.borderColor = ""; btn.style.color = ""; }, 1800);
+      });
+    }
+
+    function updateStatsWidget() {
+      const progress = JSON.parse(localStorage.getItem("antigravity_progress") || "{}");
+      const chapters = ["chapter-1", "chapter-2", "chapter-3", "chapter-4", "chapter-5", "chapter-6", "chapter-7", "chapter-8"];
+      
+      let completedCount = 0;
+      chapters.forEach(ch => {
+        if (progress[ch] && progress[ch].read && progress[ch].quizPassed) {
+          completedCount += 1;
+        }
+      });
+      
+      const statsCountEl = document.getElementById("stats-chapter-count");
+      if (statsCountEl) {
+        statsCountEl.textContent = `${completedCount} / 8 챕터`;
+      }
+    }
+
+    function updateReviewWidget() {
+      const el = document.getElementById("srs-due-count");
+      if (!el || typeof window.srs === "undefined") return;
+      el.textContent = `${window.srs.getStats().due}개`;
+    }
+  </script>
+</body>
+</html>

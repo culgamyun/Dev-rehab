@@ -1,0 +1,529 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appendix E - System Design Interview</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <span>Antigravity</span> Rehab
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item active" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>스페셜 부록</span> &gt; <span>부록 E</span></div>
+      <h1 style="color: var(--interview);">부록 E. 시스템 설계 면접 — 확장·캐시·신뢰성·단골 문제</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">경력·복귀 면접의 합격을 가르는 관문은 "정의 암기"가 아니라 <strong>"이 상황에서 무엇을, 왜, 어떤 순서로"</strong>를 설명하는 설계 감각입니다. 부록 B(CS 단골)의 설계 "개요"를 실제 면접에서 끝까지 밀어붙일 수 있는 깊이로 끌어올립니다. 모든 예시는 가상 의류 쇼핑몰 <strong>Antigravity Fashion</strong> 도메인으로 이어집니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/appendix-e-hero.webp" alt="확장과 캐시, 복제, 샤딩, 큐로 트래픽을 처리하는 시스템 설계 마을 그림" loading="lazy">
+      <figcaption>대용량 트래픽을 확장·캐시·복제·샤딩으로 단계적으로 막아내는 시스템 설계 흐름을 한 장면으로 조망합니다.</figcaption>
+    </figure>
+
+    <div class="analogy-box" style="margin-top: 8px;">
+      <h4>🧭 이 부록 사용법</h4>
+      <p>각 질문은 <strong>면접 답변 스크립트</strong>처럼 읽으세요. 비유로 큰 그림을 잡고 → 표/코드로 근거를 채우고 → <em>면접 꼬리 질문</em>으로 한 단계 더 들어갑니다. 마지막 자가 진단 퀴즈는 풀면 <strong>대시보드 "오늘의 복습"</strong>에 자동 편입되어 간격 반복으로 굳습니다.</p>
+    </div>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           CATEGORY A: SCALING
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(255,107,107,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight: 800; color: var(--accent-color); font-size: 18px; margin: 0;">🪜 A. 확장의 사다리 (Scalability)</h3>
+      </div>
+
+      <!-- Q1: scaling order -->
+      <section id="q-scaling">
+        <h2>Q1. 사용자가 100배 늘면 무엇부터 터지고, 어떤 순서로 막나요?</h2>
+        <p>설계 면접의 1번 타자입니다. 핵심은 <strong>"가장 싸고 효과 큰 것부터, 병목을 따라"</strong> 확장한다는 순서 감각입니다. 무작정 "샤딩하겠습니다"는 감점, "먼저 측정해 병목을 찾고 캐시→복제→비동기 순으로 가겠다"가 가점입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: Antigravity 오픈런 세일</h4>
+          <p>한정판 후드 세일에 손님이 몰립니다. 먼저 <strong>계산대(앱 서버)</strong>를 늘립니다(수평 확장). 그런데 계산대를 아무리 늘려도 <strong>창고 직원(DB) 한 명</strong>이 모든 재고 조회를 처리하면 거기서 줄이 막힙니다. 그래서 <strong>인기 상품을 매대 앞(캐시)</strong>에 미리 깔고, <strong>재고 조회 사본(읽기 복제본)</strong>을 여러 개 두며, 영수증 발송 같은 일은 <strong>나중에 처리(비동기 큐)</strong>로 미룹니다.</p>
+        </div>
+
+        <p><strong>확장 순서 — 비용 대비 효과 순:</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 12px 16px;">단계</th>
+              <th style="padding: 12px 16px;">수단</th>
+              <th style="padding: 12px 16px;">막는 병목</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">1. 수직 확장</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">서버 스펙 업(CPU/RAM)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">초기 단순 부하 (한계·비용 급증)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">2. 무상태 + 수평 확장 + LB</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">서버 여러 대 + 로드밸런서(L4/L7)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">앱 서버 CPU 병목</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">3. 캐시</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Redis (Look-aside)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">반복 읽기 DB 부하</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">4. 읽기 복제본</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Replica + 읽기/쓰기 분리</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">읽기 트래픽 (읽기 99% 서비스)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--algo);">5. 비동기 / 메시지 큐</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Kafka로 무거운 작업 분리</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">느린 후처리(메일·집계)가 응답 지연</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 16px; font-weight:700; color: var(--ai);">6. 샤딩</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">데이터 자체를 분할</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">단일 DB 쓰기/용량 한계 (최후의 수단)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"세션을 서버 메모리에 두면 왜 수평 확장이 깨지나요?"</em> → 로드밸런서가 다음 요청을 다른 서버로 보내면 그 서버엔 세션이 없어 로그인이 풀립니다. 그래서 서버를 <strong>무상태(stateless)</strong>로 만들고 세션/토큰을 <strong>외부 저장소(Redis)</strong>에 둡니다 — 부록 Antigravity의 Redis JWT(<a href="chapter-4.html" style="color:var(--accent-color);">Ch4</a>)가 바로 이 이유입니다.</p>
+      </section>
+
+      <!-- ================================================================
+           CATEGORY B: CACHE
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(56,189,248,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 24px 0 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">⚡ B. 캐시 계층 (Caching)</h3>
+      </div>
+
+      <!-- Q2: cache strategy + stampede -->
+      <section id="q-cache">
+        <h2>Q2. 캐시 전략 3종과 '캐시 스탬피드'를 설명하세요</h2>
+        <p>캐시는 "한 번 비싸게 구한 답을 잠깐 보관해 재사용"하는 계층입니다. 면접에선 <strong>쓰기 시 정합성</strong>과 <strong>대량 만료 시 폭주</strong>를 어떻게 다루는지를 봅니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 인기 매대와 '우르르 창고 돌진'</h4>
+          <p>잘 나가는 후드를 <strong>매장 앞 매대(캐시)</strong>에 미리 깔면 손님이 창고(DB)까지 안 갑니다. 그런데 그 매대가 <strong>동시에 텅 비는 순간(TTL 만료)</strong>, 수천 명이 한꺼번에 창고로 돌진해 창고 직원이 깔립니다 — 이것이 <strong>캐시 스탬피드(thundering herd)</strong>입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-e-cache-stampede-analogy.webp" alt="빈 캐시 매대에서 요청들이 한꺼번에 창고로 몰리는 캐시 스탬피드 그림" loading="lazy">
+          <figcaption>캐시가 동시에 만료되면 수많은 요청이 한꺼번에 DB로 몰리는 캐시 스탬피드를 보여줍니다.</figcaption>
+        </figure>
+
+        <p><strong>3대 전략:</strong></p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">① Look-aside (Cache-Aside)</h4>
+            <p style="color:var(--text-muted);">앱이 캐시를 먼저 보고, 없으면(miss) DB에서 읽어 캐시에 채움. 가장 흔함. 쓰기 시 <strong>DB 먼저 → 캐시 삭제</strong>가 정석.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">② Write-through</h4>
+            <p style="color:var(--text-muted);">쓰기를 캐시와 DB에 동시에. 캐시가 항상 최신이지만 쓰기 지연 증가.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">③ Write-back</h4>
+            <p style="color:var(--text-muted);">캐시에 먼저 쓰고 DB는 나중에 일괄. 가장 빠르지만 캐시 장애 시 <strong>데이터 유실</strong> 위험.</p>
+          </div>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">Look-aside 캐시 의사코드 (Spring @Cacheable과 동일한 흐름)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 상품 상세 조회 — 캐시 우선, 미스 시 DB 적재
+public Product getProduct(Long id) {
+    String key = "product:" + id;
+    Product cached = redis.get(key);          // 1. 캐시 확인
+    if (cached != null) return cached;         //    HIT → 즉시 반환
+
+    Product p = productRepository.findById(id) // 2. MISS → DB 조회
+                    .orElseThrow();
+    redis.set(key, p, Duration.ofMinutes(10)); // 3. 캐시에 적재 (TTL)
+    return p;
+}
+
+// 상품 수정 시 — DB 먼저 쓰고 캐시는 '삭제'(갱신 X) 가 안전
+public void updateProduct(Product p) {
+    productRepository.save(p);                  // DB 진실의 원천 갱신
+    redis.delete("product:" + p.getId());       // 다음 읽기 때 자연히 재적재
+}</code></pre>
+
+        <p><strong>캐시 스탬피드 방어 4종:</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 12px 16px;">기법</th>
+              <th style="padding: 12px 16px;">핵심</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px; font-weight:700;">분산 락 / Mutex</td><td style="padding: 10px 16px; color: var(--text-muted);">만료 시 <strong>한 요청만</strong> DB 재조회·재적재, 나머지는 대기 후 캐시 사용</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px; font-weight:700;">TTL Jitter</td><td style="padding: 10px 16px; color: var(--text-muted);">만료 시각에 랜덤 ±를 더해 <strong>동시 만료</strong>를 분산</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px; font-weight:700;">Refresh-ahead</td><td style="padding: 10px 16px; color: var(--text-muted);">만료 전 미리 백그라운드 갱신</td></tr>
+            <tr><td style="padding: 10px 16px; font-weight:700;">논리적 만료</td><td style="padding: 10px 16px; color: var(--text-muted);">물리 TTL은 길게, 값 안에 만료 플래그를 두고 비동기 갱신</td></tr>
+          </tbody>
+        </table>
+
+        <p><strong>캐시 교체(eviction) 알고리즘:</strong> <strong>LRU</strong>(가장 오래 안 쓴 것 제거 — 가장 흔함) · <strong>LFU</strong>(가장 적게 쓴 것) · <strong>FIFO</strong>(먼저 들어온 것). Redis <code>maxmemory-policy</code>로 설정합니다.</p>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"캐시와 DB 정합성 — 수정 시 캐시를 먼저 지우나, DB를 먼저 쓰나요?"</em> → Cache-Aside에서는 <strong>DB를 먼저 쓰고 캐시를 삭제</strong>합니다. 캐시를 먼저 지우면 그 찰나에 다른 요청이 옛 DB값을 다시 캐싱해 stale이 남을 수 있습니다(완벽하진 않아 짧은 TTL을 병행).</p>
+      </section>
+
+      <!-- ================================================================
+           CATEGORY C: DATA LAYER
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(52,211,153,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 24px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">🗄️ C. 데이터 계층 확장 (Replication · Sharding)</h3>
+      </div>
+
+      <!-- Q3: replication / partitioning / sharding -->
+      <section id="q-db-scale">
+        <h2>Q3. DB가 한계입니다 — 복제 / 파티셔닝 / 샤딩의 차이는?</h2>
+        <p>"인덱스(<a href="chapter-3.html" style="color:var(--accent-color);">Ch3</a>)와 캐시로도 안 될 때" 비로소 데이터 계층을 쪼갭니다. 셋을 혼동하면 감점이니 <strong>목적</strong>으로 구분하세요.</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 12px 16px;">기법</th>
+              <th style="padding: 12px 16px;">무엇을</th>
+              <th style="padding: 12px 16px;">주로 해결</th>
+              <th style="padding: 12px 16px;">대표 함정</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">복제 (Replication)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">같은 데이터를 사본으로</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">읽기 부하·가용성</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);"><strong>복제 지연</strong>(쓰고 바로 읽으면 옛값)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">파티셔닝 (Partitioning)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">한 DB 안에서 테이블 분할</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">큰 테이블 스캔·관리</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">파티션 키 안 타면 전체 스캔</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 16px; font-weight:700; color: var(--ai);">샤딩 (Sharding)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">데이터를 여러 DB로 수평 분할</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">쓰기·용량 한계</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);"><strong>핫스팟</strong>·교차 샤드 조인/트랜잭션</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 창고 전략</h4>
+          <p><strong>복제</strong> = 같은 재고 목록을 여러 창고에 복사해 조회를 분산(단, 본점이 막 입고한 건 지점에 늦게 반영 = 복제 지연). <strong>샤딩</strong> = 아예 <strong>지역별 창고</strong>로 나눠 서울 고객은 서울 창고만 — 쓰기까지 분산되지만, "전국 통합 매출 정렬"은 모든 창고를 뒤져 합쳐야 해 어려워집니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-e-sharding-warehouse-analogy.webp" alt="같은 재고 사본 창고와 지역별로 나뉜 창고를 비교하는 복제와 샤딩 그림" loading="lazy">
+          <figcaption>복제는 같은 데이터를 여러 창고에 사본으로, 샤딩은 데이터를 지역별 창고로 나누는 차이를 보여줍니다.</figcaption>
+        </figure>
+
+        <p><strong>샤드 키 선택이 전부입니다.</strong> <code>user_id 해시</code>로 잡으면 특정 유저 데이터가 한 샤드에 모여 골고루 분산되지만(핫스팟 완화), <strong>여러 유저에 걸친 집계·조인이 어려워</strong>집니다. 노드 증감 시 재분배를 줄이려 <strong>Consistent Hashing</strong>을 씁니다.</p>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"방금 주문을 넣고 바로 '내 주문 목록'을 조회했는데 안 보입니다. 왜죠?"</em> → 쓰기는 마스터, 읽기는 복제본으로 갔는데 <strong>복제 지연</strong>으로 아직 반영 전입니다. 해결: 쓰기 직후 일정 시간은 <strong>마스터에서 읽기(read-your-writes)</strong>, 또는 캐시에 방금 쓴 값을 함께 반영.</p>
+      </section>
+
+      <!-- ================================================================
+           CATEGORY D: RELIABILITY
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(251,191,36,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 24px 0 8px; border-left: 4px solid var(--test);">
+        <h3 style="font-weight: 800; color: var(--test); font-size: 18px; margin: 0;">🛡️ D. 신뢰성 패턴 (면접 빈출)</h3>
+      </div>
+
+      <!-- Q4: idempotency -->
+      <section id="q-idempotency">
+        <h2>Q4. 멱등성(Idempotency) — 중복 결제/주문을 어떻게 막나요?</h2>
+        <p>네트워크는 언제든 끊기고, 클라이언트는 <strong>재시도</strong>합니다. "같은 요청을 여러 번 보내도 결과가 한 번과 같다"는 성질이 멱등성입니다. <code>GET/PUT/DELETE</code>는 본래 멱등, <code>POST</code>(주문 생성)는 비멱등이라 별도 장치가 필요합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 엘리베이터 버튼</h4>
+          <p>엘리베이터 버튼을 열 번 눌러도 한 번 부른 것과 같습니다. 주문도 "결제하기"를 따닥 두 번 눌러도 <strong>한 건만</strong> 생성되어야 합니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-e-idempotency-elevator-analogy.webp" alt="엘리베이터 버튼을 여러 번 눌러도 한 번만 호출되는 멱등성 그림" loading="lazy">
+          <figcaption>멱등성은 같은 요청을 여러 번 보내도 결과가 한 번과 같게 만드는 성질입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">Idempotency-Key 헤더로 중복 주문 1회 보장 (Redis SETNX)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 클라이언트가 요청마다 고유 키를 헤더에 동봉: Idempotency-Key: 5f3a-...
+@PostMapping("/api/orders")
+public ResponseEntity&lt;OrderRes&gt; create(
+        @RequestHeader("Idempotency-Key") String key,
+        @RequestBody OrderReq req) {
+
+    // SETNX: 키가 없을 때만 저장 → '첫 요청'만 true
+    boolean first = redis.setIfAbsent("idem:" + key, "1", Duration.ofHours(24));
+    if (!first) {
+        // 이미 처리된 요청 → 저장해 둔 결과를 그대로 반환 (중복 생성 X)
+        return ResponseEntity.ok(orderService.findByIdemKey(key));
+    }
+    OrderRes res = orderService.place(req, key);
+    return ResponseEntity.ok(res);
+}</code></pre>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"재시도는 어떻게 안전하게 하나요?"</em> → <strong>지수 백오프(exponential backoff) + 지터</strong>로 간격을 늘려 재시도하되, 서버는 <strong>멱등성 키</strong>로 중복을 흡수합니다. 둘은 짝꿍입니다 — 재시도만 있고 멱등성이 없으면 중복, 멱등성만 있고 재시도가 없으면 유실.</p>
+      </section>
+
+      <!-- Q5: rate limiting -->
+      <section id="q-ratelimit">
+        <h2>Q5. Rate Limiting — 폭주·어뷰징으로부터 서버를 어떻게 보호하나요?</h2>
+        <p>"초당 N회"를 넘는 요청을 거절(<code>429 Too Many Requests</code>)해 서버와 비용을 지킵니다. 알고리즘 선택이 단골 질문입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 놀이공원 시간당 입장 제한</h4>
+          <p>인기 어트랙션은 시간당 정원이 있습니다. <strong>토큰(입장권)</strong>이 일정 속도로 보충되고, 토큰이 있으면 입장, 없으면 다음 보충까지 대기 — 이것이 <strong>Token Bucket</strong>입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-e-rate-limit-themepark-analogy.webp" alt="토큰이 채워질 때만 입장할 수 있는 놀이공원 입장 제한 그림" loading="lazy">
+          <figcaption>Rate Limiting은 토큰이 일정 속도로 채워지는 입장 제한처럼 폭주를 막습니다.</figcaption>
+        </figure>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 12px 16px;">알고리즘</th>
+              <th style="padding: 12px 16px;">특징</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px; font-weight:700; color:var(--accent-color);">Token Bucket</td><td style="padding: 10px 16px; color: var(--text-muted);">토큰을 일정 속도 보충, 순간 <strong>버스트 허용</strong>. 가장 널리 쓰임</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px; font-weight:700;">Leaky Bucket</td><td style="padding: 10px 16px; color: var(--text-muted);">고정 속도로 처리(누수). 출력이 매끄럽지만 버스트 흡수 약함</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px; font-weight:700;">Fixed Window</td><td style="padding: 10px 16px; color: var(--text-muted);">1분 단위 카운트. 단순하나 <strong>경계(59초/0초)</strong>에서 2배 폭주</td></tr>
+            <tr><td style="padding: 10px 16px; font-weight:700;">Sliding Window</td><td style="padding: 10px 16px; color: var(--text-muted);">이동 구간으로 경계 문제 완화. 정확하지만 비용↑</td></tr>
+          </tbody>
+        </table>
+
+        <p>분산 환경에선 카운터를 <strong>Redis</strong>에 두어 모든 서버가 같은 한도를 공유합니다(원자적 <code>INCR</code> + TTL).</p>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"한도를 IP 기준으로 잡을지, 사용자 기준으로 잡을지?"</em> → 로그인 전 API는 IP, 로그인 후는 사용자(또는 API 키) 기준이 일반적이며, 공용 NAT/회사망의 다수 사용자가 한 IP를 공유하는 경우를 고려해야 합니다.</p>
+      </section>
+
+      <!-- ================================================================
+           CATEGORY E: DESIGN WORKBOOK
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(192,132,252,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 24px 0 8px; border-left: 4px solid var(--ai);">
+        <h3 style="font-weight: 800; color: var(--ai); font-size: 18px; margin: 0;">🧩 E. 설계 면접 워크북 (단골 문제)</h3>
+      </div>
+
+      <!-- framework -->
+      <section id="q-framework">
+        <h2>설계 면접을 푸는 7단계 프레임</h2>
+        <p>백지 앞에서 얼지 않으려면 <strong>틀</strong>을 외워두세요. 면접관은 답이 아니라 <strong>접근 과정</strong>을 봅니다.</p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color);">1. 요구사항 명확화</h4><p style="color:var(--text-muted);">기능/비기능 구분. "읽기 많나 쓰기 많나? 일관성 vs 가용성 어디 무게?"를 먼저 질문.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend);">2. 용량 추정</h4><p style="color:var(--text-muted);">DAU → QPS, 저장 용량, 대역폭을 어림. 읽기:쓰기 비율 산출.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops);">3. API 설계</h4><p style="color:var(--text-muted);">핵심 엔드포인트 몇 개를 시그니처로(<a href="chapter-4.html" style="color:var(--accent-color);">Ch4</a> REST).</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--test);">4. 데이터 모델</h4><p style="color:var(--text-muted);">엔티티·관계·인덱스(<a href="chapter-3.html" style="color:var(--accent-color);">Ch3</a>). SQL vs NoSQL 선택 근거.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo);">5. 하이레벨 구조</h4><p style="color:var(--text-muted);">클라 → LB → 앱 → 캐시/DB/큐 큰 그림.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--ai);">6. 병목 & 심화</h4><p style="color:var(--text-muted);">Q1~Q5(확장·캐시·샤딩·멱등·rate limit)를 여기서 투입.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--interview);">7. 트레이드오프</h4><p style="color:var(--text-muted);">"이래서 이걸 택했고, 대신 이걸 포기"를 말로. CAP·정합성 vs 지연.</p></div>
+        </div>
+      </section>
+
+      <!-- 4 classic problems -->
+      <section id="q-problems">
+        <h2>단골 설계 문제 4종 — 압축 풀이</h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:18px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">① URL 단축기</h4>
+            <p style="color:var(--text-muted);">긴 URL → 짧은 키. <strong>카운터+Base62</strong> 또는 해시(충돌 처리). 읽기가 압도적이라 <strong>리다이렉트 캐시(Redis)</strong>가 핵심. 301 vs 302(통계 원하면 302).</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">② 뉴스피드</h4>
+            <p style="color:var(--text-muted);"><strong>Push(fan-out on write)</strong> vs <strong>Pull(on read)</strong>. 팔로워 많은 셀럽은 push가 폭발 → <strong>하이브리드</strong>. 타임라인 캐시.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">③ 실시간 채팅</h4>
+            <p style="color:var(--text-muted);"><strong>WebSocket</strong> 상시 연결(<a href="chapter-7.html" style="color:var(--accent-color);">Ch7</a>). 메시지 영속·순서(시퀀스), 미수신 보관, 다중 서버는 <strong>pub/sub</strong>으로 팬아웃.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--ai); margin-bottom:8px;">④ 이커머스 주문/재고</h4>
+            <p style="color:var(--text-muted);">동시 차감 정합성 — <strong>DB 비관/낙관 락 vs Redis 분산락 vs 큐 직렬화</strong>. 결제·배송 분산 트랜잭션은 <strong>Saga</strong>(<a href="chapter-8.html" style="color:var(--accent-color);">Ch8</a>) + 멱등성(Q4).</p>
+          </div>
+        </div>
+        <p style="font-size: 12.5px; color: var(--text-muted);">🔗 각 문제는 본 부록의 패턴으로 풀립니다: 읽기 폭주→<a href="#q-cache" style="color:var(--accent-color);">캐시(Q2)</a>, 쓰기 한계→<a href="#q-db-scale" style="color:var(--accent-color);">샤딩(Q3)</a>, 중복→<a href="#q-idempotency" style="color:var(--accent-color);">멱등성(Q4)</a>, 폭주→<a href="#q-ratelimit" style="color:var(--accent-color);">rate limit(Q5)</a>.</p>
+      </section>
+
+      <!-- 모의 면접 -->
+      <div style="background: linear-gradient(135deg, rgba(192,132,252,0.07), transparent); border: 1px solid var(--interview); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--interview); margin: 0 0 6px; font-size: 16px;">🎤 모의 면접 — 시스템 설계</h3>
+        <p style="font-size:13px; color:var(--text-muted); margin:0;">실제 면접처럼 꼬리에 꼬리를 무는 흐름입니다. <strong>면접관 질문 → 답변 뼈대 → 이어지는 꼬리 질문</strong> 순으로, 소리 내어 답해 보세요.</p>
+
+        <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-color);">
+          <p style="font-weight:700; margin:0 0 4px;">🗣️ "초당 1만 건 주문이 들어오는 이커머스, 어디서 먼저 터지고 어떤 순서로 막을지 설계해 보세요."</p>
+          <p style="color:var(--text-muted); margin:4px 0;"><strong>답변 뼈대:</strong> "먼저 측정으로 병목을 찾겠다"를 전제로 → 앱을 <strong>무상태로 만들어 수평 확장 + 로드밸런서</strong> → 읽기는 <strong>Redis 캐시</strong> · <strong>읽기 복제본</strong> → 재고 차감은 <strong>동시성 제어</strong>(분산락 또는 큐 직렬화) → 결제·알림 등 후처리는 <strong>비동기 큐</strong>로 분리. 무작정 샤딩은 최후의 수단.</p>
+          <p style="color:var(--text-muted); font-size:12.5px; margin:4px 0 0;"><strong>↪️ 꼬리:</strong> <em>"재고 차감을 동시성 안전하게 하려면?"</em> → 비관/낙관 락 vs Redis 분산락 vs 큐 직렬화의 트레이드오프(정합성↔처리량)로 답합니다.</p>
+        </div>
+
+        <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-color);">
+          <p style="font-weight:700; margin:0 0 4px;">🗣️ "캐시를 도입했는데 특정 시점에 DB가 폭주합니다. 원인과 대책은?"</p>
+          <p style="color:var(--text-muted); margin:4px 0;"><strong>답변 뼈대:</strong> 대량 키가 동시에 만료되어 한꺼번에 DB로 몰리는 <strong>캐시 스탬피드</strong>가 의심됩니다. 대책은 <strong>TTL 지터</strong>(만료 분산) · <strong>분산 락/뮤텍스</strong>(한 요청만 재적재) · <strong>refresh-ahead</strong> · <strong>논리적 만료</strong>.</p>
+          <p style="color:var(--text-muted); font-size:12.5px; margin:4px 0 0;"><strong>↪️ 꼬리:</strong> <em>"캐시와 DB 정합성은 어떻게?"</em> → Cache-Aside에서는 <strong>DB 먼저 쓰고 캐시 삭제</strong>, 짧은 TTL을 병행해 stale을 줄입니다.</p>
+        </div>
+
+        <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-color);">
+          <p style="font-weight:700; margin:0 0 4px;">🗣️ "결제 중복이 보고됐습니다. 어떻게 진단하고 막겠어요?"</p>
+          <p style="color:var(--text-muted); margin:4px 0;"><strong>답변 뼈대:</strong> 네트워크 타임아웃 재시도로 인한 중복이 흔합니다. <strong>Idempotency-Key</strong>를 받아(Redis SETNX) 첫 요청만 처리하고 재시도는 저장된 결과를 반환합니다. <strong>지수 백오프 재시도 + 멱등성</strong>은 짝꿍.</p>
+          <p style="color:var(--text-muted); font-size:12.5px; margin:4px 0 0;"><strong>↪️ 꼬리:</strong> <em>"결제·재고·배송에 걸친 분산 트랜잭션은?"</em> → 2PC 대신 <strong>Saga + 보상 트랜잭션</strong>, 각 단계는 멱등하게(<a href="chapter-8.html" style="color:var(--interview);">Ch8</a>).</p>
+        </div>
+      </div>
+
+      <!-- quiz wrapper -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const appendixEQuizzes = [
+      {
+        type: "mcq",
+        question: "트래픽이 갑자기 급증했습니다. 가장 먼저 시도할 '비용 대비 효과'가 큰 수단은?",
+        options: [
+          "곧바로 DB를 샤딩한다",
+          "캐시(Redis)를 도입하고 읽기 복제본으로 읽기를 분산한다",
+          "서버 스펙을 무한정 수직 증설한다",
+          "애플리케이션을 처음부터 다시 작성한다"
+        ],
+        correct: 1,
+        explanation: "샤딩은 운영 복잡도가 가장 큰 '최후의 수단'입니다. 대부분의 서비스는 읽기가 압도적이므로 캐시 + 읽기 복제본이 가장 싸고 효과가 큽니다. 수직 증설은 한계·비용이 빨리 옵니다. 무작정 샤딩하겠다는 답은 감점 포인트입니다."
+      },
+      {
+        type: "mcq",
+        question: "결제 요청이 네트워크 타임아웃으로 클라이언트에서 재시도되어 중복 주문이 생길 위험이 있습니다. 표준 방어 기법은?",
+        options: [
+          "서버를 더 빠르게 만들어 타임아웃을 없앤다",
+          "주문 생성을 GET 요청으로 바꾼다",
+          "요청마다 고유한 Idempotency-Key를 받아 1회만 처리한다",
+          "트랜잭션 격리 수준을 SERIALIZABLE로 올린다"
+        ],
+        correct: 2,
+        explanation: "멱등성 키(Idempotency-Key)를 받아 첫 요청만 처리하고 재시도는 저장된 결과를 반환하면 중복 생성이 막힙니다. 격리 수준 상향은 동시성 정합성과 관련일 뿐 '같은 요청의 재전송' 중복을 막지는 못하고, POST를 GET으로 바꾸는 것은 의미 변질입니다."
+      },
+      {
+        type: "mcq",
+        question: "샤드 키를 'user_id 해시'로 잡았습니다. 옳은 설명은?",
+        options: [
+          "유저별 데이터가 분산되어 핫스팟이 완화되지만, 여러 유저에 걸친 집계·조인은 어려워진다",
+          "범위 검색(가격대별)이 자동으로 빨라진다",
+          "교차 샤드 트랜잭션이 자동으로 보장된다",
+          "더 이상 인덱스가 필요 없다"
+        ],
+        correct: 0,
+        explanation: "해시 샤딩은 데이터를 고르게 흩어 핫스팟을 완화하지만, 범위 검색·교차 샤드 조인/트랜잭션은 어려워집니다. 트랜잭션은 자동 보장되지 않으며(분산 트랜잭션/Saga 필요), 인덱스는 각 샤드 내부에서 여전히 필요합니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "Spring에서 메서드의 반환값을 'products' 캐시에 저장/재사용하도록 만드는 애너테이션 한 줄을 메서드 위에 작성하세요. (Look-aside 캐시)",
+        starter: "// 여기에 작성\npublic Product getProduct(Long id) { ... }",
+        validator: {
+          mustContain: ["@Cacheable"],
+          mustNotContain: ["@CachePut", "@CacheEvict"]
+        },
+        solution: "@Cacheable(\"products\")",
+        explanation: "@Cacheable은 호출 시 캐시를 먼저 확인하고(hit이면 메서드 실행 생략), miss면 메서드를 실행한 뒤 결과를 캐시에 적재하는 Look-aside 패턴을 선언적으로 구현합니다. @CachePut(항상 실행+갱신), @CacheEvict(삭제)와 혼동하면 안 됩니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "Rate Limit 한도를 초과한 요청에 서버가 돌려줘야 하는 HTTP 상태 코드(숫자)를 작성하세요.",
+        starter: "// Too Many Requests 상태 코드 숫자만\nint status = ___;",
+        validator: {
+          mustContain: ["429"],
+          mustNotContain: ["200", "404", "503"]
+        },
+        solution: "429",
+        explanation: "429 Too Many Requests가 rate limit 초과의 표준 응답입니다. 보통 Retry-After 헤더로 '언제 다시 시도하라'를 함께 알려줍니다. 503(과부하)·404(없음)·200(정상)과 구분하세요."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", appendixEQuizzes, "appendix-e");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

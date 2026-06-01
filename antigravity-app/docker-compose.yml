@@ -1,0 +1,53 @@
+# Antigravity Fashion — 로컬 전체 스택 (Ch8 체크포인트)
+# docker compose up -d postgres redis   → 인프라만 (백/프론트는 로컬 실행)
+# docker compose up --build             → 전체 컨테이너 (Ch8 Dockerfile 완성 후)
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: shop_user
+      POSTGRES_PASSWORD: shop_pass
+      POSTGRES_DB: shop_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shop_user -d shop_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+
+  backend:
+    build: ./backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_started
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/shop_db
+      SPRING_DATASOURCE_USERNAME: shop_user
+      SPRING_DATASOURCE_PASSWORD: shop_pass
+      SPRING_DATA_REDIS_HOST: redis
+      # TODO(Ch4): JWT 시크릿/만료 등 환경 변수 추가
+      # TODO(부록 D): OPENAI_API_KEY 등 모델 제공자 키 (하드코딩 금지)
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    environment:
+      NEXT_PUBLIC_API_BASE: http://localhost:8080
+
+volumes:
+  pgdata:

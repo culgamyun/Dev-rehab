@@ -1,0 +1,925 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appendix C - Java Coding Test Algorithm</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>스페셜 부록</span> &gt; <span>부록 C</span></div>
+      <h1 style="color: var(--algo);">부록 C. 코딩 테스트 대비 자바 알고리즘 패키지</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">재귀·자료구조 기초부터 핵심 알고리즘 12종(BFS/DFS/이분탐색/DP/그리디/백트래킹/다익스트라 등) + 입출력 템플릿 + 문제 접근 전략까지 15개 섹션. 각 알고리즘은 쇼핑몰 비유와 완전한 구현 코드를 제공합니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/appendix-algorithm-hero.webp" alt="코딩 테스트 알고리즘 도구를 문제 해결 마을로 표현한 2D 파스텔 일러스트" loading="lazy">
+      <figcaption>탐색, 시간 복잡도, 슬라이딩 윈도우, DP 같은 알고리즘 도구를 문제 해결 마을로 조망합니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           SECTION A: 기초 도구
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(108,92,231,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--algo);">
+        <h3 style="font-weight: 800; color: var(--algo); font-size: 18px; margin: 0;">🧰 A. 기초 도구: 시간복잡도 & 입출력</h3>
+      </div>
+
+      <!-- 1. Big-O -->
+      <section id="big-o-complexity">
+        <h2>1. Big-O 시간복잡도와 자바 컬렉션 성능 명세표</h2>
+        <p>코딩 테스트에서 "효율성" 통과의 핵심은 <strong>자료구조 선택</strong>입니다. 입력 크기(N)에 따라 허용 가능한 시간복잡도가 다릅니다:</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 쇼핑몰 상품 검색 속도</h4>
+          <p><strong>O(1)</strong>은 바코드 스캔 — 상품이 몇 만개든 즉시 찾음. <strong>O(log N)</strong>은 이름 가나다순 정렬된 카탈로그에서 반씩 넘기며 찾기. <strong>O(N)</strong>은 진열대를 처음부터 끝까지 훑기. <strong>O(N²)</strong>은 모든 상품을 모든 상품과 1:1 비교하기 — 1만 개면 1억 번 비교!</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-algorithm-complexity-search-analogy.webp" alt="시간 복잡도별 탐색 비용을 선반 검색으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>시간 복잡도는 입력이 커질수록 탐색 방식의 비용이 어떻게 달라지는지 보여줍니다.</figcaption>
+        </figure>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 12px 16px;">N (입력 크기)</th>
+              <th style="padding: 12px 16px;">허용 복잡도</th>
+              <th style="padding: 12px 16px;">적합 알고리즘</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 12px 16px; font-weight:700;">N ≤ 10</td>
+              <td style="padding: 12px 16px; color: var(--devops);">O(N!) 가능</td>
+              <td style="padding: 12px 16px; color: var(--text-muted);">완전 탐색, 순열</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 12px 16px; font-weight:700;">N ≤ 20</td>
+              <td style="padding: 12px 16px; color: var(--devops);">O(2ᴺ) 가능</td>
+              <td style="padding: 12px 16px; color: var(--text-muted);">비트마스킹, 백트래킹</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 12px 16px; font-weight:700;">N ≤ 5,000</td>
+              <td style="padding: 12px 16px; color: var(--test);">O(N²) 가능</td>
+              <td style="padding: 12px 16px; color: var(--text-muted);">2중 반복문, DP</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 12px 16px; font-weight:700; color: var(--accent-color);">N ≤ 1,000,000</td>
+              <td style="padding: 12px 16px; color: var(--accent-color);">O(N log N) 필요</td>
+              <td style="padding: 12px 16px; color: var(--text-muted);">정렬, 이분 탐색, 투 포인터</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 12px 16px; font-weight:700;">N ≤ 10억</td>
+              <td style="padding: 12px 16px; color: var(--interview);">O(log N) 필요</td>
+              <td style="padding: 12px 16px; color: var(--text-muted);">이분 탐색, 수학 공식</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>자바 컬렉션별 Big-O 성능:</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">컬렉션</th>
+              <th style="padding: 10px 16px;">조회</th>
+              <th style="padding: 10px 16px;">삽입</th>
+              <th style="padding: 10px 16px;">삭제</th>
+              <th style="padding: 10px 16px;">용도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">ArrayList</td>
+              <td style="padding: 10px 16px; font-weight:700;">O(1)</td>
+              <td style="padding: 10px 16px;">O(N)</td>
+              <td style="padding: 10px 16px;">O(N)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">인덱스 접근, 순차 보관</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">HashMap/HashSet</td>
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">O(1)</td>
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">O(1)</td>
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">O(1)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">중복 체크, 키-값 매핑 (치트키!)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">TreeMap/TreeSet</td>
+              <td style="padding: 10px 16px;">O(log N)</td>
+              <td style="padding: 10px 16px;">O(log N)</td>
+              <td style="padding: 10px 16px;">O(log N)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">정렬 상태 유지, 범위 검색</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--test);">PriorityQueue</td>
+              <td style="padding: 10px 16px; font-weight:700;">O(1) peek</td>
+              <td style="padding: 10px 16px;">O(log N)</td>
+              <td style="padding: 10px 16px;">O(log N)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">최소/최대값, 다익스트라</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">ArrayDeque</td>
+              <td style="padding: 10px 16px;">O(N)</td>
+              <td style="padding: 10px 16px; font-weight:700;">O(1) 양끝</td>
+              <td style="padding: 10px 16px; font-weight:700;">O(1) 양끝</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">스택/큐 대용, BFS 큐</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 2. Fast I/O -->
+      <section id="fast-io">
+        <h2>2. 초고속 입출력 템플릿 (BufferedReader)</h2>
+        <p><code>Scanner</code>는 느립니다. 백준/프로그래머스 대용량 입력에서는 반드시 <code>BufferedReader</code> + <code>StringTokenizer</code>를 사용합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">FastIoTemplate.java — 코딩테스트 입출력 표준 뼈대</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">import java.io.*;
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) throws Exception {
+        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        StringBuilder sb = new StringBuilder(); // 출력용 (println 대신!)
+
+        int N = Integer.parseInt(br.readLine().trim());
+        StringTokenizer st = new StringTokenizer(br.readLine());
+
+        int[] arr = new int[N];
+        for (int i = 0; i < N; i++) {
+            arr[i] = Integer.parseInt(st.nextToken());
+        }
+
+        // 로직 작성 후...
+        sb.append("결과: ").append(Arrays.stream(arr).sum()).append("\n");
+        System.out.print(sb); // 한 번에 출력 (flush 자동)
+    }
+}</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION B: 탐색 알고리즘
+           ================================================================ -->
+      <!-- 3. 재귀와 자료구조 기초 [v3.4 신규] -->
+      <section id="recursion-datastructure">
+        <h2>3. 재귀와 자료구조 기초 — DFS·DP 이전의 필수 토대</h2>
+        <p>Big-O 표에서 ArrayList·HashMap·PriorityQueue를 "사용"만 했지만, 각각이 <strong>무엇이고 왜 그 복잡도인지</strong> 모르면 문제 풀이가 막힙니다. 또 DFS/DP는 재귀 없이 이해 불가능합니다.</p>
+
+        <h4 style="font-weight:700; color:var(--algo); margin: 20px 0 8px;">① 재귀(Recursion) — 자기 자신을 부르는 함수</h4>
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 러시아 인형(마트료시카)</h4>
+          <p>인형을 열면 더 작은 인형이 나오고, 또 열면 더 작은 게 나옵니다. <strong>가장 작은 인형(베이스 케이스)</strong>에 도달하면 멈추고 다시 거꾸로 닫으며 돌아옵니다. 재귀는 "큰 문제를 같은 형태의 작은 문제로 쪼개되, 멈출 지점을 반드시 정하는" 기법입니다.</p>
+        </div>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-algorithm-recursion-analogy.webp" alt="재귀와 베이스 케이스를 중첩 인형과 호출 스택으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>재귀는 같은 형태의 더 작은 문제로 내려가고, 베이스 케이스에서 멈춘 뒤 호출 순서를 거슬러 올라옵니다.</figcaption>
+        </figure>
+<pre class="language-java"><code class="language-java">// 재귀의 2요소: ① 베이스 케이스(멈춤) ② 재귀 호출(자기 자신)
+int factorial(int n) {
+    if (n &lt;= 1) return 1;          // ① 베이스 케이스 — 없으면 무한 루프 → StackOverflow
+    return n * factorial(n - 1);   // ② 재귀 호출 (더 작은 문제)
+}
+// factorial(3) → 3 * factorial(2) → 3 * 2 * factorial(1) → 3*2*1 = 6
+
+// 콜 스택: 함수 호출이 쌓였다가(stack push) 베이스 케이스부터 거꾸로 풀림(pop)
+// factorial(3) 호출 시 스택에 3→2→1 쌓이고, 1부터 반환되며 곱해짐
+
+// 🎯 DFS는 재귀로 그래프를 깊이 탐색, DP는 재귀 + 메모이제이션이 출발점
+int fib(int n, int[] memo) {
+    if (n &lt;= 1) return n;
+    if (memo[n] != 0) return memo[n];        // 이미 계산? 재사용 (메모이제이션)
+    return memo[n] = fib(n-1, memo) + fib(n-2, memo);
+}</code></pre>
+
+        <h4 style="font-weight:700; color:var(--algo); margin: 20px 0 8px;">② 핵심 자료구조 정의</h4>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px;">
+          <thead><tr style="background: var(--bg-glass);">
+            <th style="text-align:left; padding:8px 12px;">자료구조</th>
+            <th style="text-align:left; padding:8px 12px;">정의 & 특징</th>
+            <th style="text-align:left; padding:8px 12px;">자바 클래스</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:8px 12px;"><strong>배열/리스트</strong></td><td style="padding:8px 12px;">순서 있는 연속 저장. 인덱스 접근 O(1), 중간 삽입 O(N)</td><td style="padding:8px 12px;">ArrayList</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>스택(Stack)</strong></td><td style="padding:8px 12px;">LIFO(후입선출). 접시 쌓기. 괄호 검증·DFS·되돌리기</td><td style="padding:8px 12px;">ArrayDeque</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>큐(Queue)</strong></td><td style="padding:8px 12px;">FIFO(선입선출). 줄 서기. BFS·작업 대기열</td><td style="padding:8px 12px;">ArrayDeque / LinkedList</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>해시(Hash)</strong></td><td style="padding:8px 12px;">키→값 매핑. 해시 함수로 O(1) 조회. 순서 없음</td><td style="padding:8px 12px;">HashMap / HashSet</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>트리(Tree)</strong></td><td style="padding:8px 12px;">계층 구조. 부모-자식. 정렬 유지 시 O(log N)</td><td style="padding:8px 12px;">TreeMap (균형 트리)</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>힙(Heap)</strong></td><td style="padding:8px 12px;">최소/최대값을 O(log N)에 꺼내는 우선순위 큐</td><td style="padding:8px 12px;">PriorityQueue</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>그래프(Graph)</strong></td><td style="padding:8px 12px;">노드+간선. 인접 리스트로 표현. BFS/DFS/다익스트라 대상</td><td style="padding:8px 12px;">List&lt;List&lt;Integer&gt;&gt;</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 스택/큐 → <a href="#bfs" style="color:var(--algo);">BFS(큐)</a>·<a href="#dfs" style="color:var(--algo);">DFS(스택/재귀)</a>, 힙 → <a href="#dijkstra" style="color:var(--algo);">다익스트라</a>, 재귀+메모이제이션 → <a href="#dp" style="color:var(--algo);">DP</a>. 컬렉션 Big-O는 <a href="#big-o-complexity" style="color:var(--algo);">섹션 1</a> 표 참고.</p>
+      </section>
+
+      <div style="background: linear-gradient(135deg, rgba(46,213,115,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">🔍 B. 탐색 알고리즘</h3>
+      </div>
+
+      <!-- 4. BFS -->
+      <section id="bfs">
+        <h2>4. 너비 우선 탐색 (BFS) — 최단 거리의 정석</h2>
+        <p><strong>Queue</strong>를 사용하여 시작점에서 가까운 노드부터 탐색합니다. <strong>최단 거리 / 최소 횟수</strong> 문제에 사용합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 물 위에 돌 던지기</h4>
+          <p>돌(시작점)을 던지면 물결(탐색)이 <strong>동심원 형태로 동시에 퍼져나갑니다</strong>. 가장 먼저 도착한 물결 = 최단 경로입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-algorithm-bfs-ripple-analogy.webp" alt="BFS 최단 경로 탐색을 퍼지는 물결로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>BFS는 시작점에서 같은 거리의 후보를 층별로 확장해 최단 경로를 찾습니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">BFS 표준 템플릿 — 2차원 그리드 최단 거리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// BFS 핵심: Queue + visited 배열 + 4방향 이동
+int[] dx = {-1, 1, 0, 0}; // 상, 하, 좌, 우
+int[] dy = {0, 0, -1, 1};
+
+public int bfs(int[][] grid, int startX, int startY) {
+    int N = grid.length, M = grid[0].length;
+    boolean[][] visited = new boolean[N][M];
+    Queue&lt;int[]&gt; queue = new LinkedList&lt;&gt;();
+
+    queue.add(new int[]{startX, startY, 0}); // {x, y, 거리}
+    visited[startX][startY] = true;
+
+    while (!queue.isEmpty()) {
+        int[] cur = queue.poll();
+        int x = cur[0], y = cur[1], dist = cur[2];
+
+        if (x == N - 1 && y == M - 1) return dist; // 도착!
+
+        for (int d = 0; d < 4; d++) {
+            int nx = x + dx[d], ny = y + dy[d];
+            if (nx >= 0 && nx < N && ny >= 0 && ny < M
+                && !visited[nx][ny] && grid[nx][ny] == 1) {
+                visited[nx][ny] = true;
+                queue.add(new int[]{nx, ny, dist + 1});
+            }
+        }
+    }
+    return -1; // 도달 불가
+}</code></pre>
+        <p><strong>시간복잡도:</strong> O(V + E) — V: 정점 수, E: 간선 수</p>
+      </section>
+
+      <!-- 4. DFS -->
+      <section id="dfs">
+        <h2>5. 깊이 우선 탐색 (DFS) — 경로 탐색 & 백트래킹</h2>
+        <p><strong>Stack 또는 재귀</strong>를 사용하여 한 방향으로 끝까지 파고드는 탐색입니다. <strong>모든 경로 탐색, 조합/순열, 연결 요소 수</strong> 문제에 사용합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">DFS 재귀 템플릿 — 연결 요소(네트워크) 개수 세기</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// DFS 핵심: 재귀 + visited 배열
+boolean[] visited;
+
+public int countNetworks(int n, int[][] computers) {
+    visited = new boolean[n];
+    int count = 0;
+
+    for (int i = 0; i < n; i++) {
+        if (!visited[i]) {
+            dfs(i, computers);
+            count++; // 하나의 연결 요소(네트워크) 발견
+        }
+    }
+    return count;
+}
+
+private void dfs(int node, int[][] computers) {
+    visited[node] = true;
+    for (int next = 0; next < computers.length; next++) {
+        if (!visited[next] && computers[node][next] == 1) {
+            dfs(next, computers); // 연결된 노드로 재귀 진입
+        }
+    }
+}</code></pre>
+
+        <p><strong>DFS vs BFS 선택 기준:</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">문제 유형</th>
+              <th style="padding: 10px 16px;">DFS</th>
+              <th style="padding: 10px 16px;">BFS</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px;">최단 거리/최소 횟수</td>
+              <td style="padding: 10px 16px; color: var(--interview);">❌</td>
+              <td style="padding: 10px 16px; color: var(--devops); font-weight:700;">✅ BFS</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px;">모든 경로 탐색</td>
+              <td style="padding: 10px 16px; color: var(--devops); font-weight:700;">✅ DFS</td>
+              <td style="padding: 10px 16px; color: var(--interview);">❌</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px;">연결 요소 개수</td>
+              <td style="padding: 10px 16px; color: var(--devops);">✅ 둘 다 가능</td>
+              <td style="padding: 10px 16px; color: var(--devops);">✅ 둘 다 가능</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px;">순열/조합 생성</td>
+              <td style="padding: 10px 16px; color: var(--devops); font-weight:700;">✅ DFS + 백트래킹</td>
+              <td style="padding: 10px 16px; color: var(--interview);">❌</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 5. Binary Search -->
+      <section id="binary-search">
+        <h2>6. 이분 탐색 (Binary Search) — O(log N)의 마법</h2>
+        <p><strong>정렬된 배열</strong>에서 탐색 범위를 반씩 줄여가며 목표값을 찾습니다. "~가 가능한 최대/최소값"을 구하는 <strong>파라메트릭 서치</strong>에도 활용됩니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">이분 탐색 — 기본형 + 파라메트릭 서치</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 기본 이분 탐색: 정렬된 배열에서 target 찾기
+public int binarySearch(int[] arr, int target) {
+    int left = 0, right = arr.length - 1;
+
+    while (left <= right) {
+        int mid = left + (right - left) / 2; // 오버플로 방지!
+        if (arr[mid] == target) return mid;
+        else if (arr[mid] < target) left = mid + 1;
+        else right = mid - 1;
+    }
+    return -1; // 못 찾음
+}
+
+// 파라메트릭 서치: "조건을 만족하는 최솟값" 찾기
+// 예: 입국심사 — N명을 처리하는 최소 시간
+public long parametricSearch(int n, int[] times) {
+    Arrays.sort(times);
+    long left = 1, right = (long) times[times.length - 1] * n;
+
+    while (left < right) {
+        long mid = (left + right) / 2;
+        long count = 0;
+        for (int t : times) count += mid / t; // mid 시간 동안 처리 가능한 인원
+
+        if (count >= n) right = mid;     // 가능 → 시간 줄여보기
+        else left = mid + 1;             // 불가능 → 시간 늘리기
+    }
+    return left;
+}</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION C: 정렬
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(255,107,107,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight: 800; color: var(--accent-color); font-size: 18px; margin: 0;">📊 C. 정렬 알고리즘</h3>
+      </div>
+
+      <!-- 6. Sorting -->
+      <section id="sorting">
+        <h2>7. 정렬 알고리즘 비교 & 자바 실전 정렬</h2>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">알고리즘</th>
+              <th style="padding: 10px 16px;">최선</th>
+              <th style="padding: 10px 16px;">평균</th>
+              <th style="padding: 10px 16px;">최악</th>
+              <th style="padding: 10px 16px;">공간</th>
+              <th style="padding: 10px 16px;">안정성</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">Bubble Sort</td>
+              <td style="padding: 10px 16px;">O(N)</td>
+              <td style="padding: 10px 16px; color: var(--interview);">O(N²)</td>
+              <td style="padding: 10px 16px; color: var(--interview);">O(N²)</td>
+              <td style="padding: 10px 16px;">O(1)</td>
+              <td style="padding: 10px 16px;">안정</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">Merge Sort</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px;">O(N)</td>
+              <td style="padding: 10px 16px;">안정</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">Quick Sort</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px; color: var(--interview);">O(N²)</td>
+              <td style="padding: 10px 16px;">O(log N)</td>
+              <td style="padding: 10px 16px;">불안정</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">Arrays.sort()</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">O(N log N)</td>
+              <td style="padding: 10px 16px;">-</td>
+              <td style="padding: 10px 16px;">Dual-Pivot QS</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="code-block-header">
+          <span class="code-title">자바 실전 정렬 — Comparator 활용</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 1. 기본 정렬
+int[] arr = {5, 3, 8, 1};
+Arrays.sort(arr); // [1, 3, 5, 8]
+
+// 2. 객체 배열 커스텀 정렬 (가격 내림차순)
+String[][] products = {{"셔츠", "30000"}, {"자켓", "89000"}, {"바지", "45000"}};
+Arrays.sort(products, (a, b) -> Integer.parseInt(b[1]) - Integer.parseInt(a[1]));
+// 결과: 자켓(89000) → 바지(45000) → 셔츠(30000)
+
+// 3. 다중 조건 정렬 (1순위: 카테고리 오름차순, 2순위: 가격 내림차순)
+Arrays.sort(products, (a, b) -> {
+    if (a[0].equals(b[0])) return Integer.parseInt(b[1]) - Integer.parseInt(a[1]);
+    return a[0].compareTo(b[0]);
+});
+
+// 4. "가장 큰 수" 문제 — 문자열 조합 정렬
+String[] nums = {"3", "30", "34", "5", "9"};
+Arrays.sort(nums, (a, b) -> (b + a).compareTo(a + b));
+String result = String.join("", nums); // "9534330"</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION D: 핵심 패턴
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(116,185,255,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">⚡ D. 핵심 패턴</h3>
+      </div>
+
+      <!-- 7. Two Pointer -->
+      <section id="two-pointer">
+        <h2>8. 투 포인터 (Two Pointer) — O(N²) → O(N)</h2>
+        <p><strong>정렬된 배열</strong>에서 두 개의 포인터를 양 끝에서 좁혀오며 조건을 만족하는 쌍을 찾습니다. 2중 반복문(O(N²))을 O(N)으로 줄이는 핵심 테크닉입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">투 포인터 — 정렬된 배열에서 합이 target인 쌍 찾기</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">public int[] twoSum(int[] sorted, int target) {
+    int left = 0, right = sorted.length - 1;
+
+    while (left < right) {
+        int sum = sorted[left] + sorted[right];
+        if (sum == target) return new int[]{left, right};
+        else if (sum < target) left++;   // 합이 작으면 왼쪽 포인터 →
+        else right--;                     // 합이 크면 오른쪽 포인터 ←
+    }
+    return new int[]{-1, -1};
+}</code></pre>
+      </section>
+
+      <!-- 8. Sliding Window -->
+      <section id="sliding-window">
+        <h2>9. 슬라이딩 윈도우 (Sliding Window) — 연속 구간 최적화</h2>
+        <p>고정 크기(또는 가변 크기)의 "창문"을 배열 위에서 한 칸씩 밀며 구간 합/최대값 등을 O(N)에 구합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 쇼핑몰 매출 분석</h4>
+          <p>"최근 7일 매출 합계"를 매일 계산할 때, 매번 7일치를 다시 더하지 않고 <strong>어제 빠진 1일 매출을 빼고, 오늘 새로 들어온 1일 매출을 더합니다</strong>. 이것이 슬라이딩 윈도우입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-algorithm-sliding-window-analogy.webp" alt="슬라이딩 윈도우를 이동하는 기간 바구니로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>슬라이딩 윈도우는 매번 전체를 다시 계산하지 않고 빠지는 값과 들어오는 값만 갱신합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">슬라이딩 윈도우 — 연속 K일 최대 매출 합계</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">public int maxSalesSum(int[] sales, int k) {
+    // 첫 윈도우의 합 계산
+    int windowSum = 0;
+    for (int i = 0; i < k; i++) windowSum += sales[i];
+
+    int maxSum = windowSum;
+
+    // 윈도우를 한 칸씩 슬라이드
+    for (int i = k; i < sales.length; i++) {
+        windowSum += sales[i];       // 새로 들어온 날 추가
+        windowSum -= sales[i - k];   // 빠져나간 날 제거
+        maxSum = Math.max(maxSum, windowSum);
+    }
+    return maxSum;
+}</code></pre>
+      </section>
+
+      <!-- 9. Stack Problems -->
+      <section id="stack-problems">
+        <h2>10. 스택 활용 — 괄호 검증 & 단조 스택</h2>
+        <p>스택은 "가장 최근에 넣은 것을 먼저 꺼내는" LIFO(Last In First Out) 구조입니다. <strong>괄호 문제, 히스토그램, 주식 가격</strong> 등에 필수입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">올바른 괄호 검증 (프로그래머스 Lev.2)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">public boolean isValid(String s) {
+    Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;();
+
+    for (char c : s.toCharArray()) {
+        if (c == '(' || c == '{' || c == '[') {
+            stack.push(c);
+        } else {
+            if (stack.isEmpty()) return false;
+            char top = stack.pop();
+            if (c == ')' && top != '(') return false;
+            if (c == '}' && top != '{') return false;
+            if (c == ']' && top != '[') return false;
+        }
+    }
+    return stack.isEmpty(); // 남은 괄호 없어야 true
+}</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION E: DP & Greedy
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(253,203,110,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--test);">
+        <h3 style="font-weight: 800; color: var(--test); font-size: 18px; margin: 0;">🧮 E. DP & 그리디</h3>
+      </div>
+
+      <!-- 10. DP -->
+      <section id="dp">
+        <h2>11. 동적 프로그래밍 (DP) — 점화식의 기술</h2>
+        <p>큰 문제를 작은 하위 문제로 나누고, 이전에 계산한 결과를 <strong>메모이제이션(캐싱)</strong>하여 중복 계산을 제거합니다. 핵심은 <strong>점화식</strong>을 세우는 것입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 계단 오르기</h4>
+          <p>100층 계단을 오르려면 "99층에서 1칸 올라왔거나, 98층에서 2칸 올라온 것"입니다. 즉, <code>f(100) = f(99) + f(98)</code>. 매번 1층부터 새로 세는 게 아니라, <strong>이미 센 결과를 표에 적어두고 꺼내 씁니다</strong>.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-algorithm-dp-stairs-analogy.webp" alt="DP를 이전 계산을 저장한 계단 오르기로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>DP는 이미 계산한 작은 문제의 답을 표에 저장해 더 큰 문제를 빠르게 해결합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">DP 3대 유형 — 피보나치 / 정수 삼각형 / 배낭 문제</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 1. 피보나치 (Bottom-Up)
+public int fibonacci(int n) {
+    int[] dp = new int[n + 1];
+    dp[0] = 0; dp[1] = 1;
+    for (int i = 2; i <= n; i++) {
+        dp[i] = dp[i - 1] + dp[i - 2]; // 점화식!
+    }
+    return dp[n];
+}
+
+// 2. 정수 삼각형 (위에서 아래로 최대 합 경로)
+// 점화식: dp[i][j] = triangle[i][j] + max(dp[i-1][j-1], dp[i-1][j])
+public int maxTrianglePath(int[][] tri) {
+    int n = tri.length;
+    int[][] dp = new int[n][n];
+    dp[0][0] = tri[0][0];
+
+    for (int i = 1; i < n; i++) {
+        dp[i][0] = dp[i - 1][0] + tri[i][0]; // 왼쪽 끝
+        for (int j = 1; j < i; j++) {
+            dp[i][j] = Math.max(dp[i - 1][j - 1], dp[i - 1][j]) + tri[i][j];
+        }
+        dp[i][i] = dp[i - 1][i - 1] + tri[i][i]; // 오른쪽 끝
+    }
+    return Arrays.stream(dp[n - 1]).max().getAsInt();
+}
+
+// 3. 0-1 배낭 문제 (무게 제한 W, 최대 가치)
+// 점화식: dp[i][w] = max(dp[i-1][w], dp[i-1][w-weight[i]] + value[i])
+public int knapsack(int W, int[] weight, int[] value) {
+    int n = weight.length;
+    int[][] dp = new int[n + 1][W + 1];
+
+    for (int i = 1; i <= n; i++) {
+        for (int w = 0; w <= W; w++) {
+            dp[i][w] = dp[i - 1][w]; // 안 넣는 경우
+            if (weight[i - 1] <= w) {
+                dp[i][w] = Math.max(dp[i][w],
+                    dp[i - 1][w - weight[i - 1]] + value[i - 1]); // 넣는 경우
+            }
+        }
+    }
+    return dp[n][W];
+}</code></pre>
+      </section>
+
+      <!-- 11. Greedy -->
+      <section id="greedy">
+        <h2>12. 그리디 알고리즘 (Greedy) — 매 순간 최선의 선택</h2>
+        <p>현재 상황에서 <strong>가장 좋은 선택</strong>을 반복하여 최적해에 도달하는 전략입니다. DP와 달리 이전 선택을 되돌아보지 않습니다. 항상 최적해를 보장하지는 않으므로, <strong>그리디가 성립하는 조건</strong>을 증명해야 합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">그리디 — 체육복 문제 (프로그래머스 Lev.1)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 핵심: 도난 학생을 기준으로, 바로 앞/뒤 여벌 학생에게 빌리기 (탐욕적 선택)
+public int solution(int n, int[] lost, int[] reserve) {
+    int[] students = new int[n + 2]; // 1-indexed
+    Arrays.fill(students, 1); // 기본 1벌
+
+    for (int r : reserve) students[r]++;
+    for (int l : lost) students[l]--;
+
+    int count = 0;
+    for (int i = 1; i <= n; i++) {
+        if (students[i] == 0) { // 체육복 없는 학생
+            if (students[i - 1] >= 2) {
+                students[i - 1]--;
+                students[i]++;
+            } else if (students[i + 1] >= 2) {
+                students[i + 1]--;
+                students[i]++;
+            }
+        }
+    }
+
+    for (int i = 1; i <= n; i++) {
+        if (students[i] >= 1) count++;
+    }
+    return count;
+}</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION F: 고급
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(214,48,49,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--interview);">
+        <h3 style="font-weight: 800; color: var(--interview); font-size: 18px; margin: 0;">🏆 F. 고급 자료구조 & 알고리즘</h3>
+      </div>
+
+      <!-- 12. Backtracking -->
+      <section id="backtracking">
+        <h2>13. 백트래킹 (Backtracking) — 순열 & 조합 생성기</h2>
+        <p>DFS 탐색 중 <strong>조건을 만족하지 않으면 즉시 되돌아가</strong> 불필요한 탐색을 가지치기(pruning)합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">백트래킹 — N개 중 R개 조합 생성</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">List&lt;List&lt;Integer&gt;&gt; result = new ArrayList&lt;&gt;();
+
+public void combination(int[] arr, int start, int r, List&lt;Integer&gt; current) {
+    if (current.size() == r) {
+        result.add(new ArrayList&lt;&gt;(current)); // 깊은 복사!
+        return;
+    }
+
+    for (int i = start; i < arr.length; i++) {
+        current.add(arr[i]);
+        combination(arr, i + 1, r, current); // i+1로 중복 방지
+        current.remove(current.size() - 1);  // 되돌리기 (백트래킹!)
+    }
+}
+
+// 순열은 visited 배열 사용
+public void permutation(int[] arr, boolean[] visited, List&lt;Integer&gt; current) {
+    if (current.size() == arr.length) {
+        result.add(new ArrayList&lt;&gt;(current));
+        return;
+    }
+
+    for (int i = 0; i < arr.length; i++) {
+        if (!visited[i]) {
+            visited[i] = true;
+            current.add(arr[i]);
+            permutation(arr, visited, current);
+            current.remove(current.size() - 1);
+            visited[i] = false; // 되돌리기
+        }
+    }
+}</code></pre>
+      </section>
+
+      <!-- 13. Dijkstra -->
+      <section id="dijkstra">
+        <h2>14. 다익스트라 (Dijkstra) — 가중치 그래프 최단 경로</h2>
+        <p><strong>PriorityQueue(최소 힙)</strong>를 사용하여 시작점에서 모든 정점까지의 최단 거리를 O(E log V)에 구합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">다익스트라 — 가중치 그래프 최단 경로</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 그래프: List&lt;int[]&gt;[] adj (adj[from] = {to, weight})
+public int[] dijkstra(List&lt;int[]&gt;[] adj, int start, int n) {
+    int[] dist = new int[n + 1];
+    Arrays.fill(dist, Integer.MAX_VALUE);
+    dist[start] = 0;
+
+    // {거리, 노드} — 거리 기준 최소 힙
+    PriorityQueue&lt;int[]&gt; pq = new PriorityQueue&lt;&gt;((a, b) -> a[0] - b[0]);
+    pq.add(new int[]{0, start});
+
+    while (!pq.isEmpty()) {
+        int[] cur = pq.poll();
+        int curDist = cur[0], curNode = cur[1];
+
+        if (curDist > dist[curNode]) continue; // 이미 더 짧은 경로 발견됨
+
+        for (int[] next : adj[curNode]) {
+            int nextNode = next[0], weight = next[1];
+            int newDist = dist[curNode] + weight;
+            if (newDist < dist[nextNode]) {
+                dist[nextNode] = newDist;
+                pq.add(new int[]{newDist, nextNode});
+            }
+        }
+    }
+    return dist; // dist[i] = start에서 i까지 최단 거리
+}</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION G: 전략 & 문제 큐레이션
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(0,206,209,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid #00ced1;">
+        <h3 style="font-weight: 800; color: #00ced1; font-size: 18px; margin: 0;">🎯 G. 코딩 테스트 전략 & 문제 큐레이션</h3>
+      </div>
+
+      <section id="coding-strategy">
+        <h2>15. 코딩 테스트 문제 접근 5단계 전략</h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">① 문제 읽기 (5분)</h4>
+            <p style="color:var(--text-muted);">입출력 예시를 꼼꼼히 읽고, 제약 조건(N의 범위)을 확인하여 시간복잡도 상한을 역산합니다.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">② 패턴 인식 (3분)</h4>
+            <p style="color:var(--text-muted);">"최단 거리" → BFS, "모든 경우" → DFS/백트래킹, "최적값" → DP/그리디, "정렬 후 탐색" → 이분탐색</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">③ 자료구조 선택 (2분)</h4>
+            <p style="color:var(--text-muted);">중복 체크 → HashSet, 순서 유지 → ArrayList, 최솟값 추출 → PriorityQueue, LIFO → Stack</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">④ 코드 구현 (20~30분)</h4>
+            <p style="color:var(--text-muted);">먼저 brute-force로 정확성을 확보한 뒤, 시간복잡도를 줄이는 최적화를 적용합니다.</p>
+          </div>
+          <div class="glass-panel" style="grid-column: span 1;">
+            <h4 style="font-weight:700; color:var(--test); margin-bottom:8px;">⑤ 엣지 케이스 검증 (5분)</h4>
+            <p style="color:var(--text-muted);">N=0, N=1, 최대값, 음수, 중복 데이터, 빈 배열 등을 직접 대입해 테스트합니다.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Problem Curation -->
+      <section id="problem-curation" class="glass-panel" style="border-left: 4px solid var(--algo);">
+        <h3 style="font-weight:800; color:var(--algo); margin-bottom:12px;">🧩 코딩 테스트 합격 엄선 빈출 15선</h3>
+        <p style="font-size:13px; color:var(--text-muted); margin-bottom:16px;">프로그래머스 고득점 Kit 기준 복귀 시 무조건 먼저 풀어야 할 큐레이션 세트입니다.</p>
+
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+          <div><strong style="color:var(--accent-color);">1. 해시 & 스택/큐:</strong> <span style="color:var(--text-muted);">완주하지 못한 선수(Lev 1), 기능개발(Lev 2), 올바른 괄호(Lev 2)</span></div>
+          <div><strong style="color:var(--frontend);">2. 정렬 & 힙:</strong> <span style="color:var(--text-muted);">가장 큰 수(Lev 2), 더 맵게(Lev 2 - PriorityQueue 활용)</span></div>
+          <div><strong style="color:var(--devops);">3. DFS/BFS 탐색:</strong> <span style="color:var(--text-muted);">타겟 넘버(Lev 2), 네트워크(Lev 3), 단어 변환(Lev 3)</span></div>
+          <div><strong style="color:var(--test);">4. 탐욕법 & 이분탐색:</strong> <span style="color:var(--text-muted);">체육복(Lev 1), 조이스틱(Lev 2), 입국심사(Lev 3)</span></div>
+          <div><strong style="color:var(--algo);">5. 동적계획법 (DP):</strong> <span style="color:var(--text-muted);">피보나치 수(Lev 2), 정수 삼각형(Lev 3), N으로 표현(Lev 3)</span></div>
+          <div><strong style="color:var(--interview);">6. 그래프 & 최단경로:</strong> <span style="color:var(--text-muted);">배달(Lev 2 - Dijkstra), 가장 먼 노드(Lev 3 - BFS)</span></div>
+        </div>
+      </section>
+
+      <!-- Quiz wrapper -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const appendixCQuizzes = [
+      {
+        type: "mcq",
+        question: "재귀 함수에서 '베이스 케이스(base case)'가 없으면 발생하는 문제는?",
+        options: [
+          "컴파일 에러",
+          "무한히 자기 자신을 호출하다 콜 스택이 넘쳐 StackOverflowError 발생",
+          "자동으로 0을 반환",
+          "메모리 누수 없이 안전하게 종료"
+        ],
+        correct: 1,
+        explanation: "재귀는 ① 멈출 지점(베이스 케이스)과 ② 더 작은 문제로의 재귀 호출 2요소가 필수입니다. 베이스 케이스가 없으면 호출이 무한히 콜 스택에 쌓여 StackOverflowError가 발생합니다."
+      },
+      {
+        type: "mcq",
+        question: "BFS(너비 우선 탐색)에 사용하는 자료구조와 그 특성으로 옳은 것은?",
+        options: [
+          "스택 — LIFO(후입선출)",
+          "큐 — FIFO(선입선출)",
+          "해시맵 — O(1) 조회",
+          "힙 — 최솟값 추출"
+        ],
+        correct: 1,
+        explanation: "BFS는 큐(FIFO, 선입선출)를 사용해 가까운 노드부터 차례로 방문하므로 최단 거리 탐색에 적합합니다. DFS는 스택(또는 재귀)을 사용해 깊이 우선으로 탐색합니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "메모이제이션으로 피보나치를 구하는 재귀 함수에서, 이미 계산된 값을 재사용하는 베이스 케이스 다음 줄을 작성하세요. (배열명: memo)",
+        starter: "int fib(int n, int[] memo) {\n    if (n <= 1) return n;\n    // 여기에 작성 (이미 계산했으면 재사용)\n    return memo[n] = fib(n-1, memo) + fib(n-2, memo);\n}",
+        validator: {
+          mustContain: ["memo[n]", "return"],
+          mustNotContain: ["for", "while"]
+        },
+        solution: "if (memo[n] != 0) return memo[n];",
+        explanation: "메모이제이션은 한 번 계산한 결과를 배열에 저장해두고, 같은 입력이 다시 오면 재계산 없이 즉시 반환합니다. 이로써 피보나치의 시간복잡도가 O(2^N) → O(N)으로 극적으로 줄어듭니다. DP의 출발점입니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", appendixCQuizzes, "appendix-algorithm");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

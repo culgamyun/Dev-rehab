@@ -1,0 +1,763 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 07 - Fullstack Integration & WebSocket</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>프론트엔드 코스</span> &gt; <span>Chapter 07</span></div>
+      <h1>Chapter 07: 풀스택 통합 · WebSocket · TypeScript Axios · Server Actions</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">API 응답 표준화(ResponseEntity), 전역 에러 핸들링, 파일 업로드, WebSocket/STOMP 실시간 통신, SSE, 환경 변수 관리, 그리고 TypeScript Axios + Zod + Next.js 15 Server Actions + React 19 useActionState까지 — 프론트-백 통합의 클래식 패턴과 2026 모던 패턴을 10개 섹션으로 함께 다룹니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/chapter-7-hero.webp" alt="프론트엔드와 백엔드 통합 흐름을 연결된 작업 마을로 표현한 2D 파스텔 일러스트" loading="lazy">
+      <figcaption>프론트엔드와 백엔드가 HTTP 요청과 실시간 연결로 데이터를 주고받는 흐름을 보여줍니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           SECTION A: API 통합 기초
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(116,185,255,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">🔌 A. API 통합 기초</h3>
+      </div>
+
+      <!-- 1. ResponseEntity -->
+      <section id="response-entity">
+        <h2>1. ResponseEntity — API 응답 표준화</h2>
+        <p>백엔드 API가 프론트엔드에 데이터를 보낼 때, <strong>상태코드 + 헤더 + 본문</strong>을 명시적으로 제어하여 일관된 응답 형태를 보장합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">공통 API 응답 래퍼 + Controller 적용</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 1. 공통 응답 래퍼 클래스 — 모든 API가 이 형태로 통일!
+@Getter
+@AllArgsConstructor
+public class ApiResponse&lt;T&gt; {
+    private int status;
+    private String message;
+    private T data;
+
+    public static &lt;T&gt; ApiResponse&lt;T&gt; success(T data) {
+        return new ApiResponse&lt;&gt;(200, "성공", data);
+    }
+    public static &lt;T&gt; ApiResponse&lt;T&gt; created(T data) {
+        return new ApiResponse&lt;&gt;(201, "생성 성공", data);
+    }
+    public static ApiResponse&lt;Void&gt; error(int status, String message) {
+        return new ApiResponse&lt;&gt;(status, message, null);
+    }
+}
+
+// 2. Controller에서 ResponseEntity + ApiResponse 사용
+@RestController
+@RequestMapping("/api/products")
+@RequiredArgsConstructor
+public class ProductController {
+    private final ProductService productService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity&lt;ApiResponse&lt;ProductResponse&gt;&gt; getProduct(@PathVariable Long id) {
+        ProductResponse product = productService.findById(id);
+        return ResponseEntity.ok(ApiResponse.success(product));
+        // → { "status": 200, "message": "성공", "data": { "id": 1, ... } }
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;ApiResponse&lt;ProductResponse&gt;&gt; createProduct(
+            @Valid @RequestBody ProductCreateRequest request) {
+        ProductResponse created = productService.create(request);
+        return ResponseEntity.status(201).body(ApiResponse.created(created));
+    }
+}</code></pre>
+      </section>
+
+      <!-- 2. @RestControllerAdvice -->
+      <section id="global-error-handler">
+        <h2>2. @RestControllerAdvice — 전역 에러 핸들링</h2>
+        <p>각 Controller마다 try-catch를 반복하는 대신, <strong>한 곳에서 모든 예외를 잡아 일관된 에러 응답</strong>을 보냅니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">GlobalExceptionHandler.java — 전역 예외 처리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@RestControllerAdvice  // 모든 @RestController의 예외를 중앙 포획!
+public class GlobalExceptionHandler {
+
+    // 비즈니스 예외 (상품 없음, 재고 부족 등)
+    @ExceptionHandler(BusinessException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleBusiness(BusinessException e) {
+        return ResponseEntity.status(e.getStatus())
+            .body(ApiResponse.error(e.getStatus(), e.getMessage()));
+        // → { "status": 404, "message": "상품을 찾을 수 없습니다", "data": null }
+    }
+
+    // 유효성 검증 실패 (@Valid 실패 시)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity&lt;ApiResponse&lt;Map&lt;String, String&gt;&gt;&gt; handleValidation(
+            MethodArgumentNotValidException e) {
+        Map&lt;String, String&gt; errors = new HashMap&lt;&gt;();
+        e.getBindingResult().getFieldErrors()
+            .forEach(err -> errors.put(err.getField(), err.getDefaultMessage()));
+        return ResponseEntity.badRequest()
+            .body(new ApiResponse&lt;&gt;(400, "유효성 검증 실패", errors));
+        // → { "status": 400, "data": { "email": "이메일 형식이 아닙니다" } }
+    }
+
+    // 기타 모든 예외 (최후 방어선)
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity&lt;ApiResponse&lt;Void&gt;&gt; handleAll(Exception e) {
+        log.error("서버 에러", e);
+        return ResponseEntity.internalServerError()
+            .body(ApiResponse.error(500, "서버 내부 오류가 발생했습니다"));
+    }
+}</code></pre>
+      </section>
+
+      <!-- 3. Validation -->
+      <section id="validation">
+        <h2>3. Bean Validation — 요청 데이터 유효성 검증</h2>
+
+        <div style="background: linear-gradient(135deg, hsla(280, 70%, 58%, 0.08), transparent); border-left: 3px solid var(--ai); padding: 12px 16px; margin: 0 0 14px; border-radius: 6px; font-size: 12.5px;">
+          <strong>📚 더 깊이 보려면:</strong>
+          본 챕터는 풀스택 통합 맥락에서 Bean Validation 기본을 다룹니다. <strong>@ControllerAdvice + <code>ProblemDetail</code> (RFC 9457) 표준 에러 응답</strong>은 <a href="chapter-4.html#global-exception-handling" style="color:var(--ai);">Chapter 4 — 글로벌 예외 처리 섹션</a>에서, 프론트 측 <strong>react-hook-form + Zod 스키마 검증</strong>은 <a href="chapter-6.html#react-hook-form" style="color:var(--ai);">Chapter 6 — RHF + Zod 섹션</a>에서 깊이 다룹니다.
+        </div>
+
+        <p>프론트엔드 검증만으로는 부족합니다. 백엔드에서도 <code>@Valid</code>로 <strong>이중 검증</strong>해야 합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">DTO 유효성 검증 어노테이션</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">public record ProductCreateRequest(
+    @NotBlank(message = "상품명은 필수입니다")
+    String name,
+
+    @NotNull(message = "가격은 필수입니다")
+    @Min(value = 1000, message = "가격은 1000원 이상이어야 합니다")
+    Integer price,
+
+    @NotBlank(message = "카테고리는 필수입니다")
+    String category,
+
+    @Size(max = 500, message = "설명은 500자 이내여야 합니다")
+    String description
+) {}
+
+// Controller에서 @Valid로 검증 활성화
+@PostMapping
+public ResponseEntity&lt;?&gt; create(@Valid @RequestBody ProductCreateRequest req) {
+    // 유효성 실패 → MethodArgumentNotValidException → GlobalExceptionHandler가 처리!
+    return ResponseEntity.ok(productService.create(req));
+}
+
+// 주요 검증 어노테이션:
+// @NotNull   — null 불가
+// @NotBlank  — null, "", " " 불가 (문자열 전용)
+// @NotEmpty  — null, "" 불가 (컬렉션도 가능)
+// @Min/@Max  — 숫자 범위
+// @Size      — 문자열/컬렉션 길이
+// @Email     — 이메일 형식
+// @Pattern   — 정규식 매칭</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION B: 파일 업로드 & 환경 변수
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(46,213,115,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">📁 B. 파일 업로드 & 환경 변수</h3>
+      </div>
+
+      <!-- 4. File Upload -->
+      <section id="file-upload">
+        <h2>4. 파일 업로드 — Multipart (이미지 업로드)</h2>
+        <p>상품 이미지 등 파일을 백엔드로 전송할 때 <strong>Multipart/form-data</strong> 형식을 사용합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">백엔드 — Spring Boot 파일 업로드 API</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@PostMapping(value = "/api/products/image", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+public ResponseEntity&lt;ApiResponse&lt;String&gt;&gt; uploadImage(
+        @RequestParam("file") MultipartFile file) {
+
+    // 1. 파일 유효성 검증
+    if (file.isEmpty()) throw new BusinessException(400, "파일이 비어있습니다");
+    if (file.getSize() > 5 * 1024 * 1024) throw new BusinessException(400, "5MB 초과");
+
+    // 2. 고유 파일명 생성 (중복 방지)
+    String fileName = UUID.randomUUID() + "_" + file.getOriginalFilename();
+
+    // 3. 저장 (실무에서는 S3에 업로드)
+    Path path = Paths.get("uploads/" + fileName);
+    Files.copy(file.getInputStream(), path);
+
+    return ResponseEntity.ok(ApiResponse.success("/uploads/" + fileName));
+}</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">프론트엔드 — React 파일 업로드</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">function ImageUpload() {
+  const handleUpload = async (e) => {
+    const file = e.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file); // key는 백엔드 @RequestParam과 일치!
+
+    const { data } = await api.post("/api/products/image", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    console.log("업로드 URL:", data.data); // "/uploads/uuid_image.jpg"
+  };
+
+  return &lt;input type="file" accept="image/*" onChange={handleUpload} /&gt;;
+}</code></pre>
+      </section>
+
+      <!-- 5. Environment Variables -->
+      <section id="env-variables">
+        <h2>5. 환경 변수 관리 — .env & application.yml</h2>
+        <p>API 키, DB 비밀번호 등 민감 정보를 코드에 하드코딩하면 <strong>보안 사고</strong>가 발생합니다. 환경 변수로 분리합니다.</p>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin: 16px 0;">
+          <div class="glass-panel" style="border-top: 3px solid var(--accent-color);">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">🔧 Spring Boot (application.yml)</h4>
+            <pre class="language-java" style="margin:0;"><code class="language-java">// application.yml
+spring:
+  datasource:
+    url: ${DB_URL}        // 환경 변수 참조
+    password: ${DB_PASS}
+jwt:
+  secret: ${JWT_SECRET}
+  expiration: 3600000     // 1시간
+
+// 사용: @Value("${jwt.secret}")</code></pre>
+          </div>
+          <div class="glass-panel" style="border-top: 3px solid var(--frontend);">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">⚛️ Next.js (.env.local)</h4>
+            <pre class="language-jsx" style="margin:0;"><code class="language-jsx">// .env.local (Git 제외!)
+NEXT_PUBLIC_API_URL=http://localhost:8080
+DATABASE_URL=postgresql://...
+
+// 사용 (NEXT_PUBLIC_ 접두사만 브라우저 노출)
+const api = axios.create({
+  baseURL: process.env.NEXT_PUBLIC_API_URL,
+});
+
+// ⚠️ NEXT_PUBLIC_ 없는 변수는 서버에서만 접근 가능!</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           SECTION C: WebSocket & 실시간 통신
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(108,92,231,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--algo);">
+        <h3 style="font-weight: 800; color: var(--algo); font-size: 18px; margin: 0;">📡 C. WebSocket & 실시간 통신</h3>
+      </div>
+
+      <!-- 6. HTTP vs WebSocket -->
+      <section id="http-vs-websocket">
+        <h2>6. HTTP vs WebSocket — 통신 방식 비교</h2>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 택배 vs 전화</h4>
+          <p><strong>HTTP</strong>는 택배 — 매번 "보내기 → 기다리기 → 받기"를 반복합니다. 새 소식이 있는지 확인하려면 계속 택배를 보내야 합니다(Polling). <strong>WebSocket</strong>은 전화 — 한번 연결하면 양쪽이 아무 때나 실시간으로 대화할 수 있습니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-7-websocket-phone-analogy.webp" alt="HTTP와 WebSocket 차이를 택배와 전화로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>HTTP는 요청마다 왕복하는 택배이고, WebSocket은 연결을 유지한 채 양방향으로 대화하는 전화입니다.</figcaption>
+        </figure>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">구분</th>
+              <th style="padding: 10px 16px;">HTTP</th>
+              <th style="padding: 10px 16px;">WebSocket</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">방향</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">단방향 (요청→응답)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">양방향 (실시간)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">연결</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">매 요청마다 연결/해제</td>
+              <td style="padding: 10px 16px; color: var(--devops);">한 번 연결 후 유지</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">실시간성</td>
+              <td style="padding: 10px 16px; color: var(--interview);">Polling 필요 (지연)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">즉시 전달</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">사용 예</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">REST API, 페이지 조회</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">채팅, 실시간 알림, 주식</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 7. Spring WebSocket Server -->
+      <section id="websocket-server">
+        <h2>7. Spring Boot WebSocket 서버 — STOMP 브로커 설정</h2>
+
+        <div class="code-block-header">
+          <span class="code-title">WebSocketConfig.java — STOMP 엔드포인트 & 브로커 설정</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Configuration
+@EnableWebSocketMessageBroker
+public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
+
+    @Override
+    public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // 클라이언트가 연결할 WebSocket 엔드포인트
+        registry.addEndpoint("/ws-shop")
+            .setAllowedOrigins("http://localhost:3000") // CORS 허용
+            .withSockJS(); // WebSocket 미지원 브라우저 대비 폴백
+    }
+
+    @Override
+    public void configureMessageBroker(MessageBrokerRegistry registry) {
+        // 구독 목적지 접두사 (클라이언트가 구독하는 주소)
+        registry.enableSimpleBroker("/topic", "/queue");
+        // 메시지 전송 접두사 (클라이언트가 서버로 보낼 때)
+        registry.setApplicationDestinationPrefixes("/app");
+    }
+}
+
+// 주문 생성 시 → 구독자 전원에게 실시간 브로드캐스트!
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+    private final SimpMessagingTemplate messagingTemplate;
+
+    @Transactional
+    public OrderResponse createOrder(OrderRequest req) {
+        Order order = orderRepository.save(Order.create(req));
+        
+        // 실시간 알림 발송! → /topic/orders 구독자 전원 수신
+        messagingTemplate.convertAndSend("/topic/orders",
+            Map.of("message", "새 주문 #" + order.getId(), "data", order));
+        
+        return OrderResponse.from(order);
+    }
+}</code></pre>
+      </section>
+
+      <!-- 8. STOMP Client -->
+      <section id="stomp-client">
+        <h2>8. STOMP 클라이언트 — React에서 실시간 알림 수신</h2>
+
+        <div class="code-block-header">
+          <span class="code-title">React WebSocket 연결 & 구독 (Custom Hook)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">"use client";
+import { useEffect, useRef } from "react";
+import SockJS from "sockjs-client";
+import { Client } from "@stomp/stompjs";
+
+export function useOrderNotification(onNewOrder) {
+  const clientRef = useRef(null);
+
+  useEffect(() => {
+    // 1. STOMP 클라이언트 생성
+    const client = new Client({
+      webSocketFactory: () => new SockJS("http://localhost:8080/ws-shop"),
+      reconnectDelay: 5000, // 끊기면 5초 후 자동 재연결
+      onConnect: () => {
+        console.log("WebSocket 연결 성공!");
+        // 2. /topic/orders 채널 구독
+        client.subscribe("/topic/orders", (message) => {
+          const orderEvent = JSON.parse(message.body);
+          onNewOrder(orderEvent); // 콜백 실행!
+        });
+      },
+      onDisconnect: () => console.log("WebSocket 연결 해제"),
+    });
+
+    client.activate();
+    clientRef.current = client;
+
+    // 3. 컴포넌트 언마운트 시 연결 해제 (메모리 누수 방지!)
+    return () => client.deactivate();
+  }, [onNewOrder]);
+
+  return clientRef;
+}
+
+// 사용:
+// function AdminDashboard() {
+//   useOrderNotification((event) => {
+//     showToast(`🔔 ${event.message}`, "success");
+//   });
+//   return &lt;h1&gt;관리자 대시보드&lt;/h1&gt;;
+// }</code></pre>
+      </section>
+
+      <!-- 9. SSE -->
+      <section id="sse">
+        <h2>9. SSE (Server-Sent Events) — 서버→클라이언트 단방향 실시간</h2>
+        <p>WebSocket이 양방향이라면, <strong>SSE</strong>는 서버에서 클라이언트로의 <strong>단방향 실시간 푸시</strong>입니다. 알림, 진행률 표시 등 서버→클라이언트만 필요할 때 더 간단합니다.</p>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:16px; margin: 16px 0;">
+          <div class="glass-panel" style="border-top: 3px solid var(--accent-color);">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">🔧 Spring Boot SSE</h4>
+            <pre class="language-java" style="margin:0;"><code class="language-java">@GetMapping(value = "/api/notifications/stream",
+    produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+public SseEmitter streamNotifications() {
+    SseEmitter emitter = new SseEmitter(30_000L);
+    notificationService.addEmitter(emitter);
+    return emitter;
+}
+
+// 이벤트 발행:
+// emitter.send(SseEmitter.event()
+//   .name("order")
+//   .data(orderData));</code></pre>
+          </div>
+          <div class="glass-panel" style="border-top: 3px solid var(--frontend);">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">⚛️ React SSE 수신</h4>
+            <pre class="language-jsx" style="margin:0;"><code class="language-jsx">useEffect(() => {
+  const source = new EventSource(
+    "/api/notifications/stream"
+  );
+  source.addEventListener("order", (e) => {
+    const data = JSON.parse(e.data);
+    showToast(`🔔 ${data.message}`);
+  });
+  return () => source.close(); // 클린업!
+}, []);</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. v3.2 — TypeScript + Server Actions in Modern Fullstack -->
+      <section id="modern-fullstack-patterns">
+        <h2>10. 2026 풀스택 패턴 — TypeScript Axios + Next.js Server Actions</h2>
+        <p>지금까지 다룬 Axios + REST + WebSocket 흐름은 여전히 유효하지만, 2026년 실무 코드는 <strong>TypeScript와 Server Actions</strong>로 한 단계 진화했습니다. 본 섹션은 동일한 주문 시나리오를 모던 패턴으로 다시 작성합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">TypeScript Axios — 타입 안전한 API 클라이언트</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-jsx"><code class="language-jsx">// api/orders.ts
+import axios, { AxiosError } from "axios";
+import { z } from "zod";
+
+// 1. 요청·응답 스키마 (Chapter 6 RHF + Zod와 동일)
+const OrderRequestSchema = z.object({
+  productId: z.number().int().positive(),
+  quantity: z.number().int().min(1).max(99)
+});
+type OrderRequest = z.infer&lt;typeof OrderRequestSchema&gt;;
+
+const OrderResponseSchema = z.object({
+  id: z.number(),
+  status: z.enum(["PENDING", "PAID", "DELIVERED"]),
+  total: z.number()
+});
+type OrderResponse = z.infer&lt;typeof OrderResponseSchema&gt;;
+
+// ProblemDetail (Chapter 4 RFC 9457)과 매핑되는 에러 타입
+interface ProblemDetail {
+  type: string;
+  title: string;
+  status: number;
+  detail?: string;
+  errors?: Record&lt;string, string&gt;;
+}
+
+// 2. 인터셉터로 토큰 자동 주입
+const api = axios.create({ baseURL: "/api" });
+api.interceptors.request.use(cfg =&gt; {
+  const token = localStorage.getItem("accessToken");
+  if (token) cfg.headers.Authorization = `Bearer ${token}`;
+  return cfg;
+});
+
+// 3. 타입 안전한 API 함수
+export async function createOrder(req: OrderRequest): Promise&lt;OrderResponse&gt; {
+  // 클라이언트 측 검증 (빠른 실패)
+  const parsed = OrderRequestSchema.parse(req);
+  try {
+    const res = await api.post&lt;OrderResponse&gt;("/orders", parsed);
+    return OrderResponseSchema.parse(res.data);  // 응답도 검증
+  } catch (e) {
+    if (axios.isAxiosError&lt;ProblemDetail&gt;(e) &amp;&amp; e.response) {
+      const problem = e.response.data;
+      throw new Error(`${problem.title}: ${problem.detail ?? ""}`);
+    }
+    throw e;
+  }
+}</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">Next.js 15 Server Action — 보일러플레이트 제거</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-jsx"><code class="language-jsx">// app/actions/order-actions.ts
+"use server";
+import { revalidatePath } from "next/cache";
+import { z } from "zod";
+
+const OrderActionSchema = z.object({
+  productId: z.coerce.number().int().positive(),
+  quantity: z.coerce.number().int().min(1).max(99)
+});
+
+export async function placeOrderAction(prevState: unknown, formData: FormData) {
+  // 1. FormData를 스키마로 검증
+  const parsed = OrderActionSchema.safeParse({
+    productId: formData.get("productId"),
+    quantity: formData.get("quantity")
+  });
+
+  if (!parsed.success) {
+    return { ok: false, errors: parsed.error.flatten().fieldErrors };
+  }
+
+  // 2. DB 직접 호출 (Server Component이므로 가능)
+  const order = await db.order.create({ data: parsed.data });
+
+  // 3. 관련 페이지 캐시 무효화
+  revalidatePath("/orders");
+  return { ok: true, order };
+}</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">React 19 useActionState — 폼과 Server Action 연결</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-jsx"><code class="language-jsx">// app/orders/new/page.tsx (Client Component)
+"use client";
+import { useActionState } from "react";
+import { placeOrderAction } from "@/app/actions/order-actions";
+
+export default function NewOrderForm() {
+  // useActionState: 액션 결과를 상태로 받음 (이전 useFormState에서 이름 변경)
+  const [state, formAction, isPending] = useActionState(placeOrderAction, null);
+
+  return (
+    &lt;form action={formAction}&gt;
+      &lt;input name="productId" type="number" required /&gt;
+      &lt;input name="quantity" type="number" required min={1} max={99} /&gt;
+      &lt;button type="submit" disabled={isPending}&gt;
+        {isPending ? "주문 처리 중..." : "주문하기"}
+      &lt;/button&gt;
+      {state?.errors &amp;&amp; (
+        &lt;ul style={{color:"red"}}&gt;
+          {Object.entries(state.errors).map(([field, msgs]) =&gt;
+            &lt;li key={field}&gt;{field}: {msgs?.join(", ")}&lt;/li&gt;
+          )}
+        &lt;/ul&gt;
+      )}
+      {state?.ok &amp;&amp; &lt;p&gt;✅ 주문 {state.order?.id} 생성 완료&lt;/p&gt;}
+    &lt;/form&gt;
+  );
+}</code></pre>
+
+        <p><strong>전통 fetch/Axios vs Server Action 선택 기준:</strong></p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">📡 TypeScript Axios 유지 시나리오</h4>
+            <p style="color:var(--text-muted);">독립 백엔드 (Spring Boot) 호출, WebSocket/SSE와 결합, 외부 공개 API 호출, 복잡한 인터셉터 체인이 필요한 경우</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">⚡ Server Action 적합 시나리오</h4>
+            <p style="color:var(--text-muted);">Next.js 단독 풀스택 (DB 직접 접근), 단순 폼 제출, revalidatePath/redirect와 자연스러운 결합. 단, Spring 백엔드 연동 시엔 Server Action 안에서 fetch로 호출</p>
+          </div>
+        </div>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 폼 검증 깊이는 <a href="chapter-6.html#react-hook-form" style="color:var(--accent-color);">Chapter 6 — RHF + Zod</a>, 백엔드 에러 표준은 <a href="chapter-4.html#global-exception-handling" style="color:var(--accent-color);">Chapter 4 — ProblemDetail</a>에서.</p>
+      </section>
+
+      <!-- glossary -->
+      <section id="chapter-glossary" class="glass-panel" style="border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight:800; color:var(--accent-color); margin-bottom:12px;">📚 07챕터 헷갈리는 용어 사전</h3>
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+          <div><strong>ResponseEntity:</strong><span style="color:var(--text-muted);"> HTTP 상태코드 + 헤더 + 본문을 명시적으로 제어하는 Spring의 응답 래퍼 클래스.</span></div>
+          <div><strong>@RestControllerAdvice:</strong><span style="color:var(--text-muted);"> 모든 Controller의 예외를 한 곳에서 중앙 처리하는 전역 에러 핸들러.</span></div>
+          <div><strong>@Valid:</strong><span style="color:var(--text-muted);"> Bean Validation 어노테이션(@NotBlank, @Min 등)을 활성화하여 요청 데이터를 자동 검증.</span></div>
+          <div><strong>Multipart:</strong><span style="color:var(--text-muted);"> 파일과 텍스트 데이터를 동시에 전송할 수 있는 HTTP 요청 형식(Content-Type: multipart/form-data).</span></div>
+          <div><strong>WebSocket:</strong><span style="color:var(--text-muted);"> HTTP와 달리 한 번 연결 후 서버-클라이언트가 양방향으로 실시간 데이터를 주고받는 프로토콜.</span></div>
+          <div><strong>STOMP:</strong><span style="color:var(--text-muted);"> WebSocket 위에서 동작하는 메시징 프로토콜. 목적지(topic), 구독(subscribe), 발행(publish) 구조를 제공.</span></div>
+          <div><strong>SSE (Server-Sent Events):</strong><span style="color:var(--text-muted);"> 서버→클라이언트 단방향 실시간 푸시. WebSocket보다 간단하며 HTTP 기반.</span></div>
+          <div><strong>SimpMessagingTemplate:</strong><span style="color:var(--text-muted);"> Spring에서 STOMP 메시지를 구독자에게 전송하는 유틸리티. convertAndSend()로 브로드캐스트.</span></div>
+          <div><strong>NEXT_PUBLIC_ 접두사:</strong><span style="color:var(--text-muted);"> Next.js에서 브라우저에 노출되는 환경 변수. 접두사 없는 변수는 서버에서만 접근 가능.</span></div>
+        </div>
+      </section>
+
+      <!-- quiz wrapper -->
+      <!-- Build Checkpoint [v3.4] -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.10), transparent); border: 1px solid var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 10px; font-size: 16px;">🛠️ 직접 만들어보기 — "이걸로 만들 수 있나?" 체크포인트</h3>
+        <p style="font-size:13px; margin:0 0 8px;">읽기만으로는 복귀가 안 됩니다. <strong>프론트(Ch5/6)와 백엔드(Ch2/4)를 실제로 연결</strong>해보세요 — 여기가 풀스택의 진짜 시작입니다.</p>
+        <ul style="font-size:13.5px; line-height:1.9; margin:0; padding-left:20px;">
+          <li>타입 안전 Axios 클라이언트로 Ch4 Spring API 호출 — 인터셉터로 JWT 자동 주입</li>
+          <li>백엔드 <code>ProblemDetail</code> 에러를 프론트에서 파싱해 사용자 메시지로 표시</li>
+          <li>주문 생성 → 성공 시 <strong>실시간 알림</strong> 1개 구현 (WebSocket STOMP 토스트 또는 SSE)</li>
+          <li>(선택) 같은 기능을 Next.js Server Action + <code>useActionState</code>로도 만들어 두 방식 비교</li>
+        </ul>
+      </div>
+
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const ch7Quizzes = [
+      {
+        type: "mcq",
+        question: "@RestControllerAdvice의 역할은?",
+        options: [
+          "모든 Controller에 자동으로 @Transactional을 적용한다.",
+          "모든 Controller의 예외를 한 곳에서 중앙 포획하여 일관된 에러 응답을 반환한다.",
+          "WebSocket 연결을 자동으로 관리한다.",
+          "JWT 토큰을 자동으로 생성한다."
+        ],
+        correct: 1,
+        explanation: "@RestControllerAdvice는 전역 예외 핸들러입니다. 각 Controller에 try-catch를 반복하지 않고, @ExceptionHandler로 예외 타입별 처리를 중앙화합니다."
+      },
+      {
+        type: "mcq",
+        question: "HTTP와 WebSocket의 가장 핵심적인 차이점은?",
+        options: [
+          "HTTP는 보안이 없고 WebSocket은 보안이 있다.",
+          "HTTP는 매 요청마다 연결/해제하는 단방향이고, WebSocket은 한 번 연결 후 양방향 실시간 통신이 가능하다.",
+          "WebSocket은 데이터베이스를 직접 조회할 수 있다.",
+          "HTTP는 JSON을 지원하지 않는다."
+        ],
+        correct: 1,
+        explanation: "HTTP는 요청-응답 후 연결이 끊기는 단방향, WebSocket은 한번 연결 후 서버-클라이언트가 자유롭게 실시간 데이터를 주고받는 양방향 프로토콜입니다."
+      },
+      {
+        type: "mcq",
+        question: "Bean Validation에서 @NotBlank와 @NotNull의 차이는?",
+        options: [
+          "차이 없다.",
+          "@NotNull은 null만 거부하고, @NotBlank는 null과 빈 문자열(\"\")과 공백(\" \") 모두 거부한다.",
+          "@NotBlank는 숫자에만, @NotNull은 문자열에만 사용한다.",
+          "@NotNull은 Spring 전용, @NotBlank는 JPA 전용이다."
+        ],
+        correct: 1,
+        explanation: "@NotNull은 null만 체크합니다. @NotBlank는 null + 빈문자열 + 공백만인 문자열을 모두 거부하므로 문자열 필수값 검증에 더 적합합니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "Spring에서 STOMP 메시지를 /topic/orders 구독자 전원에게 브로드캐스트하는 코드를 완성하세요. (변수명: messagingTemplate)",
+        starter: "messagingTemplate.\n// 여기에 작성\n(\"/topic/orders\", orderData);",
+        validator: {
+          mustContain: ["convertAndSend"],
+          mustNotContain: ["subscribe", "connect"]
+        },
+        solution: "convertAndSend",
+        explanation: "SimpMessagingTemplate의 convertAndSend()는 지정한 목적지(topic)를 구독하는 모든 클라이언트에게 메시지를 브로드캐스트합니다."
+      },
+      {
+        type: "code",
+        language: "jsx",
+        prompt: "STOMP 클라이언트에서 '/topic/orders' 채널을 구독하여 실시간 메시지를 수신하는 메서드명을 완성하세요.",
+        starter: "client.\n// 여기에 작성\n(\"/topic/orders\", (message) => {\n  console.log(message.body);\n});",
+        validator: {
+          mustContain: ["subscribe"],
+          mustNotContain: ["connect", "publish"]
+        },
+        solution: "subscribe",
+        explanation: "STOMP 클라이언트의 subscribe() 메서드로 특정 토픽을 구독하면, 서버가 해당 토픽으로 발행한 메시지를 실시간으로 수신합니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", ch7Quizzes, "chapter-7");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

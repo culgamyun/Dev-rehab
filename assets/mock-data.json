@@ -1,0 +1,133 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "에센셜 오버핏 옥스포드 셔츠",
+      "category": "tops",
+      "price": 49000,
+      "stock": 45,
+      "description": "사계절 내내 부드럽게 입을 수 있는 프리미엄 옥스포드 코튼 셔츠입니다. 자연스러운 오버핏으로 정밀 제작되었습니다.",
+      "image": "https://images.unsplash.com/photo-1596755094514-f87e34085b2c?w=500&auto=format&fit=crop&q=60",
+      "rating": 4.8
+    },
+    {
+      "id": 2,
+      "name": "클래식 싱글 트렌치 코트",
+      "category": "outer",
+      "price": 149000,
+      "stock": 15,
+      "description": "방수 가공 처리가 된 고밀도 개버딘 원단으로 제작되어, 흐트러짐 없는 클래식한 실루엣을 제공하는 시그니처 코트입니다.",
+      "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=500&auto=format&fit=crop&q=60",
+      "rating": 4.9
+    },
+    {
+      "id": 3,
+      "name": "원턱 세미와이드 슬랙스",
+      "category": "bottoms",
+      "price": 59000,
+      "stock": 30,
+      "description": "자연스럽게 떨어지는 드레이프성과 편안한 밴딩 디테일로 실용성과 세련미를 모두 갖춘 데일리 슬랙스입니다.",
+      "image": "https://images.unsplash.com/photo-1624378439575-d8705ad7ae80?w=500&auto=format&fit=crop&q=60",
+      "rating": 4.5
+    },
+    {
+      "id": 4,
+      "name": "헤비웨이트 피그먼트 스웨트셔츠",
+      "category": "tops",
+      "price": 65000,
+      "stock": 25,
+      "description": "피그먼트 워싱 가공을 거쳐 빈티지한 색감이 매력적인 950g 고중량 코튼 100% 프리미엄 스웨트셔츠입니다.",
+      "image": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=500&auto=format&fit=crop&q=60",
+      "rating": 4.7
+    },
+    {
+      "id": 5,
+      "name": "린넨 테이퍼드 밴딩 팬츠",
+      "category": "bottoms",
+      "price": 45000,
+      "stock": 50,
+      "description": "한여름에도 쾌적하게 착용할 수 있도록 리넨과 코튼 혼방사로 짠 통기성 높은 시원한 테이퍼드 팬츠입니다.",
+      "image": "https://images.unsplash.com/photo-1509551388413-e18d0ac5d495?w=500&auto=format&fit=crop&q=60",
+      "rating": 4.2
+    },
+    {
+      "id": 6,
+      "name": "미니멀 하이넥 비건레더 자켓",
+      "category": "outer",
+      "price": 128000,
+      "stock": 10,
+      "description": "천연 가죽 특유의 질감을 완벽히 구현한 환경 친화적인 비건 레더 소재로, 모던하고 정제된 하이넥 칼라 자켓입니다.",
+      "image": "https://images.unsplash.com/photo-1551028719-00167b16eac5?w=500&auto=format&fit=crop&q=60",
+      "rating": 4.6
+    }
+  ],
+  "users": [
+    {
+      "id": 1,
+      "email": "dev-rehab@antigravity.fashion",
+      "name": "김풀스택",
+      "grade": "VIP"
+    }
+  ],
+  "orders": [
+    {
+      "id": 1001,
+      "userId": 1,
+      "items": [
+        {
+          "productId": 1,
+          "name": "에센셜 오버핏 옥스포드 셔츠",
+          "qty": 2,
+          "price": 49000
+        },
+        {
+          "productId": 3,
+          "name": "원턱 세미와이드 슬랙스",
+          "qty": 1,
+          "price": 59000
+        }
+      ],
+      "status": "배송완료",
+      "total": 157000,
+      "createdAt": "2026-05-15T10:30:00.000Z"
+    }
+  ],
+  "reviews": [
+    {
+      "id": 1,
+      "productId": 1,
+      "userId": 1,
+      "userName": "김풀스택",
+      "rating": 5,
+      "content": "오버핏 실루엣이 딱 원하던 느낌입니다! 세탁해도 수축이 거의 없어서 좋네요.",
+      "createdAt": "2026-05-18T14:20:00.000Z"
+    },
+    {
+      "id": 2,
+      "productId": 1,
+      "userId": 2,
+      "userName": "이코딩",
+      "rating": 4,
+      "content": "원단이 아주 톡톡하고 탄탄합니다. 약간 두께감이 있어서 가을까지 입기 좋겠어요.",
+      "createdAt": "2026-05-19T09:15:00.000Z"
+    },
+    {
+      "id": 3,
+      "productId": 1,
+      "userId": 3,
+      "userName": "최스프링",
+      "rating": 5,
+      "content": "화이트 구매하고 마음에 들어서 블루도 바로 추가 구매했습니다. 옥스포드 셔츠 대만족!",
+      "createdAt": "2026-05-20T17:45:00.000Z"
+    },
+    {
+      "id": 4,
+      "productId": 3,
+      "userId": 1,
+      "userName": "김풀스택",
+      "rating": 4,
+      "content": "허리 밴딩이 매우 편안하고 다리가 정말 길어 보입니다. 가성비 최고네요.",
+      "createdAt": "2026-05-21T11:30:00.000Z"
+    }
+  ]
+}

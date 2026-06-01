@@ -1,0 +1,30 @@
+# Dependencies
+node_modules/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Claude Code internals
+.claude/
+.chrome-headless-profile/
+.chrome-qa-profile/
+.chrome-qa-profile2/
+handoff.md
+handoff-content-review.md

@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: antigravity-shop
+
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/shop_db}
+    username: ${SPRING_DATASOURCE_USERNAME:shop_user}
+    password: ${SPRING_DATASOURCE_PASSWORD:shop_pass}
+
+  jpa:
+    hibernate:
+      ddl-auto: validate          # 스키마는 Flyway가 관리 (Ch3)
+    properties:
+      hibernate:
+        format_sql: true
+    open-in-view: false           # 실무 권장: OSIV 끄기 (Service 경계 밖 Lazy 접근 방지)
+
+  # Ch3: Flyway가 db/migration/V*.sql 자동 적용
+  flyway:
+    enabled: true
+
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: 6379
+
+  # Ch1/Ch2: Java 21 Virtual Threads — 블로킹 I/O 워크로드 동시 처리량↑
+  threads:
+    virtual:
+      enabled: true
+
+# show-sql 대신 로깅으로 쿼리 확인 (Ch2 N+1 관찰용)
+logging:
+  level:
+    org.hibernate.SQL: DEBUG
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# TODO(Ch4): JWT 시크릿/만료 설정 추가
+# app:
+#   jwt:
+#     secret: ${JWT_SECRET}
+#     access-exp-minutes: 15
+#     refresh-exp-days: 7

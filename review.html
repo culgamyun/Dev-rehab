@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘의 복습 · Antigravity Rehab</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    /* hidden 속성이 display:flex 등에 덮이지 않도록 전역 가드 */
+    [hidden] { display: none !important; }
+
+    #review-main { max-width: 760px; margin: 0 auto; padding: 40px 20px 90px; }
+    .rev-header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+    .rev-header h1 { font-size: 24px; font-weight: 800; }
+    #rev-substat { font-size: 13px; color: var(--text-muted); margin-top: 6px; }
+    .rev-home { font-size: 13px; color: var(--text-muted); text-decoration: none; white-space: nowrap; }
+    .rev-home:hover { color: var(--accent-color, #7c5cff); }
+    .rev-progress { height: 6px; background: rgba(255,255,255,0.06); border-radius: 99px; overflow: hidden; margin: 20px 0 6px; }
+    #rev-progress-fill { height: 100%; width: 0; background: var(--accent-color, #7c5cff); transition: width .3s ease; }
+    #rev-progress-text { font-size: 12px; color: var(--text-muted); text-align: right; display: block; margin-bottom: 18px; }
+    .rev-card-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .rev-chapter-badge { font-size: 11px; font-weight: 700; color: var(--accent-color, #7c5cff); background: rgba(255,255,255,0.06); padding: 3px 10px; border-radius: 10px; }
+    .rev-type-badge { font-size: 11px; color: var(--text-muted); font-weight: 600; }
+    .rev-q { font-size: 17px; font-weight: 800; margin: 6px 0 16px; line-height: 1.55; }
+    .rev-options { display: flex; flex-direction: column; gap: 10px; }
+    .rev-explain { margin-top: 16px; padding: 14px 16px; border-radius: 10px; background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); font-size: 14px; line-height: 1.65; }
+    .rev-explain pre { margin: 8px 0; }
+    .rev-result { margin-top: 12px; font-size: 13px; font-weight: 700; }
+    .rev-result.rev-ok { color: var(--devops, #22c55e); }
+    .rev-result.rev-no { color: var(--interview, #ef4444); }
+    .rev-rating { display: flex; align-items: center; gap: 8px; margin-top: 20px; flex-wrap: wrap; }
+    .rev-rating-label { font-size: 12px; color: var(--text-muted); margin-right: 4px; }
+    .rev-rate { padding: 8px 16px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); cursor: pointer; font-size: 13px; font-weight: 600; transition: border-color .15s; }
+    .rev-rate:hover { border-color: var(--accent-color, #7c5cff); }
+    .rev-rate:disabled { opacity: .4; cursor: default; }
+    .rev-rate-chosen { border-color: var(--accent-color, #7c5cff) !important; background: var(--accent-color, #7c5cff) !important; color: #fff !important; }
+    .rev-empty { text-align: center; padding: 44px 24px; }
+    .rev-empty h3 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+    .rev-empty p { color: var(--text-muted); font-size: 14px; line-height: 1.65; }
+    .rev-code { min-height: 120px; }
+    /* 하단 이전/다음 네비게이션 */
+    .rev-pager { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 24px; }
+    .rev-nav-btn { padding: 10px 18px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); cursor: pointer; font-size: 13px; font-weight: 700; transition: border-color .15s; }
+    .rev-nav-btn:hover:not(:disabled) { border-color: var(--accent-color, #7c5cff); }
+    .rev-nav-btn:disabled { opacity: .35; cursor: default; }
+    .rev-pos { font-size: 13px; color: var(--text-muted); font-weight: 600; }
+  </style>
+</head>
+<body class="review-page">
+  <main id="review-main">
+    <div class="rev-header">
+      <div>
+        <h1>🔁 오늘의 복습</h1>
+        <p id="rev-substat">불러오는 중...</p>
+      </div>
+      <a class="rev-home" href="index.html">← 대시보드</a>
+    </div>
+
+    <div class="rev-progress"><div id="rev-progress-fill"></div></div>
+    <span id="rev-progress-text"></span>
+
+    <div id="card-area"></div>
+
+    <div id="rev-pager" class="rev-pager" hidden>
+      <button id="rev-prev" class="rev-nav-btn">← 이전</button>
+      <span id="rev-pos" class="rev-pos"></span>
+      <button id="rev-next" class="rev-nav-btn">다음 →</button>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <!-- 라이브러리: 코드 하이라이트 + 채점 엔진 + SRS -->
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="assets/quiz.js"></script>
+  <script src="assets/srs.js"></script>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var MAX_SESSION = 20;
+      var CHAPTER_TITLES = {
+        "chapter-1": "01. 모던 자바",
+        "chapter-2": "02. 스프링 부트 & JPA",
+        "chapter-3": "03. DB & SQL",
+        "chapter-4": "04. Security & JWT",
+        "chapter-5": "05. React & Next.js",
+        "chapter-6": "06. 고급 React",
+        "chapter-7": "07. 풀스택 & 소켓",
+        "chapter-8": "08. DevOps & MSA",
+        "appendix-test": "부록 A. 테스트",
+        "appendix-interview": "부록 B. 면접 CS",
+        "appendix-algorithm": "부록 C. 알고리즘",
+        "appendix-ai": "부록 D. AI-Native",
+        "glossary": "용어 사전"
+      };
+
+      // 세션 상태
+      var queue = [];          // 이번 세션 카드 목록 (고정)
+      var pos = 0;             // 현재 위치
+      var sess = {};           // pos -> { revealed, selectedIdx, codeValue, codeResult, quality }
+      var graded = 0;          // 이번 세션 평가한 카드 수(중복 제외)
+
+      function esc(s) {
+        s = (s == null) ? "" : String(s);
+        return (typeof escapeHtml === "function") ? escapeHtml(s) : s;
+      }
+      function chapterTitle(k) { return CHAPTER_TITLES[k] || k; }
+      function shuffle(a) {
+        for (var i = a.length - 1; i > 0; i--) {
+          var j = Math.floor(Math.random() * (i + 1));
+          var t = a[i]; a[i] = a[j]; a[j] = t;
+        }
+      }
+
+      document.addEventListener("DOMContentLoaded", function () {
+        document.documentElement.setAttribute("data-theme", localStorage.getItem("antigravity_theme") || "dark");
+
+        if (typeof srs === "undefined") {
+          document.getElementById("card-area").innerHTML =
+            '<div class="glass-panel quiz-card rev-empty"><h3>복습 엔진 로드 실패</h3><p>srs.js / quiz.js 로딩을 확인하세요. (로컬 웹 서버에서 실행 중인지 확인)</p></div>';
+          return;
+        }
+
+        var startSession = function () {
+          var stats = srs.getStats();
+          setSubstat(stats);
+
+          var due = srs.getDueCards();
+          shuffle(due);
+          queue = due.slice(0, MAX_SESSION);
+
+          if (queue.length === 0) { showEmpty(stats.total); return; }
+          wirePager();
+          renderCard();
+        };
+        // 용어 카드 병합 후 세션 시작 (구버전 srs.js 캐시 대비 방어)
+        if (typeof srs.ensureGlossaryCards === "function") srs.ensureGlossaryCards(startSession);
+        else startSession();
+      });
+
+      function setSubstat(stats) {
+        document.getElementById("rev-substat").textContent =
+          "전체 " + stats.total + "문항 · 학습 " + stats.learned + " · 오늘 대상 " + stats.due;
+      }
+
+      function wirePager() {
+        document.getElementById("rev-prev").addEventListener("click", function () {
+          if (pos > 0) { pos--; renderCard(); }
+        });
+        document.getElementById("rev-next").addEventListener("click", function () {
+          if (pos < queue.length - 1) { pos++; renderCard(); }
+          else { showDone(); }
+        });
+      }
+
+      function updateChrome() {
+        document.getElementById("rev-pager").hidden = false;
+        document.getElementById("rev-prev").disabled = (pos === 0);
+        document.getElementById("rev-next").textContent = (pos === queue.length - 1) ? "복습 종료 ✓" : "다음 →";
+        document.getElementById("rev-pos").textContent = (pos + 1) + " / " + queue.length;
+        document.getElementById("rev-progress-text").textContent = (pos + 1) + " / " + queue.length;
+        document.getElementById("rev-progress-fill").style.width = queue.length ? (Math.round((pos / queue.length) * 100) + "%") : "0%";
+      }
+
+      function badge(card) {
+        var label = card.type === "mcq" ? "객관식" : (card.type === "code" ? "코드 완성" : "용어");
+        return '<div class="rev-card-top"><span class="rev-chapter-badge">' + esc(chapterTitle(card.chapter)) +
+          '</span><span class="rev-type-badge">' + label + '</span></div>';
+      }
+      function ratingHtml() {
+        return '<div class="rev-rating" hidden><span class="rev-rating-label">회상 난이도</span>' +
+          '<button class="rev-rate" data-q="2">다시</button>' +
+          '<button class="rev-rate" data-q="3">어려움</button>' +
+          '<button class="rev-rate" data-q="4">보통</button>' +
+          '<button class="rev-rate" data-q="5">쉬움</button></div>';
+      }
+      function mcqHtml(card) {
+        var opts = (card.options || []).map(function (o, i) {
+          return '<button class="quiz-option rev-opt" data-i="' + i + '">' + esc(o) + '</button>';
+        }).join("");
+        return '<div class="glass-panel quiz-card">' + badge(card) +
+          '<h3 class="rev-q">Q. ' + esc(card.question) + '</h3>' +
+          '<div class="rev-options">' + opts + '</div>' +
+          '<div class="rev-explain" hidden><strong>💡 해설</strong><br>' + esc(card.explanation) + '</div>' +
+          ratingHtml() + '</div>';
+      }
+      function codeHtml(card) {
+        var lang = esc(card.language || "java");
+        return '<div class="glass-panel quiz-card">' + badge(card) +
+          '<h3 class="rev-q">Q. ' + esc(card.prompt) + '</h3>' +
+          '<textarea class="code-quiz-input rev-code" spellcheck="false">' + esc(card.starter || "") + '</textarea>' +
+          '<div style="margin-top:12px;"><button class="btn-submit-quiz rev-grade">채점</button></div>' +
+          '<div class="rev-result" hidden></div>' +
+          '<div class="rev-explain" hidden><strong>🟢 모범 답안</strong>' +
+            '<pre class="language-' + lang + '"><code class="language-' + lang + '">' + esc(card.solution || "") + '</code></pre>' +
+            '<strong>💡 해설</strong><br>' + esc(card.explanation) + '</div>' +
+          ratingHtml() + '</div>';
+      }
+
+      function termHtml(card) {
+        return '<div class="glass-panel quiz-card">' + badge(card) +
+          '<h3 class="rev-q">📖 ' + esc(card.name) + '</h3>' +
+          '<p style="color:var(--text-muted); font-size:13px; margin:-6px 0 6px;">이 용어의 뜻을 먼저 떠올려 본 뒤 정의를 확인하세요.</p>' +
+          '<div style="margin-top:12px;"><button class="btn-submit-quiz rev-reveal">정의 보기</button></div>' +
+          '<div class="rev-explain" hidden><strong>📖 정의</strong><br>' + esc(card.definition) +
+            (card.explanation ? '<br><br><strong>💡 설명</strong><br>' + esc(card.explanation) : '') + '</div>' +
+          ratingHtml() + '</div>';
+      }
+
+      function renderCard() {
+        var card = queue[pos];
+        var area = document.getElementById("card-area");
+
+        if (card.type === "mcq") area.innerHTML = mcqHtml(card);
+        else if (card.type === "code") area.innerHTML = codeHtml(card);
+        else if (card.type === "term") area.innerHTML = termHtml(card);
+        else { area.innerHTML = '<div class="glass-panel quiz-card rev-empty"><p>지원하지 않는 카드 유형: ' + esc(card.type) + '</p></div>'; updateChrome(); return; }
+
+        updateChrome();
+
+        var st = sess[pos];
+        if (st && st.revealed) {
+          if (card.type === "mcq") restoreMcq(card, area, st);
+          else if (card.type === "code") restoreCode(card, area, st);
+          else restoreTerm(card, area, st);
+        } else {
+          if (card.type === "mcq") wireMcq(card, area);
+          else if (card.type === "code") wireCode(card, area);
+          else wireTerm(card, area);
+        }
+      }
+
+      function showExplain(area) {
+        var ex = area.querySelectorAll(".rev-explain");
+        for (var i = 0; i < ex.length; i++) ex[i].hidden = false;
+        var rating = area.querySelector(".rev-rating");
+        if (rating) rating.hidden = false;
+        if (window.Prism) { try { window.Prism.highlightAllUnder(area); } catch (e) {} }
+        wireRating(area);
+      }
+
+      function markMcq(area, card, i) {
+        var sel = area.querySelector('.rev-opt[data-i="' + i + '"]');
+        if (sel) sel.classList.add(i === card.correct ? "correct" : "incorrect");
+        if (i !== card.correct) {
+          var ok = area.querySelector('.rev-opt[data-i="' + card.correct + '"]');
+          if (ok) ok.classList.add("correct");
+        }
+      }
+      function showCodeResult(area, res) {
+        var box = area.querySelector(".rev-result");
+        box.hidden = false;
+        box.className = "rev-result " + (res.success ? "rev-ok" : "rev-no");
+        box.textContent = res.success ? "✓ 정답 — 조건 충족" : ("✗ 조건 미달: " + (res.reason || ""));
+      }
+      function highlightChosen(area, q) {
+        if (typeof q !== "number") return;
+        var c = area.querySelector('.rev-rate[data-q="' + q + '"]');
+        if (c) c.classList.add("rev-rate-chosen");
+      }
+
+      // 처음 답하는 경우
+      function wireMcq(card, area) {
+        var opts = area.querySelectorAll(".rev-opt");
+        opts.forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            if (sess[pos] && sess[pos].revealed) return;
+            var i = parseInt(btn.getAttribute("data-i"), 10);
+            opts.forEach(function (b) { b.disabled = true; });
+            markMcq(area, card, i);
+            sess[pos] = { revealed: true, selectedIdx: i };
+            showExplain(area);
+          });
+        });
+      }
+      function wireCode(card, area) {
+        var btn = area.querySelector(".rev-grade");
+        btn.addEventListener("click", function () {
+          if (sess[pos] && sess[pos].revealed) return;
+          var ta = area.querySelector(".rev-code");
+          var res = (typeof gradeCodeQuiz === "function")
+            ? gradeCodeQuiz(ta.value, card.validator || {})
+            : { success: false, reason: "채점기 로드 실패" };
+          showCodeResult(area, res);
+          btn.disabled = true; ta.disabled = true;
+          sess[pos] = { revealed: true, codeValue: ta.value, codeResult: res };
+          showExplain(area);
+        });
+      }
+
+      // 되돌아온 경우 — 이전 답변/평가 상태 복원
+      function restoreMcq(card, area, st) {
+        var opts = area.querySelectorAll(".rev-opt");
+        opts.forEach(function (b) { b.disabled = true; });
+        if (typeof st.selectedIdx === "number") markMcq(area, card, st.selectedIdx);
+        showExplain(area);
+        highlightChosen(area, st.quality);
+      }
+      function restoreCode(card, area, st) {
+        var ta = area.querySelector(".rev-code");
+        if (ta) { if (typeof st.codeValue === "string") ta.value = st.codeValue; ta.disabled = true; }
+        var btn = area.querySelector(".rev-grade"); if (btn) btn.disabled = true;
+        if (st.codeResult) showCodeResult(area, st.codeResult);
+        showExplain(area);
+        highlightChosen(area, st.quality);
+      }
+
+      function wireTerm(card, area) {
+        var btn = area.querySelector(".rev-reveal");
+        if (!btn) return;
+        btn.addEventListener("click", function () {
+          if (sess[pos] && sess[pos].revealed) return;
+          btn.disabled = true;
+          sess[pos] = { revealed: true };
+          showExplain(area);
+        });
+      }
+      function restoreTerm(card, area, st) {
+        var btn = area.querySelector(".rev-reveal");
+        if (btn) btn.disabled = true;
+        showExplain(area);
+        highlightChosen(area, st.quality);
+      }
+
+      function wireRating(area) {
+        area.querySelectorAll(".rev-rate").forEach(function (b) {
+          b.addEventListener("click", function () {
+            var q = parseInt(b.getAttribute("data-q"), 10);
+            var first = !(sess[pos] && typeof sess[pos].quality === "number");
+            if (sess[pos]) sess[pos].quality = q;
+            srs.grade(queue[pos].id, q);
+            if (first) graded++;
+            area.querySelectorAll(".rev-rate").forEach(function (x) { x.classList.remove("rev-rate-chosen"); });
+            b.classList.add("rev-rate-chosen");
+            // 평가 후 자동으로 다음 카드 (마지막이면 종료 화면)
+            if (pos < queue.length - 1) { pos++; renderCard(); }
+            else { showDone(); }
+          });
+        });
+      }
+
+      function showEmpty(total) {
+        document.getElementById("rev-pager").hidden = true;
+        document.getElementById("rev-progress-text").textContent = "";
+        document.getElementById("card-area").innerHTML =
+          '<div class="glass-panel quiz-card rev-empty">' +
+          (total > 0
+            ? '<h3>오늘 복습할 문항이 없어요 🎉</h3><p>예정된 카드를 모두 끝냈습니다. 내일 다시 차오릅니다.</p>'
+            : '<h3>아직 등록된 복습 문항이 없어요</h3><p>챕터를 한 번 열어 퀴즈가 렌더되면 그 문항이 복습 큐에 자동 등록됩니다.<br>챕터 1~2부터 열어보세요.</p>') +
+          '<div style="margin-top:18px;"><a class="btn-submit-quiz" href="index.html" style="text-decoration:none;">← 대시보드로</a></div></div>';
+      }
+
+      function showDone() {
+        document.getElementById("rev-pager").hidden = true;
+        document.getElementById("rev-progress-text").textContent = queue.length + " / " + queue.length;
+        document.getElementById("rev-progress-fill").style.width = "100%";
+        document.getElementById("card-area").innerHTML =
+          '<div class="glass-panel quiz-card rev-empty"><h3>오늘 복습 완료! 🔥</h3>' +
+          '<p>' + graded + '개 문항을 평가했습니다. 틀린 건 곧, 맞은 건 더 나중에 다시 나옵니다.</p>' +
+          '<div style="margin-top:18px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">' +
+          '<a class="btn-submit-quiz" href="index.html" style="text-decoration:none;">← 대시보드</a>' +
+          '<button id="rev-back-last" class="btn-sidebar" style="width:auto; padding:8px 14px;">← 마지막 문항</button>' +
+          '<button class="btn-sidebar" style="width:auto; padding:8px 14px;" onclick="location.reload()">남은 카드 더 보기 🔁</button></div></div>';
+        var backLast = document.getElementById("rev-back-last");
+        if (backLast) backLast.addEventListener("click", function () { pos = queue.length - 1; renderCard(); });
+      }
+    })();
+  </script>
+</body>
+</html>

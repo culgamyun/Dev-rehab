@@ -1,0 +1,407 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-05-29T13:43:05.367Z",
+  "activeFeatures": [
+    "assets",
+    "shop",
+    "product",
+    "dto",
+    "order",
+    "auth",
+    "frontend",
+    "store",
+    "products",
+    "[id]"
+  ],
+  "primaryFeature": "assets",
+  "features": {
+    "assets": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-27T05:37:25.049Z",
+        "lastUpdated": "2026-05-29T13:43:05.366Z"
+      },
+      "lastFile": "C:\\Study\\assets\\main.js"
+    },
+    "shop": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:45:29.717Z",
+        "lastUpdated": "2026-05-28T06:46:54.773Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\backend\\src\\main\\java\\com\\antigravity\\shop\\common\\SecurityConfig.java"
+    },
+    "product": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:45:41.101Z",
+        "lastUpdated": "2026-05-28T06:47:20.653Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\backend\\src\\test\\java\\com\\antigravity\\shop\\product\\ProductServiceTest.java"
+    },
+    "dto": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:45:54.961Z",
+        "lastUpdated": "2026-05-28T06:48:29.846Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\backend\\src\\main\\java\\com\\antigravity\\shop\\auth\\dto\\LoginRequest.java"
+    },
+    "order": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:47:51.102Z",
+        "lastUpdated": "2026-05-28T06:50:50.153Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\frontend\\app\\order\\page.tsx"
+    },
+    "auth": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:48:39.857Z",
+        "lastUpdated": "2026-05-28T06:49:03.139Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\backend\\src\\test\\java\\com\\antigravity\\shop\\auth\\AuthFlowTest.java"
+    },
+    "frontend": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:49:38.152Z",
+        "lastUpdated": "2026-05-28T06:51:01.388Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\frontend\\next-env.d.ts"
+    },
+    "store": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:50:04.386Z",
+        "lastUpdated": "2026-05-28T06:50:04.386Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\frontend\\store\\cart.ts"
+    },
+    "products": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:50:29.037Z",
+        "lastUpdated": "2026-05-28T06:50:29.037Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\frontend\\app\\products\\page.tsx"
+    },
+    "[id]": {
+      "phase": "do",
+      "phaseNumber": 3,
+      "matchRate": null,
+      "iterationCount": 0,
+      "requirements": [],
+      "documents": {},
+      "timestamps": {
+        "started": "2026-05-28T06:50:37.117Z",
+        "lastUpdated": "2026-05-28T06:50:37.117Z"
+      },
+      "lastFile": "C:\\Study\\antigravity-app\\frontend\\app\\products\\[id]\\page.tsx"
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-05-26T06:01:39.356Z",
+    "onboardingCompleted": false,
+    "lastActivity": "2026-05-29T13:43:05.367Z"
+  },
+  "history": [
+    {
+      "timestamp": "2026-05-27T05:37:25.049Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-27T05:38:00.298Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-27T07:59:46.827Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-27T08:05:09.167Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-27T08:05:39.603Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:45:29.717Z",
+      "feature": "shop",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:45:41.101Z",
+      "feature": "product",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:45:47.660Z",
+      "feature": "product",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:45:54.961Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:46:01.359Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:46:10.794Z",
+      "feature": "product",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:46:20.649Z",
+      "feature": "product",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:46:41.006Z",
+      "feature": "shop",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:46:54.773Z",
+      "feature": "shop",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:47:20.653Z",
+      "feature": "product",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:47:51.102Z",
+      "feature": "order",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:47:58.637Z",
+      "feature": "order",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:48:10.194Z",
+      "feature": "order",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:48:22.003Z",
+      "feature": "order",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:48:29.846Z",
+      "feature": "dto",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:48:39.857Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:48:54.572Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:49:03.139Z",
+      "feature": "auth",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:49:38.152Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:49:44.817Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:49:55.582Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:50:04.386Z",
+      "feature": "store",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:50:11.530Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:50:18.881Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:50:29.037Z",
+      "feature": "products",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:50:37.117Z",
+      "feature": "[id]",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:50:50.153Z",
+      "feature": "order",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T06:51:01.388Z",
+      "feature": "frontend",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T08:24:12.546Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T08:25:04.979Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T08:25:14.291Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-28T09:59:40.184Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-29T05:54:25.587Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-29T05:54:26.979Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-29T05:54:28.160Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-05-29T13:43:05.366Z",
+      "feature": "assets",
+      "phase": "do",
+      "action": "updated"
+    }
+  ]
+}

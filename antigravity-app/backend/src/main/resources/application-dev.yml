@@ -1,0 +1,26 @@
+# 🚀 Docker 없이 한 줄 실행용 프로파일 (H2 인메모리)
+#   실행:  ./gradlew bootRun --args='--spring.profiles.active=dev'
+#   → PostgreSQL/Redis/Docker 전혀 불필요. 메모리 DB라 종료 시 데이터 사라짐(학습엔 충분).
+#   → http://localhost:8080/api/products 로 시드 상품 즉시 확인
+#   → http://localhost:8080/swagger-ui.html 로 API 문서
+spring:
+  datasource:
+    url: jdbc:h2:mem:devdb;MODE=PostgreSQL;DB_CLOSE_DELAY=-1
+    username: sa
+    password: ''
+    driver-class-name: org.h2.Driver
+  jpa:
+    hibernate:
+      ddl-auto: create-drop          # 엔티티로 스키마 자동 생성
+    defer-datasource-initialization: true   # 스키마 생성 후 data.sql 시드 실행
+  flyway:
+    enabled: false                   # dev에선 Flyway 대신 ddl-auto 사용
+  sql:
+    init:
+      mode: embedded                 # H2(임베디드)에서만 data.sql 실행
+  # H2 웹 콘솔 (http://localhost:8080/h2-console, JDBC URL: jdbc:h2:mem:devdb)
+  h2:
+    console:
+      enabled: true
+
+# dev에선 Redis 의존이 떠도 실제 연결은 lazy라 미실행해도 부팅됨.

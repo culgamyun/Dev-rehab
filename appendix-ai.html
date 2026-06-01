@@ -1,0 +1,843 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appendix D - AI-Native Integration (pgvector · Spring AI · Generative UI)</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item active" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content" data-current-chapter="appendix-ai">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>스페셜 부록</span> &gt; <span>부록 D</span></div>
+      <h1 style="color: var(--ai);">부록 D. AI-Native 통합 — pgvector · Spring AI · Generative UI</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">본 8챕터를 완주한 학습자를 위한 <strong>2026 AI 통합 패러다임</strong> 심화 부록입니다. 단순한 챗봇 연동을 넘어, 의미 기반 벡터 검색(pgvector), 에이전트 스스로 도구 사용을 결정하는 Agentic RAG, LLM이 React 컴포넌트를 실시간 생성하는 Generative UI까지 — 시니어 면접에서 가장 자주 질문되는 신 패러다임 3종을 의류 쇼핑몰 시나리오로 정복합니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/appendix-ai-hero.webp" alt="AI Native 통합 흐름을 지능형 서비스 마을로 표현한 2D 파스텔 일러스트" loading="lazy">
+      <figcaption>벡터 검색, RAG, Spring AI, Generative UI가 지능형 서비스 흐름으로 연결되는 장면입니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           PRELUDE: 왜 AI-Native인가
+           ================================================================ -->
+      <section id="prelude">
+        <h2>0. 왜 지금 AI-Native 통합을 배워야 하는가</h2>
+        <p>2024~2025년을 거치며 자바/리액트 채용 공고의 우대사항은 한 차원 진화했습니다. 단순한 CRUD나 REST API 설계 능력은 <em>기본기</em>로 격하되고, <strong>"LLM을 어떻게 자기 서비스에 깊게 녹였는가"</strong>가 시니어 차별화의 핵심으로 자리잡았습니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 옷가게 점원의 진화</h4>
+          <p><strong>1세대 점원 (CRUD):</strong> "후드 카테고리 보여주세요" → SELECT 쿼리로 카탈로그 반환.
+          <br><strong>2세대 점원 (검색 엔진):</strong> "오버핏 후드" → ElasticSearch 키워드 매칭.
+          <br><strong>3세대 점원 (벡터 검색):</strong> "비 오는 날 입을 만한 옷" → 의미를 이해해 후드/코트/우비를 함께 추천.
+          <br><strong>4세대 점원 (Agentic RAG):</strong> "내가 작년에 산 검은 자켓이랑 어울리는 거" → 과거 주문 검색 → 색감 분석 → 추천 → 답변.
+          <br><strong>5세대 점원 (Generative UI):</strong> "이번 주 잘 팔린 후드 비교해줘" → 텍스트가 아닌 <em>실시간으로 그려진 BarChart 컴포넌트</em>로 응답.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-ai-search-evolution-analogy.webp" alt="검색 발전 단계를 쇼핑 도우미 흐름으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>검색은 단순 목록 조회에서 키워드 매칭을 지나 의미 기반 추천으로 확장됩니다.</figcaption>
+        </figure>
+
+        <p style="margin-top: 16px;">본 부록은 <strong>3세대 → 5세대까지의 핵심 도구</strong>를 다룹니다. 메인 8챕터의 어떤 부분이든 막히면 cross-link로 돌아가서 기초를 다시 다질 수 있습니다.</p>
+      </section>
+
+      <!-- LLM 기초 [v3.4 신규] -->
+      <section id="llm-basics">
+        <h2>LLM 기초 — 토큰·프롬프트·모델 (RAG 이전 토대)</h2>
+        <p>pgvector·RAG·Agentic RAG를 다루기 전에, 그 모든 것의 중심인 <strong>LLM이 무엇이고 어떻게 동작하는지</strong>의 기초가 필요합니다. 이 토대 없이 RAG부터 보면 "왜 검색이 필요한가"의 답을 놓칩니다.</p>
+
+        <h4 style="font-weight:700; color:var(--ai); margin: 20px 0 8px;">① LLM이란 / 토큰 / 컨텍스트 윈도우</h4>
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 초거대 자동완성기</h4>
+          <p><strong>LLM(거대 언어 모델)</strong>은 본질적으로 "다음에 올 단어를 확률로 예측하는 초거대 자동완성기"입니다. 방대한 텍스트로 학습해 문맥에 가장 그럴듯한 다음 토큰을 생성합니다.</p>
+        </div>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-ai-llm-basics-analogy.webp" alt="LLM의 토큰, 프롬프트, 컨텍스트 윈도우를 예측 장치로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>LLM은 제한된 컨텍스트 안의 토큰 흐름을 바탕으로 다음 출력을 예측하므로, 입력 범위와 품질이 중요합니다.</figcaption>
+        </figure>
+        <ul style="font-size: 13.5px; line-height: 1.85;">
+          <li><strong>토큰(Token)</strong>: LLM이 처리하는 텍스트 조각. 영어는 대략 단어의 0.75개, 한국어는 글자 단위에 가까움. "안녕하세요"는 여러 토큰. API 요금과 처리량이 토큰 수로 계산됩니다.</li>
+          <li><strong>컨텍스트 윈도우</strong>: 한 번에 LLM이 볼 수 있는 토큰의 최대량(예: 12.8만 토큰). 이를 넘으면 앞 내용을 "잊습니다" → RAG로 필요한 부분만 골라 넣는 이유.</li>
+          <li><strong>파라미터</strong>: 모델의 학습된 가중치 수(수십억~수조). 클수록 똑똑하지만 느리고 비쌈.</li>
+        </ul>
+
+        <h4 style="font-weight:700; color:var(--ai); margin: 20px 0 8px;">② 프롬프트 / 시스템 프롬프트</h4>
+<pre class="language-java"><code class="language-java">// 프롬프트: LLM에게 주는 입력(지시). 잘 쓰는 게 '프롬프트 엔지니어링'
+// 시스템 프롬프트: 대화 전체의 역할/규칙을 정하는 최상위 지시
+
+chatClient.prompt()
+    .system("너는 Antigravity Fashion의 친절한 패션 컨설턴트야. " +
+            "제공된 상품 정보에 없는 건 모른다고 솔직히 답해.")   // 시스템 프롬프트
+    .user("비 오는 날 입을 옷 추천해줘")                          // 유저 프롬프트
+    .call();
+// 시스템 프롬프트로 '거짓말(환각) 방지', '역할 고정'을 거는 것이 실무 기본</code></pre>
+
+        <h4 style="font-weight:700; color:var(--ai); margin: 20px 0 8px;">③ API 키 / 모델 제공자</h4>
+        <p style="font-size:13px;">LLM은 보통 <strong>모델 제공자</strong>(OpenAI, Anthropic, Google 등)의 API로 사용합니다. <strong>API 키</strong>는 그 API를 호출할 권한을 증명하는 비밀 토큰 — 절대 코드/깃에 하드코딩하지 말고 환경 변수나 시크릿 매니저로 관리합니다(Ch 4 보안, Ch 8 환경 변수와 연결). 모델마다 성능·속도·가격이 다릅니다(예: 빠르고 싼 mini 모델 vs 똑똑하고 비싼 대형 모델).</p>
+<pre class="language-java"><code class="language-java"># application.yml — API 키는 환경 변수로 주입 (하드코딩 금지!)
+spring:
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}     # 환경 변수에서 읽음
+      chat:
+        options:
+          model: gpt-4o-mini          # 모델 선택 (속도/비용/성능 트레이드오프)</code></pre>
+
+        <h4 style="font-weight:700; color:var(--ai); margin: 20px 0 8px;">④ RAG가 왜 필요한가 — LLM의 한계</h4>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 12px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">😵 환각 (Hallucination)</h4>
+            <p style="color:var(--text-muted);">모르는 것도 그럴듯하게 지어냄. 우리 쇼핑몰 상품 정보를 모르니 "있지도 않은 상품"을 추천할 수 있음.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">📅 최신성 한계</h4>
+            <p style="color:var(--text-muted);">학습 시점 이후 데이터를 모름. 오늘 입고된 신상, 실시간 재고를 알 리 없음.</p>
+          </div>
+        </div>
+        <p style="font-size:13px;"><strong>해결책이 RAG</strong>: 답변 직전에 우리 DB에서 관련 정보를 <em>검색</em>해 프롬프트에 넣어줌으로써, 환각을 줄이고 최신/사내 정보를 반영합니다. 그래서 다음 섹션의 벡터 검색(pgvector)이 RAG의 핵심 부품이 됩니다.</p>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ API 키 보안 → <a href="chapter-4.html#auth-security-foundations" style="color:var(--ai);">Ch 4 인증·보안 토대</a>·<a href="chapter-8.html#infra-basics" style="color:var(--ai);">Ch 8 환경 변수</a>, RAG 흐름 → 아래 <a href="#rag-basics" style="color:var(--ai);">RAG 기본 섹션</a>.</p>
+      </section>
+
+      <!-- ================================================================
+           SECTION A: pgvector + Hybrid Search
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, hsla(280, 70%, 58%, 0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--ai);">
+        <h3 style="font-weight: 800; color: var(--ai); font-size: 18px; margin: 0;">🧭 A. pgvector + 하이브리드 검색 (RRF)</h3>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin: 6px 0 0;">메인 챕터 연계: <a href="chapter-3.html#db-index-core" style="color:var(--ai);">Chapter 3 — B-Tree 인덱스 기초</a></p>
+      </div>
+
+      <!-- A.1 Embedding -->
+      <section id="embedding-basics">
+        <h2>A.1 임베딩(Embedding) — 의미를 좌표로 바꾸는 마법</h2>
+        <p>벡터 검색의 출발점은 <strong>임베딩</strong>입니다. 텍스트("오버사이즈 후드", "오버핏 후디")를 <strong>고차원 숫자 배열</strong>로 변환하면, 의미가 비슷한 텍스트는 비슷한 좌표를 갖게 됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 옷의 패션 좌표</h4>
+          <p>패션 매니저가 "오버핏 후드"를 <strong>(캐주얼 0.9, 스트릿 0.8, 격식 0.1, 따뜻함 0.7)</strong> 같은 4차원 좌표로 적어둔다고 상상해 보세요. "오버사이즈 후디"도 비슷한 좌표가 나옵니다. 두 좌표 간 거리(코사인 유사도)가 가까우면 의미가 비슷하다고 판단합니다. 실제 임베딩은 1,536차원 정도를 씁니다 (OpenAI text-embedding-3-small 기준).</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-ai-embedding-coordinate-analogy.webp" alt="임베딩을 의미 좌표 위의 상품 배치로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>임베딩은 문장이나 상품을 의미 좌표로 바꾸어 비슷한 것끼리 가까이 놓이게 합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">PostgreSQL에 pgvector 확장 설치 및 벡터 칼럼 추가</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-sql"><code class="language-sql">-- 1. 확장 활성화 (한 번만)
+CREATE EXTENSION IF NOT EXISTS vector;
+
+-- 2. 상품 테이블에 임베딩 칼럼 추가 (1,536차원)
+ALTER TABLE products
+  ADD COLUMN description_embedding vector(1536);
+
+-- 3. 벡터 검색 인덱스 (HNSW: 빠른 근사 최근접 이웃)
+CREATE INDEX ON products
+  USING hnsw (description_embedding vector_cosine_ops);
+
+-- 4. 코사인 유사도로 검색 (가까운 5개)
+SELECT id, name,
+       1 - (description_embedding &lt;=&gt; $query_embedding) AS similarity
+  FROM products
+ ORDER BY description_embedding &lt;=&gt; $query_embedding
+ LIMIT 5;</code></pre>
+
+        <p><strong>핵심 연산자:</strong></p>
+        <ul style="font-size: 13.5px; line-height: 1.85;">
+          <li><code>&lt;=&gt;</code> — 코사인 거리 (1에 가까울수록 다름)</li>
+          <li><code>&lt;-&gt;</code> — 유클리드 거리 (L2)</li>
+          <li><code>&lt;#&gt;</code> — 내적 (negative inner product)</li>
+        </ul>
+      </section>
+
+      <!-- A.2 BM25 limits -->
+      <section id="bm25-limits">
+        <h2>A.2 키워드 검색(BM25)의 한계와 보완</h2>
+        <p>오랫동안 검색의 왕은 BM25(키워드 가중치 알고리즘)였습니다. 하지만 BM25는 <strong>단어가 정확히 일치해야</strong> 점수를 주므로 다음과 같은 사례에서 무력합니다.</p>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">❌ BM25만 쓸 때</h4>
+            <p style="color:var(--text-muted);">사용자: "비 오는 날 입을 옷"
+            <br>→ "비", "오는", "날", "입을", "옷" 모두 상품 설명에 들어있어야 매칭.
+            <br>→ "방수 패딩"은 단어가 안 겹쳐서 탈락. 💀</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">✅ 벡터 검색만 쓸 때</h4>
+            <p style="color:var(--text-muted);">사용자: "비 오는 날 입을 옷"
+            <br>→ 의미 임베딩으로 "방수 패딩"과 거리 가까움 → 추천.
+            <br>→ 하지만 "후드 J-9F" 같은 <strong>정확한 상품 코드</strong>는 의미가 없어 못 찾음. 💀</p>
+          </div>
+        </div>
+
+        <p>그래서 실무에선 <strong>벡터 검색 + BM25를 결합</strong>합니다. 결합 방식이 곧 <strong>RRF</strong>입니다.</p>
+      </section>
+
+      <!-- A.3 RRF -->
+      <section id="rrf-pattern">
+        <h2>A.3 RRF (Reciprocal Rank Fusion) — 두 검색의 점수를 융합</h2>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 두 명의 평론가 종합 점수</h4>
+          <p>한 명의 평론가(BM25)는 정확한 단어 일치만 본다. 다른 평론가(Vector)는 의미를 본다. <strong>각 평론가에게 톱 10 리스트를 받고, 각 후보의 "순위"를 역수로 더한다.</strong> 톱 1은 1/1, 톱 2는 1/2, 톱 3은 1/3… 두 리스트에서 모두 상위권인 후보는 자연스럽게 높은 합계를 갖습니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-ai-hybrid-rrf-analogy.webp" alt="하이브리드 검색과 RRF를 두 평론가의 추천 통합으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>하이브리드 검색은 키워드 순위와 의미 순위를 함께 반영해 더 균형 잡힌 결과를 만듭니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">RRF 점수 산출 공식 (k는 보통 60)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// RRF Score(doc) = sum over each ranker R of  1 / (k + rank_R(doc))
+public Map&lt;Long, Double&gt; rrf(List&lt;Long&gt; bm25Ranks,
+                              List&lt;Long&gt; vectorRanks,
+                              int k) {
+    Map&lt;Long, Double&gt; score = new HashMap&lt;&gt;();
+    addRanks(score, bm25Ranks, k);
+    addRanks(score, vectorRanks, k);
+    return score;  // 호출부에서 sorted by value desc → 톱 N
+}
+
+private void addRanks(Map&lt;Long, Double&gt; acc, List&lt;Long&gt; ranks, int k) {
+    for (int i = 0; i &lt; ranks.size(); i++) {
+        long id = ranks.get(i);
+        acc.merge(id, 1.0 / (k + i + 1), Double::sum);
+    }
+}</code></pre>
+
+        <p><strong>왜 단순합이 아니고 역수합인가:</strong> 순위 1과 2의 차이는 크고, 순위 50과 51의 차이는 작게 만들기 위해서입니다. 검색의 본능과 맞습니다.</p>
+      </section>
+
+      <!-- A.4 Spring 실전 -->
+      <section id="spring-hybrid-search">
+        <h2>A.4 쇼핑몰 시나리오 — Spring에서 하이브리드 검색 엔드포인트</h2>
+        <p>Antigravity Fashion에서 "비 오는 날 입을 옷" 같은 자연어 검색을 받아 BM25 + 벡터 검색 결과를 RRF로 융합합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">ProductSearchService.java — 하이브리드 검색 흐름</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">@Service
+@RequiredArgsConstructor
+public class ProductSearchService {
+    private final ProductRepository productRepo;
+    private final EmbeddingClient embeddingClient;  // Spring AI
+
+    public List&lt;Product&gt; hybridSearch(String query, int topN) {
+        // 1. 쿼리를 임베딩으로 변환
+        float[] queryVec = embeddingClient.embed(query);
+
+        // 2. BM25 (PostgreSQL Full-Text Search) Top N
+        List&lt;Long&gt; bm25Ids = productRepo.searchByBm25(query, topN * 2);
+
+        // 3. 벡터 검색 Top N
+        List&lt;Long&gt; vectorIds = productRepo.searchByVector(queryVec, topN * 2);
+
+        // 4. RRF 융합
+        Map&lt;Long, Double&gt; fused = rrf(bm25Ids, vectorIds, 60);
+
+        // 5. 점수 순 정렬 → Top N 상품 fetch
+        List&lt;Long&gt; topIds = fused.entrySet().stream()
+            .sorted(Map.Entry.&lt;Long, Double&gt;comparingByValue().reversed())
+            .limit(topN)
+            .map(Map.Entry::getKey)
+            .toList();
+
+        return productRepo.findAllByIdInOrder(topIds);
+    }
+}</code></pre>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 더 깊은 인덱스 이론은 <a href="chapter-3.html#db-index-core" style="color:var(--ai);">Chapter 3 → B-Tree 인덱스 섹션</a>에서 복습.</p>
+
+        <p style="margin-top: 20px;"><strong>🧭 하이브리드 검색 전체 흐름 시각화:</strong></p>
+
+        <!-- Mermaid: Hybrid Search Flowchart -->
+        <pre class="mermaid">
+flowchart TD
+    Q["🗣️ 사용자 질의<br/>'비 오는 날 입을 옷'"]
+    E["🧬 EmbeddingClient<br/>(Spring AI)<br/>1,536차원 벡터 생성"]
+    V[("🌐 pgvector<br/>HNSW 인덱스")]
+    B[("🔤 BM25<br/>Full-Text Index")]
+    R1["📋 벡터 Top N×2<br/>(의미 유사)"]
+    R2["📋 BM25 Top N×2<br/>(키워드 일치)"]
+    RRF["🔀 RRF 융합<br/>score = Σ 1/(k+rank)"]
+    F["🏷️ 정렬 후 Top N<br/>최종 결과"]
+
+    Q --> E
+    E -->|벡터 검색| V
+    Q -->|키워드 검색| B
+    V --> R1
+    B --> R2
+    R1 --> RRF
+    R2 --> RRF
+    RRF --> F
+
+    style Q fill:#74b9ff,color:#fff
+    style RRF fill:#fd79a8,color:#fff
+    style F fill:#00b894,color:#fff
+        </pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION B: Spring AI + Agentic RAG
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, hsla(280, 70%, 58%, 0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--ai);">
+        <h3 style="font-weight: 800; color: var(--ai); font-size: 18px; margin: 0;">🤖 B. Spring AI + Agentic RAG</h3>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin: 6px 0 0;">메인 챕터 연계: <a href="chapter-4.html" style="color:var(--ai);">Chapter 4 — REST API 설계</a> · <a href="chapter-8.html" style="color:var(--ai);">Chapter 8 — MSA 아키텍처</a></p>
+      </div>
+
+      <!-- B.1 RAG basics -->
+      <section id="rag-basics">
+        <h2>B.1 RAG — 검색 증강 생성의 기본 흐름</h2>
+        <p>LLM은 만능이 아닙니다. 학습 시점 이후 데이터를 모르고, 우리 회사 상품 카탈로그도 당연히 모릅니다. <strong>RAG(Retrieval-Augmented Generation)</strong>은 답변 직전에 관련 문서를 검색해서 프롬프트에 끼워넣는 패턴입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 도서관에서 책 찾아 답하는 똑똑한 비서</h4>
+          <p>사장님이 "지난주에 들어온 신상 후드 추천해줘"라고 묻습니다.
+          <br><strong>비서(LLM)는 신상 정보를 모릅니다.</strong> 하지만 똑똑한 비서는 먼저 <em>창고 장부(벡터 DB)</em>에서 "신상 후드" 임베딩 검색 → 톱 5개 상품 정보를 가져옴 → 그 정보를 자신의 메모에 붙여 답변합니다.</p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, hsla(0, 75%, 60%, 0.06), transparent); border-left: 3px solid var(--interview); padding: 10px 14px; margin: 12px 0; border-radius: 6px; font-size: 12.5px;">
+          <strong style="color: var(--interview);">🔍 비유가 깨지는 지점:</strong> RAG의 답변 품질은 <strong>검색 품질에 전적으로 종속</strong>됩니다 — 비서가 엉뚱한 책을 찾아오면(검색 미스) 답도 틀립니다(garbage in, garbage out). 또 관련 문서를 넣어줘도 <strong>LLM은 여전히 환각할 수 있습니다</strong>(가져온 정보를 무시하거나 왜곡). 그래서 실무에선 검색 정확도(임베딩 품질·청킹·하이브리드 검색), 출처 표기, 평가(eval) 파이프라인이 RAG의 진짜 난이도입니다.
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-ai-rag-library-assistant-analogy.webp" alt="RAG를 관련 자료를 먼저 찾는 도서관 도우미로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>RAG는 모델이 답하기 전에 관련 문서를 찾아 근거를 함께 넣어주는 방식입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">Spring AI ChatClient + RAG 기본 패턴</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">@RestController
+@RequiredArgsConstructor
+public class ProductChatController {
+    private final ChatClient chatClient;
+    private final ProductSearchService searchService;
+
+    @PostMapping("/api/chat/recommend")
+    public ChatResponse recommend(@RequestBody @Valid ChatRequest req) {
+        // 1. 사용자 질문으로 관련 상품 검색
+        List&lt;Product&gt; context = searchService.hybridSearch(req.message(), 5);
+
+        // 2. 프롬프트에 컨텍스트 삽입
+        String systemPrompt = """
+            너는 Antigravity Fashion의 친절한 패션 컨설턴트야.
+            아래 상품 정보를 참고해서 답변해. 정보에 없는 건 솔직히 모른다고 해.
+
+            [상품 정보]
+            %s
+            """.formatted(formatProducts(context));
+
+        // 3. ChatClient에 위임
+        return chatClient.prompt()
+            .system(systemPrompt)
+            .user(req.message())
+            .call()
+            .chatResponse();
+    }
+}</code></pre>
+      </section>
+
+      <!-- B.2 Agentic RAG -->
+      <section id="agentic-rag">
+        <h2>B.2 Agentic RAG — 에이전트가 스스로 도구 사용을 결정</h2>
+        <p>단순 RAG는 <strong>매번 검색하고 매번 답변</strong>합니다. 하지만 "안녕"이라는 인사에도 벡터 검색을 도는 건 낭비입니다. <strong>Agentic RAG</strong>는 LLM이 <strong>"이 질문은 검색이 필요한가?"</strong>를 스스로 판단하고, 필요하면 <strong>여러 번(multi-hop)</strong> 검색을 돌립니다.</p>
+
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 18px 22px; margin: 16px 0; font-size: 13px;">
+          <h4 style="margin: 0 0 10px; color: var(--ai); font-weight: 700;">🎯 Agentic RAG 결정 흐름</h4>
+          <ol style="margin: 0; padding-left: 20px; line-height: 1.85;">
+            <li><strong>인사/잡담?</strong> → 검색 없이 즉답 (절약)</li>
+            <li><strong>단순 상품 질문?</strong> → 벡터 검색 1회 → 답변</li>
+            <li><strong>복합 질문</strong> (예: "작년에 산 검은 자켓이랑 어울리는 거"):
+              <ul style="margin: 4px 0 0; line-height: 1.7;">
+                <li>① 사용자 주문 이력 검색 (도구 호출)</li>
+                <li>② 검은 자켓 색상/스타일 추출</li>
+                <li>③ 어울리는 상품 벡터 검색 (도구 호출)</li>
+                <li>④ 두 결과를 종합해 답변</li>
+              </ul>
+            </li>
+          </ol>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">Spring AI Tool Calling — 검색 함수를 LLM에게 도구로 노출</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">@Service
+public class ShoppingAgentService {
+    private final ChatClient chatClient;
+    private final ProductSearchService productSearch;
+    private final OrderHistoryService orderHistory;
+
+    public String ask(String userId, String message) {
+        return chatClient.prompt()
+            .user(message)
+            .tools(this)  // 이 객체의 @Tool 메서드를 LLM에게 노출
+            .call()
+            .content();
+    }
+
+    @Tool(description = "사용자의 과거 주문 이력을 조회")
+    public List&lt;Order&gt; getOrderHistory(String userId) {
+        return orderHistory.findByUserId(userId);
+    }
+
+    @Tool(description = "자연어로 상품을 의미 기반 검색")
+    public List&lt;Product&gt; searchProducts(String query) {
+        return productSearch.hybridSearch(query, 5);
+    }
+}</code></pre>
+        <p>LLM이 알아서 <code>getOrderHistory()</code>를 부르고, 그 결과를 보고 <code>searchProducts()</code>를 부릅니다. <strong>코드 흐름이 미리 정해져 있지 않고 LLM이 결정</strong>한다는 게 핵심입니다.</p>
+
+        <p style="margin-top: 20px;"><strong>🎯 Agentic RAG multi-hop 결정 시퀀스:</strong> 사용자의 복합 질문을 받아 LLM이 도구를 어떻게 선택·호출하는지 시각화한 다이어그램입니다.</p>
+
+        <!-- Mermaid: Agentic RAG Sequence -->
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as 👤 사용자
+    participant L as 🤖 LLM<br/>(Spring AI)
+    participant T1 as 🔧 getOrderHistory<br/>(@Tool)
+    participant T2 as 🔧 searchProducts<br/>(@Tool)
+    participant V as 🌐 pgvector
+
+    U->>L: "작년에 산 검은 자켓이랑<br/>어울리는 거 추천해줘"
+
+    Note over L: 분석: 과거 주문 + 추천 둘 다 필요
+    L->>T1: 사용자 주문 이력 호출
+    T1-->>L: [블랙 레더 자켓, ...]
+
+    Note over L: 검은 자켓 → 색감/스타일 추출<br/>"블랙 캐주얼 매치"
+    L->>T2: searchProducts("블랙 캐주얼 매치")
+    T2->>V: 벡터 + BM25 하이브리드
+    V-->>T2: 톱 5 상품
+    T2-->>L: [화이트 후드, 그레이 데님, ...]
+
+    Note over L: 두 결과 종합 + 자연어 생성
+    L-->>U: "작년 자켓과 어울리는<br/>3가지 상품을 추천드려요..."
+        </pre>
+      </section>
+
+      <!-- B.3 Advisor -->
+      <section id="advisor-pattern">
+        <h2>B.3 Advisor 패턴 — 안전 가드와 라우팅의 표준 인터셉터</h2>
+        <p>Spring AI의 <strong>Advisor</strong>는 Spring의 <code>HandlerInterceptor</code>와 비슷합니다. 모든 ChatClient 호출 전/후에 끼어들어 <strong>프롬프트 검열, 검색 결과 주입, 로그 기록</strong>을 수행합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">Advisor 등록 예시 — 안전 가드 + RAG 자동 주입</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">@Bean
+public ChatClient chatClient(ChatClient.Builder builder,
+                             VectorStore vectorStore) {
+    return builder
+        .defaultAdvisors(
+            new SafeGuardAdvisor(BLOCKED_WORDS),         // 욕설/PII 차단
+            new QuestionAnswerAdvisor(vectorStore),       // RAG 자동 주입
+            new SimpleLoggerAdvisor()                     // 호출 로그
+        )
+        .build();
+}</code></pre>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 컨트롤러 설계 패턴은 <a href="chapter-4.html" style="color:var(--ai);">Chapter 4 — REST API 설계</a>에서 복습. MSA로 분리하는 경우 <a href="chapter-8.html" style="color:var(--ai);">Chapter 8 — Spring Modulith</a>에서 모듈 경계 설정.</p>
+      </section>
+
+      <!-- ================================================================
+           SECTION C: Generative UI + Vercel AI SDK
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, hsla(280, 70%, 58%, 0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--ai);">
+        <h3 style="font-weight: 800; color: var(--ai); font-size: 18px; margin: 0;">🎨 C. Generative UI + Vercel AI SDK</h3>
+        <p style="font-size: 12.5px; color: var(--text-muted); margin: 6px 0 0;">메인 챕터 연계: <a href="chapter-5.html" style="color:var(--ai);">Chapter 5 — Next.js Server Component</a> · <a href="chapter-6.html" style="color:var(--ai);">Chapter 6 — Zustand 상태 관리</a> · <a href="chapter-7.html" style="color:var(--ai);">Chapter 7 — 풀스택 통신</a></p>
+      </div>
+
+      <!-- C.1 -->
+      <section id="generative-ui-intro">
+        <h2>C.1 텍스트 응답의 한계 → LLM이 React 컴포넌트를 직접 반환</h2>
+        <p>전통적인 챗봇은 텍스트로만 답합니다. 사용자가 "이번 주 판매량 비교"를 물으면 "후드 30개, 자켓 22개, 티셔츠 18개…"라는 줄글이 나옵니다. <strong>읽기 힘듭니다.</strong></p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 종이 메뉴 vs 인터랙티브 키오스크</h4>
+          <p>옛날 식당은 종이 메뉴(텍스트)만 줬습니다. 현대 키오스크는 <strong>실제 클릭 가능한 카테고리 카드, 가격 차트, 옵션 선택기를 즉석에서 그려서</strong> 보여줍니다. Generative UI는 챗봇에게 키오스크를 그릴 권한을 준 것입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-ai-generative-ui-kiosk-analogy.webp" alt="Generative UI를 종이 메뉴와 즉석 키오스크 화면으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>Generative UI는 텍스트 답변을 넘어 상황에 맞는 인터랙티브 화면을 즉석에서 구성합니다.</figcaption>
+        </figure>
+      </section>
+
+      <!-- C.2 streamUI -->
+      <section id="vercel-ai-streamui">
+        <h2>C.2 Vercel AI SDK <code>streamUI</code> — 컴포넌트 스트리밍</h2>
+        <p>Next.js App Router에 잘 맞는 <code>streamUI</code>는 LLM의 응답을 받는 동시에 <strong>React 컴포넌트를 부분 렌더링</strong>합니다.</p>
+
+        <div style="background: linear-gradient(135deg, hsla(0, 75%, 60%, 0.10), transparent); border-left: 3px solid var(--interview); padding: 14px 18px; margin: 14px 0; border-radius: 6px; font-size: 13px;">
+          <strong style="color: var(--interview);">⚠️ 실험적 · 버전 민감 (공식 문서 기준):</strong>
+          AI SDK의 <strong>RSC API(<code>streamUI</code>)는 현재 experimental</strong>이며, 공식 문서는 <strong>프로덕션엔 "AI SDK UI"</strong> 사용을 권장합니다. 또 API 형태가 자주 바뀌므로(아래는 현재 시점 기준) 실제 적용 전 <a href="https://ai-sdk.dev/docs/" style="color:var(--interview);">ai-sdk.dev</a> 최신 문서를 반드시 확인하세요. 아래 예제는 "개념 이해용"으로 보면 됩니다.
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">app/api/chat/route.ts — 컴포넌트를 반환하는 LLM (개념 예시)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-jsx"><code class="language-jsx">import { streamUI } from "@ai-sdk/rsc";   // 현재 import 경로 (구 "ai/rsc" 아님)
+import { openai } from "@ai-sdk/openai";
+import { z } from "zod";
+import { BarChart } from "@/components/charts/BarChart";
+import { ProductCard } from "@/components/shop/ProductCard";
+
+export async function POST(req: Request) {
+  const { message } = await req.json();
+
+  const result = await streamUI({
+    model: openai("gpt-4o-mini"),
+    prompt: message,
+    text: ({ content }) =&gt; &lt;p&gt;{content}&lt;/p&gt;,  // 평문 응답
+    tools: {
+      showSalesChart: {
+        description: "주별/카테고리별 판매량 비교 차트",
+        inputSchema: z.object({          // 현재 필드명은 inputSchema (구 parameters 아님)
+          labels: z.array(z.string()),
+          values: z.array(z.number())
+        }),
+        generate: async ({ labels, values }) =&gt; (
+          &lt;BarChart labels={labels} values={values} /&gt;
+        )
+      },
+      showProduct: {
+        description: "특정 상품 카드를 렌더링",
+        inputSchema: z.object({ productId: z.number() }),
+        generate: async ({ productId }) =&gt; {
+          const p = await fetchProduct(productId);
+          return &lt;ProductCard product={p} /&gt;;
+        }
+      }
+    }
+  });
+
+  return result.value;   // 초기 렌더 결과는 result.value, 스트림은 result.stream
+}</code></pre>
+
+        <p><strong>여기서 일어나는 일:</strong> LLM이 "차트 보여드릴게요"라고 판단하면 <code>showSalesChart</code> 도구를 호출, 입력 스키마(<code>inputSchema</code>)에 맞춰 라벨/값 배열을 채워 보냅니다. 서버는 그걸 <code>generate</code>로 <code>&lt;BarChart /&gt;</code>로 변환해 <strong>스트리밍</strong>합니다. 사용자는 LLM 응답을 <em>그래프로</em> 봅니다.</p>
+      </section>
+
+      <!-- C.3 쇼핑몰 시나리오 -->
+      <section id="generative-ui-shop">
+        <h2>C.3 쇼핑몰 시나리오 — "이번 주 인기 후드 비교해줘"</h2>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">📜 전통 챗봇</h4>
+            <p style="color:var(--text-muted); font-family: var(--font-mono); font-size: 12px;">
+              "이번 주 후드 판매량은:<br>
+              · 오버사이즈 후드 30건<br>
+              · 크롭 후드 22건<br>
+              · 베이직 후드 18건<br>
+              총 70건이 판매되었습니다."
+            </p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">🎨 Generative UI</h4>
+            <p style="color:var(--text-muted);">
+              실제 막대 그래프가 응답에 <em>그려져서</em> 나옵니다.<br>
+              그 아래 <strong>각 상품 카드</strong>가 추가로 렌더링되어 사용자가 바로 클릭해서 장바구니에 담을 수 있습니다.<br>
+              <em>대화창이 곧 쇼핑몰 UI가 됩니다.</em>
+            </p>
+          </div>
+        </div>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ Server/Client Component 경계는 <a href="chapter-5.html" style="color:var(--ai);">Chapter 5</a>에서, 장바구니에 담는 상태 관리는 <a href="chapter-6.html" style="color:var(--ai);">Chapter 6 — Zustand</a>에서 복습.</p>
+      </section>
+
+      <!-- ================================================================
+           SECTION D: Cross-link Matrix
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, hsla(280, 70%, 58%, 0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--ai);">
+        <h3 style="font-weight: 800; color: var(--ai); font-size: 18px; margin: 0;">🔗 D. Cross-link 매트릭스</h3>
+      </div>
+
+      <section id="cross-link-matrix">
+        <h2>D.1 막혔을 때 돌아갈 메인 챕터 지도</h2>
+        <p>본 부록의 각 개념이 어느 메인 챕터에 뿌리를 두고 있는지 한 눈에 보는 표입니다.</p>
+
+        <table style="width: 100%; margin: 16px 0; border-collapse: collapse; font-size: 13px;">
+          <thead>
+            <tr style="background: var(--bg-glass);">
+              <th style="text-align: left; padding: 10px 14px; border: 1px solid var(--border-color);">부록 D 개념</th>
+              <th style="text-align: left; padding: 10px 14px; border: 1px solid var(--border-color);">막혔을 때 복습할 메인 챕터</th>
+              <th style="text-align: left; padding: 10px 14px; border: 1px solid var(--border-color);">왜 필요한가</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><strong>pgvector 벡터 인덱스</strong></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><a href="chapter-3.html#db-index-core" style="color:var(--ai);">Ch 3 — B-Tree 인덱스</a></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);">HNSW는 B-Tree와 다른 인덱스 구조. 기본 인덱스 이해가 선행되어야 함.</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><strong>RRF 융합 검색</strong></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><a href="chapter-3.html" style="color:var(--ai);">Ch 3 — QueryDSL</a></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);">동적 쿼리 처리 패턴을 알아야 두 결과를 자바 코드로 합치는 게 자연스러움.</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><strong>Spring AI ChatClient</strong></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><a href="chapter-4.html" style="color:var(--ai);">Ch 4 — REST API + 예외 처리</a></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);">컨트롤러 설계, 검증, 글로벌 예외 처리가 안 잡혀있으면 AI 엔드포인트도 같은 함정에 빠짐.</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><strong>Advisor 패턴</strong></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><a href="chapter-2.html" style="color:var(--ai);">Ch 2 — AOP / Bean 라이프사이클</a> · <a href="appendix-interview.html" style="color:var(--ai);">부록 B — AOP 동작 원리</a></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);">Advisor는 본질적으로 인터셉터/AOP. Spring의 횡단 관심사 처리 매커니즘 이해 필수.</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><strong>Agentic RAG (Multi-hop)</strong></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><a href="chapter-8.html" style="color:var(--ai);">Ch 8 — Spring Modulith</a></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);">여러 모듈(주문 이력, 상품 검색, 추천)을 LLM이 조합. 모듈 간 경계가 잘 분리돼야 도구로 노출 가능.</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><strong>streamUI (Generative UI)</strong></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><a href="chapter-5.html" style="color:var(--ai);">Ch 5 — Server Component</a> · <a href="chapter-6.html" style="color:var(--ai);">Ch 6 — Zustand</a></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);">서버에서 컴포넌트를 만들어 보내는 패러다임. Server Component 멘탈 모델이 필수.</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><strong>AI 응답 스트리밍</strong></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);"><a href="chapter-7.html" style="color:var(--ai);">Ch 7 — WebSocket / Axios Interceptor</a></td>
+              <td style="padding: 10px 14px; border: 1px solid var(--border-color);">SSE/WebSocket 기반 실시간 통신 이해가 streamUI 응답 처리의 기초.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- D.보강 [실무 보강 박스] AI 코딩 워크플로우 -->
+      <div style="background: linear-gradient(135deg, hsla(280,70%,58%,0.10), transparent); border: 1px dashed var(--ai); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--ai); margin: 0 0 12px; font-size: 16px;">🤝 [실무 보강 박스] AI 코딩 워크플로우 — Cursor · Copilot · Claude를 동료처럼</h3>
+        <p>이제 면접은 "AI 도구를 쓸 줄 아는가"가 아니라 <strong>"어떻게, 어디까지 맡기고, 무엇은 직접 책임지는가"</strong>를 묻습니다. (State of JS 기준 Cursor 사용률이 11% → 26%로 급증.) AI를 <strong>주니어 페어 프로그래머</strong>로 보는 관점이 핵심입니다 — 초안은 빠르게 뽑되, 검증과 판단은 내 몫으로 남깁니다.</p>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:16px; margin: 14px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">✅ 잘 맡기는 일</h4>
+            <p style="color:var(--text-muted);">① <strong>테스트 생성</strong>(엣지·경계값을 빠르게) ② <strong>낯선 코드 설명·리팩터 제안</strong> ③ <strong>보일러플레이트</strong>(DTO·매퍼·CRUD 골격) ④ <strong>탐색·러버덕</strong>(API 용법·에러 원인 가설).</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">⚠️ 직접 책임지는 일</h4>
+            <p style="color:var(--text-muted);">① <strong>환각</strong>(그럴듯하지만 틀린 코드·API) → 반드시 테스트로 검증 ② <strong>설계·트레이드오프 판단</strong> ③ <strong>보안·라이선스</strong>(민감정보 붙여넣기 금지, 생성 코드 취약점 점검) ④ <strong>최종 책임</strong> — 이해 못 한 코드는 머지 금지.</p>
+          </div>
+        </div>
+
+        <p><strong>💡 면접 한 줄:</strong> <em>"AI 코딩 도구를 어떻게 활용하나요?"</em> → "<strong>반복·초안은 AI에, 설계 판단·검증·책임은 나에게</strong> 둡니다. 생성된 코드는 반드시 읽고 <a href="appendix-test.html" style="color:var(--ai);">테스트(부록 A)</a>로 검증하며, 민감정보는 넣지 않습니다. AI로 속도는 올리되 코드 이해도는 타협하지 않습니다."</p>
+
+        <p style="font-size:12.5px; color:var(--text-muted); margin-top:6px;">🪄 참고: 이 학습 대시보드 자체도 AI 협업으로 만든 산출물입니다 — "AI를 또 하나의 도구로 다루는 자세"의 살아있는 예시.</p>
+      </div>
+
+      <!-- Wrap up -->
+      <section id="wrap-up">
+        <h2>D.2 마치며 — AI를 "또 하나의 도구"로 다루는 자세</h2>
+        <p>AI-Native 통합은 마법이 아니라 <strong>벡터 인덱스 + 컨트롤러 + AOP + 스트리밍 + 컴포넌트 렌더링</strong>의 조합일 뿐입니다. 메인 8챕터의 기본기가 단단하다면 본 부록은 빠르게 흡수됩니다. 반대로 기본기가 흔들리면 AI 콘텐츠도 표면적으로만 쌓입니다.</p>
+
+        <div style="background: linear-gradient(135deg, hsla(280, 70%, 58%, 0.12), transparent); border: 1px solid var(--ai); border-radius: 10px; padding: 18px 22px; margin: 20px 0; font-size: 13px;">
+          <h4 style="color: var(--ai); font-weight: 800; margin: 0 0 8px;">🎯 면접 대비 한 줄 정리</h4>
+          <ul style="margin: 0; padding-left: 20px; line-height: 1.9;">
+            <li><strong>벡터 검색만으로 충분한가?</strong> → 정확한 코드 매칭은 BM25가 강함. RRF로 융합.</li>
+            <li><strong>RAG와 Fine-tuning의 차이?</strong> → RAG는 추론 시 컨텍스트 주입, FT는 모델 자체 수정. 자주 바뀌는 데이터는 RAG.</li>
+            <li><strong>Agentic RAG vs 단순 RAG?</strong> → 검색 필요 여부를 LLM이 판단 + multi-hop 가능.</li>
+            <li><strong>Generative UI가 왜 중요한가?</strong> → 텍스트 응답 한계 돌파, 챗봇이 곧 인터랙티브 UI.</li>
+            <li><strong>Spring AI의 Advisor는 무엇과 유사?</strong> → HandlerInterceptor, AOP Around.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Build Checkpoint [v3.4] -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.10), transparent); border: 1px solid var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 10px; font-size: 16px;">🛠️ 직접 만들어보기 — "이걸로 만들 수 있나?" 체크포인트</h3>
+        <p style="font-size:13px; margin:0 0 8px;">읽기만으로는 복귀가 안 됩니다. <strong>간단한 RAG 엔드포인트</strong>를 만들고, 그다음 <strong>한계를 직접 문서화</strong>하세요 — 한계를 아는 것이 AI 통합의 실력입니다.</p>
+        <ul style="font-size:13.5px; line-height:1.9; margin:0; padding-left:20px;">
+          <li>상품 설명을 임베딩해 pgvector(또는 인메모리)에 저장 → 자연어 질의로 벡터 검색 → 톱 N을 프롬프트에 주입 → LLM 응답하는 <strong>RAG 엔드포인트 1개</strong></li>
+          <li>API 키는 <strong>환경 변수</strong>로(하드코딩 금지), Spring AI <code>ChatClient</code> 또는 Vercel AI SDK 사용</li>
+          <li>실패 케이스를 직접 만들어 보고 <strong>한계를 문서화</strong>: 검색 미스로 엉뚱한 답, 환각, 토큰/비용, 컨텍스트 윈도우 초과</li>
+          <li>(선택) BM25 + 벡터 하이브리드(RRF)로 검색 품질이 어떻게 달라지는지 비교</li>
+        </ul>
+      </div>
+
+      <!-- Quiz wrapper -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const appendixAIQuizzes = [
+      {
+        type: "mcq",
+        question: "PostgreSQL pgvector에서 두 벡터 간 코사인 거리를 계산하는 연산자는?",
+        options: [
+          "<-> (유클리드 거리)",
+          "<=> (코사인 거리)",
+          "<#> (내적, 음수)",
+          "= (단순 동등 비교)"
+        ],
+        correct: 1,
+        explanation: "<=> 연산자는 코사인 거리를 반환합니다. 값이 0에 가까울수록 의미가 유사함을 의미합니다. <-> 는 유클리드(L2) 거리, <#> 는 내적의 음수 값입니다."
+      },
+      {
+        type: "mcq",
+        question: "RRF(Reciprocal Rank Fusion)가 단순합산보다 우수한 이유는?",
+        options: [
+          "GPU 가속을 사용하기 때문",
+          "순위 1과 2의 차이는 크게, 50과 51의 차이는 작게 만들어 직관과 일치하기 때문",
+          "데이터를 더 많이 학습하기 때문",
+          "정확도가 더 높은 임베딩 모델을 사용하기 때문"
+        ],
+        correct: 1,
+        explanation: "RRF는 각 검색 결과의 순위를 1/(k+rank)로 역수 합산합니다. 상위권 차이는 크게 반영되고 하위권 차이는 작게 반영되어, 검색 직관과 맞는 융합 점수가 나옵니다."
+      },
+      {
+        type: "mcq",
+        question: "Agentic RAG가 일반 RAG와 결정적으로 다른 점은?",
+        options: [
+          "더 큰 LLM 모델을 사용한다",
+          "에이전트(LLM)가 검색 필요 여부와 multi-hop 검색을 스스로 결정한다",
+          "한국어만 지원한다",
+          "임베딩 차원이 4096 이상이어야 한다"
+        ],
+        correct: 1,
+        explanation: "일반 RAG는 모든 요청마다 무조건 검색을 수행하지만, Agentic RAG는 LLM이 '검색이 필요한가', '추가 multi-hop 검색이 필요한가'를 스스로 판단합니다. Spring AI의 @Tool 어노테이션으로 함수를 LLM에게 노출하면 LLM이 알아서 호출 순서를 결정합니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "Spring AI에서 메서드를 LLM에게 도구로 노출시킬 때 사용하는 어노테이션을 작성하세요.",
+        starter: "// 여기에 작성\n(description = \"사용자의 과거 주문 이력을 조회\")\npublic List<Order> getOrderHistory(String userId) {\n    return orderHistory.findByUserId(userId);\n}",
+        validator: {
+          mustContain: ["@Tool"],
+          mustNotContain: ["@Component", "@Service"]
+        },
+        solution: "@Tool",
+        explanation: "Spring AI의 @Tool 어노테이션은 메서드를 LLM의 함수 호출(Function Calling) 후보로 노출합니다. LLM이 사용자 질문을 보고 description을 참고하여 적절한 도구를 알아서 선택합니다."
+      },
+      {
+        type: "code",
+        language: "jsx",
+        prompt: "Vercel AI SDK의 streamUI에서 LLM이 차트를 직접 반환하는 도구를 정의할 때 React 컴포넌트를 생성하는 함수명을 작성하세요.",
+        starter: "tools: {\n  showSalesChart: {\n    description: \"판매량 비교 차트\",\n    inputSchema: z.object({ labels: z.array(z.string()) }),\n    // 여기에 작성\n: async ({ labels }) => <BarChart labels={labels} />\n  }\n}",
+        validator: {
+          mustContain: ["generate"],
+          mustNotContain: ["render(", "create("]
+        },
+        solution: "generate",
+        explanation: "Vercel AI SDK의 streamUI에서 각 도구는 generate 함수로 React 컴포넌트를 반환합니다. LLM이 해당 도구를 호출하면 generate가 실행되어 JSX 컴포넌트가 스트리밍으로 클라이언트에 전송됩니다."
+      },
+      // ===== v3.4 추가 퀴즈 (LLM 기초) =====
+      {
+        type: "mcq",
+        question: "LLM의 '컨텍스트 윈도우'가 RAG의 필요성과 직결되는 이유는?",
+        options: [
+          "컨텍스트 윈도우가 무제한이라서",
+          "한 번에 넣을 수 있는 토큰 양에 한계가 있어, 방대한 사내 문서 전체를 넣을 수 없고 관련 부분만 검색해 넣어야 하기 때문",
+          "토큰이 많을수록 무조건 정확해서",
+          "RAG는 컨텍스트 윈도우와 무관해서"
+        ],
+        correct: 1,
+        explanation: "컨텍스트 윈도우는 LLM이 한 번에 처리 가능한 토큰의 최대량입니다. 수만 개의 상품/문서를 통째로 넣을 수 없으므로, RAG로 질문과 관련된 부분만 검색해 프롬프트에 넣습니다. 이것이 벡터 검색(pgvector)이 RAG의 핵심 부품인 이유입니다."
+      },
+      {
+        type: "mcq",
+        question: "LLM의 '환각(Hallucination)'과 '최신성 한계'를 RAG가 완화하는 방식은?",
+        options: [
+          "더 큰 모델로 교체한다",
+          "답변 직전에 신뢰할 수 있는 DB/문서에서 관련 정보를 검색해 프롬프트에 주입한다",
+          "모델을 매일 재학습시킨다",
+          "API 키를 자주 교체한다"
+        ],
+        correct: 1,
+        explanation: "LLM은 모르는 것도 그럴듯하게 지어내고(환각), 학습 시점 이후 데이터를 모릅니다(최신성 한계). RAG는 답변 직전에 우리 DB에서 관련 정보를 검색해 프롬프트에 넣어줌으로써, 사내/최신 정보에 근거한 답변을 유도하고 환각을 줄입니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", appendixAIQuizzes, "appendix-ai");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

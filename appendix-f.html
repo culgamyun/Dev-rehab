@@ -1,0 +1,517 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appendix F - Frontend Quality & Performance</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <span>Antigravity</span> Rehab
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item active" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>스페셜 부록</span> &gt; <span>부록 F</span></div>
+      <h1 style="color: var(--frontend);">부록 F. 프론트엔드 품질 — 렌더링·성능·접근성</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">프론트엔드 면접의 1순위 단골은 <strong>"렌더링 전략 · Hydration · 성능"</strong>입니다. "퍼포먼스 튜닝 경험"을 공고에 못 박는 곳이 많죠. 이 부록은 <a href="chapter-5.html" style="color:var(--frontend);">Ch5</a>(Server/Client Component · Next.js 15)에서 배운 개념을 <strong>"이 상황엔 무엇을, 왜"</strong>로 답하는 면접 깊이로 끌어올립니다. 모든 예시는 가상 의류 쇼핑몰 <strong>Antigravity Fashion</strong> 도메인으로 이어집니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/appendix-f-hero.webp" alt="렌더링과 하이드레이션, 성능 점검이 함께 진행되는 프론트엔드 작업장 그림" loading="lazy">
+      <figcaption>렌더링 전략·하이드레이션·성능 지표가 하나의 프론트엔드 품질 작업장으로 이어지는 장면입니다.</figcaption>
+    </figure>
+
+    <div class="analogy-box" style="margin-top: 8px;">
+      <h4>🧭 이 부록 사용법</h4>
+      <p>각 질문은 <strong>면접 답변 스크립트</strong>처럼 읽으세요. 비유로 큰 그림을 잡고 → 표/코드로 근거를 채우고 → <em>면접 꼬리 질문</em>으로 한 단계 더 들어갑니다. 마지막 자가 진단 퀴즈를 풀면 <strong>대시보드 "오늘의 복습"</strong>에 자동 편입되어 간격 반복으로 굳습니다.</p>
+    </div>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           CATEGORY A: RENDERING STRATEGIES
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(96,165,250,0.10), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">🖼️ A. 렌더링 전략 (Rendering)</h3>
+      </div>
+
+      <!-- Q1: rendering strategies -->
+      <section id="q-rendering">
+        <h2>Q1. CSR · SSR · SSG · ISR · PPR — 언제 각각 쓰나요?</h2>
+        <p>프론트 면접의 1번 타자입니다. 핵심은 단어 암기가 아니라 <strong>"SEO가 필요한가 · 콘텐츠가 얼마나 자주 바뀌나 · 서버 부하를 감당할 수 있나"</strong>의 3축으로 <strong>선택의 근거</strong>를 대는 것입니다. "무조건 SSR이 좋다"는 감점, "이 페이지는 SEO가 필요하고 거의 안 바뀌니 ISR"이 가점입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: Antigravity 카탈로그를 어떻게 보여줄까</h4>
+          <p>손님에게 옷을 보여주는 방법입니다. <strong>CSR</strong>은 빈 매장에 손님을 들인 뒤 그 자리에서 옷을 꺼내 거는 것(브라우저가 그림), <strong>SSR</strong>은 손님이 올 때마다 직원이 즉석에서 진열을 새로 차리는 것, <strong>SSG</strong>는 개점 전에 진열을 미리 다 차려두는 것(빌드 시), <strong>ISR</strong>은 미리 차려두되 <strong>일정 시간마다 새 진열로 교체</strong>, <strong>PPR</strong>은 <strong>고정 진열(설명·이미지)은 미리</strong> 깔고 <strong>가변 부분(실시간 재고·추천)만 손님 앞에서</strong> 채우는 것입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-f-rendering-catalog-analogy.webp" alt="옷 카탈로그 진열 방식으로 CSR SSR SSG ISR PPR을 비교하는 그림" loading="lazy">
+          <figcaption>CSR·SSR·SSG·ISR·PPR을 매장 진열을 준비하는 서로 다른 방식으로 비교합니다.</figcaption>
+        </figure>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 12.5px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 12px 14px;">전략</th>
+              <th style="padding: 12px 14px;">생성 시점</th>
+              <th style="padding: 12px 14px;">SEO</th>
+              <th style="padding: 12px 14px;">서버 부하</th>
+              <th style="padding: 12px 14px;">Antigravity 적용 예</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 14px; font-weight:700;">CSR</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">브라우저에서</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">약함</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">낮음</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">마이페이지·장바구니(로그인 후, SEO 불필요)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 14px; font-weight:700; color: var(--accent-color);">SSR</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">매 요청 서버에서</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">강함</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">높음</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">검색·필터 결과처럼 매번 달라지는 페이지</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 14px; font-weight:700; color: var(--devops);">SSG</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">빌드 시 1회</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">최강</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">거의 0 (CDN)</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">이벤트·룩북·약관처럼 거의 안 바뀌는 페이지</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 14px; font-weight:700; color: var(--frontend);">ISR</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">빌드 + 주기적 재생성</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">강함</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">낮음</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">상품 상세(트래픽 큼, 가격은 가끔 갱신)</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; font-weight:700; color: var(--ai);">PPR</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">정적 셸 + 동적 스트리밍</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">강함</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">중간</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">상품 상세(정적 설명 + 실시간 재고·추천)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p>2026 기준 Next.js의 흐름은 <strong>"정적으로 할 수 있는 건 정적으로, 꼭 동적이어야 하는 부분만 동적으로"</strong>이고, 그 둘을 한 페이지에서 합치는 <strong>부분 사전 렌더링(PPR)</strong>이 그 결정판입니다. ISR은 정적의 신선도 문제를, PPR은 "정적이냐 동적이냐"의 양자택일 자체를 풉니다.</p>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"상품 상세 페이지는 뭘로 만들겠어요?"</em> → "설명·이미지·리뷰는 거의 안 바뀌니 정적, 가격·재고는 실시간이어야 하니, <strong>PPR로 정적 셸을 즉시 보내고 재고 슬롯만 스트리밍</strong>하겠습니다. PPR이 부담되면 <strong>ISR(예: 60초 재검증) + 재고만 클라이언트 패칭</strong>으로 타협합니다. 반대로 로그인 뒤 마이페이지는 SEO가 불필요하니 CSR로 충분합니다."</p>
+      </section>
+
+      <!-- Q2: hydration -->
+      <section id="q-hydration">
+        <h2>Q2. Hydration이 뭐고, 왜 느려질 수 있나요? 줄이는 법은?</h2>
+        <p>서버가 그린 HTML은 <strong>그림(정적)</strong>일 뿐, 클릭·입력에 반응하지 못합니다. 브라우저가 JS 번들을 받아 이 정적 HTML에 이벤트 핸들러와 상태를 <strong>"연결"</strong>해 살아 움직이게 하는 과정이 <strong>하이드레이션(Hydration)</strong>입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 마네킹에 신경 연결하기</h4>
+          <p>서버가 보낸 HTML은 옷을 다 입은 <strong>마네킹</strong>입니다 — 보기엔 완성됐지만 움직이진 못하죠. 하이드레이션은 이 마네킹에 <strong>신경줄(이벤트·상태)</strong>을 하나하나 연결해 손을 흔들 수 있게 만드는 작업입니다. 마네킹이 거대할수록(번들이 클수록) 신경을 다 잇는 데 시간이 걸려, 그 사이 <strong>버튼을 눌러도 반응하지 않는 구간</strong>이 생깁니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-f-hydration-mannequin-analogy.webp" alt="정적인 마네킹에 이벤트와 상태를 연결해 움직이게 하는 하이드레이션 그림" loading="lazy">
+          <figcaption>Hydration은 서버가 만든 정적 화면에 이벤트와 상태를 연결해 상호작용을 가능하게 합니다.</figcaption>
+        </figure>
+
+        <p><strong>왜 느려지나:</strong> 화면이 보이는데도(FCP 완료) 클릭이 안 먹는 이유는 ① 큰 JS 번들 다운로드 → ② 파싱·실행 → ③ 컴포넌트 트리 전체 재구성 → ④ 이벤트 부착이 끝나야 비로소 상호작용 가능(TTI)하기 때문입니다. 페이지 전체가 클라이언트 컴포넌트면 이 비용이 최대가 됩니다.</p>
+
+        <p><strong>줄이는 4가지 무기:</strong></p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">① 서버 컴포넌트 (RSC)</h4>
+            <p style="color:var(--text-muted);">상호작용이 없는 부분은 <strong>리액트 서버 컴포넌트</strong>로. 클라이언트로 가는 JS가 0이라 하이드레이션 대상에서 아예 빠집니다.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">② 스트리밍 SSR</h4>
+            <p style="color:var(--text-muted);"><code>&lt;Suspense&gt;</code>로 준비된 부분부터 점진적으로 흘려보내 첫 화면을 빨리 보여주고, 무거운 부분은 나중에.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">③ 선택적/지연 hydration</h4>
+            <p style="color:var(--text-muted);">화면에 보이는(또는 상호작용한) 부분부터 연결하는 <strong>아일랜드(islands)</strong> 방식으로 초기 비용 분산.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--test); margin-bottom:8px;">④ 클라 경계 최소화</h4>
+            <p style="color:var(--text-muted);"><code>'use client'</code>를 <strong>잎(leaf) 컴포넌트</strong>에만. 페이지 최상단에 두면 하위 전체가 클라 번들에 끌려들어갑니다.</p>
+          </div>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">Antigravity 상품 상세 — 서버 컴포넌트가 데이터, 'use client'는 버튼만 (App Router)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">// app/products/[id]/page.tsx  —— 'use client' 없음 → 서버 컴포넌트(JS 0)
+export default async function ProductPage({ params }) {
+  const product = await getProduct(params.id);   // 서버에서 직접 데이터 패칭
+  return (
+    &lt;article&gt;
+      &lt;h1&gt;{product.name}&lt;/h1&gt;
+      &lt;p&gt;{product.description}&lt;/p&gt;       {/* 정적 → 하이드레이션 불필요 */}
+      &lt;AddToCartButton id={product.id} /&gt;  {/* 인터랙션 필요한 잎만 클라 */}
+    &lt;/article&gt;
+  );
+}
+
+// app/products/[id]/AddToCartButton.tsx
+'use client';                                  // ← 이 작은 잎 컴포넌트만 클라 번들
+export function AddToCartButton({ id }) {
+  return &lt;button onClick={() =&gt; addToCart(id)}&gt;장바구니 담기&lt;/button&gt;;
+}</code></pre>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"<code>'use client'</code>를 페이지 맨 위에 한 줄 붙이면 어떻게 되나요?"</em> → 그 아래 <strong>모든 하위 컴포넌트가 클라이언트 번들에 포함</strong>되어 하이드레이션 비용과 번들 크기가 커집니다. 서버 컴포넌트의 이점이 사라지죠. 그래서 클라이언트 경계는 "상태·이벤트가 실제로 필요한 가장 작은 잎"까지 내려야 합니다.</p>
+      </section>
+
+      <!-- ================================================================
+           CATEGORY B: CORE WEB VITALS
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(255,107,107,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 24px 0 8px; border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight: 800; color: var(--accent-color); font-size: 18px; margin: 0;">📊 B. 성능 측정 (Core Web Vitals)</h3>
+      </div>
+
+      <!-- Q3: core web vitals -->
+      <section id="q-cwv">
+        <h2>Q3. Core Web Vitals(LCP · INP · CLS) — 각각 뭐고, 나쁘면 어떻게 진단하나요?</h2>
+        <p><strong>코어 웹 바이탈(Core Web Vitals)</strong>은 구글이 정한 "체감 품질" 3대 지표입니다. 점수 자체보다 <strong>"나쁠 때 무엇을 의심하고 어떤 순서로 진단하는가"</strong>가 면접 포인트입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 매장 첫인상 3요소</h4>
+          <p>손님이 매장에 들어섰을 때 — <strong>가장 큰 메인 진열대가 언제 눈에 들어오나(LCP)</strong>, <strong>옷을 집어 들었을 때 점원이 얼마나 빨리 반응하나(INP)</strong>, <strong>고르는 동안 진열대가 갑자기 움직여 헛손질하게 만들지 않나(CLS)</strong>. 셋 다 좋아야 "쾌적한 매장"입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-f-cwv-storefront-analogy.webp" alt="매장 첫인상으로 LCP INP CLS를 보여주는 프론트엔드 성능 지표 그림" loading="lazy">
+          <figcaption>Core Web Vitals(LCP·INP·CLS)를 매장 첫인상의 세 요소로 보여줍니다.</figcaption>
+        </figure>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 12.5px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 12px 14px;">지표</th>
+              <th style="padding: 12px 14px;">의미 / 좋음 기준</th>
+              <th style="padding: 12px 14px;">흔한 원인</th>
+              <th style="padding: 12px 14px;">처방</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 14px; font-weight:700; color: var(--accent-color);">LCP</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">최대 콘텐츠가 그려지는 시점 / ≤ 2.5초</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">느린 서버 응답·거대 이미지·렌더 차단 리소스</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">이미지 우선 로딩·CDN·프리로드·서버 응답 개선</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 14px; font-weight:700; color: var(--frontend);">INP</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">상호작용→다음 페인트 응답성(2024 FID 대체) / ≤ 200ms</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">메인 스레드를 오래 잡는 무거운 JS(롱 태스크)</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">긴 작업 분할·불필요 리렌더 제거·디바운스·웹 워커</td>
+            </tr>
+            <tr>
+              <td style="padding: 10px 14px; font-weight:700; color: var(--devops);">CLS</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">누적 레이아웃 이동(시각 안정성) / ≤ 0.1</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">크기 미지정 이미지·동적 삽입 배너·폰트 교체</td>
+              <td style="padding: 10px 14px; color: var(--text-muted);">width/height 지정·공간 예약·<code>font-display</code> 조정</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"버튼을 눌러도 화면 반응이 굼떠요. INP가 나쁩니다. 진단 순서는?"</em> → ① 크롬 <strong>Performance 패널</strong>로 기록해 <strong>롱 태스크(Long Task, 50ms+)</strong>를 찾고, ② 어떤 이벤트 핸들러·리렌더가 메인 스레드를 잡는지 특정, ③ 무거운 계산은 <strong>작업 분할(`yield`)·메모이제이션·웹 워커</strong>로 빼고, ④ 불필요한 리렌더는 상태 구조·`key`·메모이제이션으로 줄입니다. "이미지가 커서"는 LCP, "화면이 튀어서"는 CLS 쪽이라 원인을 혼동하면 안 됩니다.</p>
+      </section>
+
+      <!-- Q4: slow SPA -->
+      <section id="q-bundle">
+        <h2>Q4. 초기 로딩이 느린 SPA, 어디부터 자르나요?</h2>
+        <p>"번들이 크다"는 막연한 진단이 아니라 <strong>측정 → 가장 큰 범인부터 분할</strong>이라는 순서를 보여줘야 합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 트럭에 짐을 다 싣고 출발 vs 필요한 것 먼저</h4>
+          <p>첫 배송에 창고 재고를 통째로 트럭에 싣고 출발하면 출발 자체가 늦습니다. <strong>지금 당장 필요한 짐만 먼저</strong> 싣고, 나머지는 <strong>요청이 올 때 추가 배송</strong>하면 첫 출발이 빨라집니다. 이것이 <strong>코드 스플리팅</strong>입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-f-code-splitting-truck-analogy.webp" alt="필요한 짐만 먼저 싣고 나머지는 나중에 배송하는 코드 스플리팅 그림" loading="lazy">
+          <figcaption>코드 스플리팅은 지금 필요한 것만 먼저 싣고 나머지는 요청 시 보내 초기 로딩을 줄입니다.</figcaption>
+        </figure>
+
+        <p><strong>자르는 순서 — 효과 큰 것부터:</strong></p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color);">1. 번들 분석</h4><p style="color:var(--text-muted);">analyzer로 <strong>무엇이 큰지</strong>부터 측정. 추측 금지 — 보통 한두 개 라이브러리가 범인.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend);">2. 코드 스플리팅</h4><p style="color:var(--text-muted);">라우트 경계 + 첫 화면에 불필요한 무거운 컴포넌트(모달·차트·에디터)를 <strong>동적 import</strong>로 분리.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops);">3. 트리 셰이킹·교체</h4><p style="color:var(--text-muted);">미사용 코드 제거, 무거운 라이브러리 경량 대체(예: moment → day.js).</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--test);">4. 이미지 전략</h4><p style="color:var(--text-muted);">LCP 이미지는 우선 로딩, 화면 밖 이미지는 lazy. (Q5)</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--ai);">5. 프리페치</h4><p style="color:var(--text-muted);">사용자가 갈 법한 다음 페이지를 미리 당겨 체감 전환을 즉각적으로.</p></div>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">무거운 리뷰 차트 위젯을 동적 import로 분리 (next/dynamic)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">import dynamic from 'next/dynamic';
+
+// 첫 화면에 당장 필요 없는 무거운 차트 → 별도 청크로 분리, 보일 때 로드
+const ReviewChart = dynamic(() =&gt; import('./ReviewChart'), {
+  loading: () =&gt; &lt;p&gt;리뷰 통계 불러오는 중…&lt;/p&gt;,
+  ssr: false,            // 브라우저에서만 필요한 무거운 위젯이면
+});
+
+export default function ProductReviews({ id }) {
+  return &lt;section&gt;&lt;ReviewChart productId={id} /&gt;&lt;/section&gt;;
+}</code></pre>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"코드 스플리팅의 기준은 뭔가요?"</em> → 기본은 <strong>라우트 단위</strong> 자동 분할, 거기에 <strong>"첫 페인트에 보이지 않거나 상호작용 후에야 필요한 무거운 컴포넌트"</strong>(모달·차트·리치 에디터·지도)를 수동으로 떼어냅니다. 너무 잘게 쪼개면 요청 수가 늘어 오히려 손해라 균형이 필요합니다.</p>
+      </section>
+
+      <!-- ================================================================
+           CATEGORY C: NEXT.JS OPTIMIZATION
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(52,211,153,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 24px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">⚙️ C. 실전 최적화 (이미지 · Lighthouse)</h3>
+      </div>
+
+      <!-- Q5: next/image + lighthouse -->
+      <section id="q-image-lighthouse">
+        <h2>Q5. 이미지 최적화(next/image)와 Lighthouse 읽는 법</h2>
+        <p>이미지는 대부분 페이지에서 <strong>가장 무거운 자원이자 LCP의 주범</strong>입니다. Next.js의 <code>&lt;Image&gt;</code>는 손이 많이 가는 최적화를 선언적으로 처리해 줍니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 손님 화면에 맞춰 사진을 자동 리사이즈</h4>
+          <p>같은 상품 사진이라도 모바일 손님에겐 작은 사진, 데스크톱 손님에겐 큰 사진을 줘야 합니다. <code>&lt;Image&gt;</code>는 손님 화면(뷰포트)에 맞는 크기·포맷(WebP/AVIF)으로 <strong>자동 변환·전송</strong>하는 똑똑한 사진 매니저입니다.</p>
+        </div>
+
+        <p><strong><code>next/image</code>가 자동으로 해주는 것:</strong> ① 최신 포맷(WebP/AVIF) 변환, ② 화면 크기별 <code>srcset</code> 자동 생성, ③ 기본 lazy 로딩(화면 밖 지연), ④ <code>width/height</code>(또는 <code>fill</code>)로 <strong>공간 예약 → CLS 방지</strong>, ⑤ 첫 화면 LCP 이미지엔 <code>priority</code>로 즉시 로딩.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">Antigravity 상품 히어로 이미지 — LCP 최적화</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">import Image from 'next/image';
+
+&lt;Image
+  src="/products/hoodie-hero.webp"
+  alt="안티그래비티 시그니처 후드"   {/* 접근성 + SEO */}
+  width={1200} height={600}        {/* 공간 예약 → CLS 0 */}
+  priority                         {/* 첫 화면 LCP 이미지에만! */}
+  sizes="(max-width: 768px) 100vw, 1200px"
+/&gt;</code></pre>
+
+        <p><strong>Lighthouse 읽는 법:</strong> Performance 점수는 여러 지표의 <strong>가중 합</strong>입니다(LCP·TBT 비중이 큼). <strong>Opportunities</strong>(줄일 수 있는 시간)부터 보고 <strong>Diagnostics</strong>로 원인을 좁힙니다. 단, Lighthouse는 <strong>실험실(lab) 측정</strong>이라 내 PC 성능·네트워크에 좌우됩니다 — <strong>실제 사용자 데이터(필드/CrUX·RUM)</strong>가 최종 진실입니다. "Lab은 진단 도구, Field가 성적표"로 정리하세요.</p>
+
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"<code>priority</code>는 언제 붙이나요?"</em> → <strong>첫 화면 LCP가 되는 이미지 1장</strong>에만 붙입니다. 모든 이미지에 붙이면 우선순위가 의미를 잃고 오히려 초기 대역폭을 잡아먹어 LCP가 나빠집니다.</p>
+      </section>
+
+      <!-- ================================================================
+           CATEGORY D: A11Y & TAILWIND (보강)
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(192,132,252,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 24px 0 8px; border-left: 4px solid var(--ai);">
+        <h3 style="font-weight: 800; color: var(--ai); font-size: 18px; margin: 0;">♿ D. 접근성 & Tailwind 실전 (보강)</h3>
+      </div>
+
+      <section id="q-a11y-tailwind">
+        <h2>접근성(a11y)과 Tailwind — 면접에서 한 단계 더</h2>
+        <p><strong>웹 접근성(a11y)</strong>은 "장애가 있는 사용자도 쓸 수 있게"를 넘어 <strong>SEO·법적 요건·전체 UX</strong>를 동시에 끌어올리는 투자입니다. <strong>Tailwind CSS</strong>는 유틸리티 클래스로 빠르고 일관된 스타일링을 주는, 공고에 자주 보이는 도구입니다.</p>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--ai); margin-bottom:8px;">♿ 접근성 핵심 5</h4>
+            <p style="color:var(--text-muted);">① <strong>시맨틱 HTML</strong>(클릭은 <code>div</code>가 아니라 <code>button</code>) ② 이미지 <strong>대체 텍스트</strong> ③ <strong>키보드 내비/포커스</strong> 가능 ④ 충분한 <strong>색 대비</strong> ⑤ <strong>ARIA는 최후의 보충</strong>(네이티브 요소로 안 될 때만; 남용은 오히려 해악).</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">🎨 Tailwind 실전</h4>
+            <p style="color:var(--text-muted);">유틸리티 우선(빠름·일관) ↔ 클래스가 길어짐. 반복은 <strong>컴포넌트로 추출</strong>하거나 <code>@apply</code>를 신중히. 색·간격은 <strong>디자인 토큰(theme)</strong>으로, 조건부 클래스는 <code>clsx</code>, 다크모드는 <code>dark:</code> 변형으로.</p>
+          </div>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">시맨틱 + 접근성 + Tailwind를 같이 챙긴 버튼</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">{/* div가 아니라 button → 키보드 포커스·엔터 동작이 공짜로 따라온다 */}
+&lt;button
+  type="button"
+  aria-label="장바구니에 담기"
+  className="px-4 py-2 rounded-lg bg-indigo-600 text-white
+             hover:bg-indigo-700 focus-visible:ring-2 focus-visible:ring-offset-2
+             disabled:opacity-50"
+&gt;
+  담기
+&lt;/button&gt;</code></pre>
+
+        <p style="font-size: 12.5px; color: var(--text-muted);">🔗 이어보기: 렌더링·하이드레이션의 토대는 <a href="chapter-5.html" style="color:var(--frontend);">Ch5</a>, 상태·폼은 <a href="chapter-6.html" style="color:var(--frontend);">Ch6</a>, 서버 통신은 <a href="chapter-7.html" style="color:var(--frontend);">Ch7</a>. 백엔드 확장과 함께 보면 <a href="appendix-e.html" style="color:var(--interview);">부록 E(시스템 설계)</a>로 풀스택 그림이 완성됩니다.</p>
+      </section>
+
+      <!-- 모의 면접 -->
+      <div style="background: linear-gradient(135deg, rgba(96,165,250,0.08), transparent); border: 1px solid var(--frontend); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--frontend); margin: 0 0 6px; font-size: 16px;">🎤 모의 면접 — 프론트엔드 품질</h3>
+        <p style="font-size:13px; color:var(--text-muted); margin:0;">실제 면접처럼 꼬리에 꼬리를 무는 흐름입니다. <strong>면접관 질문 → 답변 뼈대 → 이어지는 꼬리 질문</strong> 순으로, 소리 내어 답해 보세요.</p>
+
+        <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-color);">
+          <p style="font-weight:700; margin:0 0 4px;">🗣️ "상품 상세 페이지, 어떤 렌더링 전략을 쓰고 왜 그렇게 정했나요?"</p>
+          <p style="color:var(--text-muted); margin:4px 0;"><strong>답변 뼈대:</strong> "SEO가 필요하고 트래픽이 크며 가격은 가끔 갱신된다"를 전제로 → <strong>ISR(예: 60초 재검증)</strong>로 정적 속도·낮은 서버 부하·SEO를 함께 얻습니다. 실시간 재고까지 섞는다면 <strong>PPR</strong>로 정적 셸 + 동적 슬롯. 로그인 뒤 마이페이지는 SEO가 불필요하니 CSR.</p>
+          <p style="color:var(--text-muted); font-size:12.5px; margin:4px 0 0;"><strong>↪️ 꼬리:</strong> <em>"PPR과 ISR의 차이는?"</em> → ISR은 <strong>페이지 단위</strong> 주기적 재생성, PPR은 <strong>한 페이지 안에서</strong> 정적 셸과 동적 스트리밍을 혼합.</p>
+        </div>
+
+        <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-color);">
+          <p style="font-weight:700; margin:0 0 4px;">🗣️ "버튼 클릭 반응이 굼뜨다는 제보가 있습니다(INP 나쁨). 어떻게 진단·개선하나요?"</p>
+          <p style="color:var(--text-muted); margin:4px 0;"><strong>답변 뼈대:</strong> 크롬 <strong>Performance 패널</strong>로 <strong>롱 태스크</strong>를 찾고 → 어떤 핸들러·리렌더가 메인 스레드를 잡는지 특정 → 무거운 계산은 <strong>작업 분할·메모이제이션·웹 워커</strong>로, 불필요한 리렌더는 상태 구조로 제거.</p>
+          <p style="color:var(--text-muted); font-size:12.5px; margin:4px 0 0;"><strong>↪️ 꼬리:</strong> <em>"LCP도 같이 나쁘면?"</em> → 원인이 다릅니다(느린 서버·큰 이미지) → <code>priority</code>·CDN·프리로드·이미지 최적화로 접근.</p>
+        </div>
+
+        <div style="margin-top:14px; padding-top:12px; border-top:1px dashed var(--border-color);">
+          <p style="font-weight:700; margin:0 0 4px;">🗣️ "초기 번들이 너무 큽니다. 어디부터 손대겠어요?"</p>
+          <p style="color:var(--text-muted); margin:4px 0;"><strong>답변 뼈대:</strong> 추측 금지 — <strong>번들 분석</strong>으로 범인부터 측정 → 라우트·무거운 컴포넌트(모달·차트)를 <strong>동적 import</strong>로 분리 → 무거운 라이브러리 <strong>경량 대체</strong> → LCP 이미지 우선·나머지 lazy → 프리페치.</p>
+          <p style="color:var(--text-muted); font-size:12.5px; margin:4px 0 0;"><strong>↪️ 꼬리:</strong> <em>"<code>'use client'</code>는 어디에 둬야 하죠?"</em> → 상태·이벤트가 필요한 <strong>잎(leaf) 컴포넌트</strong>에만. 최상단에 두면 하위 전체가 클라 번들에 끌려들어가 하이드레이션 비용↑.</p>
+        </div>
+      </div>
+
+      <!-- quiz wrapper -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const appendixFQuizzes = [
+      {
+        type: "mcq",
+        question: "검색 노출(SEO)이 중요한 상품 상세 페이지인데, 가격은 약 10분에 한 번만 바뀌고 트래픽은 매우 큽니다. 서버 부하는 줄이고 싶습니다. 가장 적합한 렌더링 전략은?",
+        options: [
+          "CSR — 브라우저에서만 렌더링한다",
+          "매 요청마다 SSR로 새로 렌더링한다",
+          "ISR — 정적으로 생성하되 일정 주기로 재검증(재생성)한다",
+          "로그인 후 마이페이지처럼 클라이언트 전용으로 만든다"
+        ],
+        correct: 2,
+        explanation: "SEO가 필요하므로 CSR/클라 전용은 부적합합니다. 매 요청 SSR은 트래픽이 클 때 서버 부하가 큽니다. 콘텐츠가 '가끔' 바뀌므로 ISR로 정적 생성 + 주기적 재검증하면 SEO·속도(CDN)·낮은 서버 부하를 모두 얻습니다. (실시간 재고까지 한 페이지에 섞는다면 PPR로 동적 슬롯만 스트리밍하는 것도 정답 후보입니다.)"
+      },
+      {
+        type: "mcq",
+        question: "하이드레이션 비용(상호작용 가능해질 때까지의 지연)을 줄이는 올바른 방법은?",
+        options: [
+          "페이지 최상단에 'use client'를 선언해 전부 클라이언트 컴포넌트로 만든다",
+          "상호작용이 필요 없는 부분은 서버 컴포넌트로 두고 'use client'를 잎(leaf) 컴포넌트로 한정한다",
+          "이미지를 더 많이 추가해 화면을 빨리 채운다",
+          "모든 컴포넌트를 하나의 거대한 번들로 합친다"
+        ],
+        correct: 1,
+        explanation: "하이드레이션은 클라이언트 JS가 있는 컴포넌트에만 발생합니다. 상호작용 없는 부분을 서버 컴포넌트로 두면 그만큼 클라 번들·하이드레이션 대상이 줄어듭니다. 'use client'를 최상단에 두면 하위 전체가 클라 번들에 끌려들어가 오히려 비용이 커집니다."
+      },
+      {
+        type: "mcq",
+        question: "버튼을 눌러도 화면 반응이 굼떠 INP 지표가 나쁩니다. 가장 먼저 의심할 1차 원인은?",
+        options: [
+          "메인 스레드를 오래 점유하는 무거운 JavaScript(롱 태스크)",
+          "히어로 이미지의 파일 용량이 큼",
+          "광고 배너가 삽입되며 레이아웃이 밀림",
+          "서버의 첫 바이트 응답(TTFB)이 느림"
+        ],
+        correct: 0,
+        explanation: "INP는 '상호작용 → 다음 페인트'의 응답성으로, 주범은 메인 스레드를 오래 잡는 무거운 JS(롱 태스크)입니다. 큰 이미지/느린 서버는 LCP, 레이아웃 밀림은 CLS의 원인이라 지표를 혼동하면 안 됩니다."
+      },
+      {
+        type: "code",
+        language: "jsx",
+        prompt: "next/image의 <Image>에서 '첫 화면 LCP 이미지를 우선 로딩'하도록 만드는 prop 한 단어를 빈칸에 작성하세요.",
+        starter: "<Image src=\"/hero.webp\" width={1200} height={600} ___ />",
+        validator: {
+          mustContain: ["priority"],
+          mustNotContain: ["loading", "lazy"]
+        },
+        solution: "priority",
+        explanation: "priority를 붙이면 lazy 로딩을 끄고 해당 이미지를 우선 프리로드해 LCP를 앞당깁니다. 단, 첫 화면 LCP 이미지 1장에만 사용해야 효과가 있습니다. loading=\"lazy\"는 오히려 지연 로딩이라 LCP 이미지엔 부적합합니다."
+      },
+      {
+        type: "code",
+        language: "jsx",
+        prompt: "next/dynamic을 사용해 무거운 컴포넌트 './ReviewChart'를 동적으로 import(코드 스플리팅)하도록 빈칸을 채우세요.",
+        starter: "import dynamic from 'next/dynamic';\nconst ReviewChart = ___;",
+        validator: {
+          mustContain: ["dynamic", "import", "ReviewChart"],
+          mustNotContain: ["require"]
+        },
+        solution: "dynamic(() => import('./ReviewChart'))",
+        explanation: "dynamic(() => import('...'))는 해당 컴포넌트를 별도 청크로 분리해 필요할 때 로드하는 코드 스플리팅의 표준 형태입니다. 첫 화면에 불필요한 무거운 위젯(차트·에디터·모달)을 떼어내 초기 번들을 줄입니다. require는 정적 동기 로딩이라 분할 효과가 없습니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", appendixFQuizzes, "appendix-f");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

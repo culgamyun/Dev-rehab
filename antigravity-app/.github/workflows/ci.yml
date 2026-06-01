@@ -1,0 +1,42 @@
+# Ch8 체크포인트 — GitHub Actions CI (빌드 → 테스트)
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: gradle
+      - name: Build & Test
+        working-directory: backend
+        run: ./gradlew build
+      # TODO(Ch8): Docker 이미지 빌드 + 레지스트리 push 단계 추가
+      # TODO(Ch8): Spring Modulith ApplicationModules.verify() 테스트가 build에 포함되는지 확인
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install & Build
+        working-directory: frontend
+        run: |
+          npm ci
+          npm run build
+      # TODO(부록 A): npm run test (Vitest) + Playwright E2E 단계 추가

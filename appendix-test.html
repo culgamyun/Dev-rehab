@@ -1,0 +1,820 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Appendix A - JUnit 5 & RTL Test Automation</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>스페셜 부록</span> &gt; <span>부록 A</span></div>
+      <h1 style="color: var(--test);">부록 A. 실무 JUnit 5 & RTL 테스트 검증론</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">실무 채용 시장에서 가장 선호하는 백엔드 Java/Spring 테스트(JUnit 5, Mockito, MockMvc, @DataJpaTest) 및 프론트엔드 React Testing Library(RTL) 테스트 코드를 총 12개 섹션으로 완벽히 정복합니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/appendix-test-hero.webp" alt="테스트 자동화와 품질 검증 범위를 실험실로 표현한 2D 파스텔 일러스트" loading="lazy">
+      <figcaption>단위, 통합, E2E 테스트가 서로 다른 범위에서 품질을 검증하는 구조를 보여줍니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           SECTION A: 테스트 기초
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(253,203,110,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--test);">
+        <h3 style="font-weight: 800; color: var(--test); font-size: 18px; margin: 0;">📐 A. 테스트 기초 원칙</h3>
+      </div>
+
+      <!-- 1. Testing Pyramid -->
+      <section id="testing-pyramid">
+        <h2>1. 테스트 피라미드와 테스트를 작성해야 하는 이유</h2>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 자동차 출고 검사 라인</h4>
+          <p><strong>단위 테스트(Unit)</strong>는 엔진, 타이어, 브레이크 <strong>부품 하나하나</strong>를 개별 검사하는 것입니다. 가장 빠르고 정확합니다.
+          <br><strong>통합 테스트(Integration)</strong>는 엔진+변속기+바퀴를 <strong>조립한 뒤</strong> 서로 맞물려 돌아가는지 확인합니다.
+          <br><strong>E2E 테스트</strong>는 완성된 자동차를 <strong>실제 도로에서 시운전</strong>하는 것입니다. 가장 느리고 비싸지만 사용자 관점에서 확실합니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-test-test-pyramid-analogy.webp" alt="테스트 피라미드를 자동차 출고 검사로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>단위 테스트는 부품, 통합 테스트는 조립 상태, E2E 테스트는 실제 주행에 가까운 흐름을 검증합니다.</figcaption>
+        </figure>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">🧱 단위 테스트 (70%)</h4>
+            <p style="color:var(--text-muted);">서비스 클래스 1개의 메서드 로직만 격리 검증. 외부 의존성은 Mock으로 대체. <strong>가장 많이, 가장 빠르게.</strong></p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">🔗 통합 테스트 (20%)</h4>
+            <p style="color:var(--text-muted);">Controller → Service → Repository가 실제로 연결되어 동작하는지 검증. DB, Spring Context 실제 로드.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">🌐 E2E 테스트 (10%)</h4>
+            <p style="color:var(--text-muted);">실제 브라우저에서 사용자 시나리오를 자동 재현. Playwright/Cypress 사용. <strong>가장 느리고 비싸므로 핵심 플로우만.</strong></p>
+          </div>
+        </div>
+
+        <p><strong>테스트 작성 원칙 — Given / When / Then (AAA 패턴):</strong></p>
+        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-size: 13px; border: 1px solid var(--border-color);">
+          <code style="color: var(--devops);">① Given (준비)</code> — 테스트에 필요한 데이터와 상태를 세팅 →
+          <code style="color: var(--accent-color);">② When (실행)</code> — 테스트 대상 메서드를 호출 →
+          <code style="color: var(--test);">③ Then (검증)</code> — 결과가 기대값과 일치하는지 assert
+        </div>
+
+        <p><strong>좋은 테스트 이름 짓기:</strong> 한글 메서드명을 적극 활용합니다. <code>주문_총결제액_계산_단위테스트()</code>, <code>존재하지_않는_상품_조회_시_예외_발생()</code>처럼 <strong>무엇을_하면_어떤_결과</strong> 형태가 가장 직관적입니다.</p>
+      </section>
+
+      <!-- ================================================================
+           SECTION B: 백엔드 단위 테스트
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(46,213,115,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">☕ B. 백엔드 단위 테스트 (JUnit 5 + Mockito)</h3>
+      </div>
+
+      <!-- 2. JUnit 5 + AssertJ -->
+      <section id="junit-assertj">
+        <h2>2. JUnit 5 & AssertJ — 단위 테스트의 기초 체력</h2>
+        <p>단위 테스트(Unit Test)는 외부 환경(DB, 네트워크)과 독립적으로, <strong>클래스 하나의 메서드 로직</strong>이 무결한지 초고속 검증합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">OrderTest.java — Given/When/Then 패턴 단위 테스트</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.BeforeEach;
+import static org.assertj.core.api.Assertions.*;
+
+class OrderTest {
+
+    private Order order;
+
+    @BeforeEach // 매 테스트 실행 전 초기화
+    void setUp() {
+        OrderItem item1 = new OrderItem(1L, "오버핏 셔츠", 2, 49000);
+        OrderItem item2 = new OrderItem(3L, "와이드 슬랙스", 1, 59000);
+        order = new Order(1001L, List.of(item1, item2));
+    }
+
+    @Test
+    @DisplayName("주문 총결제액이 정확히 계산되는지 검증")
+    void 주문_총결제액_계산_단위테스트() {
+        // When
+        int totalPayment = order.calculateTotalPrice();
+
+        // Then — AssertJ 체이닝으로 가독성 높은 검증
+        assertThat(totalPayment)
+            .isNotNull()
+            .isEqualTo(157_000); // 49000×2 + 59000 = 157,000원
+    }
+
+    @Test
+    @DisplayName("빈 주문 시 총액은 0원")
+    void 빈_주문_총결제액_0원() {
+        Order emptyOrder = new Order(1002L, List.of());
+        assertThat(emptyOrder.calculateTotalPrice()).isZero();
+    }
+}</code></pre>
+
+        <p><strong>JUnit 5 핵심 어노테이션:</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">어노테이션</th>
+              <th style="padding: 10px 16px;">용도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">@Test</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">테스트 메서드 지정</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">@DisplayName</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">테스트 결과에 표시할 한글 이름</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">@BeforeEach / @AfterEach</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">매 테스트 전/후 실행</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">@ParameterizedTest</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">여러 입력값으로 반복 테스트</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">@Nested</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">테스트를 그룹(내부 클래스)으로 계층화</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 3. ParameterizedTest -->
+      <section id="parameterized-test">
+        <h2>3. @ParameterizedTest — 여러 입력값 한 번에 테스트</h2>
+        <p>같은 로직을 <strong>여러 경우의 수</strong>로 검증할 때, 테스트 메서드를 복붙하는 대신 파라미터만 바꿔서 반복 실행합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">할인 정책 파라미터화 테스트 — 3가지 등급 동시 검증</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+class DiscountTest {
+
+    @ParameterizedTest(name = "등급 {0}: {1}원 → 할인 후 {2}원")
+    @CsvSource({
+        "BRONZE, 100000, 95000",   // 5% 할인
+        "SILVER, 100000, 90000",   // 10% 할인
+        "GOLD,   100000, 80000"    // 20% 할인
+    })
+    void 등급별_할인_정책_검증(String grade, int original, int expected) {
+        DiscountPolicy policy = new DiscountPolicy(Grade.valueOf(grade));
+        assertThat(policy.apply(original)).isEqualTo(expected);
+    }
+}</code></pre>
+      </section>
+
+      <!-- 4. Exception Testing -->
+      <section id="exception-test">
+        <h2>4. 예외 테스트 — assertThrows & assertThatThrownBy</h2>
+        <p>"존재하지 않는 상품을 조회하면 예외가 발생해야 한다"처럼, <strong>예외가 정상적으로 터지는지</strong> 검증하는 것도 중요한 테스트입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">예외 발생 검증 — JUnit 5 vs AssertJ 두 가지 스타일</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 스타일 1: JUnit 5 — assertThrows
+@Test
+void 존재하지_않는_상품_조회_시_예외_발생() {
+    ProductNotFoundException ex = assertThrows(
+        ProductNotFoundException.class,
+        () -> productService.findById(999L)
+    );
+    assertThat(ex.getMessage()).contains("999");
+}
+
+// 스타일 2: AssertJ — assertThatThrownBy (더 가독성 좋음!)
+@Test
+void 재고_부족_시_주문_실패_예외() {
+    assertThatThrownBy(() -> orderService.placeOrder(outOfStockItem))
+        .isInstanceOf(InsufficientStockException.class)
+        .hasMessageContaining("재고 부족")
+        .hasFieldOrPropertyWithValue("productId", 42L);
+}</code></pre>
+      </section>
+
+      <!-- 5. Mockito -->
+      <section id="mockito">
+        <h2>5. Mockito — 가짜 객체로 서비스 로직 격리 테스트</h2>
+        <p>DB에 실제로 연결하지 않고, <strong>가짜 Repository(Mock)</strong>를 주입하여 서비스 클래스의 비즈니스 로직만 독립적으로 검증합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 드라마 촬영의 대역 배우</h4>
+          <p>주연 배우(Service)의 연기력을 테스트하고 싶은데, 매번 실제 세트(DB)를 짓기는 비용이 큽니다. 그래서 <strong>대역 배우(Mock)</strong>를 세워 "이 대사가 나오면 이렇게 반응해"라고 미리 약속(Stubbing)해 두고 촬영합니다. 촬영 후에는 "대역이 정말 호출되었는지" 출석 체크(verify)도 합니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-test-mock-actor-analogy.webp" alt="Mock을 대역 배우로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>Mock은 실제 의존성을 대신해 정해진 반응을 제공하고 호출 여부를 확인하게 해줍니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">ProductServiceTest.java — Mockito @Mock + @InjectMocks 실전</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@ExtendWith(MockitoExtension.class)
+class ProductServiceTest {
+
+    @Mock  // 가짜 DB 인터페이스
+    private ProductRepository productRepository;
+
+    @InjectMocks  // Mock을 자동 주입받는 테스트 대상
+    private ProductService productService;
+
+    @Test
+    void 상품_조회_비즈니스_로직_Mockito_테스트() {
+        // Given: 가짜 시나리오(Stubbing) 주입
+        Product fakeProduct = new Product(1L, "피그먼트 스웨트", "tops", 65000);
+        BDDMockito.given(productRepository.findById(1L))
+                  .willReturn(Optional.of(fakeProduct));
+
+        // When: Mock이 주입된 서비스 실행
+        ProductResponse response = productService.getProductDetails(1L);
+
+        // Then: 결과 검증
+        assertThat(response.name()).isEqualTo("피그먼트 스웨트");
+        assertThat(response.price()).isEqualTo(65000);
+
+        // Verify: Repository가 정확히 1번 호출되었는지 확인
+        Mockito.verify(productRepository, Mockito.times(1)).findById(1L);
+        // 더 이상 호출되지 않았는지 확인
+        Mockito.verifyNoMoreInteractions(productRepository);
+    }
+}</code></pre>
+
+        <p><strong>⚠️ @Mock vs @MockitoBean — 절대 헷갈리지 말 것!</strong></p>
+
+        <div style="background: linear-gradient(135deg, hsla(38, 90%, 55%, 0.10), transparent); border-left: 3px solid var(--test); padding: 12px 16px; margin: 0 0 14px; border-radius: 6px; font-size: 12.5px;">
+          <strong style="color: var(--test);">📌 버전 주의 (Spring Boot 3.4+):</strong>
+          기존 Spring Boot의 <code>@MockBean</code>/<code>@SpyBean</code>은 <strong>Spring Boot 3.4부터 deprecated</strong>되었고, Spring Framework 6.2의 <code>@MockitoBean</code>/<code>@MockitoSpyBean</code>(<code>org.springframework.test.context.bean.override.mockito</code>)으로 대체됩니다. 본 코스는 Boot 3.4+ 기준이라 <code>@MockitoBean</code>을 씁니다. (레거시 프로젝트에선 아직 <code>@MockBean</code>이 보일 수 있습니다.)
+        </div>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">구분</th>
+              <th style="padding: 10px 16px;">@Mock (Mockito)</th>
+              <th style="padding: 10px 16px;">@MockitoBean (Spring Framework 6.2+)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">소속</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">순수 Mockito</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Spring Framework Test (구 Boot @MockBean 대체)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">Spring Context</td>
+              <td style="padding: 10px 16px; color: var(--devops);">로드하지 않음 (빠름!)</td>
+              <td style="padding: 10px 16px; color: var(--interview);">로드함 (느림)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">사용 위치</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">@ExtendWith(MockitoExtension.class)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">@WebMvcTest, @SpringBootTest</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">동작</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">순수 자바 Mock 객체 생성</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Spring 컨텍스트의 빈을 Mock으로 교체</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ================================================================
+           SECTION C: 스프링 부트 슬라이스 테스트
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(116,185,255,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">🌿 C. Spring Boot 슬라이스 테스트</h3>
+      </div>
+
+      <!-- 6. @WebMvcTest + MockMvc -->
+      <section id="webmvc-test">
+        <h2>6. @WebMvcTest + MockMvc — API 엔드포인트 테스트</h2>
+        <p><strong>Controller 레이어만 가볍게 띄워서</strong> HTTP 요청/응답, URL 매핑, 유효성 검증, Security 필터를 테스트합니다. Service는 @MockitoBean으로 대체합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 레스토랑의 웨이터만 테스트</h4>
+          <p>레스토랑 전체(통합 테스트)가 아닌, <strong>웨이터(Controller)</strong>만 테스트합니다. 주방장(Service)은 대역(MockitoBean)을 세우고, 웨이터가 주문(Request)을 제대로 받고 음식(Response)을 올바른 테이블에 전달하는지만 확인합니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-test-controller-waiter-analogy.webp" alt="Controller 테스트를 웨이터 단독 검증으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>Controller 테스트는 요청을 받고 응답을 돌려주는 웹 계층의 역할을 좁게 검증합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">ProductControllerTest.java — MockMvc로 API 테스트</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@WebMvcTest(ProductController.class) // Controller만 로드!
+class ProductControllerTest {
+
+    @Autowired
+    private MockMvc mockMvc; // 가상 HTTP 클라이언트
+
+    @MockitoBean // Spring Context의 빈을 Mock으로 교체 (Boot 3.4+; 구 @MockBean)
+    private ProductService productService;
+
+    @Test
+    @DisplayName("GET /api/products/1 → 200 OK + 상품 JSON 반환")
+    void 상품_단건_조회_API_테스트() throws Exception {
+        // Given
+        ProductResponse response = new ProductResponse(1L, "셔츠", 49000);
+        BDDMockito.given(productService.getProductDetails(1L))
+                  .willReturn(response);
+
+        // When & Then
+        mockMvc.perform(get("/api/products/1")
+                .contentType(MediaType.APPLICATION_JSON))
+            .andExpect(status().isOk())                      // HTTP 200
+            .andExpect(jsonPath("$.name").value("셔츠"))      // JSON 필드 검증
+            .andExpect(jsonPath("$.price").value(49000))
+            .andDo(print()); // 요청/응답 전체 로그 출력
+    }
+
+    @Test
+    @DisplayName("POST /api/products — 유효성 실패 시 400 Bad Request")
+    void 상품_등록_유효성_실패_400() throws Exception {
+        String invalidJson = """
+            {"name": "", "price": -1}
+            """;
+
+        mockMvc.perform(post("/api/products")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(invalidJson))
+            .andExpect(status().isBadRequest()); // HTTP 400
+    }
+}</code></pre>
+      </section>
+
+      <!-- 7. @DataJpaTest -->
+      <section id="datajpa-test">
+        <h2>7. @DataJpaTest — JPA Repository 쿼리 검증</h2>
+        <p>Service, Controller는 배제하고, <strong>@Entity + Repository + 임베디드 H2 DB</strong>만 가볍게 띄워서 JPQL, 쿼리 메서드, Fetch Join 등의 SQL 정확성을 검증합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">ProductRepositoryTest.java — @DataJpaTest 실전</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@DataJpaTest // JPA 관련 빈만 로드 + 임베디드 H2 DB 자동 세팅
+@AutoConfigureTestDatabase(replace = Replace.NONE) // 실제 DB 사용 시
+class ProductRepositoryTest {
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private TestEntityManager em; // 테스트용 EntityManager
+
+    @Test
+    @DisplayName("카테고리별 상품 조회 쿼리 검증")
+    void 카테고리별_상품_조회() {
+        // Given: 테스트 데이터 삽입
+        em.persist(new Product(null, "린넨 셔츠", "tops", 45000));
+        em.persist(new Product(null, "데님 팬츠", "bottoms", 69000));
+        em.persist(new Product(null, "오버핏 티셔츠", "tops", 35000));
+        em.flush(); // DB에 반영
+        em.clear(); // 1차 캐시 클리어 (실제 쿼리 발생 확인)
+
+        // When
+        List&lt;Product&gt; tops = productRepository.findByCategory("tops");
+
+        // Then
+        assertThat(tops).hasSize(2);
+        assertThat(tops).extracting("name")
+            .containsExactlyInAnyOrder("린넨 셔츠", "오버핏 티셔츠");
+    }
+
+    @Test
+    @DisplayName("가격 범위 검색 쿼리 동작 검증")
+    void 가격_범위_검색() {
+        em.persist(new Product(null, "A", "tops", 30000));
+        em.persist(new Product(null, "B", "tops", 50000));
+        em.persist(new Product(null, "C", "tops", 80000));
+        em.flush();
+
+        List&lt;Product&gt; result = productRepository
+            .findByPriceBetween(40000, 90000);
+
+        assertThat(result).hasSize(2);
+    }
+}</code></pre>
+      </section>
+
+      <!-- 8. @SpringBootTest -->
+      <section id="springboot-test">
+        <h2>8. @SpringBootTest — 전체 통합 테스트</h2>
+        <p>모든 Spring Bean, DB, Security까지 <strong>실제 서버처럼 완전히 띄워서</strong> 전체 요청 흐름을 검증합니다. 무겁지만 가장 확실한 테스트입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">통합 테스트 — 실제 API 호출 + DB 연동 검증</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Transactional // 테스트 후 자동 롤백!
+class OrderIntegrationTest {
+
+    @Autowired
+    private TestRestTemplate restTemplate; // 실제 HTTP 호출
+
+    @Test
+    @DisplayName("주문 생성 → 조회 전체 흐름 통합 테스트")
+    void 주문_생성_조회_통합_테스트() {
+        // Given: 주문 요청 DTO
+        OrderRequest request = new OrderRequest(1L, 2);
+
+        // When: 실제 POST 요청
+        ResponseEntity&lt;OrderResponse&gt; createResponse = restTemplate
+            .postForEntity("/api/orders", request, OrderResponse.class);
+
+        // Then: 생성 확인
+        assertThat(createResponse.getStatusCode()).isEqualTo(HttpStatus.CREATED);
+        Long orderId = createResponse.getBody().id();
+
+        // When: 생성된 주문 조회
+        ResponseEntity&lt;OrderResponse&gt; getResponse = restTemplate
+            .getForEntity("/api/orders/" + orderId, OrderResponse.class);
+
+        // Then: 조회 확인
+        assertThat(getResponse.getBody().quantity()).isEqualTo(2);
+    }
+}</code></pre>
+      </section>
+
+      <!-- Spring Boot Test Strategy Comparison -->
+      <section id="test-strategy-compare" class="glass-panel" style="border-left: 4px solid var(--test);">
+        <h3 style="font-weight:800; color:var(--test); margin-bottom:12px;">📊 Spring Boot 테스트 전략 비교 총정리</h3>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: rgba(255,255,255,0.02); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">어노테이션</th>
+              <th style="padding: 10px 16px;">로드 범위</th>
+              <th style="padding: 10px 16px;">속도</th>
+              <th style="padding: 10px 16px;">용도</th>
+              <th style="padding: 10px 16px;">Mock 방식</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">@ExtendWith(Mockito)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Spring 없음</td>
+              <td style="padding: 10px 16px; color: var(--devops);">⚡ 매우 빠름</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Service 단위 테스트</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">@Mock</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">@WebMvcTest</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Controller + Security</td>
+              <td style="padding: 10px 16px; color: var(--frontend);">⚡ 빠름</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">API 엔드포인트 테스트</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">@MockitoBean</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--algo);">@DataJpaTest</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Entity + Repository + DB</td>
+              <td style="padding: 10px 16px; color: var(--algo);">⚡ 보통</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">쿼리/JPA 정합성</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">임베디드 H2</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--interview);">@SpringBootTest</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">모든 Bean + DB + Security</td>
+              <td style="padding: 10px 16px; color: var(--interview);">🐢 느림</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">전체 흐름 통합 테스트</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">실제 Bean 또는 @MockitoBean</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- ================================================================
+           SECTION D: 프론트엔드 테스트
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(161,196,253,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--algo);">
+        <h3 style="font-weight: 800; color: var(--algo); font-size: 18px; margin: 0;">⚛️ D. 프론트엔드 테스트 (Vitest + RTL)</h3>
+      </div>
+
+      <!-- 9. Vitest + RTL -->
+      <section id="vitest-rtl">
+        <h2>9. Vitest + React Testing Library — 컴포넌트 행위 검증</h2>
+        <p>Vite/Next.js 프로젝트에서는 Jest 대신 <strong>Vitest</strong>가 네이티브 호환성이 가장 좋습니다. React Testing Library(RTL)는 <strong>사용자 입장에서</strong> 컴포넌트를 테스트합니다 — DOM 구조가 아닌 <strong>"화면에 무엇이 보이는지, 클릭하면 어떻게 변하는지"</strong>를 검증합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">AddToCartButton.test.tsx — Vitest + RTL 실전 테스트</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">import { render, screen, fireEvent } from "@testing-library/react";
+import { describe, test, expect, vi } from "vitest";
+import AddToCartButton from "./AddToCartButton";
+
+describe("AddToCartButton 컴포넌트", () => {
+  test("최초 렌더링 시 '장바구니에 옷 담기' 텍스트 표시", () => {
+    render(<AddToCartButton productId={1} />);
+
+    const button = screen.getByRole("button");
+    expect(button).toHaveTextContent("장바구니에 옷 담기");
+  });
+
+  test("클릭하면 '담기 완료! ✓'로 텍스트 변경", () => {
+    render(<AddToCartButton productId={1} />);
+
+    const button = screen.getByRole("button");
+    fireEvent.click(button);
+
+    expect(button).toHaveTextContent("장바구니 담기 완료! ✓");
+  });
+
+  test("클릭 시 onAddToCart 콜백이 productId와 함께 호출", () => {
+    const mockCallback = vi.fn(); // Vitest의 spy 함수
+    render(<AddToCartButton productId={42} onAddToCart={mockCallback} />);
+
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(mockCallback).toHaveBeenCalledTimes(1);
+    expect(mockCallback).toHaveBeenCalledWith(42);
+  });
+});</code></pre>
+
+        <p><strong>RTL 핵심 쿼리 우선순위 (접근성 기반):</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">쿼리</th>
+              <th style="padding: 10px 16px;">기준</th>
+              <th style="padding: 10px 16px;">권장도</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">getByRole</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">접근성 역할 (button, textbox 등)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">✅ 최우선</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">getByLabelText</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">label 연결된 폼 요소</td>
+              <td style="padding: 10px 16px; color: var(--devops);">✅ 폼에 우선</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">getByText</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">화면에 보이는 텍스트</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">△ 보통</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--interview);">getByTestId</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">data-testid 속성</td>
+              <td style="padding: 10px 16px; color: var(--interview);">❌ 최후의 수단</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 10. Async Testing -->
+      <section id="async-testing">
+        <h2>10. 비동기 테스트 — waitFor & findBy</h2>
+        <p>API 호출 후 데이터가 화면에 나타나기까지 시간이 걸리는 경우, <code>waitFor</code>나 <code>findBy</code>로 <strong>비동기 렌더링을 기다렸다가</strong> 검증합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">비동기 상품 목록 렌더링 테스트</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">import { render, screen, waitFor } from "@testing-library/react";
+
+test("API에서 상품 목록을 불러와 렌더링", async () => {
+  render(<ProductList />);
+
+  // 로딩 상태 확인
+  expect(screen.getByText("로딩 중...")).toBeInTheDocument();
+
+  // findBy는 자동으로 waitFor를 내장 (기본 1초 대기)
+  const product = await screen.findByText("오버핏 셔츠");
+  expect(product).toBeInTheDocument();
+
+  // waitFor로 세밀한 조건 대기
+  await waitFor(() => {
+    expect(screen.getAllByRole("listitem")).toHaveLength(5);
+  }, { timeout: 3000 }); // 최대 3초 대기
+});</code></pre>
+      </section>
+
+      <!-- 11. MSW -->
+      <section id="msw-mocking">
+        <h2>11. MSW (Mock Service Worker) — API 모킹</h2>
+        <p>프론트엔드 테스트에서 <strong>백엔드 API 없이도</strong> HTTP 요청을 가로채 가짜 응답을 반환합니다. 네트워크 레벨에서 동작하므로 fetch/axios 등 어떤 HTTP 클라이언트든 투명하게 모킹됩니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">MSW로 상품 API 모킹 — handlers.ts + 테스트</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">// 1. MSW 핸들러 정의 (src/mocks/handlers.ts)
+import { http, HttpResponse } from "msw";
+
+export const handlers = [
+  http.get("/api/products", () => {
+    return HttpResponse.json([
+      { id: 1, name: "오버핏 셔츠", price: 49000 },
+      { id: 2, name: "와이드 팬츠", price: 59000 },
+    ]);
+  }),
+
+  http.post("/api/orders", async ({ request }) => {
+    const body = await request.json();
+    return HttpResponse.json({ id: 1001, ...body }, { status: 201 });
+  }),
+];
+
+// 2. 테스트에서 MSW 서버 설정
+import { setupServer } from "msw/node";
+import { handlers } from "./mocks/handlers";
+
+const server = setupServer(...handlers);
+
+beforeAll(() => server.listen());   // 테스트 시작 전 서버 ON
+afterEach(() => server.resetHandlers()); // 매 테스트 후 핸들러 초기화
+afterAll(() => server.close());     // 전체 종료
+
+test("MSW 모킹된 API에서 상품 목록을 가져옴", async () => {
+  render(<ProductList />);
+  const product = await screen.findByText("오버핏 셔츠");
+  expect(product).toBeInTheDocument();
+});</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION E: E2E & 커버리지
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(214,48,49,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--interview);">
+        <h3 style="font-weight: 800; color: var(--interview); font-size: 18px; margin: 0;">🌐 E. E2E 테스트 & 커버리지</h3>
+      </div>
+
+      <!-- 12. E2E + Coverage -->
+      <section id="e2e-coverage">
+        <h2>12. E2E 테스트 (Playwright) & 테스트 커버리지</h2>
+        <p><strong>Playwright</strong>는 실제 브라우저(Chromium, Firefox, WebKit)를 자동 조작하여 사용자 시나리오를 재현합니다. 가장 느리고 비싸지만 <strong>핵심 사용자 플로우</strong>(로그인 → 상품 검색 → 장바구니 → 결제)를 보장합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">Playwright E2E — 쇼핑몰 구매 플로우 시나리오</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">// e2e/shopping-flow.spec.ts (Playwright)
+import { test, expect } from "@playwright/test";
+
+test("사용자가 상품을 검색하고 장바구니에 담는 전체 플로우", async ({ page }) => {
+  // 1. 메인 페이지 접속
+  await page.goto("http://localhost:3000");
+
+  // 2. 상품 검색
+  await page.fill('[placeholder="상품 검색"]', "셔츠");
+  await page.click('button:has-text("검색")');
+
+  // 3. 검색 결과 확인
+  await expect(page.locator(".product-card")).toHaveCount(3);
+
+  // 4. 첫 번째 상품 클릭
+  await page.click(".product-card >> nth=0");
+  await expect(page).toHaveURL(/\/products\/\d+/);
+
+  // 5. 장바구니 담기
+  await page.click('button:has-text("장바구니에 담기")');
+
+  // 6. 장바구니 페이지 이동 & 확인
+  await page.click('a:has-text("장바구니")');
+  await expect(page.locator(".cart-item")).toHaveCount(1);
+});</code></pre>
+
+        <p><strong>테스트 커버리지 도구:</strong></p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">☕ 백엔드: JaCoCo</h4>
+            <p style="color:var(--text-muted);">
+              Gradle: <code>jacocoTestReport</code> 태스크로 HTML 리포트 생성.
+              <br>실무 커버리지 목표: <strong>Line 80%+, Branch 70%+</strong>.
+              <br>100%를 목표로 하면 오히려 무의미한 테스트가 늘어나므로 주의!
+            </p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">⚛️ 프론트엔드: c8 / Istanbul</h4>
+            <p style="color:var(--text-muted);">
+              Vitest: <code>vitest --coverage</code>로 자동 커버리지 측정.
+              <br>c8은 V8 엔진 네이티브 커버리지로 가장 빠름.
+              <br>Istanbul은 더 세밀한 분석 가능.
+            </p>
+          </div>
+        </div>
+
+        <p><strong>TDD (Test-Driven Development) 사이클:</strong></p>
+        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-size: 13px; border: 1px solid var(--border-color); text-align: center;">
+          <code style="color: var(--interview); font-weight:700;">① RED</code> 실패하는 테스트 먼저 작성 →
+          <code style="color: var(--devops); font-weight:700;">② GREEN</code> 테스트를 통과하는 최소 코드 작성 →
+          <code style="color: var(--frontend); font-weight:700;">③ REFACTOR</code> 코드를 깔끔하게 리팩토링 → 반복 🔄
+        </div>
+      </section>
+
+      <!-- Build Checkpoint [v3.4] -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.10), transparent); border: 1px solid var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 10px; font-size: 16px;">🛠️ 직접 만들어보기 — "이걸로 만들 수 있나?" 체크포인트</h3>
+        <p style="font-size:13px; margin:0 0 8px;">읽기만으로는 복귀가 안 됩니다. 앞 챕터에서 만든 코드에 <strong>실제 테스트를 5종류로 작성</strong>하고 <code>green</code>으로 통과시키세요.</p>
+        <ul style="font-size:13.5px; line-height:1.9; margin:0; padding-left:20px;">
+          <li><strong>단위 테스트</strong>: Service 로직을 <code>@ExtendWith(MockitoExtension)</code> + <code>@Mock</code>으로</li>
+          <li><strong>슬라이스 테스트</strong>: <code>@WebMvcTest</code> + <code>@MockitoBean</code>으로 Controller, <code>@DataJpaTest</code>로 Repository</li>
+          <li><strong>통합 테스트</strong>: <code>@SpringBootTest</code>로 로그인→주문 전체 흐름</li>
+          <li><strong>프론트 컴포넌트</strong>: Vitest + React Testing Library로 폼/리스트 렌더·상호작용</li>
+          <li><strong>E2E</strong>: Playwright로 "로그인 → 상품 담기 → 주문" 시나리오 1개</li>
+        </ul>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script>
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

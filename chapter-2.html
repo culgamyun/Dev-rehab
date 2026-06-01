@@ -1,0 +1,1003 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 02 - Spring Boot 3.4+ · 레이어드 아키텍처 · JPA N+1 · Virtual Threads</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>백엔드 코스</span> &gt; <span>Chapter 02</span></div>
+      <h1>Chapter 02: Spring Boot 3.4+ · 레이어드 아키텍처 · JPA N+1 · Virtual Threads</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">레이어드 책임 분리, IoC/DI, 스프링 MVC 요청 흐름(DispatcherServlet)·Bean 종류/스코프·커넥션 풀 토대, 엔티티 생명주기와 더티 체킹, 연관관계(1:N)·Cascade, N+1의 Fetch Join 해결, MapStruct DTO 매핑, Java 21 Virtual Threads까지 — Spring Boot 토대부터 14개 섹션 + 실무 보강 박스.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/chapter-2-hero.webp" alt="Spring Boot 백엔드 구조를 작업 마을로 표현한 2D 파스텔 일러스트" loading="lazy">
+      <figcaption>Spring Boot 애플리케이션의 계층, 영속성, 조회 성능, 동시성 흐름을 하나의 백엔드 작업 마을로 조망합니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           SECTION A: Spring Boot & IoC/DI
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(116,185,255,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">🍃 A. 레이어드 아키텍처 + Spring Boot 3.4+ & IoC/DI</h3>
+      </div>
+
+      <!-- 1. Layered Architecture (v3.2) -->
+      <section id="layered-architecture">
+        <h2>1. Spring 표준 레이어드 아키텍처 — 책임 분리의 척추</h2>
+        <p>현업 Spring 코드는 거의 모두 <strong>4계층</strong>으로 구성됩니다. 처음 보는 프로젝트라도 이 패턴을 알면 어디에 무엇이 있는지 즉시 파악 가능합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 패션 회사 부서 분업</h4>
+          <p><strong>Controller</strong> = 매장 직원 (고객 응대, 요청 받기)
+          <br><strong>Service</strong> = 본사 기획팀 (실제 비즈니스 로직, 트랜잭션 관리)
+          <br><strong>Repository</strong> = 창고 관리자 (DB와 직접 대화)
+          <br><strong>DTO ↔ Entity</strong> = 옷의 두 가지 양식 (외부 전달용 vs 내부 보관용)
+          <br>각 부서가 자기 일만 하고 위/아래 부서와만 소통합니다. Controller가 직접 DB를 만지는 건 매장 직원이 창고에 침입하는 격입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-2-layered-architecture-analogy.webp" alt="Controller Service Repository 책임 분리를 부서 협업으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>Controller, Service, Repository가 각자의 책임을 나누어 요청을 안정적으로 처리하는 구조를 보여줍니다.</figcaption>
+        </figure>
+
+        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-size: 13px; border: 1px solid var(--border-color); text-align: center;">
+          HTTP 요청 →
+          <code style="color: var(--accent-color); font-weight:700;">Controller (요청/응답 변환)</code> →
+          <code style="color: var(--frontend); font-weight:700;">Service (트랜잭션 + 비즈니스 로직)</code> →
+          <code style="color: var(--test); font-weight:700;">Repository (DB CRUD)</code> →
+          <code style="color: var(--devops); font-weight:700;">Entity (DB 매핑)</code>
+        </div>
+
+        <!-- Mermaid Diagram: Layered Architecture Flow -->
+        <pre class="mermaid">
+flowchart TB
+    Client["📱 클라이언트<br/>HTTP Request (JSON)"]
+    Controller["🎯 Controller<br/>@RestController<br/>요청 · 응답 변환"]
+    Service["⚙️ Service<br/>@Service @Transactional<br/>비즈니스 로직"]
+    Repository["📦 Repository<br/>extends JpaRepository<br/>DB 접근"]
+    DB[(💾 Database<br/>PostgreSQL)]
+    DTO["📋 DTO<br/>Request/Response<br/>외부 전달용"]
+    Entity["🏷️ Entity<br/>@Entity<br/>내부 보관용"]
+
+    Client -->|"@RequestBody<br/>@Valid"| Controller
+    Controller -->|"DTO → 인자"| Service
+    Service -->|"Entity 조회/저장"| Repository
+    Repository -->|"JPQL / SQL"| DB
+
+    Controller -.->|"변환"| DTO
+    Service -.->|"변환"| Entity
+    DB -.->|"매핑"| Entity
+        </pre>
+
+        <div class="code-block-header">
+          <span class="code-title">패키지 구조 — 도메인 중심 (권장) vs 레이어 중심</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// ✅ 도메인 중심 패키지 (Domain-Driven) — 권장
+com.antigravity.shop
+├── product
+│   ├── controller   // ProductController.java
+│   ├── service      // ProductService.java
+│   ├── repository   // ProductRepository.java
+│   ├── domain       // Product.java (@Entity)
+│   └── dto          // ProductRequest/Response.java
+├── order
+│   └── ... (동일 구조)
+└── ShopApplication.java
+
+// ❌ 레이어 중심 패키지 — 스파게티 위험
+com.antigravity.shop
+├── controllers   // ProductController, OrderController, UserController...
+├── services      // 모든 Service가 한 폴더 → 커질수록 도메인 경계 흐려짐
+├── repositories
+└── entities</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">각 계층의 책임과 코드</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// 1️⃣ Controller — HTTP 변환만, 비즈니스 로직 금지
+@RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/products")
+public class ProductController {
+    private final ProductService productService;
+
+    @GetMapping("/{id}")
+    public ProductResponse getProduct(@PathVariable Long id) {
+        return productService.findById(id);  // Service에 위임
+    }
+}
+
+// 2️⃣ Service — 비즈니스 로직 + 트랜잭션 경계
+@Service
+@RequiredArgsConstructor
+@Transactional(readOnly = true)  // 클래스 기본은 readOnly
+public class ProductService {
+    private final ProductRepository productRepository;
+
+    public ProductResponse findById(Long id) {
+        Product product = productRepository.findById(id)
+            .orElseThrow(() -&gt; new EntityNotFoundException("상품 없음 id=" + id));
+        return ProductResponse.from(product);  // Entity → DTO 변환
+    }
+
+    @Transactional  // 쓰기는 readOnly 해제
+    public ProductResponse create(ProductRequest req) {
+        Product saved = productRepository.save(req.toEntity());
+        return ProductResponse.from(saved);
+    }
+}
+
+// 3️⃣ Repository — DB 접근만
+public interface ProductRepository extends JpaRepository&lt;Product, Long&gt; {
+    Optional&lt;Product&gt; findByName(String name);
+}
+
+// 4️⃣ Entity vs DTO — 절대 섞지 말 것!
+@Entity  // DB 테이블과 1:1 매핑
+@Getter
+public class Product {
+    @Id @GeneratedValue Long id;
+    String name;
+    int price;
+    @OneToMany List&lt;Review&gt; reviews;  // DB 관계
+}
+
+// DTO는 API 전송용 — Entity와 분리
+public record ProductResponse(Long id, String name, int price) {
+    public static ProductResponse from(Product p) {
+        return new ProductResponse(p.getId(), p.getName(), p.getPrice());
+    }
+}</code></pre>
+
+        <p><strong>왜 DTO와 Entity를 분리해야 하는가:</strong></p>
+        <ul style="font-size: 13.5px; line-height: 1.85;">
+          <li><strong>순환 참조 방지:</strong> Entity의 양방향 관계(@OneToMany)가 JSON 직렬화 시 무한 루프 발생</li>
+          <li><strong>API 안정성:</strong> DB 스키마가 변경돼도 API 응답 형식이 고정됨</li>
+          <li><strong>보안:</strong> 내부 필드(비밀번호 해시 등)가 실수로 응답에 노출되는 사고 방지</li>
+          <li><strong>지연 로딩 함정:</strong> Service 트랜잭션 경계를 벗어난 Entity를 만지면 LazyInitializationException</li>
+        </ul>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 이 레이어드 구조 위에서 검증/예외 처리는 <a href="chapter-4.html#bean-validation" style="color:var(--accent-color);">Chapter 4 — Bean Validation 섹션</a>에서, DTO 자동 매핑은 본 챕터의 MapStruct 박스에서 다룹니다.</p>
+      </section>
+
+      <!-- 2. IoC/DI -->
+      <section id="ioc-di-core">
+        <h2>2. 스프링 부트 3 핵심: 자재 관리소(IoC)와 주문 설계서(Bean)</h2>
+        <p>자바 객체의 생성과 소멸을 개발자가 아닌 <strong>스프링 컨테이너</strong>가 대신 관리하는 패러다임입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 패션 디자이너와 자재 창고</h4>
+          <p><strong>레거시 코딩:</strong> 의류 디자이너가 옷을 만들 때마다 밖에 나가 실과 바늘을 직접 사옵니다(<code>new</code>). 바늘이 바뀌면 코드를 수정해야 합니다.<br>
+          <strong>스프링 코딩(IoC/DI):</strong> <strong>'자재 창고(IoC Container)'</strong>가 있습니다. 디자이너는 <strong>"나는 실과 바늘이 필요하다"</strong>라고 명세서만 적어둡니다. 아침마다 창고 시스템이 알맞은 자재(Spring Bean)를 자동으로 배송(DI 주입)해 줍니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-2-ioc-di-analogy.webp" alt="IoC와 DI를 중앙 자재 창고로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>IoC/DI는 객체가 직접 의존성을 만들지 않고 중앙 조립자가 필요한 재료를 전달하게 만듭니다.</figcaption>
+        </figure>
+      </section>
+
+      <!-- 2. @RequiredArgsConstructor -->
+      <section id="required-args-constructor">
+        <h2>3. DI 주입의 실무 표준: @RequiredArgsConstructor</h2>
+        <p>과거에는 <code>@Autowired</code>를 필드에 달았지만, 테스트가 어렵고 순환 참조 위험이 있었습니다. 최신 실무 표준은 <strong>생성자 주입</strong>입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">Lombok을 활용한 생성자 DI 주입</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// ❌ 과거의 나쁜 예 (필드 주입)
+@Service
+public class OrderService {
+    @Autowired
+    private ProductRepository productRepository; // 테스트 시 Mock 객체 주입 불가능!
+}
+
+// ✅ 현대 실무 표준 (생성자 주입)
+@Service
+@RequiredArgsConstructor // final이 붙은 필드의 생성자를 자동 생성!
+public class OrderService {
+    // 1. final로 선언하여 불변성(Immutability) 보장
+    private final ProductRepository productRepository;
+    private final PaymentService paymentService;
+
+    public void order() {
+        productRepository.findById(...);
+    }
+}</code></pre>
+      </section>
+
+      <!-- 4. Spring MVC 요청 흐름 + Bean 기초 [v3.4 신규] -->
+      <section id="mvc-bean-basics">
+        <h2>4. 스프링 MVC 요청 흐름과 Bean 기초</h2>
+        <p>Spring Boot의 "마법"(@RestController만 붙이면 API가 동작) 뒤에는 명확한 요청 처리 흐름과 Bean 관리 체계가 있습니다. 이 토대를 알아야 디버깅과 면접 모두 막히지 않습니다.</p>
+
+        <h4 style="font-weight:700; color:var(--frontend); margin: 20px 0 8px;">① DispatcherServlet 요청 흐름</h4>
+        <p>모든 HTTP 요청은 <strong>DispatcherServlet</strong>(프론트 컨트롤러)을 거쳐 적절한 Controller로 라우팅됩니다. 톰캣이 받은 요청이 어떻게 내 코드까지 도달하는지의 전체 그림입니다.</p>
+
+        <!-- Mermaid: Spring MVC Request Flow -->
+        <pre class="mermaid">
+flowchart LR
+    Client["🌐 클라이언트<br/>HTTP 요청"]
+    Tomcat["🐱 Tomcat<br/>(내장 WAS)"]
+    Filter["🚧 Servlet Filter<br/>(인증 등)"]
+    DS["🎯 DispatcherServlet<br/>(Front Controller)"]
+    HM["🗺️ HandlerMapping<br/>(URL→메서드 매칭)"]
+    Ctrl["📥 Controller<br/>@RestController"]
+    Svc["⚙️ Service<br/>@Service"]
+    Repo["📦 Repository"]
+
+    Client --> Tomcat --> Filter --> DS
+    DS --> HM --> Ctrl
+    Ctrl --> Svc --> Repo
+    Repo -.응답.-> Ctrl -.JSON 변환.-> DS -.HTTP 응답.-> Client
+
+    style DS fill:#a29bfe,color:#fff
+    style Ctrl fill:#74b9ff,color:#fff
+    style Svc fill:#fd79a8,color:#fff
+        </pre>
+        <p style="font-size:13px;">핵심: <strong>DispatcherServlet이 모든 요청의 단일 진입점</strong>이며, HandlerMapping이 URL을 보고 어느 Controller 메서드를 부를지 결정합니다. 응답은 MessageConverter가 객체를 JSON으로 변환합니다.</p>
+
+        <h4 style="font-weight:700; color:var(--frontend); margin: 20px 0 8px;">② @Component vs @Bean vs @Configuration vs @Service</h4>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px;">
+          <thead><tr style="background: var(--bg-glass);">
+            <th style="text-align:left; padding:8px 12px;">어노테이션</th>
+            <th style="text-align:left; padding:8px 12px;">용도</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:8px 12px;"><code>@Component</code></td><td style="padding:8px 12px;">범용 Bean 등록 (클래스 스캔 대상)</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Service</code></td><td style="padding:8px 12px;">@Component의 특수화 — 비즈니스 로직 계층 명시(기능 동일, 의미 구분)</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Repository</code></td><td style="padding:8px 12px;">@Component 특수화 — DB 예외를 Spring 예외로 변환</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Configuration</code> + <code>@Bean</code></td><td style="padding:8px 12px;">외부 라이브러리 객체 등 직접 제어가 필요한 Bean을 메서드로 등록</td></tr>
+          </tbody>
+        </table>
+<pre class="language-java"><code class="language-java">// @Component 계열: 내 클래스에 직접 붙여 자동 스캔 등록
+@Service
+public class ProductService { }
+
+// @Bean: 외부 라이브러리 객체(내가 수정 못 하는 클래스)를 등록할 때
+@Configuration
+public class AppConfig {
+    @Bean
+    public RestClient restClient() {       // 직접 생성 로직 제어
+        return RestClient.builder().baseUrl("https://api.shop.com").build();
+    }
+}</code></pre>
+
+        <h4 style="font-weight:700; color:var(--frontend); margin: 20px 0 8px;">③ Bean Scope — singleton vs prototype</h4>
+        <p style="font-size:13px;">Spring Bean의 <strong>기본 스코프는 singleton</strong> — 컨테이너에 딱 1개 인스턴스만 만들어 공유합니다. 그래서 Service/Repository에 <strong>상태(인스턴스 변수)를 두면 안 됩니다</strong>(여러 요청이 공유 → 동시성 버그). 매번 새 인스턴스가 필요하면 <code>@Scope("prototype")</code>를 쓰지만 실무에선 드뭅니다.</p>
+
+        <h4 style="font-weight:700; color:var(--frontend); margin: 20px 0 8px;">④ 커넥션 풀 (HikariCP)</h4>
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 공유 우산 대여소</h4>
+          <p>DB 연결(Connection)은 생성 비용이 비쌉니다. 매 요청마다 새로 만들면 느려서, <strong>미리 N개를 만들어 풀(pool)에 담아두고 빌려 쓰고 반납</strong>합니다. Spring Boot의 기본 커넥션 풀이 <strong>HikariCP</strong>이며, 풀 크기(<code>maximum-pool-size</code>)가 동시 처리량을 좌우합니다.</p>
+        </div>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-2-connection-pool-analogy.webp" alt="HikariCP 커넥션 풀을 공유 우산 대여소로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>커넥션 풀은 비싼 DB 연결을 미리 준비해 빌려주고 반납받지만, 풀 크기가 실제 동시 처리 한계가 됩니다.</figcaption>
+        </figure>
+<pre class="language-java"><code class="language-java"># application.yml
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 10      # 동시에 빌려줄 수 있는 커넥션 수
+      connection-timeout: 30000   # 풀에서 못 빌리면 30초 대기 후 예외</code></pre>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 이 요청 흐름은 <a href="#layered-architecture" style="color:var(--accent-color);">섹션 1 레이어드 아키텍처</a>의 실제 동작이며, 커넥션 풀은 <a href="chapter-3.html" style="color:var(--accent-color);">Chapter 3 — DB</a>와, 싱글톤 Bean의 동시성 주의는 <a href="chapter-1.html#thread-basics" style="color:var(--accent-color);">Ch 1 스레드 기초</a>와 연결됩니다.</p>
+      </section>
+
+      <!-- ================================================================
+           SECTION B: JPA & 영속성 컨텍스트
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(46,213,115,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">🗄️ B. JPA & 영속성 컨텍스트</h3>
+      </div>
+
+      <!-- 3. JPA vs MyBatis -->
+      <section id="jpa-vs-mybatis">
+        <h2>5. ORM의 등장 — JPA vs MyBatis</h2>
+        <p>과거에는 개발자가 SQL을 한땀 한땀 작성했습니다(MyBatis). JPA는 자바 객체를 저장하면 프레임워크가 <strong>SQL을 자동 생성</strong>해 줍니다.</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">비교</th>
+              <th style="padding: 10px 16px;">SQL Mapper (MyBatis)</th>
+              <th style="padding: 10px 16px;">ORM (JPA / Hibernate)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">방식</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">SQL을 직접 XML에 작성</td>
+              <td style="padding: 10px 16px; color: var(--devops);">객체 매핑 후 SQL 자동 생성</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">장점</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">복잡한 통계 쿼리 튜닝 용이</td>
+              <td style="padding: 10px 16px; color: var(--devops);">개발 생산성 압도적, 유지보수 용이</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">DB 종속성</td>
+              <td style="padding: 10px 16px; color: var(--interview);">높음 (MySQL → Oracle 변경 시 SQL 다 고쳐야 함)</td>
+              <td style="padding: 10px 16px; color: var(--devops);">낮음 (방언 Dialect만 바꾸면 알아서 번역)</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 4. Entity Mapping -->
+      <section id="entity-mapping">
+        <h2>6. 엔티티 매핑 기초 — 클래스를 테이블로</h2>
+        
+        <div class="code-block-header">
+          <span class="code-title">엔티티 클래스 생성 (테이블 설계)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Entity // JPA가 관리하는 테이블과 매핑될 객체임을 선언
+@Table(name = "products") // 실제 생성될 DB 테이블 이름 지정
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA는 기본 생성자가 필수! (안전하게 PROTECTED)
+public class Product {
+
+    @Id // Primary Key (PK) 지정
+    @GeneratedValue(strategy = GenerationType.IDENTITY) // MySQL의 AUTO_INCREMENT 적용
+    private Long id;
+
+    @Column(nullable = false, length = 100) // varchar(100) NOT NULL
+    private String name;
+
+    private int price; // @Column을 생략해도 기본적으로 컬럼으로 매핑됨
+
+    // 정적 팩토리 메서드 (생성자를 열어두는 대신 팩토리로 캡슐화)
+    public static Product create(String name, int price) {
+        Product p = new Product();
+        p.name = name;
+        p.price = price;
+        return p;
+    }
+}</code></pre>
+
+        <p style="margin-top: 20px;"><strong>📐 Antigravity Fashion 도메인 ERD:</strong> 본 챕터에서 다루는 5개 엔티티의 관계도입니다. 1:N, N:1 관계와 외래 키가 어떻게 연결되는지 시각적으로 파악하세요.</p>
+
+        <!-- Mermaid Diagram: Antigravity Fashion ERD -->
+        <pre class="mermaid">
+erDiagram
+    PRODUCT ||--o{ REVIEW : "has many"
+    PRODUCT ||--o{ ORDER_ITEM : "contained in"
+    ORDER ||--o{ ORDER_ITEM : contains
+    USER ||--o{ ORDER : places
+    USER ||--o{ REVIEW : writes
+
+    PRODUCT {
+        bigint id PK
+        varchar name
+        int price
+        varchar category
+        int stock
+        varchar image_url
+    }
+    ORDER {
+        bigint id PK
+        bigint user_id FK
+        varchar status
+        int total
+        timestamp created_at
+    }
+    ORDER_ITEM {
+        bigint id PK
+        bigint order_id FK
+        bigint product_id FK
+        int quantity
+    }
+    REVIEW {
+        bigint id PK
+        bigint product_id FK
+        bigint user_id FK
+        int rating
+        text content
+    }
+    USER {
+        bigint id PK
+        varchar email UK
+        varchar name
+        varchar password_hash
+    }
+        </pre>
+      </section>
+
+      <!-- 6. Dirty Checking -->
+      <section id="dirty-checking">
+        <h2>7. 영속성 컨텍스트와 더티 체킹 (Dirty Checking)</h2>
+        <p>JPA는 데이터를 수정할 때 <code>repository.update()</code> 같은 메서드를 호출하지 않습니다. 트랜잭션 내에서 <strong>객체의 값을 바꾸기만 하면 UPDATE 쿼리가 자동 발송</strong>됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 1차 캐시 스냅샷 비교</h4>
+          <p>JPA는 DB에서 데이터를 읽어올 때 메모리(1차 캐시)에 원본의 <strong>'스냅샷 사진'</strong>을 하나 찍어 둡니다(영속성 컨텍스트). 트랜잭션이 끝날 때(Commit 직전), <strong>스냅샷 사진과 현재 객체의 상태를 비교</strong>하여 다르면 스스로 UPDATE SQL을 만들어 DB로 날립니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-2-jpa-dirty-checking-analogy.webp" alt="JPA 더티 체킹을 스냅샷 비교로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>JPA는 처음 읽은 상태의 스냅샷과 현재 상태를 비교해 변경된 부분만 반영합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">더티 체킹 (변경 감지) 작동 코드</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Service
+@RequiredArgsConstructor
+public class ProductService {
+    private final ProductRepository productRepository;
+
+    @Transactional // 트랜잭션 시작
+    public void updatePrice(Long id, int newPrice) {
+        // 1. SELECT 쿼리로 DB에서 가져오며 영속성 컨텍스트에 스냅샷 저장!
+        Product product = productRepository.findById(id).orElseThrow();
+        
+        // 2. 객체의 값만 변경! (repository.save() 호출 불필요!!!)
+        product.changePrice(newPrice); 
+        
+        // 3. 트랜잭션 종료 시점 -> 스냅샷과 비교 -> 값이 다르네? -> UPDATE 쿼리 발사!
+    }
+}</code></pre>
+
+        <h4 style="font-weight:700; color:var(--devops); margin: 20px 0 8px;">📌 엔티티 생명주기 4상태 (더티 체킹의 전제)</h4>
+        <p style="font-size:13px;">더티 체킹이 "왜 영속 상태에서만 동작하는지" 이해하려면 엔티티의 4가지 상태를 알아야 합니다.</p>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px;">
+          <thead><tr style="background: var(--bg-glass);">
+            <th style="text-align:left; padding:8px 12px;">상태</th>
+            <th style="text-align:left; padding:8px 12px;">의미</th>
+            <th style="text-align:left; padding:8px 12px;">더티 체킹</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:8px 12px;"><strong>Transient(비영속)</strong></td><td style="padding:8px 12px;"><code>new</code>로 막 생성, 영속성 컨텍스트가 모름</td><td style="padding:8px 12px;">❌</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>Persistent(영속)</strong></td><td style="padding:8px 12px;"><code>save()</code>/<code>find()</code>로 영속성 컨텍스트가 관리 중</td><td style="padding:8px 12px;">✅ (값 바꾸면 자동 UPDATE)</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>Detached(준영속)</strong></td><td style="padding:8px 12px;">관리되다가 분리됨(트랜잭션 종료, <code>clear()</code>)</td><td style="padding:8px 12px;">❌ (값 바꿔도 반영 안 됨!)</td></tr>
+            <tr><td style="padding:8px 12px;"><strong>Removed(삭제)</strong></td><td style="padding:8px 12px;"><code>remove()</code>로 삭제 예약</td><td style="padding:8px 12px;">- (DELETE 예약)</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:13px;"><strong>실무 함정:</strong> 트랜잭션(Service 메서드) 밖에서 Entity 값을 바꾸면 Detached 상태라 DB에 반영되지 않습니다. 또 Lazy 로딩된 연관 객체를 트랜잭션 밖에서 접근하면 <code>LazyInitializationException</code>이 터집니다 — 이것이 <a href="#layered-architecture" style="color:var(--accent-color);">레이어드 아키텍처</a>에서 DTO 변환을 Service 안에서 끝내야 하는 이유입니다.</p>
+      </section>
+
+      <!-- [실무 보강 박스] MapStruct -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.08), transparent); border: 1px dashed var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 12px; font-size: 16px;">🛠️ [실무 보강 박스] MapStruct — Entity ↔ DTO 변환의 자동화</h3>
+        <p>레이어드 아키텍처를 따르면 Entity ↔ DTO 변환 코드가 폭증합니다. 손으로 다 쓰면 보일러플레이트가 무겁고 휴먼 에러도 발생합니다. <strong>MapStruct</strong>는 컴파일 타임에 변환 코드를 자동 생성해주는 어노테이션 프로세서입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">build.gradle + Mapper 인터페이스 정의</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// build.gradle (Lombok과 함께 사용 시 binding 의존성 주의)
+dependencies {
+    implementation 'org.mapstruct:mapstruct:1.5.5.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.5.5.Final'
+    annotationProcessor 'org.projectlombok:lombok-mapstruct-binding:0.2.0'
+}
+
+// ProductMapper.java
+@Mapper(componentModel = "spring")  // Spring Bean으로 등록
+public interface ProductMapper {
+    ProductResponse toResponse(Product product);
+    Product toEntity(ProductRequest request);
+    List&lt;ProductResponse&gt; toResponseList(List&lt;Product&gt; products);
+}
+
+// Service에서 주입받아 사용
+@Service
+@RequiredArgsConstructor
+public class ProductService {
+    private final ProductRepository repo;
+    private final ProductMapper mapper;  // 자동 생성된 구현체 주입
+
+    public ProductResponse findById(Long id) {
+        return mapper.toResponse(repo.findById(id).orElseThrow());
+    }
+}</code></pre>
+
+        <p style="margin-top: 12px;"><strong>수동 vs MapStruct 트레이드오프:</strong></p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 12px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--text-muted); margin-bottom:8px;">수동 변환 (record + static from)</h4>
+            <p style="color:var(--text-muted);">의존성 0개, 코드 명확. 필드 적을 때 OK. 필드 많거나 변환 로직 복잡해지면 비효율.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">MapStruct</h4>
+            <p style="color:var(--text-muted);">컴파일 타임 코드 생성 (런타임 0 비용). IDE에서 생성된 Impl 확인 가능. Lombok과 동시 사용 시 binding 어노테이션 프로세서 필수.</p>
+          </div>
+        </div>
+      </div>
+      <!-- ================================================================
+           SECTION C: 연관관계 & N+1 해결
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(214,48,49,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--interview);">
+        <h3 style="font-weight: 800; color: var(--interview); font-size: 18px; margin: 0;">🔗 C. 연관관계 매핑 & N+1 최적화</h3>
+      </div>
+
+      <!-- 6. Relationship Mapping -->
+      <section id="relationship-mapping">
+        <h2>8. 1:N / N:1 양방향 연관관계와 연관관계의 주인</h2>
+        <p>DB는 왜래키(FK) 하나로 양방향 조회가 가능하지만, 자바 객체는 양쪽 필드에 서로를 참조해야 합니다. <strong>외래 키를 가진 쪽이 연관관계의 주인</strong>이 됩니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">회원(1)과 리뷰(N) 양방향 매핑</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// =================== 1. N쪽 (리뷰) - 연관관계의 주인! ===================
+@Entity
+public class Review {
+    @Id @GeneratedValue
+    private Long id;
+
+    // 외래 키(member_id)를 관리하는 진짜 주인!
+    // 다대일(N:1) 매핑. 무조건 LAZY 설정!
+    @ManyToOne(fetch = FetchType.LAZY) 
+    @JoinColumn(name = "member_id") 
+    private Member member;
+}
+
+// =================== 2. 1쪽 (회원) - 주인이 아님! (조회만 가능) ===================
+@Entity
+public class Member {
+    @Id @GeneratedValue
+    private Long id;
+
+    // 나는 주인이 아님! 내 데이터는 저쪽 클래스(Review)의 'member' 필드에 매핑되어 있음(mappedBy)
+    // 리스트에 데이터를 추가해도 DB에 외래 키가 업데이트되지 않음 (조회용)
+    @OneToMany(mappedBy = "member")
+    private List&lt;Review&gt; reviews = new ArrayList&lt;&gt;();
+}</code></pre>
+      </section>
+
+      <!-- 7. Cascade & Orphan Removal -->
+      <section id="cascade-orphan">
+        <h2>9. 영속성 전이(Cascade)와 고아 객체(Orphan Removal)</h2>
+        <p>부모 엔티티를 저장할 때 자식 엔티티도 한꺼번에 저장하거나, 부모와 연관이 끊어진 자식을 자동 삭제할 때 사용합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">게시글과 첨부파일 (생명주기를 함께함)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Entity
+public class Post {
+    // 1. CascadeType.ALL: 게시글을 save()하면 files 안의 파일들도 자동으로 INSERT 됨!
+    // 2. orphanRemoval = true: 게시글 리스트에서 파일을 삭제하면, DB에서도 DELETE 쿼리가 나감!
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List&lt;File&gt; files = new ArrayList&lt;&gt;();
+
+    public void addFile(File file) {
+        this.files.add(file);
+        file.setPost(this); // 양방향 연관관계 편의 메서드
+    }
+    
+    public void removeFile(File file) {
+        this.files.remove(file); // 리스트에서 뺐을 뿐인데 DB에서 DELETE 실행됨! (orphanRemoval)
+    }
+}</code></pre>
+      </section>
+
+      <!-- 8. N+1 Problem -->
+      <section id="n-plus-1-problem">
+        <h2>10. 실무 장애 0순위 — N+1 쿼리의 발생 원리</h2>
+        <p>목록을 조회할 때, <strong>부모 목록을 가져오는 1번의 쿼리</strong> 이후, 그 부모의 <strong>자식들을 조회하기 위해 N번의 추가 쿼리</strong>가 폭격처럼 발송되는 문제입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">N+1 문제 발생 시뮬레이션 (지연 로딩의 함정)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// [Visual N+1 Query Timeline]
+// 1. SELECT * FROM product;  (1번 쿼리로 100개의 상품 가져옴)
+//    ├── Product 1 (셔츠) ──► SELECT * FROM review WHERE prod_id = 1; (쿼리 폭발!)
+//    ├── Product 2 (코트) ──► SELECT * FROM review WHERE prod_id = 2; (쿼리 폭발!)
+//    ├── ...
+//    └── Product 100      ──► SELECT * FROM review WHERE prod_id = 100;
+//    ===> 상품 100개 가져왔는데 총 1 + 100 = 101번의 데이터베이스 타격!! 💥 서버 마비!
+
+public List&lt;ProductResponse&gt; getProducts() {
+    // 1. 여기서 쿼리 1번 발생 (List&lt;Product&gt; N개 반환)
+    List&lt;Product&gt; products = productRepository.findAll(); 
+
+    return products.stream().map(product -> {
+        // 2. 루프를 돌며 가짜 객체(Proxy)였던 reviews의 getter를 때리는 순간 추가 쿼리 발사!
+        int reviewCount = product.getReviews().size(); 
+        return new ProductResponse(product.getName(), reviewCount);
+    }).toList();
+}</code></pre>
+      </section>
+
+      <!-- 9. Fetch Join -->
+      <section id="fetch-join">
+        <h2>11. Fetch Join — N+1 문제의 강력한 해결책</h2>
+        <p>JPA의 <strong>Fetch Join</strong>을 사용하면 DB 단에서 <code>JOIN</code>을 수행하여 <strong>부모와 자식 데이터를 단 1번의 쿼리로 묶어</strong> 메모리에 올립니다.</p>
+
+        <div style="background: linear-gradient(135deg, hsla(0, 75%, 60%, 0.06), transparent); border-left: 3px solid var(--interview); padding: 10px 14px; margin: 12px 0; border-radius: 6px; font-size: 12.5px;">
+          <strong style="color: var(--interview);">🔍 비유가 깨지는 지점:</strong> Fetch Join은 N+1의 <em>만능</em> 해결책이 아닙니다. ① <strong>컬렉션 Fetch Join + 페이징을 같이 쓰면</strong> Hibernate가 전체를 메모리에 올려 페이징(메모리에서 자르기) — 대용량에서 위험. ② <strong>둘 이상의 컬렉션</strong>을 동시에 Fetch Join하면 <code>MultipleBagFetchException</code>. 페이징이 필요하면 <code>@BatchSize</code>/<code>default_batch_fetch_size</code> 또는 To-One만 Fetch Join 후 컬렉션은 배치로 푸는 전략이 더 안전합니다.
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">단 1번의 쿼리로 병목 타파</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// [Visual Fetch Join Timeline]
+// 1. SELECT p.*, r.* FROM product p JOIN FETCH p.reviews r;
+//    ├── 셔츠 & [리뷰1, 리뷰2] ──► (DB가 한 방에 이쁘게 다 묶어서 전송!)
+//    └── 코트 & [리뷰3]
+//    ===> 상품이 5만 개든, 리뷰가 100만 개든 단 1번의 DB 통신(SELECT)으로 완결!!
+
+public interface ProductRepository extends JpaRepository&lt;Product, Long&gt; {
+    // 연관된 reviews를 한 묶음으로 즉시(Eager) 한꺼번에 긁어옴
+    @Query("select p from Product p join fetch p.reviews")
+    List&lt;Product&gt; findAllWithReviews();
+}</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION D: Spring Data JPA 실전
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(253,203,110,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--test);">
+        <h3 style="font-weight: 800; color: var(--test); font-size: 18px; margin: 0;">📊 D. Spring Data JPA 실전 스킬</h3>
+      </div>
+
+      <!-- 10. Paging & Sorting -->
+      <section id="paging-sorting">
+        <h2>12. 페이징과 정렬 (Pageable)</h2>
+        <p>Limit, Offset 쿼리를 직접 작성할 필요 없이, 컨트롤러에서 <code>Pageable</code> 객체만 받으면 JPA가 자동으로 페이징 쿼리를 날려줍니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">Pageable 인터페이스 활용 (요청: /api/products?page=0&size=10&sort=price,desc)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">public interface ProductRepository extends JpaRepository&lt;Product, Long&gt; {
+    // Page로 반환하면 count 쿼리도 같이 자동으로 날려줌!
+    Page&lt;Product&gt; findByCategory(String category, Pageable pageable);
+}
+
+@RestController
+@RequiredArgsConstructor
+public class ProductController {
+    // 프론트엔드에서 파라미터로 넘어오는 page, size 등을 Spring이 Pageable 객체로 자동 변환!
+    @GetMapping("/api/products")
+    public Page&lt;Product&gt; getProducts(
+            @RequestParam String category, 
+            Pageable pageable) {
+        return productRepository.findByCategory(category, pageable);
+    }
+}</code></pre>
+      </section>
+
+      <!-- 11. Transactional -->
+      <section id="transactional">
+        <h2>13. @Transactional의 본질과 읽기 전용 최적화</h2>
+        <p>트랜잭션은 <strong>"전부 성공하거나 전부 실패(Rollback)"</strong>를 보장합니다. 또한 단순히 조회만 할 때는 <strong>읽기 전용 옵션</strong>으로 엄청난 성능 향상을 얻을 수 있습니다.</p>
+
+        <div class="glass-panel" style="border-top: 3px solid var(--devops);">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">🚀 @Transactional(readOnly = true) 의 위력</h4>
+          <p style="font-size:13px; color:var(--text-muted);">
+            데이터를 수정하지 않는 조회 전용 메서드에 이를 붙이면, Hibernate는 read-only 힌트(<code>FlushMode.MANUAL</code> 등)를 통해 <strong>flush와 더티 체킹 부담을 줄일 수 있습니다.</strong> 큰 조회에서 메모리/CPU 절약에 도움이 되며, 무엇보다 "이 메서드는 쓰기를 하지 않는다"는 <strong>의도를 명확히 전달</strong>하고 읽기 복제본(replica) 라우팅에도 활용됩니다.
+          </p>
+          <p style="font-size:12px; color:var(--text-muted); margin-top:6px;">⚠️ 정확히 어떤 최적화가 적용되는지는 <strong>JPA 프로바이더(Hibernate)·버전에 따라 다릅니다.</strong> "항상 스냅샷을 0으로 만든다"고 단정하기보다 "부담을 줄이는 성능 힌트 + 의도 표현"으로 이해하는 게 정확합니다.</p>
+        </div>
+      </section>
+
+      <!-- glossary -->
+      <section id="chapter-glossary" class="glass-panel" style="border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight:800; color:var(--accent-color); margin-bottom:12px;">📚 02챕터 헷갈리는 용어 사전</h3>
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+          <div><strong>IoC Container:</strong><span style="color:var(--text-muted);"> 제어의 역전. 개발자가 뉴(new) 하지 않고 스프링 시스템이 대신 객체(Bean)를 생성하고 수명을 관리하는 보관소.</span></div>
+          <div><strong>DI (의존성 주입):</strong><span style="color:var(--text-muted);"> IoC 창고에 있는 부품(Bean)을 내가 필요한 곳에 꽂아 넣어주는 행위. @RequiredArgsConstructor로 해결.</span></div>
+          <div><strong>더티 체킹 (Dirty Checking):</strong><span style="color:var(--text-muted);"> 트랜잭션 종료 시, 영속성 컨텍스트가 최초 스냅샷과 현재 객체 상태를 비교해 값이 다르면 UPDATE 쿼리를 자동 발송하는 마법.</span></div>
+          <div><strong>Lazy Loading (지연 로딩):</strong><span style="color:var(--text-muted);"> 연관된 자식 데이터를 부모 조회 시점에 긁어오지 않고, 실제로 사용하는 시점(Getter)에 뒤늦게 쿼리를 쏴서 가져오는 방식.</span></div>
+          <div><strong>N+1 문제:</strong><span style="color:var(--text-muted);"> 부모(1)를 가져왔는데, 자식(N)을 쓰려고 하니 자식 개수만큼 개별 쿼리가 N번 추가로 폭격하는 치명적 에러.</span></div>
+          <div><strong>Fetch Join (페치 조인):</strong><span style="color:var(--text-muted);"> 지연 로딩을 무시하고, SQL JOIN을 이용해 부모와 자식 데이터를 단 한 번의 쿼리로 다 긁어와 메모리에 적재해 N+1을 해결하는 기술.</span></div>
+          <div><strong>mappedBy:</strong><span style="color:var(--text-muted);"> 양방향 연관관계에서 주인이 아님(읽기 전용)을 선언. 상대방 객체의 어떤 필드에 매핑되어 있는지 이름을 적어줌.</span></div>
+          <div><strong>CascadeType.ALL:</strong><span style="color:var(--text-muted);"> 영속성 전이. 부모 엔티티를 저장/삭제할 때 엮여있는 자식 엔티티도 한꺼번에 똑같이 저장/삭제되도록 전이시킴.</span></div>
+        </div>
+      </section>
+
+      <!-- quiz wrapper -->
+      <!-- 13. Virtual Threads (v3.2) -->
+      <section id="virtual-threads">
+        <h2>14. Virtual Threads — 동기 코드로 비동기처럼 (Project Loom)</h2>
+        <p>Java 21 LTS의 가장 큰 변화입니다. 기존 OS 스레드(1 스레드 ≈ 1MB 스택)의 한계를 넘어, <strong>JVM이 관리하는 가상 스레드</strong>로 수십만 개 동시 처리가 가능해졌습니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 호텔 직원의 효율적 배치</h4>
+          <p><strong>전통 OS 스레드</strong>는 호텔 객실 직원이 각자 자기 객실 손님이 잘 때까지 그 방 앞에 서 있는 격입니다. 비효율적이지만 단순합니다.
+          <br><strong>Virtual Thread</strong>는 손님이 자는 동안엔 다른 객실 일을 처리하다가, 손님이 일어나면 즉시 돌아옵니다. 같은 인력으로 (대기가 많은 상황에서) 훨씬 많은 손님을 받습니다 — 단, 실제 처리량은 DB 풀·CPU·외부 API 한계에 묶입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-2-virtual-threads-hotel-analogy.webp" alt="Virtual Thread를 호텔 직원의 대기 전환으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>Virtual Thread는 대기 시간이 긴 작업을 가볍게 전환하며 많은 요청을 효율적으로 처리합니다.</figcaption>
+        </figure>
+
+        <p><strong>WebFlux/리액티브 vs Virtual Threads:</strong></p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 12px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">😩 WebFlux (이전 방식)</h4>
+            <p style="color:var(--text-muted);">코드를 <code>Mono</code>/<code>Flux</code>로 리액티브 체이닝 강제. 학습 곡선 높고 디버깅 지옥.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">😎 Virtual Threads</h4>
+            <p style="color:var(--text-muted);">평범한 동기 코드 그대로. JVM이 알아서 블로킹 지점에서 스레드 양보. <strong>리액티브 없이 10만 동시 요청</strong>.</p>
+          </div>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">Spring Boot 3.2+ 활성화 (한 줄 설정)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// application.yml
+spring:
+  threads:
+    virtual:
+      enabled: true   # ← 끝. 모든 Tomcat 요청이 가상 스레드로 처리됨</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">쇼핑몰 시나리오 — 블랙프라이데이 대량 주문 처리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">@Service
+@RequiredArgsConstructor
+public class OrderService {
+    private final InventoryClient inventoryClient;
+    private final PaymentClient paymentClient;
+    private final OrderRepository orderRepo;
+
+    @Transactional
+    public Order placeOrder(OrderRequest req) {
+        // ✅ 평범한 동기 코드. Virtual Thread가 자동으로 효율 처리
+        var stock = inventoryClient.checkStock(req.productId());  // I/O 대기
+        if (stock &lt; req.quantity()) throw new OutOfStockException(req.productId());
+
+        var payment = paymentClient.charge(req.amount());          // I/O 대기
+        if (!payment.isSuccess()) throw new PaymentFailedException();
+
+        return orderRepo.save(Order.from(req));
+    }
+}
+// WebFlux로 작성하면 코드 라인 수가 4~5배. 가독성/디버깅 측면에서 압도적.</code></pre>
+
+        <p><strong>주의점:</strong> <code>synchronized</code> 블록 안에서 블로킹 I/O를 하면 가상 스레드가 OS 스레드를 점유(pinned)하는 안티 패턴이 발생합니다. <code>ReentrantLock</code>으로 대체 권장.</p>
+      </section>
+      <!-- Build Checkpoint [v3.4] -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.10), transparent); border: 1px solid var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 10px; font-size: 16px;">🛠️ 직접 만들어보기 — "이걸로 만들 수 있나?" 체크포인트</h3>
+        <p style="font-size:13px; margin:0 0 8px;">읽기만으로는 복귀가 안 됩니다. 이 챕터를 끝냈다면 <strong>아래를 실제 Spring Boot 프로젝트로 만들어 돌려보세요.</strong></p>
+        <ul style="font-size:13.5px; line-height:1.9; margin:0; padding-left:20px;">
+          <li>Spring Initializr로 프로젝트 생성 (Web, JPA, H2/PostgreSQL, Lombok)</li>
+          <li><code>Product</code> ↔ <code>Review</code>(1:N) 엔티티 + Repository, Controller→Service→Repository 계층으로 <strong>CRUD API 1개</strong> (DTO ↔ Entity 분리 준수)</li>
+          <li>N+1을 <strong>의도적으로 발생</strong>시킨 뒤(<code>show-sql</code>로 쿼리 수 확인) → Fetch Join 또는 <code>@BatchSize</code>로 해결하고 쿼리 수 비교</li>
+          <li>조회 메서드에 <code>@Transactional(readOnly=true)</code> 적용, 쓰기 메서드와 분리</li>
+        </ul>
+      </div>
+
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const ch2Quizzes = [
+      {
+        type: "mcq",
+        question: "JPA에서 데이터를 업데이트(수정)할 때, repository.update() 같은 메서드를 호출하지 않아도 자동으로 UPDATE 쿼리가 날아가는 핵심 원리는?",
+        options: [
+          "데이터베이스 트리거(Trigger)가 작동하기 때문",
+          "트랜잭션이 끝날 때 영속성 컨텍스트의 최초 스냅샷과 객체의 현재 상태를 비교하여 값이 다르면 변경을 감지(Dirty Checking)하기 때문",
+          "Lombok이 컴파일 시점에 update 쿼리를 자동 삽입하기 때문",
+          "@Entity 어노테이션이 매초마다 DB와 동기화를 폴링(Polling)하기 때문"
+        ],
+        correct: 1,
+        explanation: "JPA는 1차 캐시에 원본 스냅샷을 찍어둡니다. 트랜잭션(Commit) 직전에 객체 값과 스냅샷을 비교(더티 체킹)하여 다르면 자동으로 UPDATE 쿼리를 DB에 전송합니다."
+      },
+      {
+        type: "mcq",
+        question: "JPA의 치명적 결함인 'N+1 문제'가 발생하는 주된 원인은?",
+        options: [
+          "데이터베이스에 인덱스가 없어서",
+          "부모(1)를 가져오는 1번의 쿼리 후, 자식(N) 객체를 루프에서 접근할 때마다 지연 로딩이 발동하여 N번의 추가 쿼리가 쏟아지기 때문",
+          "트랜잭션을 적용하지 않아서",
+          "외래키(FK) 제약 조건을 위반했기 때문"
+        ],
+        correct: 1,
+        explanation: "N+1 문제는 부모 테이블 리스트를 조회한 뒤, 루프를 돌며 자식 엔티티 데이터를 건건이 접근할 때(LAZY 발동), 각 부모 ID마다 쿼리가 추가로 발생해 DB 트래픽이 폭등하는 현상입니다."
+      },
+      {
+        type: "mcq",
+        question: "조회용 메서드 위에 @Transactional(readOnly = true)를 선언하면 얻을 수 있는 이점은?",
+        options: [
+          "Hibernate의 read-only 힌트로 flush·더티 체킹 부담을 줄여 메모리·CPU를 절약하고 의도를 명확히 한다 (프로바이더/버전 의존).",
+          "서버의 디스크에 데이터를 임시 캐싱한다.",
+          "N+1 문제가 자동으로 해결된다.",
+          "DB 락(Lock)을 걸어 다른 사용자가 접근하지 못하게 한다."
+        ],
+        correct: 0,
+        explanation: "readOnly = true는 Hibernate에 read-only 힌트를 주어 flush/더티 체킹 부담을 줄이는 성능 힌트입니다(정확한 동작은 프로바이더·버전 의존). 또한 '쓰기 없음' 의도를 명확히 하고 읽기 복제본 라우팅에도 활용됩니다. '항상 스냅샷을 0으로'라고 단정하진 않습니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "N+1 문제를 1번의 쿼리로 타파하기 위해, JPQL에서 연관된 자식 객체를 즉시 한 방에 다 가져오는 조인 키워드를 작성하세요.",
+        starter: "@Query(\"select p from Product p \n        // 여기에 작성\n        p.reviews\")",
+        validator: {
+          mustContain: ["join fetch"],
+          mustNotContain: ["inner join", "outer"]
+        },
+        solution: "join fetch",
+        explanation: "join fetch를 사용하면 SQL의 INNER/LEFT JOIN을 실행하여 부모와 자식 테이블의 데이터를 단 한 번의 쿼리로 묶어서 즉시 긁어옵니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "스프링 부트 3 실무 표준에서, 필드 주입(@Autowired) 대신 final 필드에 대해 생성자 의존성 주입(DI) 코드를 자동 생성해주는 Lombok 어노테이션은?",
+        starter: "// 여기에 작성\npublic class OrderService {\n    private final ProductRepository repo;\n}",
+        validator: {
+          mustContain: ["@RequiredArgsConstructor"],
+          mustNotContain: ["@AllArgsConstructor"]
+        },
+        solution: "@RequiredArgsConstructor",
+        explanation: "@RequiredArgsConstructor는 final 필드나 @NonNull 필드만 모아서 생성자를 룸복이 자동으로 만들어 줍니다. 이를 통해 가장 안전한 생성자 의존성 주입이 구현됩니다."
+      },
+      // ===== v3.2 추가 퀴즈 =====
+      {
+        type: "mcq",
+        question: "Spring 표준 레이어드 아키텍처에서 Controller의 책임으로 가장 적절한 것은?",
+        options: [
+          "비즈니스 로직 처리와 트랜잭션 관리",
+          "DB 쿼리 직접 실행",
+          "HTTP 요청·응답 변환과 Service에 위임",
+          "Entity 객체의 영속성 컨텍스트 관리"
+        ],
+        correct: 2,
+        explanation: "Controller는 HTTP 변환만 담당하고 실제 비즈니스 로직과 트랜잭션은 Service에, DB 접근은 Repository에 위임합니다. Controller가 직접 비즈니스 로직을 처리하거나 DB를 만지면 레이어 책임이 깨집니다."
+      },
+      {
+        type: "mcq",
+        question: "Java 21의 Virtual Threads에 대한 설명으로 옳은 것은?",
+        options: [
+          "WebFlux의 Mono/Flux 체이닝을 강제한다",
+          "JVM이 관리하는 경량 스레드로 동기 코드 그대로 대량 동시 처리가 가능하다",
+          "OS 스레드 1개당 1MB 스택을 그대로 사용한다",
+          "synchronized 블록 안에서 블로킹 I/O를 권장한다"
+        ],
+        correct: 1,
+        explanation: "Virtual Threads는 JVM이 관리하는 경량 스레드로, 평범한 동기 코드를 작성해도 JVM이 블로킹 지점에서 자동으로 스레드를 양보합니다. application.yml에 spring.threads.virtual.enabled=true 한 줄로 활성화됩니다. synchronized 안 블로킹은 pinned 안티 패턴이므로 ReentrantLock으로 대체합니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "Spring Modulith에서 모듈 외부에 노출하지 않을 클래스의 접근 제어자로 가장 적절한 것을 작성하세요 (Product 클래스 선언).",
+        starter: "// product 모듈 내부 전용\nclass Product {\n    // ...\n}",
+        validator: {
+          mustContain: ["class Product"],
+          mustNotContain: ["public class Product"]
+        },
+        solution: "class Product { /* package-private */ }",
+        explanation: "Spring Modulith에서는 모듈 내부 클래스를 package-private(접근 제어자 생략)로 유지하고, 외부에 노출할 것만 api 하위 패키지에 public으로 둡니다. 다른 모듈이 internal 클래스를 import 하면 ApplicationModules.verify()에서 컴파일 단계에 실패합니다."
+      },
+      // ===== v3.4 추가 퀴즈 (MVC/Bean 토대 + 엔티티 생명주기) =====
+      {
+        type: "mcq",
+        question: "모든 HTTP 요청이 가장 먼저 도달하는 스프링 MVC의 단일 진입점(프론트 컨트롤러)은?",
+        options: [
+          "@RestController",
+          "DispatcherServlet",
+          "HikariCP",
+          "ApplicationContext"
+        ],
+        correct: 1,
+        explanation: "DispatcherServlet이 모든 요청의 단일 진입점이며, HandlerMapping이 URL을 보고 어느 Controller 메서드를 호출할지 결정합니다. 응답은 MessageConverter가 객체를 JSON으로 변환합니다."
+      },
+      {
+        type: "mcq",
+        question: "Spring Bean의 기본 스코프가 singleton이라는 사실이 주는 실무적 주의점은?",
+        options: [
+          "Bean을 매번 새로 만들어야 한다",
+          "Service/Repository에 인스턴스 변수(상태)를 두면 여러 요청이 공유해 동시성 버그가 발생한다",
+          "prototype 스코프를 반드시 명시해야 한다",
+          "singleton은 메모리 누수를 일으킨다"
+        ],
+        correct: 1,
+        explanation: "기본 스코프 singleton은 컨테이너에 인스턴스 1개만 만들어 공유합니다. 따라서 Service에 가변 상태(인스턴스 변수)를 두면 여러 요청이 동시에 건드려 버그가 납니다. 상태는 메서드 지역 변수나 파라미터로 다뤄야 합니다."
+      },
+      {
+        type: "mcq",
+        question: "트랜잭션(Service 메서드) 밖에서 조회한 Entity의 값을 바꿨는데 DB에 반영되지 않았다. 가장 가능성 높은 원인은?",
+        options: [
+          "Entity가 Transient 상태라서",
+          "Entity가 Detached(준영속) 상태라 더티 체킹이 동작하지 않아서",
+          "@Transactional을 안 붙여서 컴파일 에러",
+          "HikariCP 풀이 부족해서"
+        ],
+        correct: 1,
+        explanation: "트랜잭션이 끝나면 Entity는 Detached(준영속) 상태가 되어 영속성 컨텍스트의 관리를 벗어납니다. 이 상태에서 값을 바꿔도 더티 체킹이 동작하지 않아 UPDATE가 발생하지 않습니다. 변경은 반드시 트랜잭션(Service) 안에서 해야 합니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", ch2Quizzes, "chapter-2");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

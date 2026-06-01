@@ -1,0 +1,812 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 03 - DB & SQL + QueryDSL</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>백엔드 코스</span> &gt; <span>Chapter 03</span></div>
+      <h1>Chapter 03: 데이터베이스 & SQL + QueryDSL 완전 정복</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">SQL 기초(SELECT, JOIN, 서브쿼리)부터 정규화, 트랜잭션/ACID, 인덱스 튜닝, N+1 문제 해결, 그리고 QueryDSL 동적 쿼리까지 — 백엔드 개발자의 DB 역량을 총 12개 섹션으로 완전 정복합니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/chapter-3-hero.webp" alt="데이터베이스와 SQL 학습 흐름을 보여주는 2D 파스텔 일러스트" loading="lazy">
+      <figcaption>조회, 조인, 트랜잭션, 인덱스, QueryDSL이 하나의 데이터 흐름으로 이어지는 장면입니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           SECTION A: SQL 기초
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(116,185,255,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">📝 A. SQL 기초 — SELECT, WHERE, GROUP BY</h3>
+      </div>
+
+      <!-- 1. SELECT 기초 -->
+      <section id="sql-select">
+        <h2>1. SELECT & WHERE — 데이터 조회의 기본기</h2>
+        <p>모든 DB 작업의 출발점입니다. <strong>SELECT</strong>로 어떤 컬럼을 가져올지, <strong>WHERE</strong>로 어떤 조건의 행만 필터링할지 지정합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">SQL SELECT 기초 — 쇼핑몰 상품 조회</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-sql"><code class="language-sql">-- 전체 컬럼 조회 (실무에서는 * 대신 필요한 컬럼만 명시!)
+SELECT * FROM product;
+
+-- 특정 컬럼만 조회
+SELECT name, price, category FROM product;
+
+-- WHERE 조건 필터링
+SELECT name, price FROM product
+WHERE category = 'tops' AND price <= 50000;
+
+-- 정렬: ORDER BY (ASC=오름차순, DESC=내림차순)
+SELECT name, price FROM product
+ORDER BY price DESC;  -- 비싼 순
+
+-- 제한: LIMIT (상위 N개만)
+SELECT name, price FROM product
+ORDER BY price DESC
+LIMIT 10;  -- 상위 10개만
+
+-- 중복 제거: DISTINCT
+SELECT DISTINCT category FROM product;
+
+-- 패턴 검색: LIKE
+SELECT * FROM product
+WHERE name LIKE '%셔츠%';     -- '셔츠'가 포함된 상품
+-- %: 0개 이상의 임의 문자, _: 정확히 1개 문자
+
+-- NULL 체크: IS NULL / IS NOT NULL (= NULL은 작동 안 함!)
+SELECT * FROM product WHERE deleted_at IS NULL;</code></pre>
+      </section>
+
+      <!-- 2. GROUP BY & Aggregate -->
+      <section id="sql-group-by">
+        <h2>2. GROUP BY & 집계 함수 — 데이터 요약 분석</h2>
+        <p><strong>GROUP BY</strong>는 특정 컬럼 값이 같은 행끼리 묶어서 집계 함수(COUNT, SUM, AVG, MAX, MIN)를 적용합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 매장별 매출 보고서</h4>
+          <p>전 매장의 판매 기록을 <strong>매장별(GROUP BY store)</strong>로 묶은 뒤, 각 매장의 <strong>총 매출(SUM), 평균 단가(AVG), 판매 건수(COUNT)</strong>를 한 줄로 요약하는 것과 같습니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-sql-group-by-analogy.webp" alt="매장별 판매 기록을 요약하는 GROUP BY 비유 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>흩어진 판매 기록을 매장별로 묶어 요약 지표로 만드는 과정을 표현합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">GROUP BY & HAVING — 카테고리별 매출 분석</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-sql"><code class="language-sql">-- 카테고리별 상품 수, 평균 가격, 최고가
+SELECT
+    category,
+    COUNT(*) AS product_count,
+    AVG(price) AS avg_price,
+    MAX(price) AS max_price
+FROM product
+GROUP BY category;
+-- 결과: tops | 45 | 52000 | 120000
+--       bottoms | 32 | 68000 | 180000
+
+-- HAVING: GROUP BY 결과에 조건 걸기 (WHERE는 그룹 전, HAVING은 그룹 후!)
+SELECT category, COUNT(*) AS cnt
+FROM product
+GROUP BY category
+HAVING COUNT(*) >= 10;  -- 상품이 10개 이상인 카테고리만
+
+-- ⚠️ WHERE vs HAVING 구분!
+-- WHERE: 개별 행을 필터링 (GROUP BY 전에 실행)
+-- HAVING: 그룹 결과를 필터링 (GROUP BY 후에 실행)</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION B: JOIN
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(46,213,115,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">🔗 B. JOIN — 테이블 간 연결</h3>
+      </div>
+
+      <!-- 3. JOIN -->
+      <section id="sql-join">
+        <h2>3. JOIN 완전 정복 — INNER, LEFT, RIGHT, CROSS</h2>
+        <p>실무에서는 데이터가 여러 테이블에 분산되어 있으므로, <strong>JOIN</strong>으로 연결하여 필요한 데이터를 한 번에 가져옵니다.</p>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-sql-join-core.webp" alt="분리된 테이블이 JOIN으로 연결되는 과정을 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>분리된 테이블을 관계 조건으로 연결해 필요한 데이터를 한 번에 조합합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">4대 JOIN 타입 — 쇼핑몰 주문+상품+회원 연결</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-sql"><code class="language-sql">-- 1. INNER JOIN: 양쪽 테이블 모두에 매칭되는 행만 (가장 흔함!)
+SELECT o.id, m.name AS member_name, p.name AS product_name, o.quantity
+FROM orders o
+INNER JOIN member m ON o.member_id = m.id
+INNER JOIN product p ON o.product_id = p.id;
+-- 주문이 없는 회원은 결과에 안 나옴!
+
+-- 2. LEFT JOIN: 왼쪽 테이블 전체 + 오른쪽 매칭 (없으면 NULL)
+SELECT m.name, o.id AS order_id
+FROM member m
+LEFT JOIN orders o ON m.id = o.member_id;
+-- 주문이 없는 회원도 나옴 (order_id = NULL)
+
+-- 3. RIGHT JOIN: 오른쪽 테이블 전체 + 왼쪽 매칭 (LEFT의 반대)
+-- 실무에서는 LEFT JOIN으로 통일하는 것이 가독성에 좋습니다.
+
+-- 4. CROSS JOIN: 모든 행의 조합 (N × M개 결과) — 거의 안 씀
+SELECT * FROM color CROSS JOIN size;
+-- color 5개 × size 4개 = 20개 조합</code></pre>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">JOIN 종류</th>
+              <th style="padding: 10px 16px;">왼쪽 테이블</th>
+              <th style="padding: 10px 16px;">오른쪽 테이블</th>
+              <th style="padding: 10px 16px;">매칭 안 되면?</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">INNER JOIN</td>
+              <td style="padding: 10px 16px;">매칭된 행만</td>
+              <td style="padding: 10px 16px;">매칭된 행만</td>
+              <td style="padding: 10px 16px; color: var(--interview);">제외</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">LEFT JOIN</td>
+              <td style="padding: 10px 16px; color: var(--devops);">전체 포함</td>
+              <td style="padding: 10px 16px;">매칭된 행만</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">오른쪽 NULL</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">RIGHT JOIN</td>
+              <td style="padding: 10px 16px;">매칭된 행만</td>
+              <td style="padding: 10px 16px; color: var(--devops);">전체 포함</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">왼쪽 NULL</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 4. Subquery -->
+      <section id="sql-subquery">
+        <h2>4. 서브쿼리 — 쿼리 안의 쿼리</h2>
+        <p>쿼리 결과를 다른 쿼리의 조건이나 데이터로 활용합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">서브쿼리 3대 활용 패턴</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-sql"><code class="language-sql">-- 1. WHERE절 서브쿼리: 평균가보다 비싼 상품 조회
+SELECT name, price FROM product
+WHERE price > (SELECT AVG(price) FROM product);
+
+-- 2. IN 서브쿼리: 주문된 적 있는 상품만 조회
+SELECT name FROM product
+WHERE id IN (SELECT DISTINCT product_id FROM orders);
+
+-- 3. FROM절 서브쿼리 (인라인 뷰): 카테고리별 최고가 상품
+SELECT sub.category, sub.max_price
+FROM (
+    SELECT category, MAX(price) AS max_price
+    FROM product
+    GROUP BY category
+) sub
+WHERE sub.max_price > 100000;</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION C: 정규화 & 트랜잭션
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(253,203,110,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--test);">
+        <h3 style="font-weight: 800; color: var(--test); font-size: 18px; margin: 0;">🏗️ C. 정규화 & 트랜잭션</h3>
+      </div>
+
+      <!-- 5. Normalization -->
+      <section id="normalization">
+        <h2>5. 정규화 (Normalization) — 데이터 중복 제거 설계</h2>
+        <p>테이블 하나에 모든 데이터를 때려넣으면 <strong>데이터 중복, 수정 이상(Anomaly), 삭제 이상</strong>이 발생합니다. 정규화는 테이블을 체계적으로 분리하여 이를 방지합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 주소록 정리</h4>
+          <p><strong>비정규화</strong>는 연락처에 "홍길동 / 서울시 강남구 / 02-1234 / 회사: ABC"를 매 주문마다 반복 기록하는 것입니다. 홍길동이 이사하면 모든 주문의 주소를 일일이 바꿔야 합니다. <strong>정규화</strong>는 "회원 테이블"에 주소를 딱 한 번만 저장하고, 주문에서는 회원 ID만 참조하는 것입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-normalization-analogy.webp" alt="중복된 주소 카드를 정리하는 정규화 비유 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>중복 주소 정보를 기준 테이블과 참조 관계로 정리하는 정규화의 목적을 보여줍니다.</figcaption>
+        </figure>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">1NF (제1정규형)</h4>
+            <p style="color:var(--text-muted);">모든 컬럼 값이 <strong>원자적(Atomic)</strong>이어야 함. "셔츠,바지" 같은 다중값 ❌ → 행을 분리하거나 별도 테이블로.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">2NF (제2정규형)</h4>
+            <p style="color:var(--text-muted);">1NF + <strong>부분 종속 제거</strong>. 복합 PK의 일부에만 종속되는 컬럼을 별도 테이블로 분리.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">3NF (제3정규형)</h4>
+            <p style="color:var(--text-muted);">2NF + <strong>이행 종속 제거</strong>. PK → A → B처럼 간접 종속되는 B를 별도 테이블로. <strong>실무 기본 목표!</strong></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. Transaction & ACID -->
+      <section id="transaction-acid">
+        <h2>6. 트랜잭션 & ACID — 데이터 무결성의 수호자</h2>
+        <p><strong>트랜잭션</strong>은 "전부 성공하거나, 전부 취소(롤백)"되어야 하는 하나의 작업 단위입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 계좌 이체</h4>
+          <p>A계좌에서 10만원을 빼고(출금) B계좌에 10만원을 넣는(입금) 작업은 <strong>반드시 둘 다 성공하거나, 둘 다 취소</strong>되어야 합니다. 출금만 되고 입금이 실패하면 돈이 증발합니다! 이것이 트랜잭션의 <strong>원자성(Atomicity)</strong>입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-transaction-acid-analogy.webp" alt="계좌 이체로 트랜잭션 원자성을 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>트랜잭션은 출금과 입금처럼 반드시 함께 성공하거나 함께 취소되어야 하는 단위입니다.</figcaption>
+        </figure>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">ACID</th>
+              <th style="padding: 10px 16px;">의미</th>
+              <th style="padding: 10px 16px;">쇼핑몰 예시</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">Atomicity (원자성)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">전부 성공 or 전부 취소</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">주문 생성 + 재고 차감 + 결제 → 하나라도 실패하면 전부 롤백</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">Consistency (일관성)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">트랜잭션 전후 DB 규칙 유지</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">재고가 음수가 되는 주문은 거부</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">Isolation (격리성)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">동시 트랜잭션 간 간섭 방지</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">두 명이 마지막 1개 재고를 동시에 주문해도 1명만 성공</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--test);">Durability (지속성)</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">커밋 후 영구 보존</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">결제 완료 후 서버가 꺼져도 주문 기록 유지</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-transaction-acid-core.webp" alt="ACID가 데이터 무결성을 지키는 구조를 보여주는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>ACID는 주문·재고·결제가 깨지지 않도록 데이터 작업을 지탱하는 안전 장치입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">Spring @Transactional — 주문 생성 트랜잭션 관리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Service
+@RequiredArgsConstructor
+public class OrderService {
+
+    @Transactional // 이 메서드 전체가 하나의 트랜잭션!
+    public OrderResponse createOrder(OrderRequest request) {
+        // 1. 상품 조회
+        Product product = productRepository.findById(request.productId())
+            .orElseThrow(() -> new ProductNotFoundException(request.productId()));
+
+        // 2. 재고 차감 (실패 시 전체 롤백!)
+        product.decreaseStock(request.quantity());
+
+        // 3. 주문 생성
+        Order order = Order.create(request.memberId(), product, request.quantity());
+        orderRepository.save(order);
+
+        return OrderResponse.from(order);
+    }
+    // 메서드가 정상 종료하면 자동 COMMIT
+    // 예외가 발생하면 자동 ROLLBACK (RuntimeException 기본)
+}
+
+// ⚠️ @Transactional 주의사항
+// 1. readOnly=true: 조회 전용 힌트 (flush/더티 체킹 부담↓, 프로바이더·버전 의존)
+//    @Transactional(readOnly = true)
+//    public List&lt;Product&gt; findAll() { ... }
+//
+// 2. 같은 클래스 내부 호출은 @Transactional이 작동하지 않음!
+//    (프록시 기반이므로 외부에서 호출해야 AOP 적용됨)</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION D: 인덱스 & 성능 튜닝
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(255,107,107,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight: 800; color: var(--accent-color); font-size: 18px; margin: 0;">⚡ D. 인덱스 & 성능 튜닝</h3>
+      </div>
+
+      <!-- 7. Index Fundamentals -->
+      <section id="db-index-core">
+        <h2>7. Full Table Scan vs Index Seek — 인덱스의 원리</h2>
+        <p>쿼리 성능 병목의 대다수는 <strong>누락되거나 잘못 설계된 인덱스</strong>에서 비롯됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 도서관 전체 훑기 vs 검색 컴퓨터</h4>
+          <p><strong>Full Table Scan</strong>은 도서관에서 원하는 책을 찾기 위해 모든 책장을 처음부터 끝까지 훑는 것입니다. <strong>Index Seek</strong>는 검색 컴퓨터로 "F열 3번째 칸"이라는 위치를 즉시 알아내고 바로 이동하는 것입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-db-index-core-analogy.webp" alt="도서관 검색으로 인덱스 탐색을 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>인덱스는 전체를 훑지 않고 원하는 위치로 바로 이동하게 해주는 검색 경로입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">EXPLAIN 실행 계획 — 인덱스 유무 비교</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-sql"><code class="language-sql">-- 인덱스 없이 검색 → Full Table Scan
+EXPLAIN SELECT * FROM product WHERE category = 'outer';
+-- Type: ALL (전체 스캔!), Rows: 10000 → 느림
+
+-- 인덱스 생성
+CREATE INDEX idx_product_category ON product(category);
+
+-- 인덱스 있고 검색 → Index Seek
+EXPLAIN SELECT * FROM product WHERE category = 'outer';
+-- Type: ref (인덱스 사용!), Key: idx_product_category, Rows: 12 → 빠름!</code></pre>
+      </section>
+
+      <!-- 8. Clustered vs Non-Clustered -->
+      <section id="index-types">
+        <h2>8. Clustered vs Non-Clustered Index</h2>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-index-types-core.webp" alt="클러스터형 인덱스와 비클러스터형 인덱스를 비교하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>클러스터형 인덱스는 데이터 자체의 정렬, 비클러스터형 인덱스는 별도 색인 참조에 가깝습니다.</figcaption>
+        </figure>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px; margin: 16px 0;">
+          <div class="glass-panel" style="border-top: 3px solid var(--accent-color);">
+            <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">🔑 Clustered Index</h4>
+            <p style="font-size:13px; color:var(--text-muted);">
+              <strong>테이블 자체가 인덱스</strong>. 데이터 행이 인덱스 키 순서대로 물리적으로 정렬됨.
+              <br>테이블당 <strong>딱 1개</strong>만 가능 (보통 PK가 자동 담당).
+              <br><em>비유:</em> 백과사전 — 본문 자체가 가나다순 정렬.
+            </p>
+          </div>
+          <div class="glass-panel" style="border-top: 3px solid var(--frontend);">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">🔎 Non-Clustered Index</h4>
+            <p style="font-size:13px; color:var(--text-muted);">
+              <strong>별도의 색인 페이지</strong>. 데이터는 뒤죽박죽이고, 별도 페이지에서 정렬 후 실제 행의 주소(RID)를 가리킴.
+              <br>테이블당 <strong>여러 개 가능</strong>.
+              <br><em>비유:</em> 소설책 뒤 "찾아보기(색인)" — 단어만 정렬, 페이지 번호 참조.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- 9. N+1 Problem -->
+      <section id="n-plus-one">
+        <h2>9. N+1 문제 — JPA 성능 킬러와 해결법</h2>
+        <p>JPA에서 연관 엔티티를 <strong>지연 로딩(LAZY)</strong>으로 설정하면, 부모 엔티티 N개를 조회한 뒤 각각의 자식을 개별 쿼리로 가져오는 <strong>N+1 문제</strong>가 발생합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 배달 주문 처리</h4>
+          <p>주문 10개를 조회하는 쿼리 <strong>1번</strong> + 각 주문의 상품 정보를 개별 조회하는 쿼리 <strong>10번</strong> = 총 <strong>11번</strong>의 DB 호출. 주문이 1,000개면 1,001번! 마치 택배 기사가 같은 아파트 물건 10개를 한 번에 싣지 않고, 물건 하나마다 창고를 왕복하는 것과 같습니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-n-plus-one-analogy.webp" alt="N+1 문제를 반복 왕복 배송으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>N+1 문제는 한 번에 가져올 수 있는 데이터를 여러 번 왕복 조회하면서 생기는 성능 낭비입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">N+1 해결법 — Fetch Join & @EntityGraph</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// ❌ N+1 발생: 주문 10개 조회 후, 각 주문의 member를 개별 조회 (11번 쿼리!)
+List&lt;Order&gt; orders = orderRepository.findAll(); // SELECT * FROM orders (1번)
+for (Order o : orders) {
+    o.getMember().getName(); // SELECT * FROM member WHERE id=? (N번!)
+}
+
+// ✅ 해결법 1: JPQL Fetch Join (가장 흔함!)
+@Query("SELECT o FROM Order o JOIN FETCH o.member JOIN FETCH o.product")
+List&lt;Order&gt; findAllWithMemberAndProduct();
+// → 단 1번의 JOIN 쿼리로 전부 가져옴!
+
+// ✅ 해결법 2: @EntityGraph (어노테이션 방식)
+@EntityGraph(attributePaths = {"member", "product"})
+@Query("SELECT o FROM Order o")
+List&lt;Order&gt; findAllWithGraph();
+
+// ✅ 해결법 3: BatchSize (컬렉션 지연 로딩 최적화)
+// application.yml → spring.jpa.properties.hibernate.default_batch_fetch_size: 100
+// → IN 쿼리로 한 번에 100개씩 묶어서 가져옴</code></pre>
+      </section>
+
+      <!-- ================================================================
+           SECTION E: QueryDSL
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(108,92,231,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--algo);">
+        <h3 style="font-weight: 800; color: var(--algo); font-size: 18px; margin: 0;">🧩 E. QueryDSL 동적 쿼리</h3>
+      </div>
+
+      <!-- 10. QueryDSL -->
+      <section id="querydsl-core">
+        <h2>10. QueryDSL — 타입 안전한 동적 쿼리 빌더</h2>
+        <p>문자열 JPQL은 오타가 있어도 <strong>컴파일 에러가 나지 않고, 런타임에 폭발</strong>합니다. QueryDSL은 자바 코드로 쿼리를 작성하므로 <strong>IDE 자동완성 + 컴파일 타임 검증</strong>이 됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 레고 블록 vs 찰흙</h4>
+          <p>문자열 JPQL은 <strong>찰흙으로 형태를 빚는 것</strong> — 겉보기엔 괜찮아도 실행해봐야 부러지는지 알 수 있습니다. QueryDSL은 <strong>레고 블록</strong> — 아귀가 안 맞으면 애초에 결합이 안 되므로 빌드 단계에서 오류를 잡아냅니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-3-querydsl-core-analogy.webp" alt="QueryDSL을 조립식 블록으로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>QueryDSL은 문자열 쿼리 대신 조립 가능한 타입 안전 블록으로 조건을 구성합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">QueryDSL 동적 검색 — 조건이 null이면 자동 무시</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Repository
+@RequiredArgsConstructor
+public class ProductQueryRepository {
+    private final JPAQueryFactory queryFactory;
+
+    public List&lt;Product&gt; searchProducts(ProductSearchCondition cond) {
+        QProduct product = QProduct.product;
+
+        return queryFactory
+            .selectFrom(product)
+            .where(
+                categoryEq(cond.getCategory()),   // null이면 조건 생략!
+                priceLoe(cond.getMaxPrice()),
+                stockGoe(cond.getMinStock())
+            )
+            .orderBy(product.price.asc())
+            .limit(20)
+            .fetch();
+    }
+
+    // BooleanExpression이 null을 반환하면 WHERE에서 자동 무시 — 실무 핵심 패턴!
+    private BooleanExpression categoryEq(String category) {
+        return category != null ? QProduct.product.category.eq(category) : null;
+    }
+    private BooleanExpression priceLoe(Integer maxPrice) {
+        return maxPrice != null ? QProduct.product.price.loe(maxPrice) : null;
+    }
+    private BooleanExpression stockGoe(Integer minStock) {
+        return minStock != null ? QProduct.product.stock.goe(minStock) : null;
+    }
+}</code></pre>
+      </section>
+
+      <!-- 11. Pagination -->
+      <section id="pagination">
+        <h2>11. 페이징 처리 — Offset vs Cursor 방식</h2>
+        <p>수만 건의 데이터를 한 번에 가져오면 메모리와 네트워크가 폭발합니다. <strong>페이징</strong>으로 필요한 만큼만 잘라서 조회합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">Spring Data JPA 페이징 + QueryDSL 페이징</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// 1. Spring Data JPA — Pageable 인터페이스
+public interface ProductRepository extends JpaRepository&lt;Product, Long&gt; {
+    Page&lt;Product&gt; findByCategory(String category, Pageable pageable);
+}
+
+// 사용:
+Pageable pageable = PageRequest.of(0, 20, Sort.by("price").ascending());
+// page=0 (첫 페이지), size=20 (20개씩)
+Page&lt;Product&gt; result = productRepository.findByCategory("tops", pageable);
+result.getContent();      // 실제 데이터 리스트
+result.getTotalElements(); // 전체 행 수
+result.getTotalPages();    // 전체 페이지 수
+result.hasNext();          // 다음 페이지 존재 여부
+
+// 2. QueryDSL 페이징
+public Page&lt;Product&gt; searchWithPaging(ProductSearchCondition cond, Pageable pageable) {
+    List&lt;Product&gt; content = queryFactory
+        .selectFrom(product)
+        .where(categoryEq(cond.getCategory()))
+        .orderBy(product.id.desc())
+        .offset(pageable.getOffset())
+        .limit(pageable.getPageSize())
+        .fetch();
+
+    Long total = queryFactory
+        .select(product.count())
+        .from(product)
+        .where(categoryEq(cond.getCategory()))
+        .fetchOne();
+
+    return new PageImpl&lt;&gt;(content, pageable, total);
+}</code></pre>
+
+        <p><strong>⚠️ Offset 방식의 한계:</strong> <code>OFFSET 100000</code>이면 10만 행을 읽고 버리므로 성능이 급격히 저하됩니다. 무한 스크롤 같은 대용량 페이징에서는 <strong>Cursor 기반 페이징</strong>(마지막 ID 기준)을 사용합니다:</p>
+        <div class="code-block-header">
+          <span class="code-title">Cursor 기반 페이징 (No-Offset)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">// Cursor 방식: "마지막으로 본 ID보다 작은 것 20개"
+public List&lt;Product&gt; findNextPage(Long lastId, int size) {
+    return queryFactory
+        .selectFrom(product)
+        .where(product.id.lt(lastId))  // WHERE id < lastId (OFFSET 대신!)
+        .orderBy(product.id.desc())
+        .limit(size)
+        .fetch();
+}</code></pre>
+      </section>
+
+      <!-- [실무 보강 박스] Flyway DB 마이그레이션 -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.08), transparent); border: 1px dashed var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 12px; font-size: 16px;">🛠️ [실무 보강 박스] Flyway — DB 스키마 진화를 안전하게 관리</h3>
+        <p>운영 DB의 스키마 변경(컬럼 추가, 인덱스 추가, 테이블 분리)을 손으로 일일이 SQL 돌리면 환경마다 상태가 어긋나서 끔찍한 버그가 생깁니다. <strong>Flyway</strong>는 DB 스키마를 코드처럼 버전 관리합니다 — Git처럼 "어떤 변경이 언제 적용됐는지"가 DB 자체에 기록됩니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">build.gradle + 마이그레이션 파일 구조</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// build.gradle
+dependencies {
+    implementation 'org.flywaydb:flyway-core'
+    implementation 'org.flywaydb:flyway-database-postgresql'  // PG 14+ 시 필수
+}
+
+// src/main/resources/db/migration/ 폴더 구조 (이 폴더가 표준 경로)
+db/migration/
+├── V1__create_products_table.sql
+├── V2__create_orders_table.sql
+├── V3__add_index_on_products_name.sql
+└── V4__add_review_table.sql
+
+// 파일명 규칙: V{버전}__{설명}.sql  (언더바 2개!)
+// 한 번 적용된 파일은 절대 수정 금지. 수정하려면 새 V{N+1} 파일 만들기.</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">V1__create_products_table.sql 예시</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-sql"><code class="language-sql">CREATE TABLE products (
+    id          BIGSERIAL PRIMARY KEY,
+    name        VARCHAR(200) NOT NULL,
+    price       INT NOT NULL CHECK (price &gt;= 0),
+    category    VARCHAR(50) NOT NULL,
+    stock       INT NOT NULL DEFAULT 0,
+    image_url   VARCHAR(500),
+    created_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at  TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_products_category ON products(category);
+CREATE INDEX idx_products_name_lower ON products(LOWER(name));</code></pre>
+
+        <p><strong>핵심 동작:</strong> Spring Boot 기동 시 Flyway가 <code>flyway_schema_history</code> 테이블을 확인하여 아직 적용 안 된 V 파일들을 순서대로 실행합니다. 모든 환경(개발/스테이징/운영)이 자동으로 같은 스키마로 수렴합니다.</p>
+
+        <p><strong>Liquibase와의 차이:</strong> Flyway는 순수 SQL 파일 기반(단순), Liquibase는 XML/YAML DSL 기반(롤백 자동 생성 가능). 한국 실무에선 Flyway가 더 보편적입니다.</p>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ Spring Modulith에서 모듈마다 독립적인 마이그레이션 폴더를 운영하는 패턴은 <a href="chapter-8.html#spring-modulith" style="color:var(--accent-color);">Chapter 8 — Spring Modulith</a>에서 확장됩니다.</p>
+      </div>
+
+      <!-- glossary -->
+      <section id="chapter-glossary" class="glass-panel" style="border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight:800; color:var(--accent-color); margin-bottom:12px;">📚 03챕터 헷갈리는 용어 사전</h3>
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+          <div><strong>INNER JOIN:</strong><span style="color:var(--text-muted);"> 양쪽 테이블 모두에 매칭되는 행만 반환. 매칭 안 되면 결과에서 제외.</span></div>
+          <div><strong>LEFT JOIN:</strong><span style="color:var(--text-muted);"> 왼쪽 테이블 전체 + 오른쪽 매칭. 오른쪽 매칭 없으면 NULL.</span></div>
+          <div><strong>정규화 (Normalization):</strong><span style="color:var(--text-muted);"> 데이터 중복을 제거하고 이상(Anomaly)을 방지하기 위해 테이블을 체계적으로 분리하는 설계 기법. 실무 목표는 보통 3NF.</span></div>
+          <div><strong>트랜잭션 (Transaction):</strong><span style="color:var(--text-muted);"> 전부 성공하거나, 전부 취소(롤백)되어야 하는 하나의 논리적 작업 단위. ACID 속성을 보장.</span></div>
+          <div><strong>N+1 문제:</strong><span style="color:var(--text-muted);"> 부모 엔티티 N개 조회 후, 각 자식을 개별 쿼리로 가져오는 성능 문제. Fetch Join으로 해결.</span></div>
+          <div><strong>Fetch Join:</strong><span style="color:var(--text-muted);"> JPQL에서 JOIN FETCH로 연관 엔티티를 한 번의 쿼리로 즉시 로딩하는 기법.</span></div>
+          <div><strong>Index Seek:</strong><span style="color:var(--text-muted);"> B-Tree를 타고 조건에 맞는 특정 행으로 즉시 도달하는 최고 성능의 탐색 방식.</span></div>
+          <div><strong>Clustered Index:</strong><span style="color:var(--text-muted);"> 테이블 자체가 인덱스 키 순서대로 물리적 정렬. 테이블당 1개만 가능 (주로 PK).</span></div>
+          <div><strong>QClass:</strong><span style="color:var(--text-muted);"> QueryDSL이 컴파일 시점에 @Entity를 읽어 자동 생성하는 쿼리용 타입 안전 클래스.</span></div>
+          <div><strong>Cursor 페이징:</strong><span style="color:var(--text-muted);"> OFFSET 대신 마지막 ID를 기준으로 다음 페이지를 조회하는 고성능 페이징 기법. 무한 스크롤에 적합.</span></div>
+        </div>
+      </section>
+
+      <!-- quiz wrapper -->
+      <!-- Build Checkpoint [v3.4] -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.10), transparent); border: 1px solid var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 10px; font-size: 16px;">🛠️ 직접 만들어보기 — "이걸로 만들 수 있나?" 체크포인트</h3>
+        <p style="font-size:13px; margin:0 0 8px;">읽기만으로는 복귀가 안 됩니다. 실제 DB에 붙어 <strong>쿼리와 실행계획을 눈으로 확인</strong>하세요.</p>
+        <ul style="font-size:13.5px; line-height:1.9; margin:0; padding-left:20px;">
+          <li>PostgreSQL(또는 H2)에 상품 테이블 + 데이터 수천~수만 건 시드</li>
+          <li>이름 LIKE 검색 쿼리에 <code>EXPLAIN ANALYZE</code>를 찍어 <strong>Seq Scan</strong> 확인</li>
+          <li>적절한 인덱스 추가 후 다시 <code>EXPLAIN</code> → <strong>Index Scan</strong>으로 바뀌는지 + 속도 비교</li>
+          <li>QueryDSL로 카테고리·가격·사이즈 <strong>동적 검색</strong> 1개 구현</li>
+          <li>Flyway <code>V1__*.sql</code> 마이그레이션으로 스키마를 코드로 관리</li>
+        </ul>
+      </div>
+
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const ch3Quizzes = [
+      {
+        type: "mcq",
+        question: "INNER JOIN과 LEFT JOIN의 핵심 차이점은?",
+        options: [
+          "INNER JOIN은 양쪽 모두 매칭되는 행만 반환하고, LEFT JOIN은 왼쪽 테이블 전체를 포함하며 매칭 안 되면 NULL로 채운다.",
+          "INNER JOIN이 LEFT JOIN보다 항상 느리다.",
+          "LEFT JOIN은 오른쪽 테이블만 반환한다.",
+          "INNER JOIN은 GROUP BY와 함께 사용할 수 없다."
+        ],
+        correct: 0,
+        explanation: "INNER JOIN은 교집합(양쪽 매칭만), LEFT JOIN은 왼쪽 테이블 전체 + 오른쪽 매칭(없으면 NULL)입니다. 주문이 없는 회원도 보고 싶으면 LEFT JOIN을 사용합니다."
+      },
+      {
+        type: "mcq",
+        question: "트랜잭션의 ACID 중 Atomicity(원자성)의 의미는?",
+        options: [
+          "데이터가 원자 크기로 쪼개져 저장된다.",
+          "트랜잭션 내 모든 연산이 전부 성공하거나, 전부 취소(롤백)되어야 한다.",
+          "트랜잭션이 동시에 여러 DB에 분산 저장된다.",
+          "커밋 후 데이터가 영구적으로 보존된다."
+        ],
+        correct: 1,
+        explanation: "원자성(Atomicity)은 '전부 아니면 전무(All or Nothing)' 원칙입니다. 계좌 이체에서 출금만 되고 입금이 실패하면 출금도 취소(롤백)됩니다."
+      },
+      {
+        type: "mcq",
+        question: "JPA N+1 문제를 해결하는 가장 일반적인 방법은?",
+        options: [
+          "모든 연관관계를 EAGER로 변경한다.",
+          "JPQL Fetch Join으로 연관 엔티티를 한 번의 쿼리에 즉시 로딩한다.",
+          "인덱스를 삭제한다.",
+          "트랜잭션을 비활성화한다."
+        ],
+        correct: 1,
+        explanation: "Fetch Join(JOIN FETCH)은 부모와 자식 엔티티를 한 번의 JOIN 쿼리로 한꺼번에 가져와서, 개별 쿼리 N번을 제거합니다. EAGER는 예측 불가능한 쿼리를 유발하므로 비추천입니다."
+      },
+      {
+        type: "code",
+        language: "sql",
+        prompt: "product 테이블에서 카테고리가 'tops'인 상품의 평균 가격을 조회하는 SQL을 작성하세요.",
+        starter: "SELECT // 여기에 작성\nFROM product\nWHERE category = 'tops';",
+        validator: {
+          mustContain: ["AVG", "price"],
+          mustNotContain: ["SUM", "COUNT"]
+        },
+        solution: "AVG(price) AS avg_price",
+        explanation: "AVG() 집계 함수는 지정한 컬럼의 평균값을 계산합니다. WHERE로 특정 카테고리를 필터링한 뒤 해당 행들의 평균 가격을 구합니다."
+      },
+      {
+        type: "code",
+        language: "sql",
+        prompt: "product 테이블의 category 컬럼에 인덱스(인덱스명: idx_prod_cat)를 생성하는 DDL을 작성하세요.",
+        starter: "CREATE // 여기에 작성",
+        validator: {
+          mustContain: ["CREATE INDEX", "idx_prod_cat", "product", "category"],
+          mustNotContain: ["TABLE", "DROP"]
+        },
+        solution: "CREATE INDEX idx_prod_cat ON product(category);",
+        explanation: "CREATE INDEX [인덱스명] ON [테이블명]([컬럼명]); 형식으로 인덱스를 생성합니다. 해당 컬럼의 검색 성능이 B-Tree 구조로 극적 개선됩니다."
+      },
+      // ===== v3.2 추가 퀴즈 (Flyway) =====
+      {
+        type: "mcq",
+        question: "Flyway DB 마이그레이션 파일의 표준 명명 규칙은?",
+        options: [
+          "migration-001.sql",
+          "V{버전}__{설명}.sql (언더바 2개 주의)",
+          "schema_v1.sql",
+          "{timestamp}_{name}.sql"
+        ],
+        correct: 1,
+        explanation: "Flyway는 V{버전}__{설명}.sql 형식의 파일을 인식합니다. V와 버전 사이는 점/언더바 가능, 버전과 설명 사이는 반드시 언더바 2개입니다. 예: V1__create_products_table.sql"
+      },
+      {
+        type: "mcq",
+        question: "Flyway에서 이미 적용된 V 파일을 수정하면 어떻게 되나요?",
+        options: [
+          "자동으로 다시 적용된다",
+          "체크섬 불일치로 부팅이 실패한다",
+          "경고만 표시되고 계속 진행된다",
+          "이전 버전으로 자동 롤백된다"
+        ],
+        correct: 1,
+        explanation: "Flyway는 flyway_schema_history 테이블에 각 V 파일의 체크섬을 기록합니다. 적용된 파일이 변경되면 체크섬 불일치로 검증이 실패합니다. 수정이 필요하면 새 V 파일을 추가해야 합니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", ch3Quizzes, "chapter-3");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

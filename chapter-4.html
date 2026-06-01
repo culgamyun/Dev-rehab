@@ -1,0 +1,1202 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 04 - REST API & Security 6 & Redis JWT</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+</head>
+<body>
+
+  <!-- Sidebar Navigation -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <ul class="nav-menu">
+      <li class="nav-item"><a href="index.html"><span class="nav-item-text">🏠 대시보드 홈</span></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 & JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB & SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security & Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React & Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React & Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 & 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps & AWS & MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS & 심화</span></a></li>
+      <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>백엔드 코스</span> &gt; <span>Chapter 04</span></div>
+      <h1>Chapter 04: RESTful API 설계 & Security 6 & Redis JWT</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">REST API 설계·상태코드, SLF4J 로깅, Bean Validation + ProblemDetail 예외 처리, 그리고 인증·보안의 토대(Stateless·쿠키 vs 세션·해싱 vs 암호화·서블릿 필터·HTTPS) 위에서 JWT 구조·이중 토큰·Spring Security 6·JwtAuthFilter·BCrypt·Redis 블랙리스트·CORS·Axios 토큰 관리까지 — REST·검증·예외·로깅·인증·보안 전 영역을 토대부터 13개 섹션으로 완전 정복합니다.</p>
+    </div>
+
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/chapter-4-hero.webp" alt="REST API와 보안 흐름을 안전한 서비스 마을로 표현한 2D 파스텔 일러스트" loading="lazy">
+      <figcaption>REST 설계, 검증, 예외 처리, 인증 흐름이 하나의 안전한 API 관문으로 이어지는 장면입니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- ================================================================
+           SECTION A: REST API
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(116,185,255,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin-bottom: 8px; border-left: 4px solid var(--frontend);">
+        <h3 style="font-weight: 800; color: var(--frontend); font-size: 18px; margin: 0;">🌐 A. RESTful API 설계 + 검증 · 예외 · 로깅</h3>
+      </div>
+
+      <!-- 1. REST 원칙 -->
+      <section id="rest-design">
+        <h2>1. RESTful API 설계 원칙 — HTTP 메서드 & 상태코드</h2>
+        <p>REST는 URI로 <strong>리소스(명사)</strong>를 표현하고, HTTP 메서드로 <strong>행위(동사)</strong>를 표현합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 은행 창구 표준 거래</h4>
+          <p>레거시 API는 "돈인출해줘.do"처럼 <strong>동사 기반의 임의 창구</strong>를 찾아 헤매는 혼란이었습니다. REST는 <strong>"계좌(명사, URI)"라는 리소스에 "출금(POST)", "조회(GET)" 등 표준 행위(HTTP Method)</strong>를 적어 내미는 은행 공통 표준 거래서입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-4-rest-api-analogy.webp" alt="REST API 리소스와 표준 행위를 은행 창구로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>REST는 리소스를 중심으로 표준 행위를 적용해 API 요청을 일관되게 정리합니다.</figcaption>
+        </figure>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">HTTP 메서드</th>
+              <th style="padding: 10px 16px;">의미</th>
+              <th style="padding: 10px 16px;">URI 예시</th>
+              <th style="padding: 10px 16px;">멱등성</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">GET</td>
+              <td style="padding: 10px 16px;">조회</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">GET /api/products/1</td>
+              <td style="padding: 10px 16px; color: var(--devops);">✅ 멱등</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">POST</td>
+              <td style="padding: 10px 16px;">생성</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">POST /api/products</td>
+              <td style="padding: 10px 16px; color: var(--interview);">❌ 비멱등</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">PUT</td>
+              <td style="padding: 10px 16px;">전체 수정</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">PUT /api/products/1</td>
+              <td style="padding: 10px 16px; color: var(--devops);">✅ 멱등</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--test);">PATCH</td>
+              <td style="padding: 10px 16px;">부분 수정</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">PATCH /api/products/1</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">경우에 따라</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700; color: var(--interview);">DELETE</td>
+              <td style="padding: 10px 16px;">삭제</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">DELETE /api/products/1</td>
+              <td style="padding: 10px 16px; color: var(--devops);">✅ 멱등</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p><strong>주요 HTTP 상태코드:</strong></p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel"><strong style="color:var(--devops);">200 OK</strong><br><span style="color:var(--text-muted);">요청 성공</span></div>
+          <div class="glass-panel"><strong style="color:var(--devops);">201 Created</strong><br><span style="color:var(--text-muted);">리소스 생성 성공</span></div>
+          <div class="glass-panel"><strong style="color:var(--test);">400 Bad Request</strong><br><span style="color:var(--text-muted);">잘못된 요청 (유효성 실패)</span></div>
+          <div class="glass-panel"><strong style="color:var(--interview);">401 Unauthorized</strong><br><span style="color:var(--text-muted);">인증 실패 (토큰 없음/만료)</span></div>
+          <div class="glass-panel"><strong style="color:var(--interview);">403 Forbidden</strong><br><span style="color:var(--text-muted);">인가 실패 (권한 없음)</span></div>
+          <div class="glass-panel"><strong style="color:var(--accent-color);">404 Not Found</strong><br><span style="color:var(--text-muted);">리소스 없음</span></div>
+          <div class="glass-panel"><strong style="color:var(--interview);">500 Server Error</strong><br><span style="color:var(--text-muted);">서버 내부 오류</span></div>
+        </div>
+      </section>
+
+      <!-- A.2 Logging Foundation -->
+      <section id="logging-foundation">
+        <h2>2. 프로덕션 코드의 첫 줄은 로그 — SLF4J + Logback</h2>
+        <p><code>System.out.println()</code>은 학습용입니다. 실무에선 출력 위치 제어, 로그 레벨 필터링, 비동기 IO, 요청별 컨텍스트 추적이 모두 필요하므로 <strong>SLF4J(Facade) + Logback(구현체)</strong>가 사실상 표준입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 항공기 블랙박스</h4>
+          <p>사고가 났을 때 "엔진이 어떻게 멈췄나"를 추적할 수 있는 유일한 근거는 비행 중 자동 기록된 블랙박스입니다. <code>System.out.println</code>은 사후에 직원이 종이에 적어둔 메모와 같아 — 일관성도 없고 보존도 안 됩니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-4-logging-blackbox-analogy.webp" alt="애플리케이션 로그를 항공기 블랙박스로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>로그는 문제가 발생했을 때 원인을 추적하게 해주는 일관된 운행 기록입니다.</figcaption>
+        </figure>
+
+        <p><strong>로그 레벨 5단계:</strong></p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:12px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel"><strong style="color:var(--text-muted);">TRACE</strong><br>가장 세밀, 거의 안 씀</div>
+          <div class="glass-panel"><strong style="color:var(--frontend);">DEBUG</strong><br>개발 중 추적용</div>
+          <div class="glass-panel"><strong style="color:var(--devops);">INFO</strong><br>정상 동작 기록 (디폴트)</div>
+          <div class="glass-panel"><strong style="color:var(--test);">WARN</strong><br>잠재적 문제</div>
+          <div class="glass-panel"><strong style="color:var(--interview);">ERROR</strong><br>처리 실패, 추적 필수</div>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">컨트롤러에서 SLF4J 사용 (Lombok @Slf4j 권장)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">@RestController
+@RequiredArgsConstructor
+@Slf4j  // Lombok이 private static final Logger log = LoggerFactory.getLogger(...) 자동 생성
+public class OrderController {
+
+    @PostMapping("/api/orders")
+    public ResponseEntity&lt;OrderResponse&gt; create(@Valid @RequestBody OrderRequest req) {
+        // INFO: 정상 흐름 추적 (운영에서도 남김)
+        log.info("주문 생성 요청 수신 userId={} itemCount={}", req.userId(), req.items().size());
+
+        // DEBUG: 개발 추적 (운영 환경에서는 비활성화)
+        log.debug("주문 상세 payload={}", req);
+
+        try {
+            var order = orderService.create(req);
+            log.info("주문 생성 성공 orderId={}", order.getId());
+            return ResponseEntity.status(201).body(OrderResponse.from(order));
+        } catch (OutOfStockException e) {
+            // WARN: 비즈니스적 실패 (예상된 흐름)
+            log.warn("재고 부족으로 주문 실패 userId={} productId={}", req.userId(), e.productId());
+            throw e;  // 처리는 @ControllerAdvice에 위임
+        }
+    }
+}</code></pre>
+
+        <p><strong>구조화 로깅 (Structured Logging):</strong> 실무에선 단순 텍스트가 아니라 <strong>JSON</strong>으로 로그를 남깁니다. Datadog/Loki/Elastic 같은 로그 수집기가 필드별로 인덱싱하여 "userId=42의 ERROR만"처럼 검색 가능해집니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">logback-spring.xml — JSON 로그 출력 (logstash-encoder)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-xml"><code class="language-xml">&lt;configuration&gt;
+  &lt;appender name="JSON" class="ch.qos.logback.core.ConsoleAppender"&gt;
+    &lt;encoder class="net.logstash.logback.encoder.LogstashEncoder"/&gt;
+  &lt;/appender&gt;
+  &lt;root level="INFO"&gt;
+    &lt;appender-ref ref="JSON"/&gt;
+  &lt;/root&gt;
+&lt;/configuration&gt;</code></pre>
+
+        <p><strong>MDC(Mapped Diagnostic Context):</strong> 요청 ID / 사용자 ID 같은 식별자를 한 번만 세팅하면 그 요청에서 발생하는 <em>모든 로그</em>에 자동으로 따라붙습니다. 필터에서 <code>MDC.put("requestId", uuid)</code> 한 줄이면 분산 추적의 기초가 완성됩니다.</p>
+      </section>
+
+      <!-- A.3 Bean Validation -->
+      <section id="bean-validation">
+        <h2>3. Bean Validation — 입력은 컨트롤러 진입 시점에 검증</h2>
+        <p>잘못된 요청이 서비스 레이어 깊숙이 들어가서 터지면 디버깅 비용이 폭증합니다. <strong>컨트롤러 진입 직후 DTO 단계에서 검증</strong>을 끝내는 것이 표준 패턴입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 공항 보안 검색대</h4>
+          <p>비행기 안에서 위험 물품이 발견되면 회항해야 합니다. 공항 입구의 <strong>보안 검색대(@Valid)</strong>에서 모두 거르는 것이 비용이 가장 낮습니다. DTO의 어노테이션들이 그 X-Ray 스캐너 역할을 합니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-4-validation-airport-security-analogy.webp" alt="입력 검증을 공항 보안 검색대로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>입력 검증은 요청이 내부 로직에 들어오기 전 문제를 가장 낮은 비용으로 걸러냅니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">주문 요청 DTO — Bean Validation 어노테이션</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// Spring Boot 3.x: jakarta.validation 사용 (Spring Boot 2의 javax.validation에서 변경)
+import jakarta.validation.constraints.*;
+import jakarta.validation.Valid;
+import java.util.List;
+
+public record OrderRequest(
+    @NotNull(message = "사용자 ID는 필수입니다")
+    Long userId,
+
+    @NotEmpty(message = "주문 항목은 최소 1개 이상")
+    @Valid  // 내부 객체도 재귀 검증
+    List&lt;OrderItemRequest&gt; items,
+
+    @NotBlank(message = "배송지를 입력하세요")
+    @Size(max = 200, message = "배송지는 200자 이내")
+    String shippingAddress,
+
+    @Pattern(regexp = "^010-\\d{4}-\\d{4}$", message = "전화번호 형식: 010-1234-5678")
+    String phone
+) {}
+
+public record OrderItemRequest(
+    @NotNull Long productId,
+
+    @Min(value = 1, message = "수량은 1 이상")
+    @Max(value = 99, message = "수량은 최대 99")
+    Integer quantity
+) {}</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">컨트롤러에서 @Valid 적용</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">@PostMapping("/api/orders")
+public ResponseEntity&lt;OrderResponse&gt; create(
+        @Valid @RequestBody OrderRequest req  // ← 진입 즉시 검증
+) {
+    // 여기 도달하면 req는 이미 모든 제약 통과 상태. 서비스 코드는 더 깔끔해짐.
+    return ResponseEntity.status(201).body(orderService.create(req));
+}</code></pre>
+
+        <p>검증이 실패하면 Spring이 자동으로 <code>MethodArgumentNotValidException</code>을 던집니다. 이 예외는 다음 섹션의 글로벌 예외 처리에서 일관된 형식으로 변환됩니다.</p>
+
+        <p><strong>핵심 어노테이션 정리:</strong></p>
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px;">
+          <thead><tr style="background: var(--bg-glass);">
+            <th style="text-align:left; padding:8px 12px;">어노테이션</th>
+            <th style="text-align:left; padding:8px 12px;">용도</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:8px 12px;"><code>@NotNull</code></td><td style="padding:8px 12px;">null 금지 (빈 문자열은 통과)</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@NotBlank</code></td><td style="padding:8px 12px;">null + 빈 문자열 + 공백 금지 (String 전용)</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@NotEmpty</code></td><td style="padding:8px 12px;">null + 빈 컬렉션/배열/문자열 금지</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Size(min, max)</code></td><td style="padding:8px 12px;">문자열/컬렉션 크기 제한</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Min</code> / <code>@Max</code></td><td style="padding:8px 12px;">숫자 범위</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Email</code></td><td style="padding:8px 12px;">이메일 형식</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Pattern</code></td><td style="padding:8px 12px;">정규식 (전화번호, 우편번호 등)</td></tr>
+            <tr><td style="padding:8px 12px;"><code>@Valid</code></td><td style="padding:8px 12px;">중첩 DTO 재귀 검증 (List 내부 객체 검증 필수)</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- A.4 Global Exception Handling + ProblemDetail -->
+      <section id="global-exception-handling">
+        <h2>4. 글로벌 예외 처리 + ProblemDetail (RFC 9457)</h2>
+        <p>각 컨트롤러마다 try-catch를 도배하면 코드가 진흙탕이 됩니다. <code>@RestControllerAdvice</code>로 <strong>예외 처리를 한 곳에 모으고</strong>, 응답 형식은 <strong><code>ProblemDetail</code></strong>(RFC 9457, Spring 6.0+ 내장)로 표준화합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 빌딩 통합 안전 관제실</h4>
+          <p>각 사무실마다 자기 방식대로 화재 경보를 처리하면 카오스입니다. 빌딩 전체에 <strong>통합 관제실(@RestControllerAdvice)</strong>이 있으면 어떤 사무실에서 신호가 와도 표준 양식(ProblemDetail)으로 일사불란하게 대응합니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-4-global-exception-control-room-analogy.webp" alt="전역 예외 처리를 통합 관제실로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>전역 예외 처리는 다양한 오류 신호를 표준 응답 형식으로 정리해 전달합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">GlobalExceptionHandler — 한 곳에서 모두 처리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">import org.springframework.http.ProblemDetail;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+
+@RestControllerAdvice  // 전역 컨트롤러 후처리 인터셉터
+@Slf4j
+public class GlobalExceptionHandler {
+
+    // 1. Bean Validation 실패 → 400 + 필드별 에러 메시지
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ProblemDetail handleValidation(MethodArgumentNotValidException ex) {
+        var problem = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST);
+        problem.setTitle("입력 검증 실패");
+        problem.setType(URI.create("https://shop.example.com/errors/validation"));
+
+        Map&lt;String, String&gt; fieldErrors = ex.getBindingResult().getFieldErrors().stream()
+            .collect(Collectors.toMap(
+                FieldError::getField,
+                fe -&gt; fe.getDefaultMessage() != null ? fe.getDefaultMessage() : "invalid"
+            ));
+        problem.setProperty("errors", fieldErrors);
+        log.warn("검증 실패 fields={}", fieldErrors.keySet());
+        return problem;
+    }
+
+    // 2. 도메인 예외 (상품 없음 등) → 404
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ProblemDetail handleNotFound(EntityNotFoundException ex) {
+        var problem = ProblemDetail.forStatus(HttpStatus.NOT_FOUND);
+        problem.setTitle("리소스를 찾을 수 없음");
+        problem.setDetail(ex.getMessage());
+        return problem;
+    }
+
+    // 3. 비즈니스 규칙 위반 → 409
+    @ExceptionHandler(OutOfStockException.class)
+    public ProblemDetail handleOutOfStock(OutOfStockException ex) {
+        var problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+        problem.setTitle("재고 부족");
+        problem.setDetail("상품 ID " + ex.productId() + " 재고가 부족합니다");
+        problem.setProperty("productId", ex.productId());
+        return problem;
+    }
+
+    // 4. 처리되지 않은 모든 예외 → 500 + 풀 스택 ERROR 로그
+    @ExceptionHandler(Exception.class)
+    public ProblemDetail handleUnknown(Exception ex) {
+        log.error("처리되지 않은 예외 발생", ex);  // 스택 트레이스 포함 ERROR 로그
+        var problem = ProblemDetail.forStatus(HttpStatus.INTERNAL_SERVER_ERROR);
+        problem.setTitle("서버 오류");
+        problem.setDetail("일시적 오류입니다. 잠시 후 다시 시도해주세요.");
+        return problem;
+    }
+}</code></pre>
+
+        <div class="code-block-header">
+          <span class="code-title">ProblemDetail 응답 예시 (JSON)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-json"><code class="language-json">// 검증 실패 시 응답 본문 (Content-Type: application/problem+json)
+{
+  "type": "https://shop.example.com/errors/validation",
+  "title": "입력 검증 실패",
+  "status": 400,
+  "detail": null,
+  "instance": "/api/orders",
+  "errors": {
+    "shippingAddress": "배송지를 입력하세요",
+    "items[0].quantity": "수량은 1 이상"
+  }
+}</code></pre>
+
+        <p><strong>ProblemDetail vs 옛 방식의 차이:</strong></p>
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin: 16px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">❌ 옛날 자체 ErrorResponse</h4>
+            <p style="color:var(--text-muted);">팀마다 자체 DTO. 회사마다 모양 다름. 프론트가 매번 새로 학습.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">✅ ProblemDetail (RFC 9457)</h4>
+            <p style="color:var(--text-muted);">표준 스펙. 프론트엔드 라이브러리 호환. <code>type/title/status/detail/instance</code> 필드 일관성.</p>
+          </div>
+        </div>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 더 깊은 활용은 <a href="appendix-interview.html#q-transactional-pitfalls" style="color:var(--accent-color);">부록 B — Q27 @Transactional 추가 함정 (Propagation·Rollback Rules·readOnly)</a>과 <a href="appendix-interview.html#q-owasp" style="color:var(--accent-color);">Q25 OWASP Top 10</a>에서 복습.</p>
+      </section>
+
+      <!-- A.5 [실무 보강 박스] Springdoc OpenAPI -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.08), transparent); border: 1px dashed var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 12px; font-size: 16px;">🛠️ [실무 보강 박스] Springdoc OpenAPI — 코드가 곧 API 문서</h3>
+        <p>문서가 코드와 따로 노는 순간 곧 거짓말이 됩니다. <strong>Springdoc OpenAPI</strong>는 컨트롤러 어노테이션을 분석해 <strong>Swagger UI</strong>를 자동 생성합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">build.gradle 의존성 + application.yml 설정 + 컨트롤러 메타데이터</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// build.gradle
+implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+
+// application.yml
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html        # http://localhost:8080/swagger-ui.html
+  api-docs:
+    path: /v3/api-docs            # OpenAPI 3 JSON 스펙
+
+// 컨트롤러에 메타데이터 부여 (선택, 없어도 작동)
+@Tag(name = "주문", description = "쇼핑몰 주문 API")
+@RestController
+public class OrderController {
+    @Operation(summary = "주문 생성", description = "장바구니 항목으로 주문 생성")
+    @ApiResponse(responseCode = "201", description = "생성 성공")
+    @ApiResponse(responseCode = "400", description = "입력 검증 실패")
+    @PostMapping("/api/orders")
+    public ResponseEntity&lt;OrderResponse&gt; create(@Valid @RequestBody OrderRequest req) {
+        // ...
+    }
+}</code></pre>
+
+        <p style="margin-top: 12px;"><strong>장점:</strong> 코드 = 문서 (괴리 없음) · 프론트엔드 팀이 실시간 API 명세 확인 · Postman/Insomnia로 즉시 호출 가능 · <code>openapi-generator</code>로 클라이언트 SDK 자동 생성까지 연결.</p>
+      </div>
+
+      <!-- ================================================================
+           SECTION B: 인증·보안의 토대 + JWT
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(253,203,110,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--test);">
+        <h3 style="font-weight: 800; color: var(--test); font-size: 18px; margin: 0;">🔐 B. 인증·보안의 토대 + JWT</h3>
+      </div>
+
+      <!-- 5. 인증·보안의 토대 [v3.4 신규] -->
+      <section id="auth-security-foundations">
+        <h2>5. 인증·보안의 토대 — 쿠키·세션·해싱·필터·HTTPS</h2>
+        <p>JWT·BCrypt·SecurityFilterChain을 제대로 이해하려면 먼저 그 토대가 되는 웹 인증/보안 기초가 필요합니다. 복귀 개발자가 면접에서 "세션과 JWT 차이"를 물으면 막히는 이유가 이 토대를 건너뛰었기 때문입니다.</p>
+
+        <h4 style="font-weight:700; color:var(--backend); margin: 20px 0 8px;">① Stateful vs Stateless</h4>
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 단골 가게 vs 무인 편의점</h4>
+          <p><strong>Stateful(상태 유지)</strong>은 단골 가게 — 주인이 "당신 누구인지" 기억(서버 메모리에 세션 저장). 손님 많아지면 주인 머리 터짐(서버 확장 어려움).
+          <br><strong>Stateless(무상태)</strong>는 무인 편의점 — 매번 회원카드(토큰)를 보여주면 됨. 서버가 아무것도 기억 안 하므로 서버를 여러 대로 늘려도 문제없음(수평 확장 용이). JWT가 이 방식입니다.</p>
+        </div>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-4-stateful-stateless-analogy.webp" alt="Stateful과 Stateless 인증 흐름을 단골 가게와 무상태 출입 게이트로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>Stateful은 서버가 사용자를 기억하고, Stateless는 요청마다 검증 가능한 토큰을 제시하는 방식입니다.</figcaption>
+        </figure>
+
+        <h4 style="font-weight:700; color:var(--backend); margin: 20px 0 8px;">② 쿠키 vs 세션 (JWT 이전의 전통 인증)</h4>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px;">
+          <thead><tr style="background: var(--bg-glass);">
+            <th style="text-align:left; padding:8px 12px;">구분</th>
+            <th style="text-align:left; padding:8px 12px;">쿠키 (Cookie)</th>
+            <th style="text-align:left; padding:8px 12px;">세션 (Session)</th>
+          </tr></thead>
+          <tbody>
+            <tr><td style="padding:8px 12px;">저장 위치</td><td style="padding:8px 12px;">브라우저(클라이언트)</td><td style="padding:8px 12px;">서버 메모리/저장소</td></tr>
+            <tr><td style="padding:8px 12px;">보안</td><td style="padding:8px 12px;">탈취 위험(클라에 노출)</td><td style="padding:8px 12px;">상대적 안전(ID만 쿠키에)</td></tr>
+            <tr><td style="padding:8px 12px;">동작</td><td style="padding:8px 12px;">서버가 Set-Cookie로 발급 → 브라우저가 매 요청에 자동 첨부</td><td style="padding:8px 12px;">서버가 sessionId를 쿠키로 주고, 실제 데이터는 서버에 보관</td></tr>
+            <tr><td style="padding:8px 12px;">확장성</td><td style="padding:8px 12px;">-</td><td style="padding:8px 12px;">서버 늘리면 세션 공유 문제(→ Redis 세션 저장소 필요)</td></tr>
+          </tbody>
+        </table>
+        <p style="font-size:13px;">세션의 확장성 문제를 무상태로 푼 것이 JWT입니다. 다음 섹션에서 JWT를 배울 때 "왜 세션 대신 JWT인가"의 답이 바로 이 확장성입니다.</p>
+
+        <h4 style="font-weight:700; color:var(--backend); margin: 20px 0 8px;">③ 해싱 vs 암호화 vs 인코딩 (BCrypt 이전 필수 구분)</h4>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:12px; margin: 12px 0; font-size:13px;">
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">🔒 해싱 (단방향)</h4>
+            <p style="color:var(--text-muted);">원본 → 해시. <strong>되돌릴 수 없음</strong>. 비밀번호 저장에 사용(BCrypt). 같은 입력은 같은 해시.</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">🔑 암호화 (양방향)</h4>
+            <p style="color:var(--text-muted);">키로 암호화 ↔ 복호화. <strong>되돌릴 수 있음</strong>. 카드번호 등 다시 읽어야 하는 데이터에 사용(AES).</p>
+          </div>
+          <div class="glass-panel">
+            <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">📝 인코딩 (변환)</h4>
+            <p style="color:var(--text-muted);">보안 아님! 단순 형식 변환(Base64). 누구나 디코딩 가능. JWT의 Header/Payload가 인코딩일 뿐.</p>
+          </div>
+        </div>
+        <p style="font-size:13px;"><strong>면접 단골:</strong> "JWT는 암호화되나요?" → "아니요, Payload는 Base64 <em>인코딩</em>일 뿐 누구나 디코딩 가능. 위변조만 Signature로 막습니다." 이 구분을 못하면 보안 사고가 납니다.</p>
+
+        <h4 style="font-weight:700; color:var(--backend); margin: 20px 0 8px;">④ 서블릿 필터 / 미들웨어 (JwtAuthFilter 이전)</h4>
+<pre class="language-java"><code class="language-java">// 필터: 요청이 Controller에 도달하기 "전"에 가로채는 관문 (체인 구조)
+// [요청] → Filter1 → Filter2 → ... → DispatcherServlet → Controller
+
+@Component
+public class LoggingFilter extends OncePerRequestFilter {  // 요청당 1회 보장
+    @Override
+    protected void doFilterInternal(HttpServletRequest req,
+                                    HttpServletResponse res,
+                                    FilterChain chain) throws ... {
+        // 요청 전처리 (예: 토큰 검사)
+        log.info("요청 진입: {}", req.getRequestURI());
+        chain.doFilter(req, res);   // ← 다음 필터/컨트롤러로 전달 (필수!)
+        // 응답 후처리
+    }
+}
+// 🎯 JWT 인증도 이 필터 메커니즘으로 구현됩니다 (다음 섹션 JwtAuthenticationFilter).
+// 프론트엔드의 Axios Interceptor(Ch 7)와 개념적으로 같은 '가로채기' 패턴.</code></pre>
+
+        <h4 style="font-weight:700; color:var(--backend); margin: 20px 0 8px;">⑤ HTTPS / TLS 기초</h4>
+        <p style="font-size:13px;">JWT를 아무리 잘 설계해도 <strong>평문 HTTP로 전송하면 토큰이 중간에 탈취</strong>됩니다(중간자 공격). <strong>HTTPS</strong>는 TLS로 통신을 암호화해 이를 막습니다. JWT/세션 쿠키는 반드시 HTTPS 위에서 전송해야 하며, 쿠키엔 <code>Secure</code>(HTTPS만)·<code>HttpOnly</code>(JS 접근 차단)·<code>SameSite</code>(CSRF 방어) 속성을 답니다.</p>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ 쿠키/세션 → 다음 <a href="#jwt-structure" style="color:var(--accent-color);">JWT 토큰 구조</a>, 해싱 → <a href="#bcrypt" style="color:var(--accent-color);">BCrypt 섹션</a>, 필터 → <a href="#jwt-auth-filter" style="color:var(--accent-color);">JwtAuthenticationFilter</a>, 보안 전반은 <a href="appendix-interview.html#q-owasp" style="color:var(--accent-color);">부록 B Q25 OWASP</a>.</p>
+      </section>
+
+      <!-- 2. JWT 구조 -->
+      <section id="jwt-structure">
+        <h2>6. JWT 토큰 구조 — Header.Payload.Signature</h2>
+        <p>JWT(JSON Web Token)는 세 파트를 <code>.</code>으로 연결한 문자열입니다. 서버가 세션을 저장하지 않는 <strong>무상태(Stateless)</strong> 인증의 핵심입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 놀이공원 손목 밴드</h4>
+          <p><strong>세션(Session)</strong>은 놀이공원 입구에서 신분증을 맡기는 것 — 매번 직원이 보관함에서 찾아야 합니다. <strong>JWT</strong>는 입장 시 받는 <strong>손목 밴드</strong>입니다. 밴드에 "이름, 등급, 유효시간"이 적혀 있어 놀이기구마다 밴드만 보여주면 됩니다. 위조 방지를 위해 <strong>특수 잉크(서명)</strong>로 인쇄되어 있습니다.</p>
+        </div>
+
+        <div style="background: linear-gradient(135deg, hsla(0, 75%, 60%, 0.06), transparent); border-left: 3px solid var(--interview); padding: 10px 14px; margin: 12px 0; border-radius: 6px; font-size: 12.5px;">
+          <strong style="color: var(--interview);">🔍 비유가 깨지는 지점:</strong> 손목 밴드 비유는 <strong>강제 회수(폐기)</strong> 지점에서 깨집니다. 발급된 JWT는 만료 전까지 서버가 일방적으로 무효화하기 어렵습니다(그래서 Redis 블랙리스트가 필요). 또 "밴드에 정보가 적혀있다"는 점 때문에 <strong>민감 정보를 Payload에 넣으면 안 되고</strong>(Base64 인코딩일 뿐 누구나 디코딩), 토큰을 <strong>어디에 저장하느냐</strong>(localStorage XSS 위험 vs httpOnly 쿠키 CSRF 고려)가 또 다른 설계 숙제입니다.
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-4-jwt-wristband-analogy.webp" alt="JWT 인증과 Redis 갱신 관리를 손목 밴드로 설명하는 2D 파스텔 일러스트" loading="lazy">
+          <figcaption>JWT는 서명된 입장 밴드처럼 사용자를 확인하고, Redis는 갱신과 폐기를 관리하는 보관소 역할을 합니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">JWT 3파트 구조</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-json"><code class="language-json">// JWT = Header.Payload.Signature (Base64 인코딩)
+
+// 1. Header — 토큰 타입과 서명 알고리즘
+{"alg": "HS256", "typ": "JWT"}
+
+// 2. Payload — 사용자 정보 (Claims)
+{
+  "sub": "user@shop.com",      // Subject (사용자 식별자)
+  "role": "ROLE_USER",         // 권한
+  "iat": 1700000000,           // Issued At (발급 시간)
+  "exp": 1700003600            // Expiration (만료 시간 — 1시간 후)
+}
+
+// 3. Signature — 위변조 방지 서명
+// HMACSHA256(base64(header) + "." + base64(payload), 비밀키)
+// → 서버만 알고 있는 비밀키로 서명. 토큰 내용이 1비트라도 바뀌면 검증 실패!</code></pre>
+
+        <p><strong>⚠️ JWT의 한계:</strong> 한번 발급되면 서버가 직접 만료시킬 수 없습니다 (Stateless). 로그아웃 처리를 위해 <strong>Redis 블랙리스트</strong>가 필요합니다.</p>
+
+        <p style="margin-top: 20px;"><strong>🔐 JWT 인증 + Redis 블랙리스트 전체 흐름:</strong> 로그인부터 자원 접근, 로그아웃까지의 시퀀스를 시각화한 다이어그램입니다.</p>
+
+        <!-- Mermaid Diagram: JWT Auth Sequence with Redis Blacklist -->
+        <pre class="mermaid">
+sequenceDiagram
+    autonumber
+    participant U as 👤 사용자
+    participant F as 🖥️ Next.js<br/>Client
+    participant A as 🍃 Spring<br/>Auth Server
+    participant R as 🔴 Redis<br/>(Blacklist)
+    participant S as 🍃 Spring<br/>Resource Server
+
+    rect rgb(40,55,80)
+    Note over U,A: 로그인 흐름
+    U->>F: 이메일/비밀번호 입력
+    F->>A: POST /auth/login
+    A->>A: BCrypt 검증
+    A-->>F: Access Token (15분)<br/>+ Refresh Token (7일)
+    F->>F: localStorage 저장
+    end
+
+    rect rgb(40,80,55)
+    Note over F,S: 일반 요청 흐름
+    F->>S: GET /api/orders<br/>Authorization: Bearer {token}
+    S->>R: 블랙리스트 확인?
+    R-->>S: not blacklisted
+    S->>S: JWT 서명·만료 검증
+    S-->>F: 200 OK + 주문 목록
+    end
+
+    rect rgb(80,55,40)
+    Note over U,R: 로그아웃 흐름
+    U->>F: 로그아웃 클릭
+    F->>A: POST /auth/logout
+    A->>R: SETEX blacklist:{token}<br/>{남은 유효시간}
+    A-->>F: 204 No Content
+    F->>F: localStorage 토큰 제거
+    end
+        </pre>
+      </section>
+
+      <!-- 3. Access + Refresh Token -->
+      <section id="access-refresh-token">
+        <h2>7. Access Token + Refresh Token 이중 토큰 전략</h2>
+        <p>Access Token만 사용하면 만료 시간을 길게 잡으면 보안 취약, 짧게 잡으면 사용자가 계속 재로그인해야 합니다. <strong>이중 토큰</strong>으로 해결합니다.</p>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 16px;">구분</th>
+              <th style="padding: 10px 16px;">Access Token</th>
+              <th style="padding: 10px 16px;">Refresh Token</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">용도</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">API 요청 시 인증</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">Access Token 재발급</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">만료 시간</td>
+              <td style="padding: 10px 16px; color: var(--devops);">짧음 (15분~1시간)</td>
+              <td style="padding: 10px 16px; color: var(--frontend);">김 (7~14일)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">저장 위치</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">메모리 또는 헤더</td>
+              <td style="padding: 10px 16px; color: var(--text-muted);">HttpOnly Cookie (권장)</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <td style="padding: 10px 16px; font-weight:700;">탈취 시 위험도</td>
+              <td style="padding: 10px 16px; color: var(--devops);">낮음 (곧 만료)</td>
+              <td style="padding: 10px 16px; color: var(--interview);">높음 (서버에서 관리 필요)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div style="background: var(--bg-card); border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-size: 13px; border: 1px solid var(--border-color); text-align: center;">
+          <code style="color: var(--accent-color); font-weight:700;">① 로그인</code> → Access + Refresh 발급 →
+          <code style="color: var(--devops); font-weight:700;">② API 요청</code> Access Token 사용 →
+          <code style="color: var(--interview); font-weight:700;">③ 만료</code> 401 응답 →
+          <code style="color: var(--frontend); font-weight:700;">④ 재발급</code> Refresh Token으로 새 Access 발급 →
+          <code style="color: var(--test); font-weight:700;">⑤ 재시도</code>
+        </div>
+      </section>
+
+      <!-- ================================================================
+           SECTION C: Spring Security 6
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(46,213,115,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--devops);">
+        <h3 style="font-weight: 800; color: var(--devops); font-size: 18px; margin: 0;">🛡️ C. Spring Security 6 구현</h3>
+      </div>
+
+      <!-- 4. Security Config -->
+      <section id="security-config">
+        <h2>8. SecurityFilterChain — Lambda 기반 보안 설정</h2>
+        <p>Spring Security 6.x의 <strong>최신 권장(사실상 표준) 방식은 Lambda DSL 기반 <code>SecurityFilterChain</code> 빈 설정</strong>입니다. 구 <code>and()</code> 체이닝 스타일은 deprecated되어 향후 버전에서 제거 예정이므로, 신규 코드는 Lambda DSL로 작성합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">SecurityConfig.java — Spring Security 6 최신 설정</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Configuration
+@EnableWebSecurity
+@RequiredArgsConstructor
+public class SecurityConfig {
+    private final JwtAuthenticationFilter jwtAuthFilter;
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        return http
+            // 1. JWT 사용 → CSRF 비활성화
+            .csrf(csrf -> csrf.disable())
+            // 2. CORS 설정
+            .cors(cors -> cors.configurationSource(corsConfigSource()))
+            // 3. 세션 무상태 정책
+            .sessionManagement(session ->
+                session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            // 4. 경로별 인가 설정
+            .authorizeHttpRequests(auth -> auth
+                .requestMatchers("/api/auth/**", "/api/products/**").permitAll()
+                .requestMatchers("/api/admin/**").hasRole("ADMIN")
+                .anyRequest().authenticated()
+            )
+            // 5. JWT 필터를 UsernamePasswordAuthFilter 앞에 삽입
+            .addFilterBefore(jwtAuthFilter,
+                UsernamePasswordAuthenticationFilter.class)
+            .build();
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // 비밀번호 단방향 암호화
+    }
+}</code></pre>
+      </section>
+
+      <!-- 5. JwtAuthFilter -->
+      <section id="jwt-auth-filter">
+        <h2>9. JwtAuthenticationFilter — 토큰 검증 필터 구현</h2>
+        <p>모든 HTTP 요청을 가로채어 JWT 토큰을 추출 → 블랙리스트 확인 → 서명 검증 → SecurityContext에 인증 정보 적재하는 필터입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">JwtAuthenticationFilter.java — 커스텀 JWT 필터</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Component
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RedisBlacklistService blacklistService;
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request,
+            HttpServletResponse response, FilterChain chain) throws Exception {
+
+        // 1. 헤더에서 토큰 추출
+        String token = resolveToken(request);
+
+        if (token != null) {
+            // 2. Redis 블랙리스트 확인
+            if (blacklistService.isBlacklisted(token)) {
+                response.sendError(401, "로그아웃된 토큰입니다");
+                return;
+            }
+
+            // 3. 토큰 유효성 검증 (서명 + 만료시간)
+            if (jwtTokenProvider.validateToken(token)) {
+                // 4. 토큰에서 인증 정보 추출 → SecurityContext에 적재
+                Authentication auth = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(auth);
+            }
+        }
+
+        chain.doFilter(request, response); // 다음 필터로 진행
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if (bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7); // "Bearer " 제거
+        }
+        return null;
+    }
+}</code></pre>
+      </section>
+
+      <!-- 6. BCrypt -->
+      <section id="bcrypt">
+        <h2>10. BCrypt 비밀번호 암호화 — 단방향 해시</h2>
+        <p>비밀번호를 <strong>평문(Plain Text)</strong>으로 저장하면 DB 유출 시 모든 계정이 위험합니다. <strong>BCrypt</strong>는 복호화가 불가능한 <strong>단방향 해시</strong>로, 같은 비밀번호도 매번 다른 해시를 생성합니다(Salt 자동 적용).</p>
+
+        <div class="code-block-header">
+          <span class="code-title">BCrypt 사용 — 회원가입 & 로그인 검증</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Service
+@RequiredArgsConstructor
+public class AuthService {
+    private final PasswordEncoder passwordEncoder; // BCryptPasswordEncoder
+
+    // 회원가입 — 비밀번호 암호화 후 저장
+    public void signup(SignupRequest req) {
+        String encodedPassword = passwordEncoder.encode(req.password());
+        // "1234" → "$2a$10$xN4k..." (60자 해시)
+        memberRepository.save(new Member(req.email(), encodedPassword));
+    }
+
+    // 로그인 — 평문 vs 해시 비교 (복호화 아님!)
+    public TokenResponse login(LoginRequest req) {
+        Member member = memberRepository.findByEmail(req.email())
+            .orElseThrow(() -> new BadCredentialsException("이메일 없음"));
+
+        // matches()로 비교 (encode된 값끼리 비교하면 안 됨!)
+        if (!passwordEncoder.matches(req.password(), member.getPassword())) {
+            throw new BadCredentialsException("비밀번호 불일치");
+        }
+
+        return jwtTokenProvider.generateTokens(member);
+    }
+}</code></pre>
+      </section>
+
+      <!-- 7. Redis Blacklist -->
+      <section id="redis-blacklist">
+        <h2>11. Redis 블랙리스트 — 로그아웃 토큰 무효화</h2>
+        <p>JWT는 발급 후 서버가 직접 만료시킬 수 없습니다. 로그아웃 시 토큰의 <strong>남은 TTL만큼 Redis에 등록</strong>하여 재사용을 차단합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">RedisBlacklistService.java — 토큰 블랙리스트 관리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Service
+@RequiredArgsConstructor
+public class RedisBlacklistService {
+    private final StringRedisTemplate redisTemplate;
+
+    // 로그아웃 시: 토큰을 블랙리스트에 등록 (남은 만료시간만큼 TTL 설정)
+    public void blacklistToken(String token, long remainingTimeMs) {
+        redisTemplate.opsForValue().set(
+            "blacklist:" + token,
+            "logout",
+            remainingTimeMs,
+            TimeUnit.MILLISECONDS
+        );
+        // TTL이 지나면 Redis가 자동 삭제 → 메모리 관리 자동화!
+    }
+
+    // 요청 필터에서: 블랙리스트 확인
+    public boolean isBlacklisted(String token) {
+        return Boolean.TRUE.equals(
+            redisTemplate.hasKey("blacklist:" + token)
+        );
+    }
+}</code></pre>
+
+        <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 12px;">⛓️ Redis는 토큰 블랙리스트 외에도 일반 데이터 캐시로 더 광범위하게 활용됩니다. <strong>@Cacheable / Look-aside / Write-through / Thundering Herd 방지</strong> 같은 본격 캐싱 전략은 <a href="appendix-interview.html#q-caching-strategies" style="color:var(--accent-color);">부록 B — Q26 캐싱 전략</a>에서 다룹니다.</p>
+      </section>
+
+      <!-- C.보강 [실무 보강 박스] OAuth2 / OIDC 소셜 로그인 -->
+      <div style="background: linear-gradient(135deg, rgba(253,203,110,0.10), transparent); border: 1px dashed var(--test); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--test); margin: 0 0 12px; font-size: 16px;">🔑 [실무 보강 박스] OAuth2 / OIDC 소셜 로그인 — 커스텀 JWT와 결합</h3>
+        <p>지금까지는 우리가 직접 발급한 <strong>커스텀 JWT</strong>만 다뤘습니다. 하지만 실무 대부분은 "카카오·구글로 로그인"을 요구하고, 면접에서도 단골 후속 질문이 나옵니다. 핵심 한 줄: <strong>소셜 인증에는 "신원 확인"까지만 맡기고, 우리 서비스의 토큰·세션은 우리가 다시 발급</strong>합니다. 사용자의 비밀번호(자격증명)는 우리가 절대 보지 않습니다.</p>
+
+        <div class="analogy-box" style="margin: 14px 0;">
+          <h4>💡 비유로 이해하기: 신뢰하는 기관의 신분 확인</h4>
+          <p>매장 회원가입 없이 "정부24 인증"으로 <strong>신원만 확인</strong>받고, 우리 매장 멤버십 카드(<strong>자체 JWT</strong>)는 우리가 발급하는 것과 같습니다. 신분 확인은 믿을 만한 기관(provider)에 위임하되, 매장 이용 권한은 우리가 관리합니다.</p>
+        </div>
+
+        <p style="margin-top:14px;"><strong>① Authorization Code Flow (+ PKCE)</strong> — 가장 안전한 표준 흐름:</p>
+        <table style="width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 12.5px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+          <thead>
+            <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 10px 14px;">단계</th>
+              <th style="padding: 10px 14px;">무슨 일이</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 9px 14px; font-weight:700;">1. 리다이렉트</td><td style="padding: 9px 14px; color: var(--text-muted);">사용자가 "카카오 로그인" 클릭 → provider 인가 페이지로 이동</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 9px 14px; font-weight:700;">2. 동의 → 인가 코드</td><td style="padding: 9px 14px; color: var(--text-muted);">사용자가 로그인·동의 → 우리 <code>redirect_uri</code>로 <strong>인가 코드(code)</strong> 전달</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 9px 14px; font-weight:700; color:var(--test);">3. 토큰 교환</td><td style="padding: 9px 14px; color: var(--text-muted);"><strong>우리 백엔드</strong>가 code + client_secret으로 provider에 토큰 요청(서버 간 통신)</td></tr>
+            <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 9px 14px; font-weight:700;">4. 토큰 수신</td><td style="padding: 9px 14px; color: var(--text-muted);">provider가 access_token (+ OIDC면 <strong>id_token</strong>) 반환</td></tr>
+            <tr><td style="padding: 9px 14px; font-weight:700; color:var(--devops);">5. 자체 JWT 발급</td><td style="padding: 9px 14px; color: var(--text-muted);">프로필 조회 → 신규면 가입·기존이면 매핑 → <strong>우리 Access/Refresh JWT 발급</strong></td></tr>
+          </tbody>
+        </table>
+        <p>왜 굳이 <strong>code</strong>를 거칠까요? 토큰이 <strong>브라우저(URL)에 노출되지 않고</strong> 백엔드 간 통신으로만 오가기 때문입니다. <strong>PKCE</strong>는 이 code를 가로채도 쓸 수 없게 막는 추가 검증(code_verifier/challenge)으로, 비밀을 숨기기 어려운 <strong>SPA·모바일</strong>에서 특히 중요합니다.</p>
+
+        <p style="margin-top:14px;"><strong>② OAuth2 vs OIDC</strong> — 한 끗 차이가 면접 포인트:</p>
+        <ul style="font-size:13px; color:var(--text-muted); line-height:1.9; margin: 6px 0 0 2px;">
+          <li><strong>OAuth2</strong> = <strong>인가(Authorization)</strong> 프로토콜. "이 앱이 당신의 무엇에 접근해도 되나"(access_token)에 답합니다.</li>
+          <li><strong>OIDC</strong>(OpenID Connect) = OAuth2 <strong>위에 인증(Authentication)</strong>을 얹은 것. "당신이 누구인가"를 표준 <strong>id_token(JWT)</strong>로 줍니다. 소셜 "로그인"엔 OIDC가 정답입니다.</li>
+        </ul>
+
+        <p style="margin-top:14px;"><strong>③ Spring Security 결합 — <code>OAuth2UserService</code> 매핑:</strong></p>
+        <div class="code-block-header">
+          <span class="code-title">spring-boot-starter-oauth2-client — provider 인증 후 우리 JWT 발급</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+<pre class="language-java"><code class="language-java">// build.gradle
+implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+// application.yml — provider 등록 (구글 예시; 카카오·네이버는 커스텀 provider 추가)
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${GOOGLE_CLIENT_ID}
+            client-secret: ${GOOGLE_CLIENT_SECRET}
+            scope: profile, email
+
+// SecurityFilterChain — oauth2Login 활성화
+http.oauth2Login(o -> o
+    .userInfoEndpoint(u -> u.userService(customOAuth2UserService))
+    .successHandler(oAuth2SuccessHandler)   // ← 인증 성공 시 '우리 자체 JWT' 발급
+);
+
+// provider 사용자 정보 → 우리 User로 매핑 (신규면 가입)
+@Service
+public class CustomOAuth2UserService extends DefaultOAuth2UserService {
+    @Override
+    public OAuth2User loadUser(OAuth2UserRequest req) {
+        OAuth2User user = super.loadUser(req);        // provider에서 프로필 조회
+        String email = user.getAttribute("email");
+        userRepository.findByEmail(email)
+            .orElseGet(() -> userRepository.save(User.fromOAuth(user)));  // 신규 가입
+        return user;
+    }
+}
+// 이후 oAuth2SuccessHandler가 Access/Refresh JWT 발급 → 섹션 9 JwtAuthenticationFilter 흐름과 동일</code></pre>
+
+        <p style="margin-top:12px;"><strong>💡 면접 단골 질문</strong></p>
+        <ul style="font-size:13px; color:var(--text-muted); line-height:1.9; margin: 6px 0 0 2px;">
+          <li><em>"Authorization Code Flow를 단계로 설명하라"</em> → 위 5단계. 핵심은 <strong>토큰이 백엔드 간에 교환되어 브라우저에 노출되지 않는다</strong>는 점.</li>
+          <li><em>"소셜 로그인 후 우리 서비스 세션/토큰은 어떻게 발급?"</em> → provider 토큰은 신원 확인용으로만 쓰고, 성공 시 <strong>우리 자체 JWT를 발급</strong>해 이후 인증은 기존 <a href="#jwt-auth-filter" style="color:var(--test);">JwtAuthenticationFilter(섹션 9)</a> 흐름 그대로.</li>
+          <li><em>"왜 Implicit Flow는 안 쓰나?"</em> → access_token이 <strong>브라우저 URL/프래그먼트에 직접 노출</strong>되고 갱신·보안이 취약해 사실상 폐기(deprecated). 지금 표준은 <strong>Authorization Code + PKCE</strong>.</li>
+        </ul>
+
+        <p style="font-size:12.5px; color:var(--text-muted); margin-top:12px;">⛓️ 자체 토큰 발급·검증 토대는 <a href="#jwt-structure" style="color:var(--test);">섹션 6 JWT 구조</a> · <a href="#jwt-auth-filter" style="color:var(--test);">섹션 9 JwtAuthenticationFilter</a>와 그대로 이어집니다.</p>
+      </div>
+
+      <!-- ================================================================
+           SECTION D: CORS & 프론트엔드
+           ================================================================ -->
+      <div style="background: linear-gradient(135deg, rgba(214,48,49,0.08), transparent); border-radius: 12px; padding: 20px 24px 8px; margin: 32px 0 8px; border-left: 4px solid var(--interview);">
+        <h3 style="font-weight: 800; color: var(--interview); font-size: 18px; margin: 0;">🌍 D. CORS & 프론트엔드 토큰 관리</h3>
+      </div>
+
+      <!-- 8. CORS -->
+      <section id="cors-config">
+        <h2>12. CORS — 프론트엔드-백엔드 교차 출처 허용</h2>
+        <p>프론트엔드(localhost:3000)와 백엔드(localhost:8080)는 <strong>다른 출처(Origin)</strong>이므로, 브라우저가 기본적으로 요청을 차단합니다. CORS 설정으로 허용합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">CorsConfig.java — CORS 허용 설정</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-java"><code class="language-java">@Bean
+public CorsConfigurationSource corsConfigSource() {
+    CorsConfiguration config = new CorsConfiguration();
+    config.setAllowedOrigins(List.of("http://localhost:3000")); // 프론트엔드 주소
+    config.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "PATCH"));
+    config.setAllowedHeaders(List.of("*"));
+    config.setAllowCredentials(true); // 쿠키 전송 허용
+
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    source.registerCorsConfiguration("/api/**", config);
+    return source;
+}</code></pre>
+      </section>
+
+      <!-- 9. Frontend Token Management -->
+      <section id="frontend-token">
+        <h2>13. 프론트엔드 토큰 관리 — Axios 인터셉터</h2>
+        <p>매 API 요청마다 토큰을 수동으로 붙이지 않고, <strong>Axios 인터셉터</strong>로 자동 처리합니다. 만료 시 자동 재발급까지 포함합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">api.ts — Axios 인터셉터로 JWT 자동 관리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-jsx"><code class="language-jsx">import axios from "axios";
+
+const api = axios.create({ baseURL: "http://localhost:8080/api" });
+
+// 요청 인터셉터: 매 요청에 Access Token 자동 부착
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem("accessToken");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+// 응답 인터셉터: 401 시 Refresh Token으로 자동 재발급
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (error.response?.status === 401) {
+      const refreshToken = localStorage.getItem("refreshToken");
+      try {
+        const { data } = await axios.post("/api/auth/refresh", { refreshToken });
+        localStorage.setItem("accessToken", data.accessToken);
+
+        // 실패했던 요청을 새 토큰으로 재시도
+        error.config.headers.Authorization = `Bearer ${data.accessToken}`;
+        return api(error.config);
+      } catch {
+        // Refresh Token도 만료 → 로그인 페이지로 이동
+        localStorage.clear();
+        window.location.href = "/login";
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default api;</code></pre>
+      </section>
+
+      <!-- glossary -->
+      <section id="chapter-glossary" class="glass-panel" style="border-left: 4px solid var(--accent-color);">
+        <h3 style="font-weight:800; color:var(--accent-color); margin-bottom:12px;">📚 04챕터 헷갈리는 용어 사전</h3>
+        <div style="display:flex; flex-direction:column; gap:12px; font-size:13px;">
+          <div><strong>JWT (JSON Web Token):</strong><span style="color:var(--text-muted);"> Header.Payload.Signature 3파트로 구성된 토큰. 서버가 세션을 저장하지 않는 무상태 인증 방식.</span></div>
+          <div><strong>Stateless (무상태):</strong><span style="color:var(--text-muted);"> 서버가 클라이언트 상태를 저장하지 않음. 매 요청마다 토큰으로만 인증. 서버 확장(스케일아웃)에 유리.</span></div>
+          <div><strong>Access Token:</strong><span style="color:var(--text-muted);"> API 인증용 단기 토큰 (15분~1시간). 탈취되어도 빠르게 만료.</span></div>
+          <div><strong>Refresh Token:</strong><span style="color:var(--text-muted);"> Access Token 재발급용 장기 토큰 (7~14일). HttpOnly Cookie에 저장 권장.</span></div>
+          <div><strong>BCrypt:</strong><span style="color:var(--text-muted);"> 복호화 불가능한 단방향 해시 함수. Salt 자동 적용으로 같은 비밀번호도 매번 다른 해시값 생성.</span></div>
+          <div><strong>SecurityFilterChain:</strong><span style="color:var(--text-muted);"> Spring Security의 보안 필터 체인. 요청이 컨트롤러에 도달하기 전 인증/인가를 처리.</span></div>
+          <div><strong>Redis Blacklist:</strong><span style="color:var(--text-muted);"> 로그아웃된 JWT를 Redis에 TTL과 함께 저장하여 만료 전 재사용을 차단하는 보안 패턴.</span></div>
+          <div><strong>CORS:</strong><span style="color:var(--text-muted);"> Cross-Origin Resource Sharing. 다른 출처(도메인/포트)에서의 API 요청을 허용하는 보안 정책.</span></div>
+          <div><strong>멱등성 (Idempotent):</strong><span style="color:var(--text-muted);"> 같은 요청을 여러 번 보내도 결과가 동일한 성질. GET, PUT, DELETE는 멱등, POST는 비멱등.</span></div>
+          <div><strong>HttpOnly Cookie:</strong><span style="color:var(--text-muted);"> JavaScript에서 접근 불가능한 쿠키. XSS 공격으로 토큰이 탈취되는 것을 방지.</span></div>
+        </div>
+      </section>
+
+      <!-- Quiz wrapper -->
+      <!-- Build Checkpoint [v3.4] -->
+      <div style="background: linear-gradient(135deg, hsla(150, 75%, 45%, 0.10), transparent); border: 1px solid var(--devops); border-radius: 10px; padding: 20px 24px; margin: 24px 0;">
+        <h3 style="font-weight:800; color:var(--devops); margin: 0 0 10px; font-size: 16px;">🛠️ 직접 만들어보기 — "이걸로 만들 수 있나?" 체크포인트</h3>
+        <p style="font-size:13px; margin:0 0 8px;">읽기만으로는 복귀가 안 됩니다. <strong>실제로 동작하는 로그인/로그아웃 흐름</strong>을 만들어 Postman/Swagger로 호출해보세요.</p>
+        <ul style="font-size:13.5px; line-height:1.9; margin:0; padding-left:20px;">
+          <li>회원가입(BCrypt 해싱 저장) + 로그인(JWT Access/Refresh 발급) API</li>
+          <li><code>JwtAuthenticationFilter</code>(OncePerRequestFilter)로 보호된 엔드포인트, Lambda DSL <code>SecurityFilterChain</code></li>
+          <li>로그아웃 시 Redis 블랙리스트 등록 → 해당 토큰으로 재요청 시 거부 확인</li>
+          <li>Bean Validation 실패와 도메인 예외를 <code>@RestControllerAdvice</code> + <code>ProblemDetail</code>로 일관 응답</li>
+          <li>Springdoc Swagger UI(<code>/swagger-ui.html</code>)로 전체 API 확인</li>
+        </ul>
+      </div>
+
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-jsx.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/prism-sql.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    if (typeof mermaid !== "undefined") {
+      mermaid.initialize({
+        startOnLoad: true,
+        theme: document.documentElement.getAttribute("data-theme") === "light" ? "default" : "dark",
+        securityLevel: "loose"
+      });
+      window.addEventListener("themeChanged", (e) => {
+        mermaid.initialize({ theme: e.detail === "light" ? "default" : "dark" });
+        window.location.reload();
+      });
+    }
+
+    const ch4Quizzes = [
+      {
+        type: "mcq",
+        question: "RESTful API에서 상품 가격을 수정할 때 적합한 HTTP 메서드와 URI 조합은?",
+        options: [
+          "POST /api/products/updatePrice",
+          "PUT /api/products/{id}",
+          "GET /api/products/modify?id=1",
+          "DELETE /api/products/{id}"
+        ],
+        correct: 1,
+        explanation: "REST에서 URI는 리소스(명사)만 표현하고, 행위는 HTTP 메서드로 전달합니다. 수정은 PUT(전체) 또는 PATCH(부분)를 사용합니다."
+      },
+      {
+        type: "mcq",
+        question: "JWT의 세 파트 중 위변조를 방지하는 역할을 하는 것은?",
+        options: [
+          "Header (알고리즘 정보)",
+          "Payload (사용자 정보)",
+          "Signature (서명)",
+          "Bearer (접두사)"
+        ],
+        correct: 2,
+        explanation: "Signature는 Header와 Payload를 서버의 비밀키로 서명한 것입니다. 토큰 내용이 1비트라도 변조되면 서명 검증이 실패하여 위조를 감지합니다."
+      },
+      {
+        type: "mcq",
+        question: "Access Token이 만료되었을 때 사용자를 재로그인시키지 않고 새 토큰을 발급하는 메커니즘은?",
+        options: [
+          "CSRF Token을 사용한다.",
+          "Refresh Token으로 새 Access Token을 재발급한다.",
+          "세션 쿠키를 갱신한다.",
+          "브라우저 캐시에서 복원한다."
+        ],
+        correct: 1,
+        explanation: "Refresh Token은 Access Token 재발급 전용 장기 토큰입니다. 401 응답 시 Refresh Token을 서버에 보내 새 Access Token을 받습니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "Spring Security 6에서 세션을 무상태(STATELESS)로 설정하는 코드를 완성하세요.",
+        starter: "http.sessionManagement(session -> \n  // 여기에 작성\n);",
+        validator: {
+          mustContain: ["session.sessionCreationPolicy", "SessionCreationPolicy.STATELESS"],
+          mustNotContain: ["ALWAYS"]
+        },
+        solution: "session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)",
+        explanation: "JWT 인증 시 서버 세션이 불필요하므로 SessionCreationPolicy.STATELESS로 세션 생성을 차단합니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "JWT 필터에서 Redis 블랙리스트에 토큰이 등록되었는지 확인하는 조건문을 완성하세요. (서비스 변수명: blacklistService)",
+        starter: "if (token != null && \n    // 여기에 작성\n) {\n    throw new BadCredentialsException(\"Blacklisted!\");\n}",
+        validator: {
+          mustContain: ["blacklistService.isBlacklisted", "token"],
+          mustNotContain: ["equals"]
+        },
+        solution: "blacklistService.isBlacklisted(token)",
+        explanation: "blacklistService.isBlacklisted(token)이 true이면 로그아웃된 토큰이므로 즉시 인증을 거부합니다."
+      },
+      // ===== v3.2 추가 퀴즈 =====
+      {
+        type: "mcq",
+        question: "Spring Boot 3.x에서 컨트롤러 진입 시 DTO를 자동 검증하기 위한 어노테이션 조합으로 가장 적절한 것은?",
+        options: [
+          "@RequestBody만 사용",
+          "@Valid + @RequestBody (jakarta.validation.Valid)",
+          "@Validated + @PathVariable",
+          "@RequestParam + @NotNull"
+        ],
+        correct: 1,
+        explanation: "Spring Boot 3.x는 jakarta.validation 패키지를 사용합니다. @Valid 어노테이션을 @RequestBody 앞에 붙이면 DTO의 모든 검증 어노테이션(@NotNull, @Size 등)이 진입 즉시 실행되고, 실패 시 MethodArgumentNotValidException이 자동 발생합니다."
+      },
+      {
+        type: "mcq",
+        question: "Spring 6.0+의 ProblemDetail (RFC 9457)이 가져온 변화는?",
+        options: [
+          "각 회사가 자체 ErrorResponse DTO를 만들어야 한다",
+          "type/title/status/detail/instance 필드로 표준화된 에러 응답을 제공한다",
+          "예외 처리가 더 어려워졌다",
+          "200 OK로만 응답해야 한다"
+        ],
+        correct: 1,
+        explanation: "ProblemDetail은 RFC 9457 표준 스펙으로, 모든 HTTP 에러를 일관된 형식(type/title/status/detail/instance)으로 표현합니다. 프론트엔드 라이브러리들이 이미 파싱을 지원하므로 회사마다 다른 자체 ErrorResponse DTO를 만들 필요가 없어졌습니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "@RestControllerAdvice에서 Bean Validation 실패(MethodArgumentNotValidException)를 처리하는 메서드 시그니처를 완성하세요. ProblemDetail을 반환해야 합니다.",
+        starter: "@ExceptionHandler(MethodArgumentNotValidException.class)\npublic // 여기에 작성\n handleValidation(MethodArgumentNotValidException ex) {\n  // ...\n}",
+        validator: {
+          mustContain: ["ProblemDetail"],
+          mustNotContain: ["ResponseEntity<String>"]
+        },
+        solution: "public ProblemDetail handleValidation(MethodArgumentNotValidException ex)",
+        explanation: "Spring 6.0+에서는 예외 핸들러가 ProblemDetail을 직접 반환하면 자동으로 application/problem+json 응답으로 변환됩니다. RFC 9457 표준 형식이 보장됩니다."
+      },
+      // ===== v3.4 추가 퀴즈 (인증·보안의 토대) =====
+      {
+        type: "mcq",
+        question: "JWT가 전통적인 서버 세션 방식 대비 갖는 핵심 장점은?",
+        options: [
+          "데이터를 암호화해서 더 안전하다",
+          "Stateless하여 서버가 세션을 저장하지 않으므로 서버를 여러 대로 수평 확장하기 쉽다",
+          "쿠키를 사용하지 않는다",
+          "토큰이 절대 만료되지 않는다"
+        ],
+        correct: 1,
+        explanation: "세션은 서버 메모리에 상태를 저장(Stateful)하므로 서버를 늘리면 세션 공유 문제가 생깁니다(→ Redis 세션 저장소 필요). JWT는 Stateless하여 서버가 아무것도 기억하지 않으므로 수평 확장이 자유롭습니다. JWT의 Payload는 암호화가 아닌 Base64 인코딩일 뿐입니다."
+      },
+      {
+        type: "mcq",
+        question: "비밀번호 저장에 BCrypt(해싱)를 쓰고 카드번호에 AES(암호화)를 쓰는 이유로 옳은 것은?",
+        options: [
+          "해싱은 빠르고 암호화는 느려서",
+          "비밀번호는 원본을 복원할 필요가 없어 단방향 해싱, 카드번호는 다시 읽어야 해서 양방향 암호화",
+          "둘은 완전히 같은 것이다",
+          "해싱은 숫자에만, 암호화는 문자에만 쓴다"
+        ],
+        correct: 1,
+        explanation: "해싱(단방향)은 되돌릴 수 없어 비밀번호 저장에 적합합니다 — 로그인 시 입력값을 같은 방식으로 해싱해 비교만 하면 됩니다. 카드번호처럼 원본을 다시 읽어야 하는 데이터는 키로 복호화 가능한 양방향 암호화(AES)를 씁니다. 인코딩(Base64)은 보안이 아닌 단순 형식 변환입니다."
+      },
+      {
+        type: "code",
+        language: "java",
+        prompt: "Spring에서 요청당 정확히 한 번만 실행되는 것이 보장되는 필터를 만들 때 상속해야 하는 클래스를 작성하세요. (JwtAuthenticationFilter의 부모)",
+        starter: "@Component\npublic class JwtAuthenticationFilter extends // 여기에 작성\n {\n    // doFilterInternal 구현\n}",
+        validator: {
+          mustContain: ["OncePerRequestFilter"],
+          mustNotContain: ["Filter implements"]
+        },
+        solution: "OncePerRequestFilter",
+        explanation: "OncePerRequestFilter를 상속하면 forward/include 등으로 요청이 여러 번 디스패치돼도 필터가 요청당 1회만 실행되도록 보장됩니다. doFilterInternal 안에서 chain.doFilter()를 반드시 호출해 다음 필터/컨트롤러로 요청을 넘겨야 합니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", ch4Quizzes, "chapter-4");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
