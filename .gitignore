@@ -28,3 +28,9 @@ npm-debug.log*
 .chrome-qa-profile2/
 handoff.md
 handoff-content-review.md
+
+# bkit auto-generated state (causes git churn; keep local, stop tracking)
+docs/.bkit-memory.json
+docs/.pdca-status.json
+docs/.bkit-*
+docs/.pdca-*
