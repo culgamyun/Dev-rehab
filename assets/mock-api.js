@@ -202,11 +202,18 @@ const mockApi = {
         const user = db.users.find(u => u.email === email) || { id: 1, email, name: "비회원고객", grade: "BASIC" };
         
         // 가짜 JWT 발급 (Header.Payload.Signature 인코딩 구조 구현)
-        const fakeHeader = btoa(JSON.stringify({ alg: "HS256", typ: "JWT" }));
-        const fakePayload = btoa(JSON.stringify({ 
-          sub: user.id, 
-          email: user.email, 
-          name: user.name, 
+        // 한글 이름 등 비(非)Latin1 문자가 payload에 들어가므로 UTF-8 안전 base64 사용 (TextEncoder 기반)
+        const b64utf8 = (str) => {
+          const bytes = new TextEncoder().encode(str);
+          let bin = "";
+          for (let i = 0; i < bytes.length; i++) bin += String.fromCharCode(bytes[i]);
+          return btoa(bin);
+        };
+        const fakeHeader = b64utf8(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+        const fakePayload = b64utf8(JSON.stringify({
+          sub: user.id,
+          email: user.email,
+          name: user.name,
           role: user.grade === "VIP" ? "ROLE_VIP" : "ROLE_USER",
           exp: Math.floor(Date.now() / 1000) + 3600 // 1시간 유효
         }));

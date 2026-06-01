@@ -36,8 +36,14 @@ const CHAPTER_SEQUENCE = [
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+  // 0. 사이드바 리브랜딩 (타이틀 "Dev Rehab" + 클릭 시 대시보드 이동, '대시보드 홈' 항목 제거)
+  initSidebarBrand();
+
   // 1. 테마(다크/라이트) 초기화 수행
   initTheme();
+
+  // 1.5 모바일 햄버거 네비게이션 (≤768px에서 사이드바 메뉴 토글)
+  initMobileNav();
 
   // 2. 학습 진척도 시스템 로드 및 초기 렌더링
   initProgress();
@@ -231,6 +237,65 @@ function autoTagGlossaryTerms() {
       initGlossaryTooltips();
     })
     .catch(err => console.warn("Glossary auto-tagging skipped:", err));
+}
+
+/**
+ * ==========================================================================
+ * 0. 모바일 햄버거 네비게이션
+ * ==========================================================================
+ * 사이드바가 12개 HTML에 중복돼 있어, 마크업 수정 없이 JS로 토글 버튼을 주입한다.
+ * ≤768px에서 .nav-menu/.sidebar-footer는 기본 숨김이고 #sidebar.mobile-open일 때만 표시.
+ */
+function initSidebarBrand() {
+  // 타이틀을 "Dev Rehab"으로 리브랜딩하고, 클릭하면 대시보드(index.html)로 이동
+  const logo = document.querySelector(".sidebar-logo");
+  if (logo && !logo.dataset.rebranded) {
+    logo.dataset.rebranded = "1";
+    logo.innerHTML = '<span>Dev</span> Rehab';
+    logo.style.cursor = "pointer";
+    logo.setAttribute("role", "link");
+    logo.setAttribute("tabindex", "0");
+    logo.setAttribute("aria-label", "대시보드 홈으로 이동");
+    const goHome = () => { window.location.href = "index.html"; };
+    logo.addEventListener("click", goHome);
+    logo.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); goHome(); }
+    });
+  }
+  // '대시보드 홈' 네비 항목 제거 — 타이틀 클릭으로 대체됨
+  document.querySelectorAll('.nav-menu a[href="index.html"]').forEach((a) => {
+    if (/대시보드/.test(a.textContent)) {
+      const li = a.closest("li");
+      if (li) li.remove();
+    }
+  });
+}
+
+function initMobileNav() {
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) return;
+  const logo = sidebar.querySelector(".sidebar-logo");
+  if (!logo || sidebar.querySelector(".mobile-nav-toggle")) return;
+
+  const btn = document.createElement("button");
+  btn.className = "mobile-nav-toggle";
+  btn.setAttribute("aria-label", "메뉴 열기/닫기");
+  btn.setAttribute("aria-expanded", "false");
+  btn.textContent = "☰";
+
+  const setOpen = (open) => {
+    sidebar.classList.toggle("mobile-open", open);
+    btn.setAttribute("aria-expanded", open ? "true" : "false");
+    btn.textContent = open ? "✕" : "☰";
+  };
+
+  btn.addEventListener("click", () => setOpen(!sidebar.classList.contains("mobile-open")));
+  logo.insertAdjacentElement("afterend", btn);
+
+  // 메뉴 항목(페이지 이동) 클릭 시 자동으로 닫힘
+  sidebar.querySelectorAll(".nav-menu a").forEach((a) => {
+    a.addEventListener("click", () => setOpen(false));
+  });
 }
 
 /**

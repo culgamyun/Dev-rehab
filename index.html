@@ -198,7 +198,8 @@
         <div class="stat-info">
           <h3>오늘의 복습</h3>
           <p id="srs-due-count" style="color:var(--interview);">0개</p>
-          <button id="btn-start-review" class="btn-submit-quiz" style="margin-top: 14px; padding: 6px 12px; font-size:12px; border-radius:6px;">복습 시작 🔁</button>
+          <div id="srs-streak" style="font-size:12px; color:var(--text-muted); margin-top:8px; min-height:16px;"></div>
+          <button id="btn-start-review" class="btn-submit-quiz" style="margin-top: 12px; padding: 6px 12px; font-size:12px; border-radius:6px;">복습 시작 🔁</button>
         </div>
         <div style="font-size: 40px;">🔁</div>
       </div>
@@ -206,7 +207,7 @@
 
     <!-- 2.3 Chapters Catalog List Grid -->
     <section style="display:flex; flex-direction:column; gap:16px;">
-      <h2 style="font-size: 20px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📑 정규 학습 커리큘럼 로드맵</h2>
+      <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📑 정규 학습 커리큘럼 로드맵</h2>
       
       <div class="chapters-grid">
         
@@ -303,9 +304,9 @@
 
     <!-- 2.4 Sub Appendix Grid -->
     <section style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
-      <h2 style="font-size: 20px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📂 취업 구인 마켓 관통 스페셜 부록</h2>
+      <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📂 취업 구인 마켓 관통 스페셜 부록</h2>
       
-      <div class="stats-grid" style="grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));">
+      <div class="stats-grid">
         
         <!-- Appendix A Card -->
         <div class="glass-panel chapter-card test" onclick="window.location.href='appendix-test.html'">
@@ -552,6 +553,11 @@
       const el = document.getElementById("srs-due-count");
       if (!el || typeof window.srs === "undefined") return;
       el.textContent = `${window.srs.getStats().due}개`;
+      const streakEl = document.getElementById("srs-streak");
+      if (streakEl && typeof window.srs.getStreak === "function") {
+        const s = window.srs.getStreak();
+        streakEl.textContent = s > 0 ? `🔥 ${s}일 연속 복습 중` : "오늘 복습하면 연속 기록이 시작돼요";
+      }
     }
   </script>
 </body>

@@ -18,6 +18,11 @@
 
   var BANK_KEY = "antigravity_review_bank";
   var SRS_KEY = "antigravity_srs";
+  var META_KEY = "antigravity_srs_meta";
+
+  // 하루에 새로 꺼내는 '처음 보는' 카드 상한 (복습 폭주 방지).
+  // 이미 학습한 카드의 복습(due 도래분)은 이 상한과 무관하게 전부 노출된다.
+  var DAILY_NEW_LIMIT = 15;
 
   function todayISO() {
     return new Date().toISOString().slice(0, 10);
@@ -26,6 +31,9 @@
     var d = new Date();
     d.setDate(d.getDate() + (days || 0));
     return d.toISOString().slice(0, 10);
+  }
+  function yesterdayISO() {
+    return addDaysISO(-1);
   }
   function safeParse(key, fallback) {
     try {
@@ -65,15 +73,36 @@
       }
     },
 
-    /** 오늘 복습 대상 카드 (학습 이력 없는 신규 카드는 즉시 대상) */
+    /** 일자 메타 { date, newToday, streak, lastStudyDate } */
+    getMeta: function () {
+      return safeParse(META_KEY, { date: null, newToday: 0, streak: 0, lastStudyDate: null });
+    },
+    saveMeta: function (meta) {
+      try { localStorage.setItem(META_KEY, JSON.stringify(meta)); } catch (e) {}
+    },
+
+    /** 오늘 남은 '신규 카드' 예산 (상한 - 오늘 이미 꺼낸 신규수) */
+    getNewBudget: function () {
+      var meta = this.getMeta();
+      var used = (meta.date === todayISO()) ? (meta.newToday || 0) : 0;
+      return Math.max(0, DAILY_NEW_LIMIT - used);
+    },
+
+    /**
+     * 오늘 복습 대상 카드.
+     *  - 복습분(이미 학습, due 도래): 전부 포함
+     *  - 신규분(이력 없음): 오늘 남은 신규 예산만큼만 포함 → 폭주 방지
+     */
     getDueCards: function () {
       var state = this.getState();
       var today = todayISO();
-      return this.getAllCards().filter(function (c) {
+      var review = [], fresh = [];
+      this.getAllCards().forEach(function (c) {
         var st = state[c.id];
-        if (!st) return true;
-        return (st.due || today) <= today;
+        if (!st) fresh.push(c);
+        else if ((st.due || today) <= today) review.push(c);
       });
+      return review.concat(fresh.slice(0, this.getNewBudget()));
     },
     getDueCount: function () {
       return this.getDueCards().length;
@@ -87,6 +116,7 @@
     grade: function (id, quality) {
       if (!id) return null;
       var state = this.getState();
+      var isNew = !state[id];   // 이번 채점이 '처음 보는 카드'인지
       var c = state[id] || { interval: 0, ease: 2.5, reps: 0, due: null, lapses: 0, last: null };
       quality = Math.max(0, Math.min(5, quality));
 
@@ -107,7 +137,34 @@
       c.last = todayISO();
       state[id] = c;
       this.saveState(state);
+
+      this._recordStudyDay(isNew);
       return c;
+    },
+
+    /** 채점 1건당 호출 — 오늘 신규수 누적 + 연속 복습일(streak) 갱신 */
+    _recordStudyDay: function (countedNew) {
+      var meta = this.getMeta();
+      var today = todayISO();
+      // 날이 바뀌면 신규 카운터 리셋
+      if (meta.date !== today) { meta.date = today; meta.newToday = 0; }
+      if (countedNew) meta.newToday = (meta.newToday || 0) + 1;
+      // 연속일: 오늘 첫 학습일 때만 갱신
+      if (meta.lastStudyDate !== today) {
+        meta.streak = (meta.lastStudyDate === yesterdayISO()) ? (meta.streak || 0) + 1 : 1;
+        meta.lastStudyDate = today;
+      }
+      this.saveMeta(meta);
+    },
+
+    /** 현재 살아있는 연속 복습일. 어제까지만 유효(오늘/어제), 끊기면 0 */
+    getStreak: function () {
+      var meta = this.getMeta();
+      if (!meta.lastStudyDate) return 0;
+      if (meta.lastStudyDate === todayISO() || meta.lastStudyDate === yesterdayISO()) {
+        return meta.streak || 0;
+      }
+      return 0;
     },
 
     /** 통계 { total, learned, due } */
@@ -150,9 +207,10 @@
         });
     },
 
-    /** SRS 스케줄만 초기화 (뱅크는 보존) */
+    /** SRS 스케줄/메타 초기화 (뱅크는 보존) */
     resetSchedule: function () {
       try { localStorage.removeItem(SRS_KEY); } catch (e) {}
+      try { localStorage.removeItem(META_KEY); } catch (e) {}
     }
   };
 
