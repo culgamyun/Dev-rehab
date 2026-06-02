@@ -361,7 +361,7 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
         // 클라이언트가 연결할 WebSocket 엔드포인트
         registry.addEndpoint("/ws-shop")
             .setAllowedOrigins("http://localhost:3000") // CORS 허용
-            .withSockJS(); // WebSocket 미지원 브라우저 대비 폴백
+            .withSockJS(); // 레거시(WebSocket 미지원) 폴백 — 2026 대부분 브라우저는 네이티브 지원, 구형 대상 아니면 생략 가능
     }
 
     @Override

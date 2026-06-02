@@ -342,7 +342,7 @@ boolean allInStock     = products.stream().allMatch(p -> p.stock() &gt; 0);</cod
 <pre class="language-java"><code class="language-java">// Optional: null일 수도 있는 값을 감싸는 상자
 String userName = Optional.ofNullable(user)
     .map(User::getName)
-    .filter(name -&gt; !name.isBlank())
+    .filter(name -&gt; !name.isBlank())   // isBlank(): Java 11+ (공백만 있는 문자열도 빈 값으로 취급)
     .orElse("익명 사용자");      // 없으면 기본값
 
 // orElseThrow — 없으면 예외 (Repository.findById 패턴)

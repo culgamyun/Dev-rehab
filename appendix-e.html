@@ -339,7 +339,7 @@ public ResponseEntity&lt;OrderRes&gt; create(
           </tbody>
         </table>
 
-        <p>분산 환경에선 카운터를 <strong>Redis</strong>에 두어 모든 서버가 같은 한도를 공유합니다(원자적 <code>INCR</code> + TTL).</p>
+        <p>분산 환경에선 카운터를 <strong>Redis</strong>에 두어 모든 서버가 같은 한도를 공유합니다. <code>INCR</code> 자체는 원자적이지만, 첫 키 생성 시 <strong>INCR과 EXPIRE 사이 틈</strong>에 TTL이 안 붙을 수 있어 실무에선 <strong>Lua 스크립트</strong>나 <code>SET ... EX NX</code>로 원자화합니다.</p>
 
         <p><strong>💡 면접 꼬리 질문:</strong> <em>"한도를 IP 기준으로 잡을지, 사용자 기준으로 잡을지?"</em> → 로그인 전 API는 IP, 로그인 후는 사용자(또는 API 키) 기준이 일반적이며, 공용 NAT/회사망의 다수 사용자가 한 IP를 공유하는 경우를 고려해야 합니다.</p>
       </section>

@@ -165,7 +165,7 @@ services:
     build: ./backend              # 백엔드 디렉토리의 Dockerfile로 빌드
     ports:
       - "8080:8080"
-    depends_on:                   # 실행 순서 보장 (DB 먼저 켜져야 함!)
+    depends_on:                   # 기동 '순서'만 보장 — DB '준비완료(readiness)'까지 기다리진 않음(아래 주의)
       - db
       - redis
     environment:
@@ -303,7 +303,7 @@ spec:
         - name: shop-api
           image: myname/shop-api:latest    # ← 섹션 2~3에서 만든 Docker 이미지
           ports: [{ containerPort: 8080 }]
-          readinessProbe:                   # 준비 안 되면 Service에서 트래픽 제외
+          readinessProbe:                   # 준비 안 되면 Service에서 트래픽 제외 (actuator 의존성 + health 엔드포인트 노출 필요)
             httpGet: { path: /actuator/health/readiness, port: 8080 }
           livenessProbe:                    # 죽으면 컨테이너 재시작
             httpGet: { path: /actuator/health/liveness, port: 8080 }
@@ -653,7 +653,8 @@ public class OrderEventListener {
       <!-- 9. Saga Pattern -->
       <section id="saga-pattern">
         <h2>11. Saga Pattern — 분산 환경의 트랜잭션 관리</h2>
-        <p>MSA는 <strong>주문 DB와 결제 DB가 물리적으로 다릅니다.</strong> 기존 <code>@Transactional</code> 롤백이 안 통하므로, 실패 시 **보상 트랜잭션(역방향 복구)**을 직접 구현하는 것이 Saga입니다.</p>
+        <p>MSA는 <strong>주문 DB와 결제 DB가 물리적으로 다릅니다.</strong> 기존 <code>@Transactional</code> 롤백이 안 통하므로, 실패 시 <strong>보상 트랜잭션(역방향 복구)</strong>을 직접 구현하는 것이 Saga입니다.</p>
+        <p style="font-size:12.5px; color:var(--text-muted); margin-top:6px;">⚠️ 아래 예시는 메시지 큐가 보상을 트리거하는 <strong>코레오그래피(Choreography)</strong> 방식입니다. 단계가 많아 흐름이 복잡해지면, 중앙 조율자가 순서를 지휘하는 <strong>오케스트레이션(Orchestration, 예: Temporal·Axon Saga)</strong>이 추적·디버깅에 더 유리합니다.</p>
         
         <div class="glass-panel" style="border-top: 3px solid var(--interview);">
           <h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">🏗️ 사가 패턴의 복구 시나리오</h4>
@@ -802,7 +803,7 @@ public class OrderEventListener {
           mustNotContain: ["links", "networks"]
         },
         solution: "depends_on",
-        explanation: "depends_on 속성을 사용하면 컨테이너 실행 순서를 제어하여 DB 커넥션 실패로 인한 백엔드 구동 에러를 방지할 수 있습니다."
+        explanation: "depends_on은 컨테이너 '기동 순서'를 제어합니다. 단 DB가 '연결 수락 준비'까지 끝났음을 보장하진 않으므로(순서 ≠ readiness), 실무에선 백엔드의 커넥션 재시도나 healthcheck(condition: service_healthy)를 함께 씁니다."
       },
       // ===== v3.2 추가 퀴즈 (Spring Modulith) =====
       {
