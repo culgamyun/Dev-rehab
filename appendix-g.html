@@ -134,7 +134,7 @@
           <tbody>
             <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 14px; font-weight:700;">at-most-once</td><td style="padding: 10px 14px; color: var(--text-muted);">중복은 없지만 <strong>유실 가능</strong>. 손실 허용 가능한 지표·로그에</td></tr>
             <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 14px; font-weight:700; color:var(--accent-color);">at-least-once</td><td style="padding: 10px 14px; color: var(--text-muted);">유실은 없지만 <strong>중복 가능</strong>(기본값). → 멱등 컨슈머로 흡수</td></tr>
-            <tr><td style="padding: 10px 14px; font-weight:700; color:var(--devops);">exactly-once</td><td style="padding: 10px 14px; color: var(--text-muted);">가능하나 트랜잭션·성능 제약. Kafka 내부 처리엔 지원, 외부 시스템까지는 어려움</td></tr>
+            <tr><td style="padding: 10px 14px; font-weight:700; color:var(--devops);">exactly-once</td><td style="padding: 10px 14px; color: var(--text-muted);">가능하나 트랜잭션·성능 제약. Kafka 내부(오프셋 커밋)엔 지원, 외부 DB 쓰기까지 포함하려면 2PC/Saga 필요</td></tr>
           </tbody>
         </table>
 

@@ -1095,8 +1095,7 @@ export default api;</code></pre>
         prompt: "JWT 필터에서 Redis 블랙리스트에 토큰이 등록되었는지 확인하는 조건문을 완성하세요. (서비스 변수명: blacklistService)",
         starter: "if (token != null && \n    // 여기에 작성\n) {\n    throw new BadCredentialsException(\"Blacklisted!\");\n}",
         validator: {
-          mustContain: ["blacklistService.isBlacklisted", "token"],
-          mustNotContain: ["equals"]
+          mustContain: ["blacklistService.isBlacklisted", "token"]
         },
         solution: "blacklistService.isBlacklisted(token)",
         explanation: "blacklistService.isBlacklisted(token)이 true이면 로그아웃된 토큰이므로 즉시 인증을 거부합니다."

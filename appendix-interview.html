@@ -1261,7 +1261,7 @@ public class ProductService {
           <tbody>
             <tr><td style="padding:8px 12px;"><code>REQUIRED</code> (기본값)</td><td style="padding:8px 12px;">기존 트랜잭션이 있으면 참여, 없으면 새로 시작</td><td style="padding:8px 12px;">99% 케이스. 그냥 두면 됨.</td></tr>
             <tr><td style="padding:8px 12px;"><code>REQUIRES_NEW</code></td><td style="padding:8px 12px;">항상 새 트랜잭션 시작. 기존 트랜잭션은 일시 정지</td><td style="padding:8px 12px;">로그 저장, 알림 전송처럼 부모 롤백되어도 살아남아야 하는 작업</td></tr>
-            <tr><td style="padding:8px 12px;"><code>NESTED</code></td><td style="padding:8px 12px;">중첩 트랜잭션 (SAVEPOINT 사용)</td><td style="padding:8px 12px;">부분 롤백이 필요한 경우. JDBC만 지원.</td></tr>
+            <tr><td style="padding:8px 12px;"><code>NESTED</code></td><td style="padding:8px 12px;">중첩 트랜잭션 (SAVEPOINT 사용)</td><td style="padding:8px 12px;">부분 롤백이 필요한 경우. SAVEPOINT 지원 DB·드라이버 필요(대부분 지원, JPA 전 DBMS 이식성은 별개).</td></tr>
             <tr><td style="padding:8px 12px;"><code>SUPPORTS</code></td><td style="padding:8px 12px;">트랜잭션이 있으면 참여, 없으면 트랜잭션 없이 실행</td><td style="padding:8px 12px;">조회 메서드 (드물게 사용)</td></tr>
           </tbody>
         </table>

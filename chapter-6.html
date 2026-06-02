@@ -565,14 +565,14 @@ const orderSchema = z.object({
   phone: z.string()
     .regex(/^010-\d{4}-\d{4}$/, "전화번호 형식: 010-1234-5678"),
   paymentMethod: z.enum(["CARD", "TRANSFER", "POINT"], {
-    errorMap: () =&gt; ({ message: "결제 수단을 선택하세요" })
+    error: "결제 수단을 선택하세요"   // Zod 4: errorMap/message → 통합 error 파라미터
   }),
   items: z.array(z.object({
     productId: z.number().int().positive(),
     quantity: z.number().int().min(1, "수량은 1 이상").max(99, "수량은 99 이하"),
   })).min(1, "주문 항목은 최소 1개"),
   agreeTerms: z.literal(true, {
-    errorMap: () =&gt; ({ message: "약관에 동의해야 합니다" })
+    error: "약관에 동의해야 합니다"
   }),
 });
 
@@ -804,13 +804,13 @@ export default function OrderForm({ defaultItems }: { defaultItems: { productId:
         type: "code",
         language: "jsx",
         prompt: "React Hook Form에서 Zod 스키마를 검증 리졸버로 연결하는 useForm 옵션을 완성하세요.",
-        starter: "const { register, handleSubmit } = useForm<OrderFormData>({\n  // 여기에 작성\n: zodResolver(orderSchema),\n  defaultValues: { items: [] }\n});",
+        starter: "const { register, handleSubmit } = useForm<OrderFormData>({\n  ____: zodResolver(orderSchema),   // ____ 자리에 들어갈 옵션명을 작성\n  defaultValues: { items: [] }\n});",
         validator: {
-          mustContain: ["resolver"],
+          mustContain: ["resolver:"],
           mustNotContain: ["validator:", "schema:"]
         },
         solution: "resolver",
-        explanation: "useForm의 resolver 옵션에 zodResolver(스키마)를 전달하면 폼 제출 시 자동으로 Zod 스키마 검증이 실행됩니다. errorMap의 메시지가 errors 객체로 전달되어 UI에 즉시 표시됩니다."
+        explanation: "useForm의 resolver 옵션에 zodResolver(스키마)를 전달하면 폼 제출 시 자동으로 Zod 스키마 검증이 실행됩니다. (Zod 4는 에러 메시지를 errorMap 대신 통합 error 파라미터로 지정합니다.) 검증 메시지가 errors 객체로 전달되어 UI에 즉시 표시됩니다."
       }
     ];
 
