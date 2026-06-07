@@ -1328,6 +1328,604 @@ public class ProductService {
         <p style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px;">⛓️ Self-Invocation 함정은 <a href="#q-transactional" style="color:var(--accent-color);">Q8</a>에서, 격리 수준은 <a href="#q-isolation-levels" style="color:var(--accent-color);">Q12</a>에서 함께 보세요.</p>
       </section>
 
+
+      <section id="q-oop-pillars">
+  <h2>Q28. 객체지향 4대 특성과 오버로딩 vs 오버라이딩</h2>
+  <p>객체지향(OOP)의 4대 특성은 거의 모든 신입~경력 면접의 단골 질문입니다. 단순 암기가 아니라 "왜 이 특성이 유지보수를 쉽게 만드는지" 실무 효용까지 한 문장으로 설명할 수 있어야 합격권이며, 자연스럽게 오버로딩/오버라이딩과 다형성으로 꼬리질문이 이어집니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 자동차 운전</h4>
+    <p>운전자는 엔진 내부를 몰라도 <strong>핸들·페달</strong>만으로 차를 몹니다(캡슐화 — 내부를 숨기고 인터페이스만 노출).<br>전기차·휘발유차는 모두 '자동차'라는 큰 틀을 물려받고(상속), 운전자는 차종을 몰라도 '가속 페달'을 밟으면 각 차가 알아서 가속합니다(다형성).<br>'탈것'이라는 개념은 직접 만들 수 없는 추상적 틀일 뿐, 실제로는 자동차·자전거가 그것을 구체화합니다(추상화).</p>
+  </div>
+
+  <p><strong>① 객체지향 4대 특성 (쇼핑몰 Rehab Fashion 도메인 예시)</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel">
+      <h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">캡슐화 (Encapsulation)</h4>
+      <p style="color:var(--text-muted);">데이터(필드)와 행위(메서드)를 한 객체로 묶고 내부 구현을 숨겨 외부에는 메서드만 노출. <br>예: <code>Order</code>의 <code>totalPrice</code>를 <code>private</code>으로 막고 <code>addItem()</code>으로만 변경 → 음수 금액 같은 잘못된 상태를 원천 차단. <strong>효용:</strong> 불변식 보장·변경 파급 최소화.</p>
+    </div>
+    <div class="glass-panel">
+      <h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">상속 (Inheritance)</h4>
+      <p style="color:var(--text-muted);">부모의 필드·메서드를 자식이 물려받아 코드 재사용. <br>예: <code>Product</code>를 <code>Clothing</code>, <code>Accessory</code>가 상속해 공통 속성(이름·가격) 재활용. <strong>효용:</strong> 중복 제거. 단, 강한 결합을 만들 수 있어 "상속보다 합성(composition)"이 실무 정설.</p>
+    </div>
+    <div class="glass-panel">
+      <h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">다형성 (Polymorphism)</h4>
+      <p style="color:var(--text-muted);">같은 메시지(메서드 호출)에 객체마다 다르게 반응. <br>예: <code>PaymentMethod</code> 타입으로 받아 <code>pay()</code>만 호출하면 카드·계좌이체 구현체가 각자 동작. <strong>효용:</strong> 새 결제수단 추가 시 호출부 수정 불필요(OCP 실현).</p>
+    </div>
+    <div class="glass-panel">
+      <h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">추상화 (Abstraction)</h4>
+      <p style="color:var(--text-muted);">공통 개념만 뽑아 인터페이스/추상클래스로 정의하고 세부 구현은 미룸. <br>예: <code>interface DiscountPolicy { calc(...) }</code>로 '할인'이라는 본질만 규정. <strong>효용:</strong> 구현 교체가 자유롭고 의존이 추상에 향함(DIP).</p>
+    </div>
+  </div>
+
+  <p><strong>② 오버로딩(Overloading) vs 오버라이딩(Overriding)</strong> — 이름이 비슷해 면접관이 일부러 헷갈리게 묻습니다. 결정 시점(컴파일 vs 런타임)으로 구분하는 것이 핵심입니다.</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+        <th style="padding: 10px 16px;">구분</th>
+        <th style="padding: 10px 16px;">오버로딩 (Overloading)</th>
+        <th style="padding: 10px 16px;">오버라이딩 (Overriding)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">정의</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">같은 이름, <strong>다른 시그니처</strong>(파라미터 타입·개수·타입이 다를 때의 순서)의 메서드 여러 개</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">부모의 메서드를 <strong>같은 시그니처</strong>로 자식이 재정의</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">결정 시점</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">컴파일 타임 (정적 바인딩)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">런타임 (동적 바인딩 / 동적 디스패치)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">관계</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">같은 클래스 내(상속 무관)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">상속(부모-자식) 관계 필수</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--algo);">반환 타입</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">달라도 됨(단, 시그니처 자체가 달라야 성립 — 반환 타입만 다른 건 불가)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">동일하거나 공변 반환(covariant, 하위 타입) 허용</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--interview);">접근 제어자</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">제약 없음</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">부모보다 좁힐 수 없음(넓히는 것은 가능) / <code>@Override</code> 권장</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>③ 다형성과 동적 디스패치(가상 메서드) 한 줄 예시</strong> — 변수 타입은 부모(<code>Product</code>)이지만, 실제로 실행되는 메서드는 런타임의 실제 객체(<code>Clothing</code>)가 결정합니다. Java의 인스턴스 메서드는 기본이 virtual이기 때문입니다.</p>
+  <div class="code-block-header"><span class="code-title">동적 디스패치: 선언 타입이 아닌 실제 객체가 메서드를 결정</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-java"><code class="language-java">// 부모 타입 참조변수에 자식 객체를 담는다 (업캐스팅)
+Product p = new Clothing();   // 컴파일러가 보는 타입: Product
+p.getLabel();                 // 실제 실행: Clothing.getLabel() — 런타임 객체 기준!
+//  └─ "가상 메서드 테이블(vtable)"을 통해 실제 객체의 오버라이드 버전이 호출됨</code></pre>
+
+  <p><strong>④ 추상 클래스 vs 인터페이스 (꼬리질문 대비 핵심 정리)</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+        <th style="padding: 10px 16px;">구분</th>
+        <th style="padding: 10px 16px;">추상 클래스 (abstract class)</th>
+        <th style="padding: 10px 16px;">인터페이스 (interface)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">다중 상속</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">불가 (단일 상속만)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">가능 (여러 개 implements)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">상태(필드)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">인스턴스 필드·생성자 보유 가능</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">상수(<code>public static final</code>)만</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">구현 메서드</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">일반 메서드 자유롭게 구현</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">Java 8+ <code>default</code>/<code>static</code> 메서드로 일부 구현 가능</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--algo);">의도</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">"is-a" — 공통 구현을 공유하는 강한 혈연 관계</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">"can-do" — 능력·역할(계약)의 규정</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"추상 클래스와 인터페이스, 둘 다 가능할 때 무엇을 선택하나요?"</em> → "구현 코드와 상태를 공유하는 <strong>is-a</strong> 관계의 공통 부모가 필요하면 추상 클래스를, 서로 무관한 클래스에 <strong>역할(능력)</strong>을 부여하거나 다중 구현·느슨한 결합이 필요하면 인터페이스를 택합니다. 실무에선 '인터페이스로 계약을 정의하고, 공통 구현이 많아지면 추상 클래스로 보조'하는 조합을 자주 씁니다. Java 8 이후 인터페이스도 <code>default</code> 메서드로 구현을 가질 수 있지만, 상태(필드)는 못 갖는다는 점이 여전히 핵심 차이입니다."</p>
+</section>
+
+      <section id="q-jvm-memory">
+  <h2>Q29. JVM 메모리 영역과 클래스로더 부모 위임</h2>
+  <p>JVM이 클래스를 어떻게 로드하고 메모리를 어디에 어떻게 나눠 담는지는 백엔드 면접의 단골 주제입니다. <code>OutOfMemoryError</code>·<code>StackOverflowError</code>를 만난 적이 있다면, 그 원인이 바로 이 런타임 데이터 영역과 직결됩니다. "메모리 영역을 스레드 기준으로 나눠서 설명해 보라"는 요청이 빈출이니, 무엇이 공유되고 무엇이 스레드별인지를 명확히 구분하는 게 핵심입니다.</p>
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 회사 건물의 공용 공간과 개인 책상</h4>
+    <p>JVM 메모리는 한 건물(프로세스) 안의 공간 분배와 같습니다. <strong>Heap과 Method Area</strong>는 모든 직원(스레드)이 함께 쓰는 <em>공용 창고와 사규 게시판</em>이라 누구나 접근할 수 있고, <strong>Stack·PC Register</strong>는 직원마다 따로 받는 <em>개인 책상과 진행 중인 업무 메모</em>라 옆 사람이 볼 수 없습니다.<br>클래스로더의 부모 위임은 <em>"새 규정이 필요하면 먼저 본사(상위)에 이미 있는지 물어보고, 없을 때만 지점(하위)이 직접 만든다"</em>는 결재 라인과 같습니다. 덕분에 핵심 규정(자바 표준 클래스)을 지점이 멋대로 위조할 수 없습니다.</p>
+  </div>
+
+  <p><strong>1. 런타임 데이터 영역 — 스레드별 vs 공유</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">Method Area (Metaspace) · 공유</h4><p style="color:var(--text-muted);">클래스 메타데이터, 메서드 바이트코드, 런타임 상수 풀, static 변수가 저장됩니다. 모든 스레드가 공유하며, 자바 8부터 네이티브 메모리 영역인 Metaspace로 구현됩니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">Heap · 공유</h4><p style="color:var(--text-muted);"><code>new</code>로 생성된 모든 객체와 배열이 사는 곳. 모든 스레드가 공유하므로 동시성 제어 대상이며, GC가 관리하는 주 무대입니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">JVM Stack · 스레드별</h4><p style="color:var(--text-muted);">메서드 호출마다 <strong>스택 프레임</strong>(지역 변수, 피연산자 스택, 반환 주소)이 쌓입니다. 스레드마다 1개씩 독립적으로 가지며, 메서드가 끝나면 프레임이 pop 됩니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">PC Register · 스레드별</h4><p style="color:var(--text-muted);">현재 스레드가 실행 중인 JVM 명령어 주소를 가리킵니다. 스레드별로 존재해, 컨텍스트 스위칭 후 어디서부터 이어 실행할지 추적합니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">Native Method Stack · 스레드별</h4><p style="color:var(--text-muted);">JNI를 통한 네이티브(C/C++) 메서드 호출에 쓰이는 스택. 역시 스레드마다 별도로 존재합니다.</p></div>
+  </div>
+  <p><strong>핵심 한 줄:</strong> 공유 영역은 <code>Heap</code>과 <code>Method Area</code>(그래서 동시성 문제가 발생), 스레드별 영역은 <code>JVM Stack</code>·<code>PC Register</code>·<code>Native Stack</code>(그래서 스레드-안전한 지역 변수)입니다.</p>
+
+  <p><strong>2. Heap 세대 구조 — GC와의 연결</strong></p>
+  <p>Heap은 객체의 생존 기간에 따라 영역을 나눕니다. "대부분의 객체는 금방 죽는다(weak generational hypothesis)"는 가정에 기반합니다.</p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>Young Generation</strong> — 새 객체가 먼저 들어가는 곳. <code>Eden</code>(신규 할당) + <code>Survivor 0/1</code>(살아남은 객체가 잠시 머무는 두 영역)으로 구성됩니다. 여기서 일어나는 GC가 <strong>Minor GC</strong>이고, Eden이 가득 차면 발생합니다.</li>
+    <li><strong>Old(Tenured) Generation</strong> — Young에서 여러 번의 Minor GC를 견디고 살아남은(나이가 임계치를 넘은) 객체가 <em>승격(promotion)</em>되어 옮겨오는 영역. 여기서 Old 영역을 청소하는 GC를 <strong>Major GC</strong>라 하고(Young·Old·때로는 Metaspace까지 한꺼번에 정리하면 <strong>Full GC</strong>), 보통 더 느려 STW(Stop-The-World) 시간이 깁니다.</li>
+    <li><strong>왜 나누나:</strong> 짧게 사는 객체가 모인 Young만 자주, 빠르게 청소하면 전체 Heap을 매번 스캔하지 않아도 되어 GC 효율이 크게 올라갑니다.</li>
+  </ul>
+
+  <p><strong>3. Metaspace가 PermGen을 대체한 이유 (Java 8)</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">구분</th><th style="padding: 10px 16px;">PermGen (~Java 7)</th><th style="padding: 10px 16px;">Metaspace (Java 8+)</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">위치</td><td style="padding: 10px 16px;">JVM Heap 내부 (고정 영역)</td><td style="padding: 10px 16px;">네이티브 메모리 (OS 영역)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">크기</td><td style="padding: 10px 16px;">고정 상한 (<code>-XX:MaxPermSize</code>)</td><td style="padding: 10px 16px;">기본 자동 확장 (<code>-XX:MaxMetaspaceSize</code>로 제한 가능)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">전형적 에러</td><td style="padding: 10px 16px;"><code>OOM: PermGen space</code></td><td style="padding: 10px 16px;"><code>OOM: Metaspace</code></td></tr>
+      <tr><td style="padding: 10px 16px;">설계 의도</td><td style="padding: 10px 16px;">클래스 메타데이터를 Heap에 묶음</td><td style="padding: 10px 16px;">메타데이터를 Heap과 분리 + 동적 크기</td></tr>
+    </tbody>
+  </table>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>고정 크기의 한계:</strong> PermGen은 크기가 고정이라 동적으로 클래스를 많이 로드하는 애플리케이션(리플렉션 남용, OSGi, 잦은 재배포)에서 <code>OutOfMemoryError: PermGen space</code>가 빈번했고, 적절한 크기를 미리 튜닝하기 어려웠습니다.</li>
+    <li><strong>해결:</strong> Metaspace는 네이티브 메모리를 쓰며 기본적으로 필요한 만큼 자동 확장되어 이 클래스의 OOM이 크게 줄었습니다. (단, 무제한은 아니므로 클래스 로딩 누수가 있으면 여전히 <code>OOM: Metaspace</code> 발생 → 상한 설정 권장.)</li>
+    <li><strong>JVM 통합 배경:</strong> Oracle이 HotSpot과 JRockit JVM을 통합하던 흐름과도 맞닿아 있습니다. JRockit에는 애초에 PermGen이 없어 클래스 메타데이터를 네이티브 메모리에서 관리했고, HotSpot도 Metaspace로 전환하면서 두 JVM의 메타데이터 관리 방식을 정합화하려는 목적이 있었습니다.</li>
+  </ul>
+
+  <p><strong>4. 클래스로더 3계층과 부모 위임(Parent Delegation)</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">Bootstrap ClassLoader</h4><p style="color:var(--text-muted);">최상위 로더. <code>java.lang.*</code> 등 핵심 JDK 클래스(<code>java.base</code> 모듈)를 로드합니다. C/C++로 구현되어 자바 코드에선 <code>null</code>로 보입니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">Platform ClassLoader</h4><p style="color:var(--text-muted);">자바 9+ 명칭(이전 Extension ClassLoader 대체). 플랫폼 모듈 등 JDK가 제공하는 일부 API 클래스를 담당합니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">Application ClassLoader</h4><p style="color:var(--text-muted);">System ClassLoader라고도 함. <code>classpath</code>에 있는 우리가 작성한 애플리케이션 클래스와 외부 라이브러리를 로드합니다.</p></div>
+  </div>
+  <p><strong>부모 위임 원리:</strong> 클래스 로드 요청이 들어오면 로더는 <em>직접 로드하지 않고 먼저 부모에게 위임</em>합니다. 부모가 또 그 부모에게 올려 결국 Bootstrap까지 올라간 뒤, 위에서부터 찾아보다가 <strong>아무도 못 찾으면 그제서야 요청한 하위 로더가 직접 로드</strong>합니다. (Application → Platform → Bootstrap 순으로 위임 → 위에서 아래로 탐색)</p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>보안:</strong> 공격자가 <code>java.lang.String</code> 같은 클래스를 위조해 classpath에 넣어도, 부모 위임 때문에 항상 Bootstrap의 정품 <code>String</code>이 먼저 로드됩니다. 핵심 API의 위변조를 원천 차단합니다.</li>
+    <li><strong>중복 방지(일관성):</strong> 부모 위임 덕에 표준 클래스는 항상 같은 상위 로더가 한 번만 로드합니다(클래스의 정체성은 <em>"이름 + 그 클래스를 로드한 로더"</em>로 정해집니다). 만약 같은 이름의 클래스가 서로 다른 로더로 따로 로드되면 JVM은 이를 <em>서로 다른 타입</em>으로 취급해 <code>ClassCastException</code>(이름은 같지만 타입 불일치)이 발생할 수 있는데, 부모 위임이 이런 중복 로드 자체를 막아 일관성을 보장합니다.</li>
+  </ul>
+  <div class="code-block-header"><span class="code-title">클래스로더 계층 확인 (부모 위임 체감)</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-java"><code class="language-java">public class ClassLoaderDemo {
+    public static void main(String[] args) {
+        // 1) 우리 애플리케이션 클래스 → Application ClassLoader가 로드
+        ClassLoader appCl = ClassLoaderDemo.class.getClassLoader();
+        System.out.println("App     : " + appCl);
+
+        // 2) getParent()로 위임 라인을 따라 올라간다 (Application → Platform)
+        System.out.println("Platform: " + appCl.getParent());
+
+        // 3) Platform의 부모는 Bootstrap → 자바 코드에서는 null로 보인다
+        System.out.println("Bootstrap: " + appCl.getParent().getParent()); // null
+
+        // 4) 핵심 JDK 클래스는 Bootstrap이 로드 → getClassLoader()가 null
+        //    부모 위임 덕분에 String 등 핵심 API는 늘 정품(Bootstrap 로드)이 보장된다
+        ClassLoader strCl = String.class.getClassLoader();
+        System.out.println("String  : " + strCl); // null (Bootstrap)
+    }
+}</code></pre>
+
+  <p><strong>5. StackOverflowError vs OutOfMemoryError</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">구분</th><th style="padding: 10px 16px;">StackOverflowError</th><th style="padding: 10px 16px;">OutOfMemoryError</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">발생 영역</td><td style="padding: 10px 16px;">JVM Stack (스레드별)</td><td style="padding: 10px 16px;">주로 Heap / Metaspace (공유)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">원인</td><td style="padding: 10px 16px;">스택 프레임이 한도를 초과 — 보통 종료 조건 없는 깊은/무한 재귀</td><td style="padding: 10px 16px;">객체를 회수하지 못해 메모리 고갈 — 메모리 누수, 과도한 할당</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">대표 트리거</td><td style="padding: 10px 16px;">잘못된 재귀, 상호 순환 호출</td><td style="padding: 10px 16px;">컬렉션에 객체 무한 적재, static 누수, 클래스 로딩 누수</td></tr>
+      <tr><td style="padding: 10px 16px;">튜닝 옵션</td><td style="padding: 10px 16px;"><code>-Xss</code>(스택 크기)</td><td style="padding: 10px 16px;"><code>-Xmx</code>(Heap)·<code>-XX:MaxMetaspaceSize</code></td></tr>
+    </tbody>
+  </table>
+  <p>둘 다 <code>java.lang.Error</code>(복구 대상이 아닌 심각한 오류)의 하위지만, <strong>SOF는 "스택 깊이"의 문제, OOM은 "메모리 총량"의 문제</strong>라는 점이 결정적 차이입니다. SOF는 보통 코드 로직(재귀)을 고쳐 해결하고, OOM은 누수 분석(힙 덤프·프로파일링)이나 메모리 증설로 접근합니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"메모리 누수가 의심될 때 어디부터 보겠어요? 그리고 GC가 도는데도 왜 OOM이 날 수 있죠?"</em> → GC는 <strong>참조가 끊긴(unreachable) 객체</strong>만 회수합니다. <code>static</code> 컬렉션·캐시·리스너 등록 해제 누락처럼 <em>참조가 살아있는데 더는 쓰지 않는 객체</em>는 GC가 절대 회수하지 못해 Old 영역에 계속 쌓이고, 결국 <code>OutOfMemoryError: Java heap space</code>로 이어집니다. 실무에선 <code>jmap</code>으로 힙 덤프를 떠서 <strong>Eclipse MAT</strong> 같은 도구로 Dominator Tree와 GC Root까지의 참조 경로를 분석해, "누가 이 객체를 놓아주지 않는가"를 추적합니다.</p>
+</section>
+
+      <section id="q-collection-choice">
+  <h2>Q30. 컬렉션 선택 기준 — ArrayList/LinkedList/HashMap/TreeMap과 hashCode·equals 계약</h2>
+  <p>"왜 그 컬렉션을 골랐나요?"는 실무 감각을 보는 질문입니다. 자료구조의 시간복잡도뿐 아니라 캐시 지역성·정렬 요구·키 동작까지 근거를 대야 하고, 특히 <code>hashCode</code>/<code>equals</code> 계약 위반은 실제 버그로 이어지므로 단골 꼬리질문 소재입니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 책장 vs 사물함 vs 사전</h4>
+    <p>책을 칸칸이 빈틈없이 꽂는 <strong>책장(ArrayList)</strong>은 "세 번째 칸"을 바로 짚지만, 중간에 끼워 넣으려면 뒤 책들을 다 밀어야 합니다.<br><strong>고리로 줄줄이 연결된 사물함(LinkedList)</strong>은 중간 삽입은 고리만 바꾸면 되지만, 30번째 칸은 처음부터 세어 가야 합니다.<br><strong>이름표로 즉시 위치를 찾는 사물함(HashMap)</strong>은 순서가 없고, <strong>가나다순으로 자동 정렬된 사전(TreeMap)</strong>은 찾기는 살짝 느려도 범위·순서 조회에 강합니다.</p>
+  </div>
+
+  <p><strong>1) List 계열 — ArrayList vs LinkedList</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">임의 접근(get)</h4><p style="color:var(--text-muted);">ArrayList는 연속된 배열이라 인덱스로 <strong>O(1)</strong> 접근. LinkedList는 노드를 따라가야 해서 <strong>O(n)</strong>.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">중간 삽입·삭제</h4><p style="color:var(--text-muted);">LinkedList는 노드 참조만 있으면 연결만 바꿔 <strong>O(1)</strong>. 단, 그 위치를 <em>찾는</em> 탐색 비용 O(n)이 보통 더 큼.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">캐시 지역성</h4><p style="color:var(--text-muted);">ArrayList는 메모리에 연속 배치 → CPU 캐시 적중률이 높아 순회가 빠름. LinkedList는 노드가 흩어져 캐시 미스가 잦음.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">실무 결론</h4><p style="color:var(--text-muted);">현대 하드웨어에선 캐시 효과 때문에 <strong>거의 항상 ArrayList</strong>. LinkedList는 양 끝 큐/덱(Deque) 용도가 아니면 잘 안 씀.</p></div>
+  </div>
+
+  <p><strong>2) Map 계열 — HashMap vs TreeMap vs LinkedHashMap</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">구현체</th><th style="padding: 10px 16px;">조회/삽입</th><th style="padding: 10px 16px;">순서</th><th style="padding: 10px 16px;">내부 구조</th><th style="padding: 10px 16px;">언제 쓰나</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><strong>HashMap</strong></td><td style="padding: 10px 16px;">평균 O(1)</td><td style="padding: 10px 16px;">없음(보장 X)</td><td style="padding: 10px 16px;">해시 버킷 배열</td><td style="padding: 10px 16px;">순서 무관한 일반 키-값 조회(기본값)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><strong>TreeMap</strong></td><td style="padding: 10px 16px;">O(log n)</td><td style="padding: 10px 16px;">키 정렬순</td><td style="padding: 10px 16px;">Red-Black 트리</td><td style="padding: 10px 16px;">범위 검색·정렬·<code>floor/ceiling</code> 등 순서 연산</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><strong>LinkedHashMap</strong></td><td style="padding: 10px 16px;">평균 O(1)</td><td style="padding: 10px 16px;">삽입(또는 접근)순</td><td style="padding: 10px 16px;">해시 + 이중 연결 리스트</td><td style="padding: 10px 16px;">입력 순서 유지, LRU 캐시 구현</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13.5px;">TreeMap의 키는 <code>Comparable</code>을 구현하거나 생성 시 <code>Comparator</code>를 넘겨야 비교 기준이 생깁니다. "정렬이 필요하면 TreeMap, 입력 순서가 필요하면 LinkedHashMap, 둘 다 필요 없으면 HashMap"으로 정리하면 깔끔합니다.</p>
+
+  <p><strong>3) hashCode/equals 계약 — 위반하면 키를 못 찾는다</strong></p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>핵심 규약:</strong> <code>a.equals(b)</code>가 <code>true</code>이면 <code>a.hashCode() == b.hashCode()</code>가 <strong>반드시</strong> 성립해야 합니다. (역은 성립 안 함 — 해시가 같아도 equals는 다를 수 있음, 이게 해시 충돌)</li>
+    <li><strong>HashMap의 키 탐색 순서:</strong> ① <code>hashCode()</code>로 버킷 위치 결정 → ② 그 버킷 안에서 <code>equals()</code>로 동일 키 확인.</li>
+    <li><strong>위반 시 버그:</strong> <code>equals</code>만 재정의하고 <code>hashCode</code>를 빼먹으면, 논리적으로 같은 두 객체가 <em>다른 버킷</em>으로 흩어집니다. 그러면 분명히 넣은 값인데 <code>get()</code>이 <code>null</code>을 반환하는 미스터리 버그가 납니다.</li>
+  </ul>
+  <div class="code-block-header">
+    <span class="code-title">계약 위반이 만드는 버그 (equals만 재정의)</span>
+    <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+  </div>
+  <pre class="language-java"><code class="language-java">class ProductKey {
+    final String code;
+    ProductKey(String code) { this.code = code; }
+
+    // equals만 재정의하고 hashCode는 빠뜨림 → 계약 위반!
+    @Override public boolean equals(Object o) {
+        if (!(o instanceof ProductKey)) return false;
+        return this.code.equals(((ProductKey) o).code);
+    }
+    // hashCode()가 없어 Object의 기본(주소 기반) 해시 사용 → 객체마다 다름
+}
+
+Map&lt;ProductKey, Integer&gt; stock = new HashMap&lt;&gt;();
+stock.put(new ProductKey("REHAB-001"), 50);          // A 버킷에 저장
+Integer qty = stock.get(new ProductKey("REHAB-001")); // 다른 해시 → B 버킷 탐색
+System.out.println(qty); // null  (equals는 같지만 버킷이 달라 못 찾음!)</code></pre>
+  <p style="font-size:13.5px;">해결은 간단합니다. <strong>equals와 hashCode는 항상 함께, 같은 필드로</strong> 재정의합니다. <code>java.util.Objects.equals/hash</code> 유틸이나 IDE 자동 생성, Lombok <code>@EqualsAndHashCode</code>, 또는 불변 데이터라면 <code>record</code>(자동으로 두 메서드 생성)를 쓰면 안전합니다.</p>
+
+  <p><strong>4) 충돌 처리 — 체이닝에서 트리화로 (Java 8)</strong></p>
+  <p style="font-size:13.5px;">같은 버킷에 여러 키가 몰리면(해시 충돌) 노드를 <strong>연결 리스트로 체이닝</strong>합니다. Java 8부터는 한 버킷의 노드가 <strong>8개 이상</strong>으로 길어지고 전체 용량이 64 이상이면 <strong>Red-Black 트리</strong>로 변환(treeify)해 최악의 탐색 비용을 O(n)에서 <strong>O(log n)</strong>으로 낮춥니다. 노드가 6개 이하로 줄면 다시 리스트로 되돌립니다(untreeify).</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"가변(mutable) 객체를 HashMap 키로 쓰면 왜 안 되나요?"</em> → 키를 넣은 뒤 그 객체의 필드를 바꾸면 <code>hashCode()</code> 결과가 달라집니다. 그러면 처음 저장된 버킷과 변경 후 계산되는 버킷이 어긋나, 같은 객체로 조회해도 <code>get()</code>이 값을 못 찾습니다. 그래서 키는 <strong>불변(immutable) 객체</strong>(<code>String</code>, <code>Integer</code>, 또는 식별 필드가 final인 <code>record</code>/VO)를 써야 하며, 부득이 가변 객체를 키로 쓴다면 맵에 담겨 있는 동안에는 해시에 쓰이는 필드를 절대 변경하지 않아야 합니다.</p>
+</section>
+
+      <section id="q-concurrency-advanced">
+  <h2>Q31. 동시성 심화 — synchronized vs ReentrantLock, volatile, CAS</h2>
+  <p>멀티스레드 환경에서 "왜 값이 깨지는가"를 설명하는 핵심 도구가 락(lock), volatile, CAS입니다. 단순히 "synchronized 쓰면 됩니다"가 아니라 <strong>가시성·원자성·재정렬</strong>을 구분해 설명할 수 있어야 백엔드 면접에서 변별력이 생깁니다.</p>
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 화장실 열쇠와 게시판</h4>
+    <p><strong>락(synchronized/ReentrantLock)</strong>은 화장실 열쇠입니다. 열쇠를 쥔 사람만 들어가고, 나머지는 줄을 서서 기다립니다. 한 번에 한 명만 작업하니 충돌이 없죠.<br>
+    <strong>volatile</strong>은 사무실 한가운데 걸린 공용 게시판입니다. 누가 공지를 바꾸면 모두가 <em>즉시 최신 내용을 봅니다(가시성)</em>. 하지만 "현재 인원 +1" 같은 작업을 두 명이 동시에 하면, 둘 다 옛 숫자를 읽고 같은 값을 덮어써서 한 명이 사라집니다 — 게시판은 <em>동시 수정을 막아주지 않습니다(원자성 없음)</em>.</p>
+  </div>
+
+  <p><strong>1) synchronized vs ReentrantLock</strong> — 둘 다 상호배제(mutual exclusion)를 제공하지만, ReentrantLock은 더 세밀한 제어 기능을 추가로 제공합니다.</p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">항목</th><th style="padding: 10px 16px;">synchronized</th><th style="padding: 10px 16px;">ReentrantLock</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">락 획득/해제</td><td style="padding: 10px 16px;">JVM이 자동 (블록 끝/예외 시 자동 해제)</td><td style="padding: 10px 16px;">수동 — lock()/unlock()을 직접 호출 (finally에서 unlock 필수)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">타임아웃 대기</td><td style="padding: 10px 16px;">불가 (무한 대기)</td><td style="padding: 10px 16px;">tryLock(timeout)로 일정 시간만 대기 후 포기 가능</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">대기 중 인터럽트</td><td style="padding: 10px 16px;">불가</td><td style="padding: 10px 16px;">lockInterruptibly()로 대기 중 인터럽트 응답 가능</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">공정성(fairness)</td><td style="padding: 10px 16px;">불공정(비결정적)</td><td style="padding: 10px 16px;">생성 시 fair=true로 FIFO 순서 보장 가능 (단 처리량은 하락)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">재진입(reentrant)</td><td style="padding: 10px 16px;">지원</td><td style="padding: 10px 16px;">지원 (이름 그대로)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">조건 변수</td><td style="padding: 10px 16px;">wait/notify (조건 1개)</td><td style="padding: 10px 16px;">newCondition()으로 다중 Condition 분리 가능</td></tr>
+      <tr><td style="padding: 10px 16px;">권장 기준</td><td style="padding: 10px 16px;">단순 임계영역의 기본 선택</td><td style="padding: 10px 16px;">타임아웃·공정성·다중 조건이 필요할 때</td></tr>
+    </tbody>
+  </table>
+
+  <div class="code-block-header"><span class="code-title">ReentrantLock — tryLock 타임아웃 패턴</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-java"><code class="language-java">private final ReentrantLock lock = new ReentrantLock(); // fair=false(기본)
+
+public boolean processOrder() throws InterruptedException {
+    // 2초 안에 락을 못 얻으면 포기 → 데드락/무한대기 방지
+    if (lock.tryLock(2, TimeUnit.SECONDS)) {
+        try {
+            // 임계 영역: 한 번에 한 스레드만 진입
+            doWork();
+            return true;
+        } finally {
+            lock.unlock(); // ★ 반드시 finally에서 해제 (예외 나도 락 누수 없게)
+        }
+    }
+    return false; // 락 획득 실패 → 호출자가 재시도/우회 처리
+}</code></pre>
+
+  <p><strong>2) volatile — 가시성(O), 원자성(X)</strong></p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>가시성 보장:</strong> 한 스레드가 volatile 변수를 쓰면, 다른 스레드는 CPU 캐시가 아닌 <em>메인 메모리의 최신 값</em>을 읽습니다. 또한 컴파일러/CPU의 명령어 재정렬을 일부 차단합니다.</li>
+    <li><strong>원자성 미보장:</strong> <code>i++</code>는 사실 <em>읽기 → +1 → 쓰기</em> 3단계 복합 연산입니다. 두 스레드가 동시에 같은 값을 읽고 각자 +1 하면 한 번의 증가가 유실됩니다(lost update). volatile은 이 복합 연산을 묶어주지 못합니다.</li>
+    <li><strong>적합한 용도:</strong> 다른 스레드의 쓰기 결과만 빨리 보면 되는 단순 플래그(예: <code>volatile boolean running</code>로 루프 종료 신호). 누적·증감 카운터에는 부적합 → CAS나 락이 필요.</li>
+  </ul>
+
+  <p><strong>3) CAS와 AtomicInteger — 락 프리(lock-free)</strong> — CAS(Compare-And-Swap)는 "메모리의 현재 값이 내가 읽었던 기댓값과 같으면 새 값으로 바꾼다"를 <em>한 번의 CPU 원자 명령</em>으로 수행합니다. 실패하면 새 값을 다시 읽어 재시도(spin)합니다. 락을 잡지 않으므로 컨텍스트 스위칭/블로킹이 없어 경합이 낮을 때 빠릅니다.</p>
+  <div class="code-block-header"><span class="code-title">AtomicInteger — CAS 기반 무락 카운터</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-java"><code class="language-java">private final AtomicInteger count = new AtomicInteger(0);
+
+public void increment() {
+    // 내부적으로 CAS 루프: (현재값 == 기댓값)이면 +1 커밋, 아니면 재시도
+    count.incrementAndGet(); // 락 없이 원자적 증가 → i++의 유실 문제 해결
+}
+
+// 동작 원리를 풀어 쓰면:
+public void manualCas() {
+    int prev, next;
+    do {
+        prev = count.get();      // 현재 값 읽기(기댓값)
+        next = prev + 1;         // 새 값 계산
+    } while (!count.compareAndSet(prev, next)); // 그새 값이 안 바뀌었으면 커밋
+}</code></pre>
+  <p style="font-size: 13px; color: var(--text-muted);"><strong>ABA 문제:</strong> 값이 A→B→A로 돌아오면 CAS는 "안 바뀌었다"고 착각합니다. <code>AtomicStampedReference</code>로 버전(스탬프)을 함께 비교해 해결합니다.</p>
+
+  <p><strong>4) happens-before / 메모리 가시성</strong></p>
+  <p style="font-size: 13.5px; line-height: 1.8;">JMM(Java Memory Model)은 <strong>happens-before</strong> 규칙으로 "어떤 쓰기가 다른 스레드의 읽기에 보이도록 보장되는지"를 정의합니다. 즉 A가 B보다 happens-before면, A의 모든 메모리 변경은 B 시점에 반드시 관측됩니다. 대표 규칙은 <em>락 unlock은 이후 같은 락의 lock보다, volatile 쓰기는 이후 같은 변수의 volatile 읽기보다, Thread.start()는 시작된 스레드의 모든 동작보다 happens-before</em>입니다. 이 관계가 없으면 CPU 캐시·명령어 재정렬 때문에 다른 스레드가 옛 값을 보거나 코드가 뒤섞여 실행된 것처럼 관측될 수 있습니다 — 동시성 버그의 근본 원인이 바로 이 가시성·재정렬입니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"데드락의 4가지 발생 조건과 회피 방법은?"</em> → 4조건은 ① <strong>상호배제</strong>(자원을 한 번에 한 스레드만 점유) ② <strong>점유와 대기</strong>(자원을 쥔 채 다른 자원을 기다림) ③ <strong>비선점</strong>(빼앗을 수 없음) ④ <strong>순환 대기</strong>(서로 물고 도는 사이클)이며, 네 조건이 <em>동시에</em> 성립할 때만 발생합니다. 실무 회피의 핵심은 ④를 깨는 <strong>락 획득 순서 고정</strong>(모든 스레드가 동일 순서로 락 획득)이고, 그 외에 ②를 깨는 <strong>tryLock(timeout) 후 보유 락 전부 반납·재시도</strong>로 순환을 끊는 방법이 자주 쓰입니다.</p>
+</section>
+
+      <section id="q-db-lock">
+  <h2>Q32. DB 락 — 낙관적 락 vs 비관적 락, MVCC</h2>
+  <p>동시성 제어는 백엔드 면접의 단골 주제입니다. "재고가 음수로 떨어졌다", "결제가 중복됐다" 같은 장애의 뿌리에는 거의 항상 동시성 문제가 있고, 면접관은 락의 두 전략과 MVCC를 정확히 구분하는지를 봅니다.</p>
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 화장실 문 vs 메모지</h4>
+    <p><strong>비관적 락</strong>은 화장실에 들어갈 때 문을 잠그는 것입니다. 다른 사람은 내가 나올 때까지 무조건 기다려야 하므로 충돌은 없지만, 줄이 깁니다.<br><strong>낙관적 락</strong>은 문을 잠그지 않고 "방금 비어 있더라"라고 믿고 들어가되, 나올 때 "들어가기 전에 본 메모지 번호가 그대로인가?"를 확인하는 것입니다. 그 사이 누가 다녀가 번호가 바뀌었다면 "어, 누가 먼저 썼네" 하고 다시 시도합니다.</p>
+  </div>
+
+  <p><strong>두 전략 비교</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">구분</th><th style="padding: 10px 16px;">비관적 락(Pessimistic)</th><th style="padding: 10px 16px;">낙관적 락(Optimistic)</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">전제</td><td style="padding: 10px 16px;">충돌이 자주 일어난다고 가정</td><td style="padding: 10px 16px;">충돌은 드물게 일어난다고 가정</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">구현</td><td style="padding: 10px 16px;"><code>SELECT ... FOR UPDATE</code> 로 DB 행에 배타 락(쓰기 락)</td><td style="padding: 10px 16px;"><code>@Version</code> 버전 컬럼으로 UPDATE 시점에 충돌 검사</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">잠그는 시점</td><td style="padding: 10px 16px;">읽는 즉시 락 획득(선점)</td><td style="padding: 10px 16px;">락 없이 진행, 커밋(UPDATE) 시점에만 검증</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">충돌 시</td><td style="padding: 10px 16px;">대기(blocking), 길면 락 타임아웃</td><td style="padding: 10px 16px;"><code>OptimisticLockException</code> 발생 → 재시도 필요</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">장점</td><td style="padding: 10px 16px;">충돌 많아도 안전, 재시도 로직 불필요</td><td style="padding: 10px 16px;">락 비용 없음 → 읽기 많은 환경에서 처리량 높음</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">단점</td><td style="padding: 10px 16px;">대기로 처리량 저하, 데드락·락 경합 위험</td><td style="padding: 10px 16px;">충돌 잦으면 재시도가 폭증해 오히려 느려짐</td></tr>
+      <tr><td style="padding: 10px 16px;">적합한 경우</td><td style="padding: 10px 16px;">한정 수량 선착순, 좌석·재고처럼 경합이 심한 자원</td><td style="padding: 10px 16px;">게시글 수정, 사용자 프로필 등 동시 수정이 드문 자원</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>JPA <code>@Version</code> 낙관적 락 + 재시도</strong> — 버전 컬럼을 두면 JPA가 <code>UPDATE ... WHERE id=? AND version=?</code> 형태로 쿼리를 날리고, 영향받은 행이 0이면 그 사이 다른 트랜잭션이 먼저 바꾼 것이므로 예외를 던집니다. JPA가 던지는 <code>OptimisticLockException</code>은 Spring의 트랜잭션 경계에서 <code>OptimisticLockingFailureException</code>으로 변환되므로, 재시도 루프에서는 후자를 잡으면 됩니다.</p>
+  <div class="code-block-header"><span class="code-title">낙관적 락 엔티티와 재시도 로직</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-java"><code class="language-java">@Entity
+public class Product {
+    @Id @GeneratedValue
+    private Long id;
+
+    private int stock;          // 재고 수량
+
+    @Version                     // ★ 낙관적 락 핵심: 행이 바뀔 때마다 version이 +1 된다
+    private Long version;        // JPA가 자동 관리 (Long/int 모두 가능)
+
+    public void decrease(int qty) {
+        if (this.stock &lt; qty) {
+            throw new IllegalStateException("재고 부족");
+        }
+        this.stock -= qty;       // dirty checking으로 UPDATE 발생
+    }
+}
+
+// ★ @Transactional 메서드는 '다른 빈'에 둬야 한다.
+//    같은 클래스 안에서 호출하면 self-invocation이라 Spring 프록시를
+//    거치지 않아 @Transactional이 적용되지 않는다(트랜잭션이 안 열림).
+@Service
+@RequiredArgsConstructor
+public class ProductStockService {
+    private final ProductRepository productRepository;
+
+    @Transactional
+    public void purchaseOnce(Long productId, int qty) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow();                  // 이 시점의 version을 읽어둔다
+        product.decrease(qty);
+        // 커밋 시 UPDATE product SET stock=?, version=version+1
+        //        WHERE id=? AND version=? (읽었던 버전)
+        // → 영향 행이 0이면 OptimisticLockException
+    }
+}
+
+@Service
+@RequiredArgsConstructor
+public class OrderService {
+    private final ProductStockService productStockService;  // 별도 빈을 주입
+
+    // 트랜잭션 '바깥'에서 재시도한다.
+    // 시도마다 productStockService.purchaseOnce()가 프록시를 거쳐
+    // 새 트랜잭션으로 열리므로, 최신 version으로 깨끗하게 다시 시도된다.
+    public void purchase(Long productId, int qty) {
+        int maxRetry = 3;
+        for (int i = 0; i &lt; maxRetry; i++) {
+            try {
+                productStockService.purchaseOnce(productId, qty);
+                return;                          // 성공하면 종료
+            } catch (OptimisticLockingFailureException e) {
+                // 다른 트랜잭션이 먼저 version을 올렸다 → 최신 데이터로 재시도
+                if (i == maxRetry - 1) throw e;  // 마지막 시도까지 실패하면 포기
+            }
+        }
+    }
+}</code></pre>
+  <p style="font-size: 13.5px;">참고로 비관적 락은 <code>@Lock(LockModeType.PESSIMISTIC_WRITE)</code>를 리포지토리 메서드에 붙이면 JPA가 조회 시 <code>SELECT ... FOR UPDATE</code>를 실행해 해당 행을 선점합니다. 이 경우 재시도 루프 없이도 직렬화되지만, 그만큼 동시 처리량은 떨어집니다.</p>
+
+  <p><strong>MVCC가 읽기-쓰기 충돌을 줄이는 원리</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">스냅샷 읽기</h4><p style="color:var(--text-muted);">InnoDB 기본 격리수준(REPEATABLE READ)에서는 첫 일관된 읽기 시점에 스냅샷이 잡혀 트랜잭션 내내 같은 버전을 본다. 다른 트랜잭션이 그 행을 수정·커밋해도 내 스냅샷은 영향받지 않는다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">버전 체인(undo log)</h4><p style="color:var(--text-muted);">InnoDB는 행을 수정할 때 이전 버전을 undo log에 남긴다. 읽는 트랜잭션은 자기 스냅샷에 맞는 과거 버전을 거슬러 올라가 읽는다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">읽기가 쓰기를 막지 않음</h4><p style="color:var(--text-muted);">일반 SELECT는 락을 잡지 않으므로(non-locking read) 쓰기 트랜잭션과 서로 기다리지 않는다. 그래서 읽기-쓰기 경합이 크게 준다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">쓰기-쓰기는 별개</h4><p style="color:var(--text-muted);">MVCC가 줄여 주는 건 읽기-쓰기 충돌이다. 같은 행을 동시에 '수정'하는 쓰기-쓰기 경합은 여전히 락(또는 버전 검증)으로 해결해야 한다.</p></div>
+  </div>
+  <p style="font-size: 13.5px;">즉 MVCC는 "읽는 사람은 락 없이 일관된 과거 스냅샷을 본다"는 메커니즘이라 READ로 인한 블로킹을 없애 줍니다. 하지만 재고 차감처럼 같은 행에 쓰는 동시 요청은 MVCC만으로 안전해지지 않습니다.</p>
+
+  <p><strong>재고 차감 시나리오 — 무엇을 골라야 하나</strong></p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>경합이 심한 한정 수량(타임딜·선착순 쿠폰)</strong>: 동시에 수백 요청이 같은 행을 노린다. 낙관적 락이면 대부분이 충돌·재시도로 폭주해 오히려 느려진다. → <strong>비관적 락(<code>FOR UPDATE</code>)</strong>으로 직렬화하거나, 더 나아가 DB 락 자체를 피하고 <strong>원자적 UPDATE</strong>(<code>UPDATE product SET stock = stock - ? WHERE id=? AND stock &gt;= ?</code>) 또는 Redis 같은 외부 카운터로 푸는 것이 정석.</li>
+    <li><strong>경합이 약한 일반 재고</strong>: 같은 상품을 동시에 사는 일이 드물다면 락 비용이 아까우므로 <strong>낙관적 락</strong>이 처리량 면에서 유리하다.</li>
+  </ul>
+  <p style="font-size: 13.5px;">Rehab Fashion 같은 쇼핑몰이라면 평소 주문은 낙관적 락으로 충분하지만, "100개 한정 타임세일" 페이지만은 비관적 락이나 원자적 차감 쿼리로 별도 처리하는 식의 혼용이 현실적인 답입니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"낙관적 락에서 갱신 분실(lost update)은 어떻게 막나요?"</em> → 갱신 분실은 A와 B가 같은 값을 읽고 각자 수정해 한쪽 변경이 덮어써지는 문제입니다. 낙관적 락은 <strong>버전 컬럼</strong>으로 이를 막습니다. 둘 다 version=5를 읽었어도, 먼저 커밋한 쪽이 version을 6으로 올리면 늦게 커밋하는 쪽의 <code>UPDATE ... WHERE version=5</code>가 0행 매칭이 되어 <code>OptimisticLockException</code>이 터지고, 최신 값으로 재시도하게 됩니다. 핵심은 "읽은 버전과 쓸 때의 버전이 같은지" 검증하는 것이며, 비관적 락(<code>FOR UPDATE</code>)이나 DB 원자적 UPDATE도 같은 목적을 다른 방식으로 달성합니다. 반대로 단순히 읽고-계산하고-쓰기(read-modify-write)를 락이나 버전 검증 없이 하면 갱신 분실이 발생합니다.</p>
+</section>
+
+      <section id="q-http-method-status">
+  <h2>Q33. HTTP 메서드와 상태 코드 — Safe·Idempotent 관점</h2>
+  <p>REST API를 설계하거나 장애에 강한 클라이언트를 만들 때 가장 먼저 따져야 하는 두 가지 성질이 <strong>safe(안전)</strong>와 <strong>idempotent(멱등)</strong>입니다. 면접관은 "이 요청을 재시도해도 괜찮은가?"라는 질문을 메서드와 상태 코드 두 축으로 검증하려 합니다. 정의를 외우는 것보다 재시도·로드밸런서·결제 같은 실무 맥락과 연결해 설명하는 것이 핵심입니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 엘리베이터 버튼 vs 자판기 버튼</h4>
+    <p>엘리베이터 "3층" 버튼은 <strong>멱등</strong>합니다. 조급해서 열 번을 눌러도 결과는 "3층으로 간다" 하나로 같죠. PUT/DELETE가 이렇습니다.<br>반면 자판기의 "구매" 버튼은 <strong>비멱등</strong>입니다. 한 번 누르면 음료 하나, 열 번 누르면 음료 열 개에 잔액도 열 번 빠집니다. POST(주문 생성)가 바로 이 자판기 버튼이라, 네트워크가 끊겼을 때 함부로 다시 누르면 안 되는 것입니다.</p>
+  </div>
+
+  <p><strong>1) 메서드별 safe·idempotent 표</strong></p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>safe(안전)</strong>: 서버의 리소스 상태를 <em>변경하지 않는</em> 읽기 전용 메서드. 조회만 한다.</li>
+    <li><strong>idempotent(멱등)</strong>: 동일 요청을 N번 보내도 서버에 미치는 <em>최종 효과가 1번과 같다</em>. (응답 코드가 매번 같아야 한다는 뜻은 아니다.)</li>
+  </ul>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">메서드</th><th style="padding: 10px 16px;">Safe</th><th style="padding: 10px 16px;">Idempotent</th><th style="padding: 10px 16px;">용도 / 비고</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">GET</td><td style="padding: 10px 16px;">✅ Yes</td><td style="padding: 10px 16px;">✅ Yes</td><td style="padding: 10px 16px;">조회. 읽기만 하므로 캐싱·재시도 모두 자유</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">HEAD</td><td style="padding: 10px 16px;">✅ Yes</td><td style="padding: 10px 16px;">✅ Yes</td><td style="padding: 10px 16px;">헤더만 조회(본문 없음). 존재·크기 확인</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">OPTIONS</td><td style="padding: 10px 16px;">✅ Yes</td><td style="padding: 10px 16px;">✅ Yes</td><td style="padding: 10px 16px;">허용 메서드 조회. CORS preflight</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><strong>POST</strong></td><td style="padding: 10px 16px;">❌ No</td><td style="padding: 10px 16px;"><strong>❌ No</strong></td><td style="padding: 10px 16px;">생성. 재시도 시 중복 생성 위험 (자판기 버튼)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><strong>PUT</strong></td><td style="padding: 10px 16px;">❌ No</td><td style="padding: 10px 16px;"><strong>✅ Yes</strong></td><td style="padding: 10px 16px;">전체 교체. 같은 표현을 덮어쓰니 N번=1번</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><strong>DELETE</strong></td><td style="padding: 10px 16px;">❌ No</td><td style="padding: 10px 16px;"><strong>✅ Yes</strong></td><td style="padding: 10px 16px;">삭제. 두 번째부터 404일 수 있으나 최종 상태(없음)는 동일</td></tr>
+      <tr><td style="padding: 10px 16px;">PATCH</td><td style="padding: 10px 16px;">❌ No</td><td style="padding: 10px 16px;">⚠️ 설계에 따라</td><td style="padding: 10px 16px;">부분 수정. "age=30" 식 set은 멱등, "age++" 식 delta는 비멱등</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>2) 멱등성이 재시도 설계와 만나는 지점</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">자동 재시도의 안전선</h4><p style="color:var(--text-muted);">타임아웃·502가 떴을 때 요청이 서버에 도달했는지 클라이언트는 모른다. GET/PUT/DELETE는 멱등이라 그냥 다시 보내도 안전하다. 그래서 LB·프록시도 이들만 자동 재시도한다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">POST의 위험</h4><p style="color:var(--text-muted);">결제·주문 POST를 무지성 재시도하면 이중 결제가 난다. Rehab Fashion에서 "결제 버튼 한 번 눌렀는데 두 번 빠졌다"는 CS의 전형적 원인이다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">멱등성 키</h4><p style="color:var(--text-muted);">POST를 안전하게 만들려면 클라이언트가 발급한 <code>Idempotency-Key</code>를 헤더에 실어 보내고, 서버가 같은 키의 첫 결과를 저장·재사용한다. Toss·Stripe가 쓰는 방식.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">PUT으로 우회</h4><p style="color:var(--text-muted);">리소스 ID를 클라이언트가 정할 수 있다면 <code>PUT /orders/{uuid}</code>로 만들어 멱등하게 생성한다. 같은 UUID 재시도는 덮어쓰기라 중복이 없다.</p></div>
+  </div>
+
+  <div class="code-block-header"><span class="code-title">멱등성 키로 POST 중복 결제 막기 (서버)</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-java"><code class="language-java">@PostMapping("/payments")
+public ResponseEntity&lt;PaymentResult&gt; pay(
+        @RequestHeader("Idempotency-Key") String key,   // 클라이언트가 UUID 등으로 발급
+        @RequestBody PaymentRequest req) {
+
+    // 1) 같은 키로 이미 처리된 요청이면 "저장된 결과"를 그대로 반환 (재실행 X)
+    PaymentResult cached = store.find(key);
+    if (cached != null) {
+        return ResponseEntity.ok(cached);            // 재시도해도 결제는 단 한 번
+    }
+
+    // 2) 키를 선점(insert)하지 못하면 = 동시 중복 요청 → 409 Conflict
+    if (!store.tryClaim(key)) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    }
+
+    // 3) 최초 1회만 실제 결제 수행 후 결과를 키에 묶어 저장
+    PaymentResult result = paymentGateway.charge(req); // 외부 PG 호출
+    store.save(key, result);                            // 다음 재시도가 이걸 재사용
+    return ResponseEntity.status(HttpStatus.CREATED).body(result); // 201
+}</code></pre>
+
+  <p><strong>3) 상태 코드 군별 의미와 빈출 코드</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">2xx 성공</h4><p style="color:var(--text-muted);">요청을 정상 처리했다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">3xx 리다이렉션</h4><p style="color:var(--text-muted);">완료하려면 추가 동작(다른 URL·캐시)이 필요하다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">4xx 클라이언트 오류</h4><p style="color:var(--text-muted);">요청 자체가 잘못됐다. 같은 요청 재시도는 의미 없다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">5xx 서버 오류</h4><p style="color:var(--text-muted);">서버가 실패했다. 멱등 메서드면 백오프 후 재시도가 유효하다.</p></div>
+  </div>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">코드</th><th style="padding: 10px 16px;">이름</th><th style="padding: 10px 16px;">언제 쓰나</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">200</td><td style="padding: 10px 16px;">OK</td><td style="padding: 10px 16px;">조회·수정 성공, 본문 있음</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">201</td><td style="padding: 10px 16px;">Created</td><td style="padding: 10px 16px;">생성 성공. Location 헤더에 새 리소스 URI</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">204</td><td style="padding: 10px 16px;">No Content</td><td style="padding: 10px 16px;">성공했지만 본문 없음. DELETE·PUT 응답에 흔함</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">301</td><td style="padding: 10px 16px;">Moved Permanently</td><td style="padding: 10px 16px;">영구 이동. 브라우저·검색엔진이 새 URL로 갱신</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">304</td><td style="padding: 10px 16px;">Not Modified</td><td style="padding: 10px 16px;">캐시가 최신. ETag/If-None-Match로 본문 전송 생략</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">400</td><td style="padding: 10px 16px;">Bad Request</td><td style="padding: 10px 16px;">문법·검증 오류 (필수값 누락 등)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">401</td><td style="padding: 10px 16px;">Unauthorized</td><td style="padding: 10px 16px;">인증 안 됨(로그인 필요). 사실상 '미인증'</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">403</td><td style="padding: 10px 16px;">Forbidden</td><td style="padding: 10px 16px;">인증은 됐으나 권한 없음. 로그인해도 못 봄</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">404</td><td style="padding: 10px 16px;">Not Found</td><td style="padding: 10px 16px;">리소스 없음 (또는 숨기고 싶을 때 403 대신)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">409</td><td style="padding: 10px 16px;">Conflict</td><td style="padding: 10px 16px;">상태 충돌(중복 생성, 낙관적 락 버전 불일치)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">429</td><td style="padding: 10px 16px;">Too Many Requests</td><td style="padding: 10px 16px;">레이트 리밋 초과. 보통 Retry-After 헤더로 재시도 시점 안내(필수는 아님)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">500</td><td style="padding: 10px 16px;">Internal Server Error</td><td style="padding: 10px 16px;">서버 내부 예외. "원인 불명 다 잡는" 코드</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">502</td><td style="padding: 10px 16px;">Bad Gateway</td><td style="padding: 10px 16px;">게이트웨이가 업스트림에서 잘못된 응답 받음</td></tr>
+      <tr><td style="padding: 10px 16px;">503</td><td style="padding: 10px 16px;">Service Unavailable</td><td style="padding: 10px 16px;">과부하·점검으로 일시 불가. 백오프 후 재시도</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size: 13px; color: var(--text-muted);">면접 단골 비교: <strong>401 vs 403</strong>은 "넌 누구냐(인증)" vs "넌 권한이 없다(인가)", <strong>502 vs 503</strong>은 "뒤쪽 서버 응답이 깨졌다" vs "지금 서버가 받을 여력이 없다"로 답하면 됩니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"PUT과 PATCH의 차이는 무엇이고, PATCH는 멱등한가요?"</em> → PUT은 리소스를 <strong>전체 교체</strong>(보내지 않은 필드는 지워지거나 기본값이 됨)라서 같은 본문을 N번 보내도 결과가 동일해 항상 멱등합니다. PATCH는 <strong>부분 수정</strong>인데 멱등성은 <em>패치 의미에 달려 있습니다.</em> <code>{"price": 9900}</code>처럼 값을 절대값으로 set 하면 멱등이지만, <code>{"op":"increment","stock":1}</code>처럼 현재 값에 더하는 delta 연산이면 호출할 때마다 결과가 달라져 비멱등입니다. 그래서 PATCH를 정의한 명세(RFC 5789)도 PATCH가 기본적으로 멱등이 아니라고(설계에 따라 멱등하게 만들 수 있다고) 규정합니다.</p>
+</section>
+
+      <section id="q-https-tls">
+  <h2>Q34. HTTPS / TLS 핸드셰이크 — 대칭·비대칭 키와 인증서</h2>
+  <p>HTTPS는 "암호화했다"로 끝나는 주제가 아니라, <strong>속도(대칭)와 안전한 키 교환(비대칭)을 어떻게 조합하고, 그 키를 받은 상대가 진짜인지(인증서·CA)</strong>를 어떻게 보장하는지를 묻는 질문입니다. 면접에서는 "왜 비대칭만 안 쓰나?", "인증서가 왜 필요한가?", "HTTPS면 무조건 안전한가?"로 파고듭니다.</p>
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 자물쇠 택배 상자와 공증된 신분증</h4>
+    <p>비대칭키는 <strong>"누구나 채울 수 있지만 주인만 열 수 있는 자물쇠"</strong>입니다. 손님은 가게가 공개한 자물쇠로 상자를 잠가 보내고, 가게는 자기만 가진 열쇠로 엽니다. 그런데 이 자물쇠 방식은 무겁고 느려서, 상자 안에는 <strong>"앞으로 둘만 쓸 가벼운 공용 열쇠(세션키)"</strong> 하나만 넣어 보냅니다. 이후 실제 대화는 이 가벼운 공용 열쇠(대칭키)로 빠르게 주고받죠.<br>
+    문제는 "그 공개 자물쇠가 정말 진짜 가게 것인가?"입니다. 사기꾼이 가짜 자물쇠를 내밀 수 있으니, <strong>믿을 만한 공공기관(CA)이 도장 찍어 보증한 신분증(인증서)</strong>을 함께 확인하는 것이 핵심입니다.</p>
+  </div>
+
+  <p><strong>1) 대칭키 vs 비대칭키 — 그리고 하이브리드</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">대칭키 (Symmetric)</h4><p style="color:var(--text-muted);">암호화·복호화에 <strong>같은 키 하나</strong>를 사용(AES 등). 연산이 단순해 매우 빠르지만, "그 키를 어떻게 상대에게 안전하게 전달하나?"라는 <strong>키 공유 문제</strong>가 근본 한계.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">비대칭키 (Asymmetric)</h4><p style="color:var(--text-muted);"><strong>공개키/개인키 한 쌍</strong>(RSA·ECC). 공개키로 잠그면 개인키로만 열림. 키를 미리 공유할 필요가 없어 안전하지만, 연산이 무거워 <strong>대량 데이터엔 부적합</strong>.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">하이브리드 (실제 HTTPS)</h4><p style="color:var(--text-muted);"><strong>세션키(대칭키) 교환은 비대칭</strong>으로 안전하게, 이후 <strong>실제 데이터는 대칭키</strong>로 빠르게. 두 방식의 장점만 취해 "안전한 협상 + 빠른 통신"을 동시에 달성.</p></div>
+  </div>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">구분</th><th style="padding: 10px 16px;">대칭키</th><th style="padding: 10px 16px;">비대칭키</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">키 구조</td><td style="padding: 10px 16px;">하나의 공유키</td><td style="padding: 10px 16px;">공개키 + 개인키 쌍</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">속도</td><td style="padding: 10px 16px;">빠름 (가벼움)</td><td style="padding: 10px 16px;">느림 (연산 무거움)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">핵심 문제</td><td style="padding: 10px 16px;">키를 안전하게 전달하기 어려움</td><td style="padding: 10px 16px;">대량 데이터엔 비효율</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">대표 알고리즘</td><td style="padding: 10px 16px;">AES, ChaCha20</td><td style="padding: 10px 16px;">RSA, ECDH(E)</td></tr>
+      <tr><td style="padding: 10px 16px;">HTTPS에서 역할</td><td style="padding: 10px 16px;">실제 데이터 암호화</td><td style="padding: 10px 16px;">세션키 교환·서버 인증</td></tr>
+    </tbody>
+  </table>
+
+  <p><strong>2) TLS 핸드셰이크 흐름 (세션키를 합의하기까지)</strong></p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>① ClientHello</strong> — 클라이언트가 지원하는 TLS 버전·암호 스위트(cipher suite) 목록, 랜덤값을 보냄.</li>
+    <li><strong>② ServerHello + 인증서</strong> — 서버가 사용할 암호 스위트를 고르고, 자신의 랜덤값과 <strong>공개키가 담긴 인증서</strong>를 전달.</li>
+    <li><strong>③ 인증서 검증</strong> — 클라이언트가 인증서를 CA 체인으로 검증(서명·도메인·유효기간 확인). 통과해야 다음 단계로.</li>
+    <li><strong>④ 키 교환</strong> — 양측 랜덤값과 키 교환 파라미터로 <strong>세션키(대칭키)</strong>를 합의. RSA 방식은 클라이언트가 만든 비밀값(pre-master secret)을 서버 공개키로 암호화해 전달하고, ECDHE 방식은 양쪽이 교환한 값으로 각자 같은 세션키를 계산(전방향 안전성 확보).</li>
+    <li><strong>⑤ Finished (세션키 확정)</strong> — 양측이 같은 세션키를 갖췄는지 확인 메시지로 검증한 뒤, 이후 모든 통신을 <strong>대칭키로 암호화</strong>해 주고받음.</li>
+  </ul>
+
+  <p><strong>3) 인증서·CA·체인 신뢰가 MITM을 막는 원리</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">인증서 = 서명된 공개키</h4><p style="color:var(--text-muted);">인증서에는 서버의 공개키·도메인 정보가 담기고, 여기에 <strong>CA의 개인키로 만든 디지털 서명</strong>이 붙어 있음. 위조하면 서명 검증에서 깨짐.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">체인 신뢰 (Chain of Trust)</h4><p style="color:var(--text-muted);">서버 인증서 → 중간 CA → <strong>루트 CA</strong>로 이어지는 서명 사슬. 루트 CA는 OS·브라우저에 <strong>미리 신뢰 저장소</strong>로 내장돼 있어 검증의 출발점이 됨.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">MITM을 막는 이유</h4><p style="color:var(--text-muted);">중간자가 가짜 공개키를 끼워 넣어도, <strong>신뢰된 CA 서명이 없으면</strong> 클라이언트가 인증서를 거부함. 도메인 불일치·만료·자기서명도 경고 처리.</p></div>
+  </div>
+  <p style="font-size: 13.5px; line-height: 1.8;">정리하면, 암호화만으로는 <em>"누구와 안전하게 통신하는가"</em>가 보장되지 않습니다. 중간자가 자기 공개키로 안전한(?) 연결을 맺을 수 있기 때문입니다. <strong>CA 체인 검증이 "상대가 진짜 그 도메인의 주인"임을 증명</strong>해 주기 때문에 비로소 MITM이 차단됩니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"HTTPS를 쓰는데도 안전하지 않을 수 있는 경우가 있나요?"</em> → 있습니다. ① <strong>인증서 검증을 무시</strong>하는 경우 — 예를 들어 클라이언트 코드에서 모든 인증서를 통과시키도록 구현(아래)하면, 사내 프록시나 공격자가 끼워 넣은 가짜 인증서도 그대로 받아 <strong>MITM에 노출</strong>됩니다. ② <strong>자기서명/신뢰되지 않은 CA</strong>를 강제로 신뢰하도록 설정한 경우. ③ TLS 종료 후 <strong>평문 구간</strong>(로드밸런서 뒤 내부망, 잘못된 리다이렉트)이 존재하는 경우. ④ <strong>구버전 프로토콜·취약 cipher</strong>(SSLv3, RC4) 허용. 즉 "HTTPS = 자물쇠 아이콘 = 안전"이 아니라, <strong>인증서 검증을 정상적으로 수행할 때만</strong> 안전이 성립합니다.</p>
+
+  <div class="code-block-header"><span class="code-title">절대 하면 안 되는 안티패턴 — 인증서 검증 무시</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-java"><code class="language-java">// ⚠️ 경고: 이 코드는 "절대 쓰면 안 되는" 예시입니다.
+// 모든 서버 인증서를 무조건 신뢰하게 만들어, HTTPS의 의미를 무력화합니다.
+
+// 1) 모든 인증서를 통과시키는 TrustManager (검증을 사실상 제거)
+TrustManager[] trustAll = new TrustManager[] {
+    new X509TrustManager() {
+        // 클라이언트 인증서 검증 — 아무 검사도 하지 않음
+        public void checkClientTrusted(X509Certificate[] chain, String authType) { }
+        // ★ 서버 인증서 검증 — 예외를 던지지 않으면 "무조건 신뢰"가 됨
+        public void checkServerTrusted(X509Certificate[] chain, String authType) { }
+        // 신뢰할 CA 목록을 반환(여기선 빈 배열) — 실제 검증을 없애는 건 위의 텅 빈 checkServerTrusted다
+        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
+    }
+};
+
+SSLContext ctx = SSLContext.getInstance("TLS");
+ctx.init(null, trustAll, new java.security.SecureRandom()); // 위 TrustManager 주입
+
+// 2) 호스트네임(도메인 일치) 검증마저 끄는 경우 — MITM 무방비
+HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -&gt; true);
+
+// 결과: 공격자가 끼워 넣은 가짜 인증서도 그대로 수락 → 중간자공격(MITM)에 노출.
+// 운영 코드에서는 기본 TrustManager(시스템 신뢰 저장소)와
+// 정상 HostnameVerifier를 반드시 사용해야 합니다. 검증을 끄지 마세요.</code></pre>
+</section>
+
     </div>
   </main>
 

@@ -34,7 +34,8 @@
       <li class="nav-item" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
       <li class="nav-item" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
       <li class="nav-item" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
-      <li class="nav-item active" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
@@ -76,7 +77,7 @@
         <p>프론트 면접의 1번 타자입니다. 핵심은 단어 암기가 아니라 <strong>"SEO가 필요한가 · 콘텐츠가 얼마나 자주 바뀌나 · 서버 부하를 감당할 수 있나"</strong>의 3축으로 <strong>선택의 근거</strong>를 대는 것입니다. "무조건 SSR이 좋다"는 감점, "이 페이지는 SEO가 필요하고 거의 안 바뀌니 ISR"이 가점입니다.</p>
 
         <div class="analogy-box">
-          <h4>💡 비유로 이해하기: Antigravity 카탈로그를 어떻게 보여줄까</h4>
+          <h4>💡 비유로 이해하기: Rehab Fashion 카탈로그를 어떻게 보여줄까</h4>
           <p>손님에게 옷을 보여주는 방법입니다. <strong>CSR</strong>은 빈 매장에 손님을 들인 뒤 그 자리에서 옷을 꺼내 거는 것(브라우저가 그림), <strong>SSR</strong>은 손님이 올 때마다 직원이 즉석에서 진열을 새로 차리는 것, <strong>SSG</strong>는 개점 전에 진열을 미리 다 차려두는 것(빌드 시), <strong>ISR</strong>은 미리 차려두되 <strong>일정 시간마다 새 진열로 교체</strong>, <strong>PPR</strong>은 <strong>고정 진열(설명·이미지)은 미리</strong> 깔고 <strong>가변 부분(실시간 재고·추천)만 손님 앞에서</strong> 채우는 것입니다.</p>
         </div>
 
@@ -92,7 +93,7 @@
               <th style="padding: 12px 14px;">생성 시점</th>
               <th style="padding: 12px 14px;">SEO</th>
               <th style="padding: 12px 14px;">서버 부하</th>
-              <th style="padding: 12px 14px;">Antigravity 적용 예</th>
+              <th style="padding: 12px 14px;">Rehab Fashion 적용 예</th>
             </tr>
           </thead>
           <tbody>
@@ -177,7 +178,7 @@
         </div>
 
         <div class="code-block-header">
-          <span class="code-title">Antigravity 상품 상세 — 서버 컴포넌트가 데이터, 'use client'는 버튼만 (App Router)</span>
+          <span class="code-title">Rehab Fashion 상품 상세 — 서버 컴포넌트가 데이터, 'use client'는 버튼만 (App Router)</span>
           <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
         </div>
         <pre class="language-jsx"><code class="language-jsx">// app/products/[id]/page.tsx  —— 'use client' 없음 → 서버 컴포넌트(JS 0)
@@ -320,7 +321,7 @@ export default function ProductReviews({ id }) {
         <p><strong><code>next/image</code>가 자동으로 해주는 것:</strong> ① 최신 포맷(WebP/AVIF) 변환, ② 화면 크기별 <code>srcset</code> 자동 생성, ③ 기본 lazy 로딩(화면 밖 지연), ④ <code>width/height</code>(또는 <code>fill</code>)로 <strong>공간 예약 → CLS 방지</strong>, ⑤ 첫 화면 LCP 이미지엔 <code>priority</code>로 즉시 로딩.</p>
 
         <div class="code-block-header">
-          <span class="code-title">Antigravity 상품 히어로 이미지 — LCP 최적화</span>
+          <span class="code-title">Rehab Fashion 상품 히어로 이미지 — LCP 최적화</span>
           <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
         </div>
         <pre class="language-jsx"><code class="language-jsx">import Image from 'next/image';
@@ -403,6 +404,702 @@ export default function ProductReviews({ id }) {
       </div>
 
       <!-- quiz wrapper -->
+      <section id="q-event-loop">
+  <h2>Q6. 이벤트 루프 — 콜 스택, 매크로태스크 vs 마이크로태스크</h2>
+  <p>JavaScript는 <strong>싱글 스레드</strong>인데도 네트워크 요청, 타이머, 사용자 이벤트를 동시에 처리하는 것처럼 보입니다. 그 비밀이 바로 <strong>이벤트 루프</strong>입니다. 면접에서는 "<code>setTimeout(0)</code>과 <code>Promise.then</code> 중 누가 먼저 실행되나?"라는 출력 순서 예측으로 깊이를 검증합니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 1인 카페 바리스타</h4>
+    <p>바리스타는 한 명(싱글 스레드)이라 동시에 두 잔을 내릴 순 없습니다. 대신 에스프레소 머신에 원두를 넣어두고(비동기 위임), 추출되는 동안 다른 주문을 받습니다.<br>추출이 끝나면 그 주문은 <strong>대기 줄(태스크 큐)</strong>에 들어가고, 바리스타는 현재 일을 마친 뒤 줄에서 다음 일을 꺼냅니다. 단, "사장님 직속 급한 메모(마이크로태스크)"는 일반 대기 줄보다 항상 먼저 처리합니다.</p>
+  </div>
+
+  <p><strong>4개의 핵심 구성요소</strong> — 이벤트 루프는 콜 스택이 빌 때마다 큐를 확인하는 무한 반복문입니다.</p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">콜 스택 (Call Stack)</h4><p style="color:var(--text-muted);">현재 실행 중인 함수가 쌓이는 곳. 싱글 스레드라 스택은 <strong>단 하나</strong>. 여기가 비어야 큐에서 다음 일을 꺼낼 수 있습니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">Web API / 백그라운드</h4><p style="color:var(--text-muted);"><code>setTimeout</code>, <code>fetch</code>, DOM 이벤트 등을 <strong>브라우저(엔진 밖)</strong>가 대신 처리. 완료되면 콜백을 적절한 큐로 보냅니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">매크로태스크 큐</h4><p style="color:var(--text-muted);"><code>setTimeout</code>/<code>setInterval</code>, I/O, UI 이벤트 콜백. 이벤트 루프 한 번에 <strong>딱 1개</strong>만 꺼내 실행합니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">마이크로태스크 큐</h4><p style="color:var(--text-muted);"><code>Promise.then/catch/finally</code>, <code>queueMicrotask</code>, <code>await</code> 이후. 매크로태스크보다 <strong>우선</strong>이며, 큐가 빌 때까지 <strong>전부</strong> 비웁니다.</p></div>
+  </div>
+
+  <p><strong>이벤트 루프의 1 사이클(틱) 순서</strong> — 이 순서가 면접의 핵심입니다.</p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li>① 콜 스택의 동기 코드를 끝까지 실행 (스택이 빌 때까지)</li>
+    <li>② <strong>마이크로태스크 큐를 전부</strong> 비움 (실행 중 새로 추가된 마이크로태스크도 이번에 다 처리)</li>
+    <li>③ 필요 시 렌더링 (스타일 계산 → 레이아웃 → 페인트)</li>
+    <li>④ <strong>매크로태스크 큐에서 단 1개</strong>만 꺼내 실행 → 다시 ②로</li>
+  </ul>
+
+  <div class="code-block-header">
+    <span class="code-title">실행 순서 예측 — 면접 단골 문제</span>
+    <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+  </div>
+  <pre class="language-jsx"><code class="language-jsx">console.log('1. 동기 시작');               // 동기 → 콜 스택에서 즉시 실행
+
+setTimeout(() =&gt; {
+  console.log('4. setTimeout (매크로)');   // 매크로태스크 큐로 이동 (가장 나중)
+}, 0);                                    // 0ms여도 큐를 거치므로 즉시가 아님
+
+Promise.resolve().then(() =&gt; {
+  console.log('3. Promise.then (마이크로)'); // 마이크로태스크 큐로 이동
+});
+
+console.log('2. 동기 끝');                 // 동기 → 콜 스택에서 즉시 실행
+
+// ── 실제 출력 순서 ───────────────────────────
+// 1. 동기 시작
+// 2. 동기 끝            ← 동기 코드가 먼저 전부 실행됨
+// 3. Promise.then (마이크로)  ← 스택이 비면 마이크로 큐부터 비움
+// 4. setTimeout (매크로)      ← 마이크로를 다 비운 "뒤에야" 매크로 1개 실행</code></pre>
+
+  <p><strong>왜 이 순서인가?</strong> <code>setTimeout(0)</code>은 "0ms 뒤 실행"이 아니라 "최소 0ms 뒤 <strong>매크로 큐에 등록</strong>"입니다. 반면 <code>Promise.then</code> 콜백은 마이크로 큐에 들어가고, 이벤트 루프는 <strong>매크로태스크 1개를 처리하기 전에 마이크로 큐를 완전히 비우는 것을 보장</strong>합니다. 그래서 동기(1, 2) → 마이크로(3) → 매크로(4) 순서가 됩니다.</p>
+
+  <p><strong>렌더링은 언제?</strong> 브라우저는 <strong>마이크로태스크 큐를 모두 비운 직후, 다음 매크로태스크로 넘어가기 전</strong>에 화면을 다시 그릴지 판단합니다(보통 모니터 주사율에 맞춰 약 16.7ms 주기). 따라서 <code>then</code> 안에서 DOM을 여러 번 바꿔도 중간 상태는 화면에 보이지 않고 <strong>최종 결과만 한 번에 렌더링</strong>됩니다. 반대로 마이크로태스크가 끝없이 자기 자신을 다시 큐에 넣으면 ③ 렌더링 단계에 영영 도달하지 못해 화면이 멈춥니다.</p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+        <th style="padding: 10px 16px;">구분</th>
+        <th style="padding: 10px 16px;">대표 예시</th>
+        <th style="padding: 10px 16px;">실행 시점</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">마이크로태스크</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>Promise.then</code>, <code>await</code> 이후, <code>queueMicrotask</code>, <code>MutationObserver</code></td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">콜 스택이 빌 때마다 <strong>큐가 빌 때까지 전부</strong></td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">매크로태스크</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>setTimeout</code>, <code>setInterval</code>, <code>setImmediate</code>, I/O, UI 이벤트</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">한 틱에 <strong>1개</strong>씩 (사이마다 마이크로 비움)</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>꼬리질문 대비 — 무거운 동기 작업이 UI를 멈추는 이유와 해법</strong></p>
+  <p>싱글 스레드이므로 무거운 반복 연산(수십만 건 정렬, 큰 JSON 파싱 등)이 콜 스택을 오래 점유하면, 그동안 이벤트 루프가 <strong>다음 단계로 넘어가지 못합니다</strong>. 즉 클릭 콜백·스크롤·렌더링이 전부 큐에서 대기하다 멈춘 것처럼 보이는 "<strong>UI 프리징(jank)</strong>"이 발생합니다. 해법은 두 가지입니다.</p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">① 작업 분할 (Chunking)</h4><p style="color:var(--text-muted);">큰 작업을 잘게 쪼개 <code>setTimeout</code>(매크로태스크)이나 <code>requestIdleCallback</code>(브라우저 idle 콜백)으로 나눠 <strong>이벤트 루프에 제어권을 양보</strong>. 청크 사이마다 이벤트 루프가 렌더링·입력을 처리할 틈이 생겨 UI가 반응합니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">② Web Worker</h4><p style="color:var(--text-muted);"><strong>별도 스레드</strong>에서 연산을 돌리고 결과만 <code>postMessage</code>로 메인 스레드에 전달. 메인 스레드(UI)는 전혀 막히지 않습니다. 무거운 CPU 작업의 정석 해법.</p></div>
+  </div>
+  <p style="font-size:13px; color:var(--text-muted);">예: Rehab Fashion 상품 목록에서 10만 건을 클라이언트 정렬해야 한다면, 메인 스레드에서 한 번에 돌리는 대신 Web Worker로 넘겨 정렬하고 결과만 받아 렌더링하면 스크롤·버튼이 끊기지 않습니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"async/await는 이벤트 루프 관점에서 어떻게 동작하나요?"</em> → <code>async</code> 함수는 <code>await</code>를 만나면 그 지점에서 <strong>일시 중단하고 제어권을 호출자에게 반환</strong>합니다. <code>await</code>한 Promise가 처리되면, 이후 코드는 <strong>마이크로태스크로 예약</strong>되어 실행됩니다. 즉 <code>await</code> 다음 줄은 <code>.then()</code> 콜백과 동일하게 마이크로태스크 큐를 통해 재개됩니다. 그래서 <strong>이미 처리된(또는 즉시 처리되는) Promise를 await</strong>했다면 그 다음 줄이 같은 시점에 걸어둔 <code>setTimeout</code>보다 먼저 실행됩니다. 다만 <code>await</code>한 Promise가 한참 뒤에 완료되는 경우(예: <code>await fetch()</code>)에는, 먼저 등록해 둔 <code>setTimeout</code>이 그 사이에 실행될 수 있다는 점에 주의하세요.</p>
+</section>
+
+      <section id="q-js-core">
+  <h2>Q7. JS 핵심 — 클로저·호이스팅·this·프로토타입</h2>
+  <p>이 네 가지는 JavaScript의 동작 원리를 묻는 단골 주제로, 한 개념의 답이 다른 개념의 꼬리 질문으로 이어지는 경우가 많습니다. 표면적 정의가 아니라 <strong>실행 컨텍스트(Execution Context)</strong>와 <strong>스코프</strong>의 관점에서 일관되게 설명하는 것이 핵심입니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 함수가 들고 다니는 배낭</h4>
+    <p>함수는 태어날 때 자기를 둘러싼 <strong>주변 환경(렉시컬 스코프)</strong>을 작은 배낭에 담아 들고 다닙니다.<br>나중에 어디서 실행되든, 함수는 배낭 속 변수를 꺼내 씁니다. 바로 이 배낭이 <strong>클로저</strong>입니다.</p>
+  </div>
+
+  <p><strong>1) 클로저 (Closure)</strong> — 함수가 선언될 당시의 렉시컬 환경을 기억하여, 외부 함수가 종료된 뒤에도 그 변수에 계속 접근하는 현상입니다. 데이터를 외부에서 직접 못 건드리게 숨기는 <strong>은닉(캡슐화)</strong>의 핵심 도구입니다.</p>
+
+  <div class="code-block-header">
+    <span class="code-title">클로저: 카운터와 모듈 패턴</span>
+    <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+  </div>
+  <pre class="language-jsx"><code class="language-jsx">// (1) 카운터 — count는 외부에서 직접 접근 불가, increment만 기억
+function createCounter() {
+  let count = 0;                 // 이 변수가 클로저에 갇힌다(private)
+  return function () {
+    count += 1;                  // 외부 함수가 끝나도 count를 계속 참조
+    return count;
+  };
+}
+const counter = createCounter();
+counter(); // 1
+counter(); // 2  ← count가 메모리에 살아남아 상태 유지
+
+// (2) 모듈 패턴 — 공개 API만 노출, 내부 상태는 은닉
+const cart = (function () {
+  let items = [];                          // private 상태
+  return {
+    add: (name) =&gt; items.push(name),       // 공개 메서드
+    count: () =&gt; items.length,             // 공개 메서드
+  };
+})();
+cart.add('티셔츠');
+cart.count();   // 1
+cart.items;     // undefined ← 외부에서 직접 접근 차단</code></pre>
+
+  <p><strong>2) 호이스팅 (Hoisting)</strong> — 변수·함수 선언이 스코프 최상단으로 끌어올려진 것처럼 동작합니다. 단, <strong>선언만</strong> 끌어올려지고 할당은 제자리에 남습니다. 선언 키워드에 따라 결과가 완전히 달라집니다.</p>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+        <th style="padding: 10px 16px;">구분</th>
+        <th style="padding: 10px 16px;">선언 전 접근 시</th>
+        <th style="padding: 10px 16px;">설명</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">var</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>undefined</code> 반환</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">선언과 동시에 <code>undefined</code>로 초기화되어 끌어올려짐(함수 스코프)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">let / const</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>ReferenceError</code></td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">선언 전 구간은 <strong>TDZ(일시적 사각지대)</strong> — 초기화 전 접근 차단(블록 스코프)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">함수 선언문</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">정상 호출 가능</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>function f(){}</code> — 본체까지 통째로 끌어올려짐</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--algo);">함수 표현식</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>var</code>면 TypeError, <code>const</code>면 TDZ</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>const f = ()=&gt;{}</code> — 변수 호이스팅 규칙을 그대로 따름</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>3) this 결정 규칙</strong> — JavaScript의 <code>this</code>는 함수가 <strong>정의된 위치가 아니라 호출되는 방식</strong>에 따라 런타임에 결정됩니다(화살표 함수는 예외). 다음 4가지 규칙이 있으며, <strong>아래로 갈수록 우선순위가 높습니다</strong>(④ new가 최우선 → ③ 명시적 → ② 암시적 → ① 기본 순).</p>
+
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">① 기본 바인딩</h4><p style="color:var(--text-muted);">그냥 <code>f()</code>로 호출. 일반 모드는 전역 객체, <strong>strict mode면 <code>undefined</code></strong>.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">② 암시적 바인딩</h4><p style="color:var(--text-muted);"><code>obj.f()</code>처럼 점 앞 객체가 <code>this</code>. <strong>점 왼쪽이 누구냐</strong>가 기준.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">③ 명시적 바인딩</h4><p style="color:var(--text-muted);"><code>call</code>·<code>apply</code>(즉시 호출)·<code>bind</code>(고정한 새 함수 반환)로 <code>this</code>를 직접 지정.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">④ new 바인딩</h4><p style="color:var(--text-muted);"><code>new F()</code> 시 새로 만든 빈 객체가 <code>this</code>. 최우선 순위.</p></div>
+  </div>
+
+  <div class="code-block-header">
+    <span class="code-title">this 바인딩과 화살표 함수의 렉시컬 this</span>
+    <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+  </div>
+  <pre class="language-jsx"><code class="language-jsx">const user = {
+  name: '민지',
+  greet() { return `안녕, ${this.name}`; },   // 점 앞 user가 this(②)
+};
+user.greet();                 // "안녕, 민지"
+
+const fn = user.greet;
+fn();                         // strict mode면 TypeError(this가 undefined) ← ①
+fn.call({ name: '철수' });    // "안녕, 철수"  ← ③ 명시적으로 this 지정
+
+// 화살표 함수: 자신만의 this가 없다 → 선언 시점의 바깥 this를 그대로(렉시컬)
+const timer = {
+  label: '세일',
+  start() {
+    setTimeout(() =&gt; {
+      // 화살표라서 this가 timer로 고정(일반 함수였다면 this가 풀렸을 것)
+      console.log(this.label);   // "세일"
+    }, 100);
+  },
+};
+timer.start();</code></pre>
+
+  <p><strong>핵심:</strong> 화살표 함수는 <code>this</code>·<code>arguments</code>를 자체적으로 갖지 않아 <code>call/bind</code>로 바꿀 수 없습니다. 그래서 콜백에는 강점이지만, <strong>객체 메서드나 생성자로는 부적합</strong>합니다.</p>
+
+  <p><strong>4) 프로토타입 체인과 상속</strong> — 모든 객체는 숨은 링크 <code>[[Prototype]]</code>(<code>__proto__</code>)로 부모 객체를 가리킵니다. 어떤 속성을 찾을 때 자신에게 없으면 이 링크를 타고 위로 올라가며 탐색하는데, 이것이 <strong>프로토타입 체인</strong>이며 JS 상속의 본질입니다.</p>
+
+  <div class="code-block-header">
+    <span class="code-title">프로토타입 체인과 상속</span>
+    <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+  </div>
+  <pre class="language-jsx"><code class="language-jsx">function Product(name) {
+  this.name = name;                        // 인스턴스 고유 속성
+}
+// 메서드는 prototype에 한 번만 정의 → 모든 인스턴스가 공유(메모리 절약)
+Product.prototype.describe = function () {
+  return `${this.name} 상품`;
+};
+
+const tee = new Product('티셔츠');
+tee.describe();                            // "티셔츠 상품"
+// 탐색 순서: tee(없음) → Product.prototype(있음!) → Object.prototype → null
+
+Object.getPrototypeOf(tee) === Product.prototype;   // true
+tee.hasOwnProperty('name');               // true  (자기 소유)
+tee.hasOwnProperty('describe');           // false (프로토타입에서 빌려 씀)
+
+// ES6 class는 이 프로토타입 메커니즘을 감싼 문법 설탕(syntactic sugar)
+class Clothing extends Product {           // extends = 프로토타입 체인 연결
+  constructor(name, size) {
+    super(name);                           // 부모 생성자 호출
+    this.size = size;
+  }
+}</code></pre>
+
+  <p><strong>5) 꼬리 질문 핵심 — 반복문 안 <code>setTimeout</code></strong>: 가장 빈출되는 함정입니다. <code>var</code>는 함수 스코프라 루프 전체가 <strong>변수 하나를 공유</strong>하고, 콜백이 실행될 즈음엔 루프가 이미 끝나 <code>i</code>가 최종값(3)이 되어 있습니다. 반면 <code>let</code>은 블록 스코프라 <strong>반복마다 새 바인딩</strong>이 생기고, 각 클로저가 그 시점의 값을 따로 기억합니다.</p>
+
+  <div class="code-block-header">
+    <span class="code-title">var vs let — 반복문 + 비동기 콜백</span>
+    <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+  </div>
+  <pre class="language-jsx"><code class="language-jsx">for (var i = 0; i &lt; 3; i++) {
+  setTimeout(() =&gt; console.log(i), 0);   // 3, 3, 3  ← 모두 같은 i 공유
+}
+
+for (let j = 0; j &lt; 3; j++) {
+  setTimeout(() =&gt; console.log(j), 0);   // 0, 1, 2  ← 반복마다 새 j 바인딩
+}
+
+// var로도 0,1,2를 내려면 IIFE로 값을 복사해 클로저를 따로 가둔다
+for (var k = 0; k &lt; 3; k++) {
+  (function (captured) {
+    setTimeout(() =&gt; console.log(captured), 0);  // 0, 1, 2
+  })(k);
+}</code></pre>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"화살표 함수를 객체 메서드로 쓰면 안 되는 이유는?"</em> → 화살표 함수는 자신의 <code>this</code>가 없어 <strong>선언 시점의 상위 스코프 this(보통 모듈/전역)</strong>를 그대로 가져옵니다. 따라서 <code>obj.method()</code>로 호출해도 <code>this</code>가 <code>obj</code>를 가리키지 못해 인스턴스 속성에 접근할 수 없습니다. 객체 메서드는 <strong>일반 함수(혹은 메서드 축약 문법)</strong>로 정의하고, 화살표 함수는 그 안의 콜백처럼 <code>this</code>를 상위에 고정하고 싶을 때 써야 합니다.</p>
+</section>
+
+      <section id="q-browser-render">
+  <h2>Q8. 브라우저 렌더링 과정(CRP) — reflow vs repaint</h2>
+  <p>브라우저가 HTML/CSS를 받아 화면에 픽셀을 찍기까지의 단계를 <strong>Critical Rendering Path(CRP)</strong>라 합니다. 프론트엔드 면접에서는 "스타일을 어떻게 바꿔야 60fps가 깨지지 않는가"를 묻기 위한 단골 주제이며, reflow·repaint·composite의 비용 차이를 정확히 구분하는 것이 핵심입니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 잡지 편집실의 인쇄 공정</h4>
+    <p>기사 원고(DOM)와 스타일 가이드(CSSOM)를 합쳐 최종 지면 배치안(Render Tree)을 만듭니다.<br><strong>글자 크기를 키우면(reflow)</strong> 뒤 페이지 전체가 밀려 지면을 다시 짜야 합니다 — 가장 비쌉니다.<br><strong>글자 색만 바꾸면(repaint)</strong> 배치는 그대로 둔 채 잉크만 다시 칠합니다 — 덜 비쌉니다.<br><strong>완성된 인쇄물을 손으로 슬쩍 옮기는 것(composite)</strong>은 지면을 건드리지 않으니 가장 쌉니다.</p>
+  </div>
+
+  <p><strong>① Critical Rendering Path 6단계:</strong></p>
+  <div style="background: var(--bg-card); border-radius: 8px; padding: 16px 20px; margin: 16px 0; font-size: 13px; border: 1px solid var(--border-color); text-align: center; line-height: 2.2;">
+    <code style="color: var(--accent-color); font-weight:700;">DOM</code> →
+    <code style="color: var(--frontend); font-weight:700;">CSSOM</code> →
+    <code style="color: var(--devops); font-weight:700;">Render Tree</code> →
+    <code style="color: var(--algo); font-weight:700;">Layout(reflow)</code> →
+    <code style="color: var(--interview); font-weight:700;">Paint</code> →
+    <code style="color: var(--text-color); font-weight:700;">Composite</code>
+  </div>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>DOM</strong>: HTML을 파싱해 노드 트리를 구성합니다.</li>
+    <li><strong>CSSOM</strong>: CSS를 파싱해 스타일 규칙 트리를 만듭니다. (CSS는 렌더링 차단 리소스)</li>
+    <li><strong>Render Tree</strong>: DOM + CSSOM을 결합하되, <code>display:none</code>처럼 화면에 그려지지 않는 노드는 <strong>제외</strong>합니다.</li>
+    <li><strong>Layout(reflow)</strong>: 각 노드의 위치·크기(좌표, 폭, 높이)를 픽셀 단위로 계산합니다.</li>
+    <li><strong>Paint</strong>: 텍스트·색·테두리·그림자 등을 레이어별 비트맵으로 칠합니다.</li>
+    <li><strong>Composite</strong>: 여러 레이어를 GPU가 합성해 최종 화면에 출력합니다.</li>
+  </ul>
+
+  <p><strong>② reflow vs repaint vs composite — 비용 비교:</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+        <th style="padding: 10px 16px;">구분</th>
+        <th style="padding: 10px 16px;">재실행 단계</th>
+        <th style="padding: 10px 16px;">유발 속성(예)</th>
+        <th style="padding: 10px 16px;">비용</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--algo);">Reflow (Layout)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">Layout → Paint → Composite</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>width</code>, <code>height</code>, <code>top</code>, <code>margin</code>, <code>font-size</code>, <code>display</code></td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">🔴 가장 비쌈 (주변 노드 좌표 연쇄 재계산)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--interview);">Repaint (Paint)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">Paint → Composite</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>color</code>, <code>background</code>, <code>visibility</code>, <code>box-shadow</code></td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">🟡 중간 (배치는 유지, 색만 다시 칠함)</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">Composite</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">Composite만</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>transform</code>, <code>opacity</code></td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">🟢 가장 쌈 (GPU 합성, 레이아웃·페인트 생략)</td>
+      </tr>
+    </tbody>
+  </table>
+  <p style="font-size: 13px; color: var(--text-muted);">핵심 원리: reflow가 일어나면 그 결과를 다시 그려야 하므로 <strong>반드시 repaint도 동반</strong>됩니다. 반대로 색만 바꾸는 repaint는 reflow를 유발하지 않습니다. 즉 <code>reflow ⊃ repaint ⊃ composite</code> 순으로 영향 범위가 큽니다.</p>
+
+  <p><strong>③ 레이아웃 스래싱(Layout Thrashing)과 회피:</strong></p>
+  <p style="font-size: 13.5px; line-height: 1.85;">브라우저는 여러 스타일 변경을 모아 한 프레임에 한 번만 reflow하도록 최적화(batching)합니다. 그런데 <code>offsetHeight</code> 같은 <strong>레이아웃 값을 읽으면(read)</strong>, 직전까지의 쓰기(write)를 즉시 반영한 최신 좌표가 필요해 브라우저가 강제로 동기 reflow를 수행합니다. 반복문 안에서 <strong>읽기-쓰기를 번갈아</strong> 하면 매 회마다 강제 reflow가 터지는데, 이를 <strong>레이아웃 스래싱</strong>이라 합니다. 해결책은 <strong>읽기를 먼저 몰아서 끝낸 뒤(batch read) 쓰기를 몰아서</strong> 실행하는 것입니다.</p>
+
+  <div class="code-block-header"><span class="code-title">레이아웃 스래싱 → batch 읽기로 개선 (Rehab Fashion 상품 카드)</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-jsx"><code class="language-jsx">// 🔴 나쁜 예: 읽기(offsetWidth)와 쓰기(style.width)가 번갈아 발생
+// 매 반복마다 직전 쓰기가 반영되어야 하므로 강제 동기 reflow가 N번 터진다
+function badResize(cards) {
+  for (const card of cards) {
+    const w = card.offsetWidth;        // [읽기] 레이아웃 강제 계산 발생
+    card.style.width = w * 1.1 + 'px'; // [쓰기] 레이아웃을 dirty 상태로 변경
+  }
+}
+
+// 🟢 좋은 예: 읽기를 먼저 전부 모으고(batch read), 그다음 쓰기를 모은다
+// reflow가 사실상 1번으로 줄어든다
+function goodResize(cards) {
+  // NodeList(querySelectorAll 결과)도 받을 수 있도록 배열로 변환
+  const list = Array.from(cards);
+
+  // 1) 읽기 단계: 모든 측정값을 미리 배열에 수집
+  const widths = list.map((card) =&gt; card.offsetWidth);
+
+  // 2) 쓰기 단계: 더 이상 레이아웃을 읽지 않으므로 batch 처리됨
+  list.forEach((card, i) =&gt; {
+    card.style.width = widths[i] * 1.1 + 'px';
+  });
+}</code></pre>
+
+  <p><strong>④ 애니메이션은 transform / opacity로:</strong></p>
+  <p style="font-size: 13.5px; line-height: 1.85;">움직임을 <code>left</code>/<code>top</code>/<code>width</code>로 주면 매 프레임 reflow가 발생해 60fps(프레임당 약 16.6ms)를 지키기 어렵습니다. 반면 <code>transform</code>(이동·확대·회전)과 <code>opacity</code>(투명도)는 별도 합성 레이어에서 <strong>GPU가 composite만</strong> 수행하므로 레이아웃·페인트를 건너뜁니다. 미리 레이어로 승격시키려면 <code>will-change: transform</code> 힌트를 주되, 남발하면 메모리를 잡아먹으니 꼭 필요한 요소에만 사용합니다.</p>
+  <div class="code-block-header"><span class="code-title">좋은 애니메이션 vs 나쁜 애니메이션</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-css"><code class="language-css">/* 🔴 reflow 유발: left가 바뀔 때마다 레이아웃 재계산 */
+.cart-badge--bad {
+  position: absolute;
+  transition: left 0.3s;   /* 매 프레임 Layout → Paint → Composite */
+}
+
+/* 🟢 composite만: transform은 GPU 합성 레이어에서만 처리 */
+.cart-badge--good {
+  will-change: transform;          /* 합성 레이어 승격 힌트 (남용 금지) */
+  transition: transform 0.3s, opacity 0.3s; /* Layout·Paint 생략 */
+}</code></pre>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"display:none과 visibility:hidden은 렌더링 비용이 어떻게 다른가요?"</em> → <code>visibility:hidden</code>은 요소가 <strong>Render Tree에 그대로 남아 공간을 차지</strong>하므로, 보였다 숨겼다 할 때 <strong>repaint만</strong> 발생합니다(레이아웃 불변). 반면 <code>display:none</code>은 요소를 <strong>Render Tree에서 아예 제거</strong>해 공간이 사라지므로, 토글할 때마다 주변 배치가 재계산되는 <strong>reflow(+repaint)</strong>가 발생합니다. 따라서 자주 깜빡이며 보였다 사라지는 UI라면 <code>visibility</code>(또는 <code>opacity</code>)가, 처음부터 완전히 제외해야 하는 요소라면 <code>display:none</code>이 적합합니다.</p>
+</section>
+
+      <section id="q-react-render">
+  <h2>Q9. React 리렌더링 — 트리거·배칭·useEffect 의존성</h2>
+  <p>React 성능 문제의 8할은 "왜 이 컴포넌트가 다시 그려지는가"를 모르는 데서 시작합니다. 트리거 조건과 배칭, 메모이제이션, useEffect 의존성을 정확히 이해하는지가 프론트엔드 면접의 핵심 분기점입니다.</p>
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 매장 전광판 다시 켜기</h4>
+    <p>Rehab Fashion 매장의 가격 전광판을 떠올려 보세요. 가격(state)이 바뀌면 당연히 전광판을 다시 켭니다.<br>그런데 본사(부모)가 "전체 리뉴얼"을 선언하면, 가격이 그대로인 매장 전광판까지 전부 다시 켜집니다. <br>"이 매장은 바뀐 게 없으니 그냥 둬"라고 메모를 붙여두는 것이 바로 <strong>React.memo</strong>입니다.</p>
+  </div>
+
+  <p><strong>1. 리렌더는 무엇이 트리거하나</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">① state 변경</h4><p style="color:var(--text-muted);">setState/useState의 setter 호출. 단, 같은 값(Object.is 기준)으로 setState하면 React가 리렌더를 건너뛸 수 있습니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">② 부모 리렌더</h4><p style="color:var(--text-muted);">부모가 리렌더되면 <b>props가 동일해도</b> 자식은 기본적으로 다시 렌더됩니다. 막으려면 React.memo가 필요합니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">③ context 값 변경</h4><p style="color:var(--text-muted);">Provider의 value가 바뀌면 그 context를 useContext로 구독한 모든 컴포넌트가 memo 여부와 무관하게 리렌더됩니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">④ 부모로부터의 key 변경</h4><p style="color:var(--text-muted);">key가 바뀌면 React는 같은 컴포넌트로 보지 않고 언마운트 후 새로 마운트합니다(상태 초기화).</p></div>
+  </div>
+  <p style="font-size:13.5px; color:var(--text-muted);">흔한 오해: "props가 안 바뀌면 자식은 안 그려진다"는 <b>틀린 말</b>입니다. 부모가 그려지면 자식도 그려지는 것이 기본이고, props 비교로 건너뛰는 것은 React.memo를 씌웠을 때만 일어납니다.</p>
+
+  <p><strong>2. React 18 자동 배칭(Automatic Batching)</strong></p>
+  <p style="font-size:13.5px; color:var(--text-muted);">한 이벤트 안에서 setState를 여러 번 호출해도 React 18은 이를 모아 <b>한 번만</b> 리렌더합니다. React 17까지는 이벤트 핸들러 내부에서만 배칭됐지만, 18부터는 setTimeout·Promise·네이티브 이벤트 콜백 안에서도 자동으로 묶입니다.</p>
+  <div class="code-block-header"><span class="code-title">자동 배칭과 함수형 업데이트</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-jsx"><code class="language-jsx">function Cart() {
+  const [count, setCount] = useState(0);
+  const [total, setTotal] = useState(0);
+
+  function handleAddItem() {
+    // React 18: 아래 두 setState는 "한 번"의 리렌더로 배칭됨
+    setCount(count + 1);
+    setTotal(total + 1000);
+    // 이 시점 count는 아직 갱신 전 값(스냅샷). console.log(count) → 옛 값
+  }
+
+  function handleAddThree() {
+    // 같은 값을 기준으로 +1 → 결과는 +1만 됨 (모두 같은 count 스냅샷 참조)
+    setCount(count + 1);
+    setCount(count + 1);
+    setCount(count + 1);
+  }
+
+  function handleAddThreeFixed() {
+    // 함수형 업데이트: 직전 결과(prev)를 받아 누적 → +3 정확히 반영
+    setCount(prev =&gt; prev + 1);
+    setCount(prev =&gt; prev + 1);
+    setCount(prev =&gt; prev + 1);
+  }
+
+  return &lt;button onClick={handleAddItem}&gt;담기 {count}&lt;/button&gt;;
+}</code></pre>
+  <p style="font-size:13.5px; color:var(--text-muted);">배칭을 의도적으로 깨야 할 때(중간 DOM 측정 등)는 <code>flushSync</code>로 동기 렌더를 강제할 수 있지만, 성능을 해치므로 예외적으로만 씁니다.</p>
+
+  <p><strong>3. 불필요한 리렌더 방지 3종 — 그리고 남용 주의</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">도구</th><th style="padding: 10px 16px;">메모하는 대상</th><th style="padding: 10px 16px;">언제 쓰나</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><b>React.memo</b></td><td style="padding: 10px 16px;">컴포넌트(렌더 결과)</td><td style="padding: 10px 16px;">부모가 자주 리렌더되지만 props는 거의 안 바뀌는 자식</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><b>useMemo</b></td><td style="padding: 10px 16px;">계산 결과(값/객체)</td><td style="padding: 10px 16px;">무거운 연산 캐싱, 또는 memo 자식에 넘길 객체의 참조 고정</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;"><b>useCallback</b></td><td style="padding: 10px 16px;">함수 참조</td><td style="padding: 10px 16px;">memo 자식에 콜백 전달, 또는 useEffect 의존성으로 쓰는 함수 고정</td></tr>
+    </tbody>
+  </table>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><b>남용 주의:</b> 메모이제이션도 공짜가 아닙니다. 의존성 배열 비교·이전 값 저장 비용이 들어, 가벼운 컴포넌트를 전부 memo로 감싸면 오히려 느려질 수 있습니다.</li>
+    <li><b>memo는 콜백·객체에 약합니다:</b> React.memo를 씌워도 부모가 매 렌더마다 새 함수/객체 리터럴을 props로 넘기면 참조가 매번 달라져 memo가 무력화됩니다. 그래서 useCallback·useMemo와 <b>짝</b>으로 써야 효과가 납니다.</li>
+    <li><b>먼저 측정하라:</b> React DevTools Profiler로 실제 병목을 확인한 뒤 최적화하는 것이 정석입니다. "추측 말고 측정"이 원칙입니다.</li>
+  </ul>
+
+  <p><strong>4. useEffect 의존성 배열</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">[] 빈 배열</h4><p style="color:var(--text-muted);">마운트 시 1회 실행. (StrictMode 개발 모드에선 마운트→언마운트→재마운트로 2번 호출되어 클린업 검증)</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">[a, b]</h4><p style="color:var(--text-muted);">a 또는 b가 바뀔 때마다 실행. 이전 effect의 클린업이 먼저 돌고 새 effect가 실행됩니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">의존성 누락 = stale closure</h4><p style="color:var(--text-muted);">effect가 참조하는 값을 배열에서 빼면, effect는 옛 스냅샷 값을 영원히 붙들어 버그가 납니다.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--algo); margin-bottom:8px;">클린업 함수</h4><p style="color:var(--text-muted);">return으로 구독 해제·타이머 정리. 언마운트 시, 그리고 다음 effect 실행 직전에 호출됩니다.</p></div>
+  </div>
+  <div class="code-block-header"><span class="code-title">의존성 누락이 만드는 stale closure</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-jsx"><code class="language-jsx">// ❌ 버그 버전: 의존성 []라서 effect 안의 count가 0에 고정(stale closure)
+function TimerBuggy() {
+  const [count, setCount] = useState(0);
+  useEffect(() =&gt; {
+    const id = setInterval(() =&gt; {
+      setCount(count + 1);          // count는 항상 0 → 0 + 1 = 1, 1에서 멈춤
+    }, 1000);
+    return () =&gt; clearInterval(id); // 클린업: 언마운트 시 타이머 해제
+  }, []);                          // count를 빼먹어 옛 값(0)을 붙들음
+  return &lt;p&gt;{count}&lt;/p&gt;;
+}
+
+// ✅ 해결 버전: 함수형 업데이트로 최신 값 보장 → 의존성 []이어도 정상 누적
+function TimerFixed() {
+  const [count, setCount] = useState(0);
+  useEffect(() =&gt; {
+    const id = setInterval(() =&gt; {
+      setCount(prev =&gt; prev + 1);   // prev는 항상 최신 값 → 1,2,3,...
+    }, 1000);
+    return () =&gt; clearInterval(id);
+  }, []);
+  return &lt;p&gt;{count}&lt;/p&gt;;
+}</code></pre>
+  <p style="font-size:13.5px; color:var(--text-muted);">규칙: effect 내부에서 쓰는 모든 reactive 값(props·state·그로부터 파생된 함수)은 의존성에 넣어야 합니다. <code>eslint-plugin-react-hooks</code>의 <code>exhaustive-deps</code> 룰이 이를 강제합니다. 의존성을 줄이고 싶다면 빼는 게 아니라, 함수형 업데이트·useRef·함수를 effect 안으로 이동 같은 방법으로 의존성 자체를 없애는 것이 정석입니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"리스트 렌더링에서 key에 배열 index를 쓰면 왜 안 되나요?"</em> → index를 key로 쓰면 리스트의 순서가 바뀌거나 중간에 항목이 삽입·삭제될 때, React가 "같은 key = 같은 항목"으로 오판해 DOM과 state를 엉뚱한 항목에 재사용합니다. 그 결과 input 값이 다른 행으로 옮겨가거나, 잘못된 항목이 지워지고, 불필요한 리렌더·애니메이션 깨짐이 발생합니다. key는 형제 사이에서 항목의 "정체성"을 식별하는 값이므로, 항목 고유 id처럼 <b>안정적이고 유일한 값</b>을 써야 합니다. 정렬·추가·삭제가 전혀 없는 정적 리스트라면 index도 무방합니다.</p>
+</section>
+
+      <section id="q-state-mgmt">
+  <h2>Q10. 상태관리 비교 — Context vs Redux vs Zustand vs Recoil</h2>
+  <p>React 면접에서 "왜 그 라이브러리를 골랐나요?"는 단골 질문입니다. 정답은 없지만, <strong>전역 상태가 정말 필요한지</strong>, <strong>서버 상태와 클라이언트 상태를 구분</strong>하는지, 그리고 <strong>각 도구의 트레이드오프</strong>를 설명할 수 있는지가 핵심 평가 포인트입니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 공용 게시판 vs 직접 전달</h4>
+    <p>부모가 손주에게 용돈을 주려고 자식, 며느리 손을 거쳐 전달하는 게 <strong>props drilling</strong>입니다. 거쳐가는 사람은 용돈에 관심도 없는데 매번 손을 타죠.<br>대신 거실에 <strong>공용 게시판(전역 스토어)</strong>을 두면, 필요한 사람이 직접 보러 옵니다. 단, 게시판 전체를 갈아끼우면 <strong>붙어 있던 모든 메모를 보던 사람이 다 다시 읽어야</strong> 한다는 게 Context의 함정입니다.</p>
+  </div>
+
+  <p><strong>언제 전역 상태가 필요한가 — 그리고 무엇이 "전역 상태"인가?</strong></p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>props drilling이 깊어질 때</strong>: 3~4단계 이상 그냥 내려보내기만 하는 prop이 생기면 전역화를 고려합니다. (1~2단계면 그냥 props가 더 명확)</li>
+    <li><strong>먼저 상태의 "종류"를 나눠라</strong>: 모든 데이터를 한 스토어에 넣지 마세요. 서버에서 받아오는 데이터(상품 목록, 주문 내역)는 <strong>서버 상태</strong>, UI에만 존재하는 데이터(모달 열림, 다크모드, 장바구니 임시 수량)는 <strong>클라이언트 상태</strong>입니다.</li>
+    <li><strong>서버 상태는 React Query(TanStack Query)/SWR로</strong>: 캐싱, 재요청, 로딩/에러 상태, 무효화(invalidation)를 전담 라이브러리가 처리합니다. 이걸 Redux에 직접 넣으면 보일러플레이트만 폭증합니다. 면접에서 "Redux에 API 응답을 다 넣었다"고 하면 감점 포인트.</li>
+    <li>따라서 <strong>전역 상태관리 라이브러리는 "순수 클라이언트 상태"만 담당</strong>하도록 범위를 좁히는 것이 모범 답안입니다.</li>
+  </ul>
+
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead>
+      <tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);">
+        <th style="padding: 10px 16px;">구분</th>
+        <th style="padding: 10px 16px;">핵심 특징</th>
+        <th style="padding: 10px 16px;">리렌더 모델</th>
+        <th style="padding: 10px 16px;">보일러플레이트 / 비고</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--accent-color);">Context API</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">React 내장, 의존성 0. "상태 전달 통로"이지 상태관리 도구가 아님</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">value 객체가 바뀌면 <strong>구독한 모든 컴포넌트가 리렌더</strong> (부분 구독 불가)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">매우 적음. 저빈도 전역값(테마, 로케일, 인증 유저)에 적합</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--frontend);">Redux (Toolkit)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">단방향 흐름, 예측 가능한 상태, 강력한 DevTools(타임트래블)와 미들웨어 생태계</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><code>useSelector</code> 단위로 부분 구독 → 해당 슬라이스 바뀔 때만 리렌더</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">RTK로 많이 줄었지만 여전히 가장 많음. 대규모/협업에 강함</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--devops);">Zustand</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">훅 기반의 단일 스토어, Provider 없이 사용. 매우 간결, 번들 작음</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">셀렉터로 <strong>선택한 값만 구독</strong> → 바뀐 부분만 리렌더</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">거의 없음. 소~중규모에서 인기 급상승</td>
+      </tr>
+      <tr style="border-bottom: 1px solid var(--border-color);">
+        <td style="padding: 10px 16px; font-weight:700; color: var(--algo);">Recoil / Jotai</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);"><strong>atom 단위</strong>의 잘게 쪼갠 상태, 파생 상태(selector/derived atom) 자동 계산</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">해당 atom을 구독한 컴포넌트만 리렌더 (가장 세밀)</td>
+        <td style="padding: 10px 16px; color: var(--text-muted);">적음. Recoil은 사실상 유지보수 중단 → 신규는 <strong>Jotai</strong> 권장</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p><strong>선택 가이드 (면접에서 이렇게 정리하면 좋음)</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">저빈도 전역값</h4><p style="color:var(--text-muted);">테마, 언어, 로그인 유저처럼 자주 안 바뀌는 값 → <strong>Context</strong>로 충분. 라이브러리 도입은 과함.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">소~중규모 앱</h4><p style="color:var(--text-muted);">빠르게 만들고 보일러플레이트를 줄이고 싶다 → <strong>Zustand</strong> 또는 <strong>Jotai</strong>. 훅 한두 개로 끝.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">대규모·복잡한 도메인</h4><p style="color:var(--text-muted);">여러 팀, 복잡한 상태 흐름, 디버깅/감사 추적이 중요 → <strong>Redux Toolkit</strong>. 엄격한 패턴과 DevTools가 무기.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--interview); margin-bottom:8px;">서버 데이터</h4><p style="color:var(--text-muted);">종류 불문, API 데이터는 <strong>React Query/SWR</strong>로 분리. 위 도구들은 클라이언트 상태만.</p></div>
+  </div>
+
+  <p><strong>Context를 "상태관리 라이브러리 대체"로 쓸 때의 성능 함정</strong></p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>함정 1 — 전체 리렌더</strong>: Context는 부분 구독을 못 합니다. <code>value</code> 객체가 바뀌면 <code>useContext</code>로 구독한 모든 컴포넌트가 값을 실제로 쓰든 안 쓰든 리렌더됩니다.</li>
+    <li><strong>함정 2 — 매 렌더마다 새 객체</strong>: <code>&lt;Ctx.Provider value={{ user, setUser }}&gt;</code>처럼 인라인으로 객체를 넘기면, 부모가 리렌더될 때마다 <strong>참조가 매번 새로 생겨</strong> 실제 값이 안 바뀌어도 모든 구독자가 리렌더됩니다.</li>
+  </ul>
+
+  <div class="code-block-header">
+    <span class="code-title">Context 성능 함정 해결: 분리 + 메모이제이션</span>
+    <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+  </div>
+  <pre class="language-jsx"><code class="language-jsx">import { createContext, useContext, useState, useMemo } from 'react';
+
+// ✅ 해결 1: 자주 안 바뀌는 값과 자주 바뀌는 값을 Context로 분리
+//    (state Context와 dispatch Context를 나누면, 데이터만 쓰는
+//     컴포넌트는 setter가 바뀌어도 리렌더되지 않음)
+const CartStateContext = createContext(null);    // 장바구니 아이템 목록
+const CartDispatchContext = createContext(null); // 변경 함수들
+
+function CartProvider({ children }) {
+  const [items, setItems] = useState([]);
+
+  // ✅ 해결 2: value를 useMemo로 감싸 참조 동일성 유지
+  //    items가 바뀔 때만 새 객체 생성 → 불필요한 구독자 리렌더 방지
+  const state = useMemo(() =&gt; ({ items, total: items.length }), [items]);
+
+  // setItems 같은 dispatch는 참조가 고정이라 별도 메모 불필요
+  return (
+    &lt;CartDispatchContext.Provider value={setItems}&gt;
+      &lt;CartStateContext.Provider value={state}&gt;
+        {children}
+      &lt;/CartStateContext.Provider&gt;
+    &lt;/CartDispatchContext.Provider&gt;
+  );
+}
+
+// 데이터를 읽기만 하는 컴포넌트 → state Context만 구독
+function CartBadge() {
+  const { total } = useContext(CartStateContext);
+  return &lt;span&gt;{total}&lt;/span&gt;;
+}
+
+// 변경만 하는 버튼 → dispatch Context만 구독 (items가 바뀌어도 리렌더 X)
+function AddButton({ product }) {
+  const setItems = useContext(CartDispatchContext);
+  return (
+    &lt;button onClick={() =&gt; setItems(prev =&gt; [...prev, product])}&gt;
+      담기
+    &lt;/button&gt;
+  );
+}</code></pre>
+  <p style="font-size: 13.5px;">정리하면 Context의 성능 함정 해결책은 <strong>(1) 관심사별 Context 분리</strong>, <strong>(2) value의 <code>useMemo</code> 메모이제이션</strong>입니다. (<code>React.memo</code>는 <em>context를 구독하지 않는</em> 중간·자식 컴포넌트가 부모 리렌더에 휩쓸리지 않게 막아 줄 뿐, <code>useContext</code>로 직접 구독하는 컴포넌트는 value가 바뀌면 memo 여부와 무관하게 리렌더되므로 이 함정의 해결책은 아닙니다.) 다만 이렇게까지 손이 가는 시점이면, 애초에 <strong>셀렉터 기반 부분 구독을 기본 제공하는 Zustand/Jotai를 쓰는 게 더 깔끔</strong>하다는 결론으로 이어집니다.</p>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"Context로 만든 전역 상태가 느려졌습니다. 라이브러리로 바꾸기 전에 무엇부터 확인하나요?"</em> → 먼저 React DevTools Profiler로 <strong>어떤 컴포넌트가 불필요하게 리렌더되는지</strong> 확인합니다. 원인이 대개 둘인데, <strong>(1) Provider의 value를 인라인 객체로 넘겨 매 렌더마다 참조가 바뀌는 경우 → <code>useMemo</code>로 감쌉니다.</strong> <strong>(2) 읽기 전용 데이터와 변경 함수가 한 Context에 묶여 모두 리렌더되는 경우 → state/dispatch Context를 분리</strong>합니다. 그래도 한 Context에 너무 많은 값이 모여 부분 구독이 필요해지면, 그때가 Zustand/Jotai 같은 셀렉터 기반 도구로 옮길 신호입니다.</p>
+</section>
+
+      <section id="q-form-quality">
+  <h2>Q11. 폼 품질 — Controlled vs Uncontrolled·검증·디바운스</h2>
+  <p>폼은 사용자 입력의 관문이라 React 면접에서 거의 빠지지 않습니다. 상태 모델(controlled/uncontrolled), 이중 검증, 디바운스/쓰로틀, 접근성을 한 묶음으로 설명할 수 있으면 "폼 한 번 제대로 만들어봤다"는 신호가 됩니다. 단순 구현이 아니라 <strong>성능·보안·UX·접근성의 트레이드오프</strong>를 말하는 게 핵심입니다.</p>
+
+  <div class="analogy-box">
+    <h4>💡 비유로 이해하기: 백화점 입구의 두 가지 등록 방식</h4>
+    <p>Controlled는 <strong>방명록을 든 안내원</strong>입니다. 손님이 한 글자 적을 때마다 안내원이 바로 받아 적어(상태) 항상 최신본을 들고 있죠 — 정확하지만 손이 바쁩니다.<br>Uncontrolled는 <strong>입구의 무인 작성대</strong>입니다. 손님이 알아서 종이(DOM)에 다 쓰고, 제출 버튼을 누를 때 한 번만 걷어갑니다(ref) — 안내원은 평소엔 쉬다가 마지막에만 확인합니다.</p>
+  </div>
+
+  <p><strong>1) Controlled vs Uncontrolled — 입력값의 "진실(source of truth)"이 어디에 있는가</strong></p>
+  <table style="width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; text-align: left; background: var(--bg-card); border-radius: 8px; overflow: hidden;">
+    <thead><tr style="background: rgba(255,255,255,0.05); border-bottom: 1px solid var(--border-color);"><th style="padding: 10px 16px;">구분</th><th style="padding: 10px 16px;">Controlled</th><th style="padding: 10px 16px;">Uncontrolled</th></tr></thead>
+    <tbody>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">진실의 원천</td><td style="padding: 10px 16px;">React state (value=)</td><td style="padding: 10px 16px;">DOM 자체 (ref로 읽음)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">입력 시 리렌더</td><td style="padding: 10px 16px;">매 키 입력마다 발생</td><td style="padding: 10px 16px;">없음 (제출 때만 읽음)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">실시간 검증/포맷팅</td><td style="padding: 10px 16px;">쉬움 (값을 항상 알고 있음)</td><td style="padding: 10px 16px;">어려움 (onChange 직접 처리 필요)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">대형 폼 성능</td><td style="padding: 10px 16px;">필드 많아지면 부담</td><td style="padding: 10px 16px;">유리 (리렌더 최소화)</td></tr>
+      <tr style="border-bottom: 1px solid var(--border-color);"><td style="padding: 10px 16px;">대표 방식</td><td style="padding: 10px 16px;">useState 직접 관리</td><td style="padding: 10px 16px;">React Hook Form (register/ref)</td></tr>
+      <tr><td style="padding: 10px 16px;">언제 쓰나</td><td style="padding: 10px 16px;">입력에 따라 UI가 즉시 바뀔 때</td><td style="padding: 10px 16px;">단순 제출형, 성능 민감한 대형 폼</td></tr>
+    </tbody>
+  </table>
+  <p style="font-size:13px; color:var(--text-muted);">정리: <strong>React Hook Form이 빠른 이유</strong>는 uncontrolled(ref) 기반이라 입력마다 부모를 리렌더하지 않고, 구독한 필드만 골라 갱신하기 때문입니다. "controlled가 항상 정답"이라는 오해를 깨는 게 면접 포인트.</p>
+
+  <p><strong>2) 검증 — 클라이언트는 UX, 서버는 보안. 둘 다 필요합니다</strong></p>
+  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin: 16px 0; font-size:13px;">
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--accent-color); margin-bottom:8px;">클라이언트 검증</h4><p style="color:var(--text-muted);">빠른 피드백으로 UX 향상. 하지만 개발자도구로 우회 가능 → <strong>신뢰 불가</strong>. 어디까지나 편의 장치.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend); margin-bottom:8px;">서버 검증</h4><p style="color:var(--text-muted);">진짜 방어선. 클라이언트가 뭘 보내든 서버는 항상 다시 검증해야 함. 보안·데이터 무결성의 책임자.</p></div>
+    <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops); margin-bottom:8px;">스키마 검증 (Zod)</h4><p style="color:var(--text-muted);">검증 규칙을 한 곳에 선언. 프론트·백엔드가 <strong>같은 스키마를 공유</strong>해 중복·불일치 제거. 타입 추론까지 덤.</p></div>
+  </div>
+  <div class="code-block-header"><span class="code-title">Zod 스키마를 클라이언트·서버가 공유</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-jsx"><code class="language-jsx">import { z } from "zod";
+
+// 검증 규칙을 한 곳에 선언 → 프론트와 백엔드가 import해서 함께 사용
+export const signupSchema = z.object({
+  email: z.string().email("이메일 형식이 올바르지 않습니다"),
+  // 최소 8자 + 숫자 1개 이상 (정규식)
+  password: z
+    .string()
+    .min(8, "비밀번호는 8자 이상이어야 합니다")
+    .regex(/[0-9]/, "숫자를 1자 이상 포함하세요"),
+});
+
+// 타입을 스키마에서 자동 추론 (별도 interface 작성 불필요)
+// type SignupInput = z.infer&lt;typeof signupSchema&gt;;
+
+// 클라이언트: 제출 직전 검증 → UX용 즉시 에러 표시
+const result = signupSchema.safeParse(formData);
+if (!result.success) {
+  // result.error.flatten().fieldErrors 로 필드별 메시지 추출
+  showErrors(result.error.flatten().fieldErrors);
+  return;
+}
+
+// 서버(API 핸들러): 같은 스키마로 "다시" 검증 → 보안 방어선
+// 클라이언트 검증을 우회한 악의적 요청도 여기서 차단
+const parsed = signupSchema.safeParse(req.body);
+if (!parsed.success) return res.status(400).json({ error: "잘못된 입력" });</code></pre>
+
+  <p><strong>3) 디바운스 vs 쓰로틀 — 실시간 검색/검증의 호출 빈도 제어</strong></p>
+  <p style="font-size:13px;">실시간 검색창에서 매 키 입력마다 API를 부르면 서버가 폭발합니다. 둘 다 호출 횟수를 줄이지만 "언제 호출하느냐"가 다릅니다.</p>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>디바운스(debounce):</strong> 입력이 <em>멈춘 뒤</em> N초 지나면 1번 호출. 타이핑 중엔 계속 미룸 → <strong>검색 자동완성·중복 이메일 확인</strong>처럼 "최종 입력값"만 중요할 때.</li>
+    <li><strong>쓰로틀(throttle):</strong> 입력이 계속돼도 <em>N초에 1번</em>은 보장 호출 → <strong>스크롤·드래그·무한스크롤</strong>처럼 진행 중에도 주기적 반응이 필요할 때.</li>
+  </ul>
+  <div class="code-block-header"><span class="code-title">디바운스로 실시간 검색 호출 줄이기 (useEffect 버전)</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-jsx"><code class="language-jsx">function SearchBox() {
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState([]);
+
+  useEffect(() =&gt; {
+    // 빈 입력이면 호출하지 않음
+    if (!query) return;
+
+    // 입력이 멈춘 뒤 400ms 후에 검색 실행
+    const timer = setTimeout(() =&gt; {
+      fetch(`/api/search?q=${encodeURIComponent(query)}`)
+        .then((r) =&gt; r.json())
+        .then(setResults);
+    }, 400);
+
+    // 핵심: query가 또 바뀌면(타이핑 계속) 이전 타이머를 취소
+    // → 멈출 때까지 호출이 계속 미뤄짐 = 디바운스
+    return () =&gt; clearTimeout(timer);
+  }, [query]); // query가 바뀔 때마다 effect 재실행
+
+  return (
+    &lt;input
+      value={query}
+      onChange={(e) =&gt; setQuery(e.target.value)}
+      placeholder="상품 검색"
+    /&gt;
+  );
+}</code></pre>
+  <p style="font-size:13px; color:var(--text-muted);">실무에서는 직접 setTimeout보다 lodash <code>debounce</code>나 <code>use-debounce</code> 훅을 쓰기도 합니다(<code>useDeferredValue</code>는 호출 횟수를 줄이는 디바운스가 아니라 무거운 <em>렌더</em>를 지연시키는 별개 도구라 혼동 주의). 또한 위 코드는 <strong>타이머만 취소</strong>할 뿐 이미 출발한 <code>fetch</code>는 못 막으므로, 응답이 늦게 도착해 최신 결과를 덮어쓰지 않으려면 <code>AbortController</code>로 이전 요청을 취소하거나 요청 순번을 비교해야 합니다. "취소 가능한 타이머 + cleanup" 원리를 설명할 수 있어야 합니다.</p>
+
+  <p><strong>4) 접근성 — 보이는 폼이 아니라 "읽히는" 폼</strong></p>
+  <p style="font-size:13px;">스크린리더 사용자에게도 어떤 칸이 무엇인지, 무엇이 틀렸는지 전달돼야 합니다. 세 가지만 챙기면 핵심은 잡습니다.</p>
+  <div class="code-block-header"><span class="code-title">label 연결 · aria-invalid · 에러 메시지 연결</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+  <pre class="language-jsx"><code class="language-jsx">{/* label의 htmlFor와 input의 id를 맞춰야 라벨-입력이 연결된다 */}
+&lt;label htmlFor="email"&gt;이메일&lt;/label&gt;
+
+&lt;input
+  id="email"
+  type="email"
+  value={email}
+  onChange={onChange}
+  aria-invalid={!!error}
+  aria-describedby={error ? "email-error" : undefined}
+/&gt;
+
+{/* 에러 메시지: role="alert"라서 발생 즉시 스크린리더가 읽어준다 */}
+{error &amp;&amp; (
+  &lt;p id="email-error" role="alert" style={{ color: "crimson" }}&gt;
+    {error}
+  &lt;/p&gt;
+)}</code></pre>
+  <ul style="font-size: 13.5px; line-height: 1.85;">
+    <li><strong>label↔input 연결:</strong> <code>htmlFor</code>=<code>id</code>. 라벨 클릭 시 포커스 이동 + 스크린리더가 칸 이름을 읽음. (placeholder는 라벨 대체 불가 — 입력하면 사라짐)</li>
+    <li><strong>aria-invalid:</strong> 오류 난 칸임을 명시. 시각적 빨간 테두리만으로는 비시각 사용자에게 전달 안 됨.</li>
+    <li><strong>aria-describedby + role="alert":</strong> 에러 메시지를 입력과 묶고, 발생 즉시 음성으로 안내.</li>
+  </ul>
+
+  <p><strong>💡 면접 꼬리 질문:</strong> <em>"필드가 100개쯤 되는 대형 폼에서 controlled로 했더니 입력할 때마다 끊깁니다. 어떻게 해결하나요?"</em> → 원인은 <strong>매 키 입력 → 부모 컴포넌트 전체 리렌더</strong>입니다. ① <strong>uncontrolled 전환</strong>: React Hook Form으로 ref 기반 관리 → 입력 중 리렌더 자체를 제거(가장 효과적). ② <strong>상태 지역화</strong>: 각 필드를 작은 컴포넌트로 분리하고 <code>React.memo</code>로 감싸 변경된 필드만 리렌더. ③ <strong>구독 분리</strong>: 거대한 단일 state 객체 대신 필드별 구독(RHF의 watch, 혹은 상태관리 selector)으로 영향 범위 최소화. ④ <strong>응답성 분리</strong>: 네트워크 호출은 디바운스로 줄이고, 무거운 목록·검증 <em>렌더</em>는 <code>useDeferredValue</code>로 우선순위를 낮춰 입력 반응성과 분리. 결론은 "controlled를 빠르게"가 아니라 "<strong>불필요한 리렌더를 끊는다</strong>"는 방향으로 답해야 합니다.</p>
+</section>
+
       <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
     </div>
   </main>
@@ -489,6 +1186,73 @@ export default function ProductReviews({ id }) {
         },
         solution: "dynamic(() => import('./ReviewChart'))",
         explanation: "dynamic(() => import('...'))는 해당 컴포넌트를 별도 청크로 분리해 필요할 때 로드하는 코드 스플리팅의 표준 형태입니다. 첫 화면에 불필요한 무거운 위젯(차트·에디터·모달)을 떼어내 초기 번들을 줄입니다. require는 정적 동기 로딩이라 분할 효과가 없습니다."
+      },
+      {
+        type: "mcq",
+        question: "출력 순서는? console.log('A'); setTimeout(() => console.log('B'), 0); Promise.resolve().then(() => console.log('C')); console.log('D');",
+        options: ["A B C D", "A D C B", "A D B C", "A C D B"],
+        correct: 1,
+        explanation: "동기 코드 A, D가 먼저 실행됩니다. 그다음 마이크로태스크 큐(Promise.then)가 매크로태스크(setTimeout)보다 먼저 비워지므로 C가, 마지막으로 B가 출력됩니다 → A D C B. '마이크로태스크 우선'이 핵심."
+      },
+      {
+        type: "mcq",
+        question: "for (var i = 0; i < 3; i++) { setTimeout(() => console.log(i), 0); } 의 출력과, let으로 바꿨을 때의 차이는?",
+        options: [
+          "0 1 2 — var든 let이든 동일",
+          "3 3 3 (var는 함수 스코프로 i를 공유) / let이면 블록 스코프라 0 1 2",
+          "0 1 2 — var가 블록 스코프이기 때문",
+          "undefined가 3번"
+        ],
+        correct: 1,
+        explanation: "var는 함수 스코프라 콜백 3개가 같은 i를 참조하고, 루프가 끝난 뒤(i=3) 콜백이 실행돼 3 3 3이 찍힙니다. let은 반복마다 새 바인딩을 만들어 각 콜백이 자기 시점의 i를 캡처하므로 0 1 2가 됩니다."
+      },
+      {
+        type: "mcq",
+        question: "이동·확대 애니메이션을 부드럽게 만들려 합니다. 리플로우(layout) 없이 GPU 컴포지팅만 유발해 가장 저렴한 속성은?",
+        options: [
+          "left / top / width / height",
+          "transform / opacity",
+          "margin / padding",
+          "font-size / line-height"
+        ],
+        correct: 1,
+        explanation: "transform·opacity는 레이아웃·페인트를 건너뛰고 컴포지터(GPU) 단계에서만 처리돼 가장 쌉니다. width/top/margin/font-size 등은 레이아웃 재계산(reflow)을 유발해 비쌉니다. 그래서 위치 이동은 left/top 대신 transform: translate를 씁니다."
+      },
+      {
+        type: "mcq",
+        question: "React 리스트 렌더링에서 key로 배열 index를 쓰면 생기는 대표적 문제는?",
+        options: [
+          "항상 렌더링이 빨라진다",
+          "항목이 재정렬·삽입·삭제될 때 React가 엘리먼트를 잘못 재사용해 상태가 엉키고 비효율적으로 재조정된다",
+          "key가 없는 것과 완전히 동일하다",
+          "key는 성능·정확성과 무관하다"
+        ],
+        correct: 1,
+        explanation: "index를 key로 쓰면 항목이 추가·삭제·재정렬될 때 같은 index에 다른 데이터가 매핑돼 React가 DOM/상태를 잘못 재사용합니다(입력값이 엉뚱한 행에 남는 버그). 안정적인 고유 식별자(item.id)를 key로 써야 합니다."
+      },
+      {
+        type: "mcq",
+        question: "Context API로 전역 상태를 다룰 때 흔히 겪는 성능 함정은?",
+        options: [
+          "Context는 리렌더를 전혀 일으키지 않는다",
+          "Provider value가 바뀌면 그 값을 구독하는 모든 컴포넌트가 리렌더된다 — 자주 바뀌는 값엔 부적합",
+          "Context는 서버에서만 동작한다",
+          "Context는 상태를 저장할 수 없다"
+        ],
+        correct: 1,
+        explanation: "Context는 value가 바뀌면 구독 컴포넌트 전체가 리렌더됩니다. 자주 바뀌는 상태를 큰 Context 하나에 담으면 광범위한 리렌더가 발생하므로, Context를 잘게 분리하거나 value를 useMemo로 안정화하고, 빈번·복잡한 전역 상태는 Redux·Zustand 같은 선택적 구독 라이브러리를 고려합니다."
+      },
+      {
+        type: "mcq",
+        question: "검색창에 글자를 칠 때마다 API를 호출해 서버가 과부하입니다. '입력이 멈춘 뒤 한 번만' 호출하도록 줄이는 기법은?",
+        options: [
+          "쓰로틀(throttle)만이 유일한 방법이다",
+          "디바운스(debounce) — 마지막 입력 후 일정 시간이 지나면 1회만 호출",
+          "폴링(polling)",
+          "메모이제이션(memoization)"
+        ],
+        correct: 1,
+        explanation: "디바운스는 '마지막 이벤트 이후 X ms 동안 추가 입력이 없으면' 한 번 실행해 타이핑 중 중간 호출을 모두 생략합니다. 쓰로틀은 '주기마다 최대 1회'로 스크롤 등 다른 목적에 맞습니다. 검색어 자동완성에는 디바운스가 정석입니다."
       }
     ];
 
