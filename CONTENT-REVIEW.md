@@ -116,3 +116,37 @@
 - 부록G exactly-once "외부 DB까진 2PC/Saga 필요" / 부록E rate-limit INCR+EXPIRE 원자성(Lua/SET EX NX)
 
 **의도적 미수정(이미 충실/오판):** k8s Secret 경고(이미 강함), 부록E idempotency(정상 패턴), 부록G 리샤딩(면접 꼬리질문에 이미 커버), §오판 5건(false positive).
+
+
+---
+
+## 부록 B/E/F 면접 빈출 갭 보강 (2026-06-08 · PR #5)
+
+### 요청 배경
+사용자 요청: "부록 B/E/F 내용이 정말 면접 빈출인지 + 자주 나오는데 빠진 게 없는지 재확인 → 누락분 추가."
+
+### 갭 분석 방법
+현재 토픽 인벤토리(B 27문항 / E 9섹션 / F 6섹션)를 2026 한국 IT 면접 빈출과 **Codex + 커리큘럼 중복 제거** 교차로 대조. 이미 다른 곳에서 다루는 주제(Spring MVC 흐름·정규화·observability·Saga 등)는 제외하고, **빈출인데 빠진 20개**를 확정.
+
+### 추가한 20개 섹션 (전부 면접 빈출 확인)
+| 부록 | 추가 섹션(Q번호) |
+|---|---|
+| **B** CS·Java (Q28~Q34) | OOP 4대특성+오버로딩/오버라이딩 · JVM 메모리+클래스로더 부모위임 · 컬렉션 선택+hashCode/equals 계약 · 동시성 심화(synchronized/ReentrantLock/volatile/CAS) · DB락(낙관·비관·MVCC) · HTTP 메서드·상태코드(멱등성) · HTTPS/TLS 핸드셰이크 |
+| **E** 시스템설계 (Q6~Q12) | 회복탄력성(타임아웃·재시도·서킷브레이커·벌크헤드) · CAP+일관성모델 · CDN · 파일업로드(presigned/S3) · 알림시스템(큐+워커+멱등) · 실시간랭킹(Redis ZSET) · 분산ID(Snowflake) |
+| **F** 프론트품질 (Q6~Q11) | 이벤트루프(매크로/마이크로) · JS핵심(클로저·this·프로토타입·호이스팅) · 브라우저렌더링(CRP·reflow/repaint) · React리렌더(배칭·useEffect) · 상태관리비교(Context/Redux/Zustand/Recoil) · 폼품질(controlled/uncontrolled·검증·디바운스) |
+
+각 섹션은 기존 Q&A 형식(도입→비유→표/카드/코드→면접 꼬리질문) 준수, 이미지(`learning-visual`) 미포함. E/F에는 복습 뱅크용 퀴즈도 각 6문항 추가(quizEngine → 대시보드 SRS 자동 편입).
+
+### 정확성 게이트 (2단계 검증)
+1. **작성+적대적 검수 워크플로우**: 20개 섹션 각각 저자 에이전트 작성 → 독립 검수 에이전트가 사실/형식/코드 재검증 후 수정본 반환. 4개 섹션에서 실제 오류 발견·수정(예: `@Transactional` self-invocation 버그, 알림 claim-first 메시지 유실 케이스, 랭킹 TTL 슬라이딩 버그).
+2. **Codex 독립 교차검증**(부록별 3회): 추가 발견·수정한 주요 사실 오류 —
+   - **B**: PATCH 멱등성 명세 출처 **RFC 7231 → RFC 5789** 정정 / 429 Retry-After "필수 아님"으로 완화 / Major GC vs Full GC 구분 / 클래스 정체성=이름+로더 명확화 / TLS getAcceptedIssuers 주석 정정.
+   - **E**: Resilience4j Retry↔CircuitBreaker 순서(CallNotPermittedException ignore 필요) / aspect 순서는 어노테이션 나열순 무관 / max-attempts=3이면 백오프 2회 / 실패율 "이상(≥)" / RYW 1초 휴리스틱→LSN 보장 단서 / 알림 PENDING 동시성(lease) / ZSET 복잡도 "모두 O(log N)" 과일반화 정정.
+   - **F**: `this` 우선순위 순서(new>명시>암시>기본) 명확화 / await 다음 줄이 setTimeout보다 "항상" 먼저는 아님(지연 settle 시) / React.memo는 context 구독 리렌더 해결책 아님 / useDeferredValue는 디바운스 아님 / 디바운스 cleanup은 타이머만 취소(AbortController 단서) / Timer 예제 컴포넌트 분리 / JSX 속성 내 주석 → children 위치로.
+
+### 부수 발견·수정 (같은 파일 정리)
+- **사이드바 버그 잔존**: PR #4가 e/f/g를 "완전판"으로 가정해 제외했으나, 실제로 **appendix-e.html(A~E만)·appendix-f.html(A~F만)** 사이드바가 잘려 있었음 → 표준 A~G nav로 교체(사용자 버그 #1 완전 해소). 전 17개 사이드바 페이지 A~G 노출 확인.
+- **리브랜드 잔재**: e/f 본문의 쇼핑몰명 "Antigravity" 6곳 → **Rehab Fashion**으로 정정(+"부록 Antigravity의 Redis JWT" 깨진 문구 수정). 로고 span은 main.js 런타임 리브랜드("Dev Rehab")라 그대로 둠.
+
+### 라이브 검증
+섹션 open/close·`<pre>` 균형 OK · 퀴즈 배열 JS 파싱 OK(E 11·F 11문항, mcq correct 인덱스 유효) · 내부 링크 0 broken · 브라우저 렌더(B 34섹션·E 7·F 6 신규 노출, 사이드바 A~G, 로고 Dev Rehab, 퀴즈 렌더, 콘솔 에러 0) 통과.
