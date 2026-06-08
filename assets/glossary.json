@@ -1308,6 +1308,41 @@
       "name": "colcon (빌드 도구)",
       "definition": "ROS 2 워크스페이스의 여러 패키지를 한 번에 빌드하는 표준 도구입니다.",
       "explanation": "워크스페이스 루트에서 colcon build를 실행하면 build/·install/이 생기고, source install/setup.bash로 환경을 등록한 뒤 ros2 run·ros2 launch로 노드를 실행합니다."
+    },
+    {
+      "key": "TF2",
+      "chapter": "Robotics 7",
+      "name": "TF2 (좌표 변환 트리)",
+      "definition": "ROS 2에서 시간에 따라 변하는 좌표 프레임들의 관계를 트리로 관리하고, 임의의 두 프레임 사이 변환을 자동으로 계산해 주는 라이브러리입니다.",
+      "explanation": "각 프레임은 부모가 하나뿐인 트리를 이루며(REP-105: map→odom→base_link→센서), 변환은 SE(3)(R1)입니다. lookup_transform으로 '레이저가 잰 점이 map에서는 어디?'를 변환 합성으로 답합니다. 고정 관계는 static, 움직이는 관계(오도메트리)는 dynamic 변환으로 방송합니다."
+    },
+    {
+      "key": "URDF",
+      "chapter": "Robotics 7",
+      "name": "URDF (로봇 기술 형식)",
+      "definition": "로봇을 링크(link)와 조인트(joint)로 기술하는 XML 형식(Unified Robot Description Format)입니다.",
+      "explanation": "링크는 강체(visual·collision·inertial), 조인트는 두 링크를 연결합니다(타입: revolute·continuous·prismatic·fixed·floating·planar 6종). robot_state_publisher가 URDF와 조인트 각도로부터 TF를 발행하며, 반복 구조는 xacro 매크로로 작성합니다."
+    },
+    {
+      "key": "Gazebo",
+      "chapter": "Robotics 7",
+      "name": "Gazebo (물리 시뮬레이터)",
+      "definition": "중력·충돌·마찰·센서를 가상으로 시뮬레이션해 실제 로봇 없이 테스트하게 해 주는 3D 물리 시뮬레이터입니다.",
+      "explanation": "시뮬 환경의 카메라·LiDAR가 센서 플러그인으로 실제처럼 ROS 토픽을 발행해, 같은 노드 코드를 시뮬과 실물에서 함께 쓸 수 있습니다. 'Gazebo는 세상을 만든다(시뮬), RViz는 세상을 본다(시각화)'로 구분합니다."
+    },
+    {
+      "key": "RViz",
+      "chapter": "Robotics 7",
+      "name": "RViz (시각화 도구)",
+      "definition": "로봇 모델·TF·센서 데이터·경로를 3D로 보여주는 ROS 2 시각화 도구입니다(물리 시뮬레이터가 아님).",
+      "explanation": "실제 로봇이든 Gazebo든 거기서 나오는 데이터를 들여다보는 계기판·모니터 역할입니다. Gazebo(물리 시뮬)와 혼동하기 쉽지만, RViz는 보여주기만 할 뿐 물리를 돌리지 않습니다."
+    },
+    {
+      "key": "Robot-State-Publisher",
+      "chapter": "Robotics 7",
+      "name": "robot_state_publisher",
+      "definition": "URDF 로봇 모델과 조인트 상태로부터 각 링크의 TF 변환을 자동으로 발행하는 ROS 2 노드입니다.",
+      "explanation": "URDF의 고정 조인트는 static TF, 움직이는 조인트는 조인트 각도(joint_states)를 받아 dynamic TF로 발행합니다. 덕분에 RViz·TF2가 로봇의 각 부위가 어디 있는지 알 수 있습니다."
     }
   ]
 }
