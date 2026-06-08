@@ -1,0 +1,349 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter R7 - ROS 2 심화 & 시뮬레이션</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R8~R10 · 부록 R-A~C<br><span style="font-size: 11px;">인식(OpenCV) · SLAM · 매니퓰레이션 …<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>Chapter R7</span></div>
+      <h1>Chapter R7: ROS 2 심화 &amp; 시뮬레이션</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">실제 로봇 없이도 개발하려면 <strong>시뮬레이션</strong>이 필요합니다. 이 챕터는 여러 좌표계를 트리로 관리하는 <strong>TF2</strong>(R1의 SE(3) 변환이 그대로 쓰입니다!), 로봇의 몸을 XML로 기술하는 <strong>URDF</strong>, 그리고 물리 시뮬레이터 <strong>Gazebo</strong>와 시각화 도구 <strong>RViz</strong>의 차이를 다룹니다. (ROS·시뮬레이터는 이 환경에서 실행 불가 → 공식 문서 기준 패턴으로 다루되, <strong>TF2 변환 트리의 수학은 numpy로 실행 검증</strong>합니다.)</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig">
+      <svg class="blueprint" viewBox="0 0 800 300" role="img" aria-label="TF2 좌표 프레임 트리: map에서 odom, base_link, 그리고 센서 프레임으로 이어지는 도면">
+        <defs>
+          <pattern id="grid-r7" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern>
+          <marker id="ar7" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#ffb300"/></marker>
+        </defs>
+        <rect width="800" height="300" fill="url(#grid-r7)"/>
+        <text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG R7 · TF2 좌표 프레임 트리 (REP-105)</text>
+        <!-- frames -->
+        <g font-size="13">
+          <rect x="60" y="120" width="120" height="46" rx="10" fill="rgba(127,212,255,0.12)" stroke="#7fd4ff" stroke-width="1.6"/><text x="120" y="148" fill="#cfe8ff" text-anchor="middle">map</text>
+          <rect x="260" y="120" width="120" height="46" rx="10" fill="rgba(127,212,255,0.12)" stroke="#7fd4ff" stroke-width="1.6"/><text x="320" y="148" fill="#cfe8ff" text-anchor="middle">odom</text>
+          <rect x="460" y="120" width="130" height="46" rx="10" fill="rgba(255,179,0,0.14)" stroke="#ffb300" stroke-width="1.8"/><text x="525" y="148" fill="#ffe2a6" text-anchor="middle">base_link</text>
+          <rect x="660" y="60" width="110" height="42" rx="10" fill="rgba(72,213,151,0.12)" stroke="#48d597" stroke-width="1.6"/><text x="715" y="86" fill="#cfe8ff" text-anchor="middle">laser</text>
+          <rect x="660" y="186" width="110" height="42" rx="10" fill="rgba(72,213,151,0.12)" stroke="#48d597" stroke-width="1.6"/><text x="715" y="212" fill="#cfe8ff" text-anchor="middle">camera</text>
+        </g>
+        <!-- edges with transforms -->
+        <line x1="180" y1="143" x2="258" y2="143" stroke="#ffb300" stroke-width="1.8" marker-end="url(#ar7)"/>
+        <text x="200" y="134" fill="#ffb300" font-size="10">동적</text>
+        <line x1="380" y1="143" x2="458" y2="143" stroke="#ffb300" stroke-width="1.8" marker-end="url(#ar7)"/>
+        <text x="398" y="134" fill="#ffb300" font-size="10">오도메트리(R4)</text>
+        <line x1="590" y1="135" x2="658" y2="92" stroke="#ffb300" stroke-width="1.8" marker-end="url(#ar7)"/>
+        <text x="600" y="110" fill="#ffb300" font-size="10">정적</text>
+        <line x1="590" y1="152" x2="658" y2="200" stroke="#ffb300" stroke-width="1.8" marker-end="url(#ar7)"/>
+        <text x="600" y="186" fill="#ffb300" font-size="10">정적</text>
+        <text x="400" y="270" fill="rgba(180,220,255,0.75)" font-size="12" text-anchor="middle">각 프레임은 부모가 하나 → 트리. 임의의 두 프레임 사이 변환은 자동으로 계산(lookup).</text>
+      </svg>
+      <figcaption>로봇 시스템의 모든 좌표계(map·odom·base_link·센서)는 <strong>부모-자식 트리</strong>로 연결됩니다. TF2가 이 트리를 관리해, "레이저가 잰 점이 지도(map)에서는 어디지?" 같은 질문에 <strong>변환을 자동으로 이어 붙여(R1!)</strong> 답합니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- 1. 왜 시뮬레이션 -->
+      <section id="sim-intro">
+        <h2>1. 왜 시뮬레이션인가</h2>
+        <p>실제 로봇으로만 개발하면 느리고, 비싸고, 위험합니다(망가지면 끝). <strong>시뮬레이션</strong>은 가상 환경에서 로봇을 돌려 <strong>안전하게·빠르게·무한히 반복</strong>해 실험하게 해 줍니다. 시뮬에서 충분히 검증한 뒤 실제 로봇으로 옮기는 것을 <strong>sim-to-real</strong>이라 합니다(R10).</p>
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 비행 시뮬레이터</h4>
+          <p>조종사는 진짜 비행기로 위험한 상황을 연습하지 않습니다 — 시뮬레이터에서 수없이 반복하죠. 로봇도 마찬가지입니다. 이때 <strong>Gazebo</strong>는 "물리 법칙이 도는 가상 세계(시뮬레이터)"이고, <strong>RViz</strong>는 "센서·로봇 상태를 들여다보는 계기판(시각화)"입니다 — 둘은 역할이 다릅니다(5절에서 구분).</p>
+        </div>
+      </section>
+
+      <!-- 2. TF2 -->
+      <section id="tf2">
+        <h2>2. TF2 — 좌표 프레임 트리</h2>
+        <p>로봇엔 좌표계가 많습니다 — 지도(<code>map</code>), 오도메트리 기준(<code>odom</code>), 로봇 몸체(<code>base_link</code>), 센서마다(<code>laser</code>, <code>camera</code>). <strong>TF2</strong>는 이들을 <strong>부모-자식 트리</strong>로 관리하고(REP-105 표준 순서 <code>map → odom → base_link → 센서</code>), <strong>임의의 두 프레임 사이 변환을 자동으로 계산</strong>해 줍니다. 그 계산이 바로 R1의 <strong>동차변환행렬 합성</strong>입니다.</p>
+
+        <p>고정된 관계(예: 로봇 몸에 볼트로 붙은 라이다)는 <strong>정적(static) 변환</strong>, 시간에 따라 변하는 관계(예: 움직이는 로봇의 <code>odom→base_link</code>, R4의 오도메트리)는 <strong>동적(dynamic) 변환</strong>으로 방송합니다. TF2 변환 트리를 numpy로 직접 만들어, "레이저가 잰 점이 map에서는 어디인지" 구해 봅니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">TF2 변환 트리 — 프레임 사이 좌표 변환 (numpy, 실행 검증)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+def rot_z(t):
+    c, s = np.cos(t), np.sin(t)
+    return np.array([[c, -s, 0], [s, c, 0], [0, 0, 1]])
+def make_T(R, p):                      # SE(3) 동차변환행렬 (R1)
+    T = np.eye(4); T[:3, :3] = R; T[:3, 3] = p; return T
+def invert_T(T):
+    R, p = T[:3, :3], T[:3, 3]
+    Ti = np.eye(4); Ti[:3, :3] = R.T; Ti[:3, 3] = -R.T @ p; return Ti
+
+# TF 트리: 각 프레임 = (부모, '부모에서 본 변환')
+tree = {
+    "map":       (None,        np.eye(4)),
+    "odom":      ("map",       make_T(np.eye(3),             [1.0, 0.0, 0.0])),
+    "base_link": ("odom",      make_T(rot_z(np.radians(90)), [2.0, 1.0, 0.0])),  # 동적(R4 오도메트리)
+    "laser":     ("base_link", make_T(np.eye(3),             [0.2, 0.0, 0.3])),  # 정적
+}
+
+def T_from_map(frame):                 # map에서 본 frame 변환 (루트까지 곱)
+    chain = []
+    while frame is not None:
+        parent, T_pc = tree[frame]; chain.append(T_pc); frame = parent
+    T = np.eye(4)
+    for T_pc in reversed(chain): T = T @ T_pc
+    return T
+
+def lookup(target, source):            # TF2 lookup_transform 과 같은 역할
+    return invert_T(T_from_map(target)) @ T_from_map(source)
+
+p_laser = np.array([1.0, 0.0, 0.0, 1.0])          # 레이저가 잰 점
+print("레이저 점의 map 좌표:", np.round(T_from_map("laser") @ p_laser, 3)[:3])
+print("같은 점의 base_link 좌표:", np.round(lookup("base_link", "laser") @ p_laser, 3)[:3])</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">레이저 점의 map 좌표: [3.  2.2 0.3]
+같은 점의 base_link 좌표: [1.2 0.  0.3]</pre>
+        </div>
+        <p style="color:var(--text-muted); font-size:13px;">실제 ROS에서는 이 계산을 TF2가 대신합니다 — <code>tf_buffer.lookup_transform("map", "laser", time)</code> 한 줄이면 끝. 내부 원리가 바로 위의 "변환 이어 붙이기"입니다.</p>
+      </section>
+
+      <!-- 3. URDF -->
+      <section id="urdf">
+        <h2>3. URDF — 로봇의 몸을 XML로</h2>
+        <p>시뮬레이터·RViz가 로봇을 그리고 TF를 만들려면 "이 로봇이 어떻게 생겼는지"를 알아야 합니다. 그 명세가 <strong>URDF(Unified Robot Description Format)</strong> — 로봇을 <strong>링크(link)</strong>와 <strong>조인트(joint)</strong>로 기술하는 XML입니다.</p>
+        <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
+          <li><strong>링크(link)</strong>: 강체 한 덩어리 — 모양(<code>visual</code>), 충돌 영역(<code>collision</code>), 질량·관성(<code>inertial</code>).</li>
+          <li><strong>조인트(joint)</strong>: 두 링크(parent·child)를 연결. 주요 타입 — <code>revolute</code>(각도 한계 있는 회전), <code>continuous</code>(무한 회전, 예: 바퀴), <code>prismatic</code>(직선 이동), <code>fixed</code>(고정). (이 밖에 <code>floating</code>·<code>planar</code>도 있어 총 6종.)</li>
+        </ul>
+
+        <div class="code-block-header">
+          <span class="code-title">URDF 예시 — 베이스 + 고정된 라이다</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-markup"><code class="language-markup">&lt;?xml version="1.0"?&gt;
+&lt;robot name="my_robot"&gt;
+  &lt;!-- 링크: 강체(모양) --&gt;
+  &lt;link name="base_link"&gt;
+    &lt;visual&gt;
+      &lt;geometry&gt;&lt;box size="0.4 0.3 0.1"/&gt;&lt;/geometry&gt;
+    &lt;/visual&gt;
+  &lt;/link&gt;
+  &lt;link name="laser"/&gt;
+
+  &lt;!-- 조인트: base_link 에 laser 를 고정 (TF의 정적 변환이 됨) --&gt;
+  &lt;joint name="base_to_laser" type="fixed"&gt;
+    &lt;parent link="base_link"/&gt;
+    &lt;child link="laser"/&gt;
+    &lt;origin xyz="0.2 0 0.3" rpy="0 0 0"/&gt;
+  &lt;/joint&gt;
+&lt;/robot&gt;</code></pre>
+        <p>이 <code>&lt;joint&gt;</code>의 <code>origin xyz="0.2 0 0.3"</code>가 바로 2절 TF 트리의 <code>base_link → laser</code> 정적 변환(0.2, 0, 0.3)과 같습니다! <strong>robot_state_publisher</strong> 노드가 이 URDF와 조인트 각도를 받아 <strong>자동으로 TF를 발행</strong>합니다. (반복되는 구조는 <code>xacro</code> 매크로로 간결하게 작성합니다.)</p>
+      </section>
+
+      <!-- 4. Gazebo vs RViz -->
+      <section id="gazebo-rviz">
+        <h2>4. Gazebo vs RViz — 시뮬레이터와 시각화는 다르다</h2>
+        <p>초심자가 가장 많이 헷갈리는 부분입니다. 둘은 <strong>전혀 다른 역할</strong>입니다.</p>
+        <div class="card-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:16px; margin:16px 0;">
+          <div class="glass-panel" style="border-top:3px solid var(--test);">
+            <h4 style="font-weight:700; color:var(--test);">🌍 Gazebo — 물리 시뮬레이터</h4>
+            <p style="font-size:13px; color:var(--text-muted);">중력·충돌·마찰·관성이 도는 <strong>가상 세계</strong>. 실제 로봇 없이 모터를 돌리고 센서(시뮬 카메라·LiDAR)가 데이터를 만들어 ROS 토픽으로 발행합니다. "현실을 대신하는 곳".</p>
+          </div>
+          <div class="glass-panel" style="border-top:3px solid var(--frontend);">
+            <h4 style="font-weight:700; color:var(--frontend);">📺 RViz(RViz2) — 시각화 도구</h4>
+            <p style="font-size:13px; color:var(--text-muted);">로봇 모델·TF·센서 데이터·경로를 3D로 <strong>보여 주기만</strong> 합니다(물리 시뮬 아님!). 실제 로봇이든 Gazebo든, 거기서 나오는 데이터를 들여다보는 <strong>계기판·모니터</strong>입니다.</p>
+          </div>
+        </div>
+        <div class="glass-panel" style="border-left:3px solid var(--interview); margin-top:6px;">
+          <h4 style="font-weight:700; color:var(--interview);">⚠️ 한 줄 구분</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;"><strong>Gazebo는 "세상을 만든다"(시뮬), RViz는 "세상을 본다"(시각화).</strong> Gazebo가 만든 센서 데이터를 RViz로 들여다보는 식으로 함께 씁니다. RViz만으로는 물리가 돌지 않습니다.</p>
+        </div>
+        <p style="margin-top:12px;">Gazebo의 <strong>센서 플러그인</strong>은 시뮬 환경의 카메라·LiDAR가 실제처럼 ROS 토픽(<code>/scan</code>, <code>/camera/image</code>)을 발행하게 합니다 — 그래서 R6에서 짠 구독자 노드가 <strong>코드 수정 없이</strong> 시뮬에서도 동작합니다. 이것이 ROS+시뮬의 힘입니다.</p>
+      </section>
+
+      <!-- 5. 요약 -->
+      <section id="summary">
+        <h2>5. 한 장 요약</h2>
+        <table>
+          <thead><tr><th>개념</th><th>한 줄 정리</th><th>핵심</th></tr></thead>
+          <tbody>
+            <tr><td>시뮬레이션</td><td>안전·빠름·반복으로 가상 실험</td><td>sim-to-real(R10)</td></tr>
+            <tr><td>TF2</td><td>좌표 프레임을 트리로 관리·자동 변환</td><td>R1 SE(3) 합성, lookup_transform</td></tr>
+            <tr><td>프레임 규약</td><td>REP-105 순서</td><td>map → odom → base_link → 센서</td></tr>
+            <tr><td>URDF</td><td>로봇을 link+joint XML로 기술</td><td>joint type: revolute/prismatic/fixed/continuous</td></tr>
+            <tr><td>Gazebo</td><td>물리 시뮬레이터(세상을 만듦)</td><td>중력·충돌·센서 플러그인</td></tr>
+            <tr><td>RViz</td><td>시각화 도구(세상을 봄)</td><td>시뮬 아님, 데이터 표시</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;">이제 가상 로봇을 세우고 좌표를 다루는 법을 익혔습니다. 다음 <strong>R8(인식·OpenCV)</strong>에서는 카메라 영상에서 물체·색·마커를 찾아내는 컴퓨터 비전을 배웁니다(곧 공개). 💪</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: TF2)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const chapterR7Quizzes = [
+      {
+        type: "mcq",
+        question: "중력·충돌·마찰 같은 물리를 가상으로 시뮬레이션해 실제 로봇 없이 테스트하게 해 주는 도구는?",
+        options: [
+          "Gazebo (물리 시뮬레이터)",
+          "RViz (시각화 도구)",
+          "TF2 (좌표 변환)",
+          "URDF (로봇 기술 파일)"
+        ],
+        correct: 0,
+        explanation: "Gazebo는 물리(중력·충돌·센서)를 시뮬레이션하는 가상 세계입니다. RViz는 데이터를 3D로 보여주는 시각화 도구일 뿐 물리 시뮬은 아닙니다(흔한 혼동). 'Gazebo는 세상을 만들고, RViz는 세상을 본다'로 기억하세요."
+      },
+      {
+        type: "mcq",
+        question: "TF2의 좌표 프레임 트리에서 REP-105가 권장하는 표준 순서로 옳은 것은?",
+        options: [
+          "base_link → laser → map → odom",
+          "map → odom → base_link → 센서 프레임",
+          "센서 → base_link → map → odom",
+          "순서는 아무래도 상관없다"
+        ],
+        correct: 1,
+        explanation: "REP-105 표준은 map → odom → base_link → 센서 순서를 권장합니다. 각 프레임은 부모가 하나뿐인 트리를 이루며, TF2가 임의의 두 프레임 사이 변환을 자동으로(변환 합성, R1) 계산합니다."
+      },
+      {
+        type: "mcq",
+        question: "URDF에서 '각도 한계가 있는 회전 관절'(예: 로봇팔 관절)을 나타내는 joint type은?",
+        options: [
+          "fixed",
+          "prismatic",
+          "revolute",
+          "continuous"
+        ],
+        correct: 2,
+        explanation: "revolute는 회전 범위(한계)가 있는 회전 관절입니다. continuous는 무한 회전(바퀴), prismatic은 직선 이동, fixed는 고정(움직이지 않음)입니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "프레임 변환을 이어 붙이세요(R1 합성). map→odom, odom→base 변환으로 map→base 변환을 구합니다.",
+        starter: "import numpy as np\ndef chain(T_map_odom, T_odom_base):\n    # 두 변환을 곱으로 이어 붙이기 (map→odom 다음 odom→base)\n    return ",
+        validator: {
+          mustContain: ["T_map_odom@T_odom_base"],
+          mustNotContain: ["T_odom_base@T_map_odom"]
+        },
+        solution: "T_map_odom @ T_odom_base",
+        explanation: "프레임 합성은 변환을 순서대로 곱합니다: T_map_base = T_map_odom @ T_odom_base. 인접한 아래첨자(_odom)가 맞물리게 곱해야 하며, 순서를 바꾸면(@ 반대) 틀립니다(행렬곱은 비가환)."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "map→base 변환을 알 때, 그 반대인 base→map 변환을 구하세요. (역변환 함수 invert_T 사용)",
+        starter: "def base_to_map(T_map_base, invert_T):\n    # base→map 은 map→base 의 역변환\n    return ",
+        validator: {
+          mustContain: ["invert_T(T_map_base)"],
+          mustNotContain: []
+        },
+        solution: "invert_T(T_map_base)",
+        explanation: "반대 방향 변환은 역변환입니다: T_base_map = invert_T(T_map_base). SE(3) 역변환은 [[Rᵀ, -Rᵀt],[0,1]] 구조식으로 빠르게 구합니다(R1). TF2의 lookup도 내부적으로 이 역변환과 합성을 씁니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", chapterR7Quizzes, "chapter-r7");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

@@ -48,7 +48,8 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
-      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R7~R10 · 부록 R-A~C<br><span style="font-size: 11px;">시뮬레이션 · 인식 · SLAM · 매니퓰레이션 …<br>(순차 공개 예정)</span></span></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R8~R10 · 부록 R-A~C<br><span style="font-size: 11px;">인식(OpenCV) · SLAM · 매니퓰레이션 …<br>(순차 공개 예정)</span></span></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
@@ -388,11 +389,20 @@
             <span>Python · rclpy (ROS 2)</span>
           </div>
         </div>
+        <!-- R7 — 공개됨 -->
+        <div class="glass-panel chapter-card" onclick="window.location.href='chapter-r7.html'" style="border-left: 3px solid var(--robotics);">
+          <div class="chapter-badge" style="background: var(--robotics); color: #fff;">R7</div>
+          <h3>ROS 2 심화 &amp; 시뮬레이션</h3>
+          <p>TF2 좌표 프레임 트리(R1 SE(3) 자동 변환), URDF 로봇 모델(link·joint), 물리 시뮬레이터 Gazebo와 시각화 도구 RViz의 차이. TF 변환 트리는 numpy로 실행 검증.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-r7">진척도: 시작 전</span>
+            <span>ROS 2 · TF2 · URDF · numpy</span>
+          </div>
+        </div>
       </div>
 
       <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin: 8px 0 0;">🗺️ 다음 챕터 로드맵 (순차 공개 예정)</h3>
       <div class="stats-grid" style="opacity: 0.62;">
-        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R7 🔒</div><h3 style="font-size:15px;">ROS 2 심화 &amp; 시뮬</h3><p>TF2 좌표 변환 트리, URDF 로봇 모델, Gazebo/RViz, 센서 플러그인.</p></div>
         <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R8 🔒</div><h3 style="font-size:15px;">인식 (Perception)</h3><p>OpenCV 이미지 처리, 객체·마커 검출, 카메라 캘리브레이션, 포인트클라우드.</p></div>
         <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R9 🔒</div><h3 style="font-size:15px;">위치추정·SLAM·내비</h3><p>오도메트리, 칼만/파티클 필터, SLAM 개념, A*/Dijkstra/RRT 경로계획, Nav2.</p></div>
         <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R10 🔒</div><h3 style="font-size:15px;">매니퓰레이션·학습제어</h3><p>모션 플래닝(MoveIt), 그리핑, 로봇 RL 기초, sim-to-real 개요.</p></div>
