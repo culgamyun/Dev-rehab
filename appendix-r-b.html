@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>부록 R-B - 로보틱스 면접 CS</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+    .qcat { border-radius: 12px; padding: 18px 22px 8px; margin: 28px 0 8px; border-left: 4px solid var(--robotics); background: linear-gradient(135deg, rgba(33,150,243,0.10), transparent); }
+    .qcat h3 { font-weight: 800; color: var(--robotics); font-size: 18px; margin: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">부록 R-C<br><span style="font-size: 11px;">수학 복습<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>부록 R-B</span></div>
+      <h1 style="color: var(--robotics);">부록 R-B: 로보틱스 면접 CS 단골 Q&amp;A</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">로봇·자율주행 직무 면접에서 가장 자주 나오는 질문을 <strong>좌표변환 · 상태추정 · 제어(PID) · 기구학 · ROS 2 · SLAM/내비 · 인식/학습</strong> 7개 카테고리, 총 24문항으로 정리했습니다. 각 답변은 R0~R10 본편에서 직접 실행·검증한 내용을 기반으로 하며, "왜 그런가"와 <em>면접 꼬리 질문</em>까지 함께 담았습니다.</p>
+    </div>
+
+    <div class="concept-section">
+
+      <!-- ================= 카테고리 A: 좌표·변환 ================= -->
+      <div class="qcat"><h3>🧭 A. 좌표계와 변환 (R1 · R4 · R7)</h3></div>
+
+      <section id="q-so3-se3">
+        <h2>Q1. SO(3)와 SE(3)의 차이를 설명하세요</h2>
+        <p><strong>SO(3)</strong>(Special Orthogonal group)는 <strong>회전만</strong> 나타내는 3×3 회전행렬의 집합이고, <strong>SE(3)</strong>(Special Euclidean group)는 <strong>회전 + 평행이동</strong>을 함께 나타내는 4×4 동차변환행렬(homogeneous transform)의 집합입니다. 로봇의 "자세(pose)"는 위치와 방향을 모두 가지므로 SE(3)로 표현합니다.</p>
+        <div class="analogy-box">
+          <h4>💡 비유: 사람의 "어디에" + "어느 쪽을 보고"</h4>
+          <p><strong>SO(3)</strong>는 제자리에서 몸을 어느 방향으로 틀었는지(고개 방향)만 말합니다. <strong>SE(3)</strong>는 "지금 부엌에 서서 창문 쪽을 보고 있다"처럼 <strong>위치(평행이동)와 방향(회전)을 한 덩어리</strong>로 말합니다. 로봇 팔 끝(end-effector)이 "공간 어디에서 어느 자세로" 있는지는 항상 SE(3)입니다.</p>
+        </div>
+        <p>회전행렬 R(SO(3))의 핵심 성질 3가지: ① <strong>직교</strong>(RᵀR = I) ② <strong>역행렬 = 전치</strong>(R⁻¹ = Rᵀ, 그래서 역변환이 공짜) ③ <strong>det(R) = +1</strong>(거울반사 없는 순수 회전). 이 성질 덕분에 변환을 거꾸로 푸는 비용이 거의 없습니다.</p>
+        <pre class="language-python"><code class="language-python">import numpy as np
+# SE(3): 회전 R(3x3) + 위치 p(3,)를 4x4 한 덩어리로
+def make_T(R, p):
+    T = np.eye(4); T[:3,:3] = R; T[:3,3] = p
+    return T
+# 역변환은 R^T 성질을 쓰면 inv 호출 없이 공짜
+def invert_T(T):
+    R, p = T[:3,:3], T[:3,3]
+    Ti = np.eye(4); Ti[:3,:3] = R.T; Ti[:3,3] = -R.T @ p
+    return Ti</code></pre>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"동차변환행렬이 왜 굳이 4×4인가요?"</em> → 회전(3×3)과 평행이동(3×1)을 <strong>한 번의 행렬곱으로 합성</strong>하기 위해서입니다. 마지막 행 <code>[0 0 0 1]</code>은 점을 <code>[x y z 1]</code>로 확장(동차좌표)해 "회전 후 평행이동"을 곱셈 하나로 연결해 줍니다. 변환을 여러 개 이어 붙일 때(T₁ @ T₂ @ T₃) 코드가 깔끔해집니다.</p>
+      </section>
+
+      <section id="q-gimbal">
+        <h2>Q2. 짐벌락(Gimbal Lock)이란 무엇이고, 왜 쿼터니언을 쓰나요?</h2>
+        <p><strong>짐벌락</strong>은 오일러각(roll-pitch-yaw)으로 회전을 표현할 때, 두 번째 축(보통 pitch)이 ±90°가 되면 <strong>세 회전축 중 두 개가 같은 방향으로 정렬</strong>되어 자유도 하나를 잃는 현상입니다. 이 지점 근처에서는 작은 자세 변화에 각도값이 폭발적으로 튀어(특이점) 제어가 불안정해집니다.</p>
+        <p><strong>쿼터니언</strong>(quaternion, 4개 수 x·y·z·w)은 짐벌락이 없고, 회전 보간(SLERP)이 매끄러우며, 수치 오차가 누적돼도 정규화 한 번이면 다시 유효한 회전이 됩니다. 그래서 ROS의 <code>geometry_msgs/Quaternion</code>, 게임/항공 자세 표현이 모두 쿼터니언입니다. 단점은 사람이 숫자만 보고 직관적으로 읽기 어렵다는 것 — 그래서 <strong>저장·계산은 쿼터니언, 사람에게 보여줄 땐 오일러각</strong>으로 변환합니다.</p>
+        <pre class="language-python"><code class="language-python">from scipy.spatial.transform import Rotation as Rot
+# z축 90° 회전 → 쿼터니언(x,y,z,w)
+q = Rot.from_euler('z', 90, degrees=True).as_quat()   # [0, 0, 0.7071, 0.7071]
+# 회전은 곱셈 순서가 중요(비가환): R_z*R_x ≠ R_x*R_z
+Rz = Rot.from_euler('z', 90, degrees=True)
+Rx = Rot.from_euler('x', 90, degrees=True)
+(Rz*Rx).apply([0,0,1])   # [ 1, 0, 0]
+(Rx*Rz).apply([0,0,1])   # [ 0,-1, 0]  ← 순서 바꾸면 결과가 다름!</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:8px 0 14px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 검증값</h4>
+          <pre style="font-size:12px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">q(z90°)=[0 0 0.7071 0.7071] · (Rz·Rx)[0,0,1]→[1 0 0] · (Rx·Rz)[0,0,1]→[0 -1 0]</pre>
+        </div>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"회전 합성이 교환법칙이 성립하지 않는 이유는?"</em> → 회전은 행렬(또는 쿼터니언) 곱이고, 행렬곱은 일반적으로 <code>AB ≠ BA</code>이기 때문입니다. 물리적으로도 "고개를 든 뒤 왼쪽으로 돈 것"과 "왼쪽으로 돈 뒤 고개를 든 것"의 최종 시선 방향이 다릅니다.</p>
+      </section>
+
+      <section id="q-tf">
+        <h2>Q3. ROS의 TF(TF2)란 무엇이고 왜 필요한가요?</h2>
+        <p><strong>TF2</strong>는 로봇의 수많은 좌표계(map → odom → base_link → laser → camera ...) 사이의 변환 관계를 <strong>트리(tree) 구조</strong>로 관리하고, "지금 카메라가 본 점을 map 좌표로 바꿔줘" 같은 질문에 <strong>시간까지 고려해</strong> 답해 주는 ROS 표준 라이브러리입니다. 센서는 제각기 다른 위치에 붙어 있으므로, 데이터를 융합하려면 모두 같은 기준 좌표계로 변환해야 하는데 그 변환을 일일이 손으로 곱하지 않게 해 줍니다.</p>
+        <div class="analogy-box">
+          <h4>💡 비유: 가족 관계도 + 환율 자동 변환</h4>
+          <p>각 좌표계는 가족 관계도의 사람이고, 부모→자식 간 변환(SE3)은 "혈연 관계"입니다. TF는 <strong>map의 점을 camera에서 보면 어디인가?</strong>를, 트리 경로를 따라 변환을 자동으로 이어 곱해(그리고 필요하면 역변환) 즉시 알려 줍니다. 환율 테이블이 있으면 원→달러→엔을 자동 계산해 주는 것과 같습니다.</p>
+        </div>
+        <p>핵심 규칙: ① TF 트리는 <strong>한 노드(좌표계)에 부모가 하나</strong>여야 함(사이클·다중부모 금지) ② <code>frame_id</code>=부모, <code>child_frame_id</code>=자식 ③ 변하지 않는 변환(base_link→camera)은 <strong>static_transform_publisher</strong>로, 움직이는 변환(odom→base_link)은 주기적으로 broadcast.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"map과 odom 프레임을 왜 분리하나요?"</em> → <code>odom→base_link</code>는 바퀴 오도메트리로 매끄럽지만 시간이 지나면 드리프트(누적오차)가 생깁니다. <code>map→odom</code>은 SLAM/AMCL이 드리프트를 보정하는 "점프 가능한" 변환입니다. 이렇게 분리하면 제어는 매끄러운 odom을 쓰고, 전역 위치는 map으로 정확히 맞출 수 있습니다.</p>
+      </section>
+
+      <section id="q-frame-convention">
+        <h2>Q4. REP-103 좌표 규약(오른손 좌표계, x-앞/z-위)을 아시나요?</h2>
+        <p>ROS는 <strong>REP-103</strong> 표준을 따릅니다: <strong>오른손 좌표계</strong>에서 <code>x = 앞(전방)</code>, <code>y = 왼쪽</code>, <code>z = 위</code>. 회전은 오른손 법칙으로 <code>+yaw = 반시계(좌회전)</code>. 단위는 미터·라디안·초(SI). 광학 카메라 프레임만 예외적으로 <code>z = 광축(앞)</code>, <code>x = 오른쪽</code>, <code>y = 아래</code>를 써서 컴퓨터비전 관례와 맞춥니다.</p>
+        <p>이걸 모르면 "로봇이 직진 명령에 옆으로 가는" 류의 버그를 만나게 됩니다. 부호·축 순서를 헷갈리면 변환 전체가 거울처럼 뒤집힙니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"오른손 좌표계인지 어떻게 확인하나요?"</em> → 세 축 단위벡터로 <code>x × y = z</code>(외적)가 성립하면 오른손 좌표계입니다. 회전행렬이라면 <code>det(R) = +1</code>이면 오른손(순수 회전), <code>-1</code>이면 반사가 섞인 것입니다.</p>
+      </section>
+
+      <!-- ================= 카테고리 B: 센서·상태추정 ================= -->
+      <div class="qcat"><h3>📡 B. 센서와 상태추정 (R2 · R9)</h3></div>
+
+      <section id="q-kalman">
+        <h2>Q5. 칼만 필터의 동작 원리를 설명하세요</h2>
+        <p>칼만 필터는 <strong>예측(predict)</strong>과 <strong>보정(update)</strong> 두 단계를 반복하며, "모델 예측값"과 "노이즈 섞인 측정값"을 <strong>각자의 불확실성에 반비례하는 가중치로 섞어</strong> 최적 추정을 만듭니다. 핵심은 <strong>칼만 게인 K</strong>: 측정이 믿을 만하면(측정분산 R 작음) K가 1에 가까워 측정을 많이 반영하고, 측정이 부정확하면 K가 0에 가까워 예측을 유지합니다.</p>
+        <pre class="language-python"><code class="language-python"># 1D 칼만 보정 한 스텝 (x=추정, P=추정분산, R=측정분산, z=측정)
+x, P, R = 0.0, 1.0, 0.1
+z = 1.0
+K = P / (P + R)          # 칼만 게인 = 0.909
+x = x + K * (z - x)      # 0.0 → 0.909 (측정 쪽으로 끌려감)
+P = (1 - K) * P          # 1.0 → 0.0909 (확신이 커짐 = 분산 감소)</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:8px 0 14px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 검증값</h4>
+          <pre style="font-size:12px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">K=0.909 · x: 0.0 → 0.909 · P: 1.0 → 0.0909 (보정 후 불확실성 감소)</pre>
+        </div>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"EKF(확장 칼만 필터)는 언제 쓰나요?"</em> → 기본 칼만은 시스템이 <strong>선형</strong>이고 노이즈가 가우시안일 때만 최적입니다. 로봇 운동(예: <code>x' = x + v·cosθ·dt</code>)은 비선형이므로, 매 스텝 자코비안으로 <strong>1차 선형화</strong>해서 칼만을 적용하는 EKF를 씁니다. 선형화가 심하게 틀어지면 UKF나 파티클 필터를 고려합니다.</p>
+      </section>
+
+      <section id="q-fusion">
+        <h2>Q6. 센서 퓨전(Sensor Fusion)이 왜 필요한가요?</h2>
+        <p>완벽한 센서는 없기 때문입니다. 각 센서는 <strong>서로 보완되는 약점</strong>을 가집니다. 예를 들어 <strong>IMU</strong>(자이로/가속도계)는 짧은 시간엔 매우 정밀하지만 적분 때문에 시간이 지나면 <strong>드리프트</strong>가 쌓입니다. 반대로 <strong>GPS/엔코더/라이다 매칭</strong>은 느리고 노이즈가 있지만 절대 위치 기준을 줍니다. 둘을 칼만 필터로 융합하면 "단기 정밀 + 장기 안정"을 동시에 얻습니다.</p>
+        <div class="analogy-box">
+          <h4>💡 비유: 빠른 추측 + 가끔 보는 이정표</h4>
+          <p>눈 감고 걸으며 "한 걸음 = 70cm"로 위치를 추측(IMU)하면 처음 몇 걸음은 정확하지만 점점 어긋납니다. 가끔 눈을 떠 이정표(GPS)를 보면 어긋남을 한 번에 바로잡습니다. 칼만 필터의 <strong>predict = 눈 감고 추측, update = 이정표로 보정</strong>이 정확히 이 구조입니다.</p>
+        </div>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"상보필터(Complementary filter)와 칼만 필터의 차이는?"</em> → 상보필터는 "고주파는 자이로, 저주파는 가속도계"를 고정 가중치로 섞는 가벼운 방법이고, 칼만은 불확실성을 추적해 <strong>가중치(게인)를 매 스텝 최적으로 조정</strong>합니다. 연산 여유가 적은 MCU에선 상보필터, 정밀도가 필요하면 칼만을 씁니다.</p>
+      </section>
+
+      <section id="q-nyquist">
+        <h2>Q7. 나이퀴스트 정리와 샘플링 주파수를 설명하세요</h2>
+        <p><strong>나이퀴스트-섀넌 정리</strong>: 신호에 들어 있는 최고 주파수를 <code>f_max</code>라 하면, 그 신호를 손실 없이 복원하려면 <strong>샘플링 주파수가 2·f_max보다 커야</strong> 합니다. 이를 어기면 <strong>에일리어싱</strong>(aliasing) — 빠른 신호가 느린 가짜 신호로 둔갑하는 현상 — 이 생깁니다(바퀴가 거꾸로 도는 것처럼 보이는 영상이 대표 예시).</p>
+        <p>로봇에선 제어 루프 주파수, 엔코더 샘플링, 카메라 fps를 정할 때 직접 영향을 줍니다. 대책은 ① 샘플링을 충분히 빠르게 ② 샘플링 전에 <strong>안티에일리어싱 저역통과 필터</strong>로 고주파를 미리 잘라내기.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"이동평균(moving average) 필터의 단점은?"</em> → 구현이 쉽고 노이즈를 잘 줄이지만, 창(window) 크기만큼 <strong>지연(latency)</strong>이 생기고 급격한 변화를 뭉갭니다. 제어 루프에 넣으면 이 지연이 위상 마진을 깎아 불안정을 유발할 수 있어, 지연이 중요한 곳엔 칼만이나 IIR 필터를 고려합니다.</p>
+      </section>
+
+      <!-- ================= 카테고리 C: 제어(PID) ================= -->
+      <div class="qcat"><h3>🎛️ C. 제어 이론 — PID (R5)</h3></div>
+
+      <section id="q-pid-terms">
+        <h2>Q8. PID 제어기의 P·I·D 각 항의 역할을 설명하세요</h2>
+        <p>PID는 목표값과 현재값의 <strong>오차(error)</strong>를 보고 제어 입력 <code>u = Kp·e + Ki·∫e dt + Kd·de/dt</code>를 만듭니다.</p>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin:16px 0; font-size:13px;">
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--robotics);">P — 비례</h4><p style="color:var(--text-muted);">현재 오차에 비례해 즉시 반응. 크게 하면 빨라지지만 너무 크면 진동·오버슈트. P만으로는 보통 목표에 <strong>완전히 도달하지 못하고 정상상태 오차(steady-state error)</strong>가 남습니다.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend);">I — 적분</h4><p style="color:var(--text-muted);">과거 오차를 누적해 <strong>정상상태 오차를 0으로</strong> 밀어냅니다. 대신 위상 지연을 더해 과하면 진동·오버슈트가 커집니다.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops);">D — 미분</h4><p style="color:var(--text-muted);">오차의 변화율에 반응해 <strong>브레이크(댐핑)</strong> 역할. 오버슈트를 줄이고 안정성을 높이지만 측정 노이즈를 증폭하므로 보통 저역통과를 함께 씁니다.</p></div>
+        </div>
+        <p>본편 R5에서 2차 플랜트(질량+감쇠)로 직접 시뮬레이션한 결과: <code>P만 → 정상상태 오차 남음</code>, <code>PI → 오차 0이지만 오버슈트 1.39</code>, <code>PID → 오버슈트 1.19로 감소</code>. D항이 오버슈트를 깎는 걸 수치로 확인했습니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"P 게인만 계속 올리면 어떻게 되나요?"</em> → 응답은 빨라지지만 오버슈트와 진동이 커지고, 어느 임계 게인을 넘으면 <strong>발산(불안정)</strong>합니다. 이 임계점을 이용하는 게 지글러-니콜스 튜닝법입니다.</p>
+      </section>
+
+      <section id="q-windup">
+        <h2>Q9. 적분 와인드업(Integral Windup)이란? 어떻게 방지하나요?</h2>
+        <p>액추에이터에는 <strong>물리적 한계(포화, saturation)</strong>가 있습니다(모터 최대 출력 등). 오차가 오래 지속되면 적분항 <code>∫e dt</code>가 계속 커지는데, 출력은 이미 최대치에 막혀 있으면 <strong>적분값만 과도하게 부풀어</strong> 오릅니다. 그러면 목표에 도달한 뒤에도 부푼 적분이 다 빠질 때까지 제어기가 반대로 밀어 <strong>큰 오버슈트와 느린 회복</strong>을 만듭니다 — 이것이 와인드업입니다.</p>
+        <p>방지법: ① <strong>적분 클램핑</strong>(적분값에 상·하한) ② <strong>back-calculation</strong>(출력이 포화된 만큼 적분을 되돌림) ③ 포화 중에는 <strong>적분 중지</strong>(conditional integration).</p>
+        <pre class="language-python"><code class="language-python">integral += e * dt
+integral = max(min(integral, I_MAX), -I_MAX)   # ① 적분 클램핑
+u = Kp*e + Ki*integral + Kd*(e - prev_e)/dt
+u = max(min(u, U_MAX), -U_MAX)                  # 출력 포화</code></pre>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"왜 단순히 출력만 클램핑하면 안 되나요?"</em> → 출력만 자르면 적분항 내부는 계속 부풀기 때문입니다. 출력을 자르는 동시에 <strong>적분 누적 자체</strong>를 멈추거나 되돌려야 와인드업이 사라집니다.</p>
+      </section>
+
+      <section id="q-derivative-kick">
+        <h2>Q10. 미분 킥(Derivative Kick)이란 무엇인가요?</h2>
+        <p>목표값(setpoint)을 <strong>계단처럼 갑자기 바꾸면</strong> 오차 <code>e = target − measured</code>가 순간적으로 점프하고, 미분항 <code>Kd·de/dt</code>가 그 순간 <strong>거대한 스파이크</strong>를 출력합니다 — 이것이 미분 킥입니다. 액추에이터에 충격을 주고 진동을 유발합니다.</p>
+        <p>해법은 오차가 아니라 <strong>측정값의 미분</strong>을 쓰는 "derivative-on-measurement": <code>Kd·d(measured)/dt</code>. 목표값은 계단이어도 측정값은 연속적으로 변하므로 스파이크가 사라집니다. (본편 R5에서 실제로 <code>prev_e = target − p</code>로 초기화해 이 킥을 막았습니다.)</p>
+        <pre class="language-python"><code class="language-python"># 나쁨: 오차 미분 → setpoint 점프 시 스파이크
+D = Kd * (e - prev_e) / dt
+# 좋음: 측정값 미분 → 미분 킥 없음 (부호 주의: -)
+D = -Kd * (meas - prev_meas) / dt</code></pre>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"피드포워드(feed-forward)는 왜 같이 쓰나요?"</em> → 피드백(PID)은 오차가 생긴 <strong>뒤에야</strong> 반응합니다. 시스템 모델을 알면 "이 목표엔 대략 이만큼 출력이 필요"를 미리 더해(피드포워드) 오차가 생기기 전에 대응하고, PID는 남은 오차만 잡게 해 응답을 크게 개선합니다.</p>
+      </section>
+
+      <!-- ================= 카테고리 D: 기구학 ================= -->
+      <div class="qcat"><h3>🦾 D. 기구학 — Kinematics (R4)</h3></div>
+
+      <section id="q-fk-ik">
+        <h2>Q11. 정기구학(FK)과 역기구학(IK)의 차이는?</h2>
+        <p><strong>정기구학(Forward Kinematics)</strong>은 "각 관절 각도가 주어졌을 때 손끝이 어디에 가는가?" — 관절각 → 손끝 위치. <strong>항상 유일한 해</strong>가 있고 행렬 곱(DH 변환 합성)으로 바로 계산됩니다. <strong>역기구학(Inverse Kinematics)</strong>은 그 반대 — "손끝을 여기 두려면 관절각을 어떻게?" — 손끝 위치 → 관절각. 이쪽이 훨씬 어렵습니다.</p>
+        <p>IK가 어려운 이유: ① <strong>해가 여러 개</strong>(2자유도 팔도 "팔꿈치 위/아래" 2해) ② <strong>해가 없을 수도</strong>(작업공간 밖) ③ 비선형이라 보통 닫힌형 해가 없고 수치해(자코비안 역행렬 반복)를 씁니다.</p>
+        <p>본편 R4에서 2링크 팔의 IK를 코사인법칙으로 풀어 <strong>두 해(elbow-up/down)</strong>를 구하고, FK로 다시 넣어 원래 목표 위치로 돌아오는지 왕복 검증했습니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"IK 해가 여러 개일 때 무엇을 고르나요?"</em> → 보통 현재 관절각에서 <strong>이동량이 가장 적은 해</strong>(부드러운 동작), 또는 장애물·관절한계·특이점을 피하는 해를 고릅니다.</p>
+      </section>
+
+      <section id="q-jacobian">
+        <h2>Q12. 자코비안과 특이점(Singularity)을 설명하세요</h2>
+        <p><strong>자코비안 J</strong>는 <strong>관절 속도</strong>와 <strong>손끝 속도</strong>를 잇는 행렬입니다: <code>ẋ = J·q̇</code>. 즉 "관절을 이렇게 빠르게 돌리면 손끝이 어느 방향으로 얼마나 빠르게 움직이는가"의 선형 사상입니다. 힘 영역에서는 <code>τ = Jᵀ·F</code>로 손끝 힘 ↔ 관절 토크도 연결합니다.</p>
+        <p><strong>특이점</strong>은 자코비안이 <strong>랭크를 잃는(det J = 0)</strong> 자세입니다. 대표적으로 팔이 <strong>완전히 펴진 자세</strong> — 그 방향으로는 손끝을 더 못 움직이고, 그 방향 속도를 내려면 관절 속도가 <strong>무한대</strong>로 폭발합니다(IK 수치해가 발산). 그래서 특이점 근처를 회피하거나 damped least-squares로 완화합니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"특이점 근처인지 어떻게 감지하나요?"</em> → 자코비안의 <strong>행렬식 det(J)</strong>이나 최소 특이값(SVD)이 0에 가까워지는지를 봅니다. <code>manipulability = sqrt(det(J·Jᵀ))</code> 지표가 작아지면 특이점이 가깝다는 신호입니다.</p>
+      </section>
+
+      <section id="q-diff-drive">
+        <h2>Q13. 차동구동(Differential Drive) 로봇의 운동학은?</h2>
+        <p>좌우 두 바퀴의 속도 <code>v_L, v_R</code>로 움직이는 로봇(룸바, 대부분의 교육용 로봇)입니다. 바퀴 간격을 <code>L</code>이라 하면 로봇의 <strong>선속도와 각속도</strong>는:</p>
+        <pre class="language-python"><code class="language-python">v = (v_R + v_L) / 2        # 선속도 (전진)
+w = (v_R - v_L) / L        # 각속도 (회전)
+# 예: v_L=0.4, v_R=0.6, L=0.5  →  v=0.50 m/s,  w=0.40 rad/s
+# 자세 적분(오도메트리)
+x += v * cos(theta) * dt
+y += v * sin(theta) * dt
+theta += w * dt</code></pre>
+        <p>양 바퀴가 같으면 직진(w=0), 반대면 제자리 회전(v=0). 이렇게 바퀴 속도로부터 자세를 적분하는 것이 <strong>휠 오도메트리</strong>입니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"차동구동은 왜 비홀로노믹(non-holonomic)인가요?"</em> → 바퀴가 옆으로(lateral) 미끄러지지 못해 <strong>옆 방향으로 즉시 이동할 수 없기</strong> 때문입니다. 그래서 평행주차처럼 옆 위치를 바꾸려면 전진·회전을 조합한 경로가 필요하고, 경로계획이 자동차(Ackermann)처럼 곡률 제약을 받습니다.</p>
+      </section>
+
+      <!-- ================= 카테고리 E: ROS 2 ================= -->
+      <div class="qcat"><h3>🔗 E. ROS 2 (R6 · R7)</h3></div>
+
+      <section id="q-ros2-vs-ros1">
+        <h2>Q14. ROS 2가 ROS 1과 다른 핵심은?</h2>
+        <p>가장 큰 차이는 ROS 1의 중앙 <strong>roscore(master)</strong>가 사라지고, <strong>DDS</strong>(Data Distribution Service) 기반 <strong>분산 디스커버리</strong>로 바뀐 것입니다. master가 죽으면 전체가 멈추던 단일 장애점이 없어졌습니다. 또한 ① <strong>QoS</strong>로 통신 신뢰성·실시간성 조절 ② 멀티플랫폼/실시간 지원 ③ 보안(SROS2) ④ <code>rclcpp/rclpy</code>로 언어 바인딩 통일.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"DDS 디스커버리는 어떻게 노드를 찾나요?"</em> → 같은 <strong>ROS_DOMAIN_ID</strong>를 가진 노드들이 멀티캐스트로 서로를 자동 발견(주로 동일 네트워크)합니다. 그래서 DOMAIN_ID가 다르면 같은 토픽이라도 서로 안 보이고, 이를 이용해 여러 로봇을 격리합니다.</p>
+      </section>
+
+      <section id="q-topic-service-action">
+        <h2>Q15. 토픽 · 서비스 · 액션은 각각 언제 쓰나요?</h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap:16px; margin:16px 0; font-size:13px;">
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--robotics);">📢 토픽 (Topic)</h4><p style="color:var(--text-muted);"><strong>단방향·연속 스트림</strong>, 발행/구독(pub/sub), 다대다. 응답 불필요. 예: 센서 데이터(<code>/scan</code>, <code>/imu</code>), 속도 명령(<code>/cmd_vel</code>).</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend);">📞 서비스 (Service)</h4><p style="color:var(--text-muted);"><strong>요청-응답(동기)</strong>, 1회성, 빠르게 끝나는 작업. 예: "현재 지도 저장해줘", "파라미터 설정". 오래 걸리면 부적합.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops);">🎯 액션 (Action)</h4><p style="color:var(--text-muted);"><strong>오래 걸리는 목표 + 진행 피드백 + 취소</strong>. 예: "저 좌표까지 이동(Nav2)", "팔을 여기로". 중간 진행률을 받고 도중 취소 가능.</p></div>
+        </div>
+        <p>요약: <strong>흘려보내면 토픽 / 즉답이면 서비스 / 오래 걸리고 취소·진행이 필요하면 액션</strong>.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"속도 명령(/cmd_vel)을 왜 서비스가 아닌 토픽으로?"</em> → 제어는 끊임없이 갱신되는 연속 스트림이고 응답이 필요 없으며, 최신값만 중요하기 때문입니다. 요청-응답 오버헤드가 있는 서비스는 부적합합니다.</p>
+      </section>
+
+      <section id="q-qos">
+        <h2>Q16. QoS(Quality of Service)란 무엇인가요?</h2>
+        <p>DDS/ROS 2에서 <strong>퍼블리셔와 구독자의 통신 정책</strong>을 정하는 설정입니다. 핵심 항목: ① <strong>Reliability</strong> — <code>RELIABLE</code>(재전송 보장, TCP 느낌) vs <code>BEST_EFFORT</code>(유실 허용, 빠름, UDP 느낌) ② <strong>Durability</strong> — <code>TRANSIENT_LOCAL</code>(늦게 들어온 구독자에게도 마지막 값 전달) vs <code>VOLATILE</code> ③ <strong>History/Depth</strong> — 버퍼 큐 크기.</p>
+        <p>중요한 함정: <strong>퍼블리셔와 구독자의 QoS가 호환되지 않으면 연결 자체가 안 됩니다.</strong> 예를 들어 센서 데이터는 보통 <code>BEST_EFFORT</code>로 쏘는데 구독자가 <code>RELIABLE</code>을 요구하면 메시지가 한 개도 안 들어옵니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"라이다 같은 센서 스트림에 BEST_EFFORT를 쓰는 이유는?"</em> → 한두 프레임 놓쳐도 다음 프레임이 곧 오고, 재전송으로 지연이 쌓이는 것보다 <strong>최신성</strong>이 더 중요하기 때문입니다. 반대로 지도·정적 TF처럼 "꼭 도착해야 하는" 데이터는 RELIABLE + TRANSIENT_LOCAL을 씁니다.</p>
+      </section>
+
+      <section id="q-executor">
+        <h2>Q17. 노드·executor·콜백의 관계를 설명하세요</h2>
+        <p>ROS 2에서 <strong>노드</strong>는 퍼블리셔·구독자·타이머·서비스를 담는 단위이고, 이들의 <strong>콜백</strong>(메시지 도착·타이머 만료 시 실행되는 함수)을 실제로 <strong>돌려 주는 엔진이 executor</strong>입니다. <code>rclpy.spin(node)</code>가 기본 단일스레드 executor를 돌려 콜백을 순차 처리합니다.</p>
+        <p>주의: 기본은 단일스레드라 <strong>한 콜백이 오래 걸리면(블로킹) 다른 콜백이 굶습니다</strong>. 동시에 처리하려면 <code>MultiThreadedExecutor</code> + <strong>콜백 그룹</strong>(Reentrant/MutuallyExclusive)으로 병렬성을 제어합니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"구독 콜백 안에서 서비스를 동기 호출하면 왜 데드락이 날 수 있나요?"</em> → 단일스레드 executor에선 콜백이 실행 중이면 응답을 처리할 콜백이 돌 수 없어 서로 기다리다 멈춥니다. 비동기 호출을 쓰거나 별도 콜백 그룹/스레드로 분리해야 합니다.</p>
+      </section>
+
+      <!-- ================= 카테고리 F: SLAM·내비게이션 ================= -->
+      <div class="qcat"><h3>🗺️ F. SLAM과 내비게이션 (R9)</h3></div>
+
+      <section id="q-slam">
+        <h2>Q18. SLAM이란 무엇이고 왜 어려운가요?</h2>
+        <p><strong>SLAM</strong>(Simultaneous Localization And Mapping)은 <strong>지도를 모르는 채로</strong> 로봇이 <strong>지도를 만들면서 동시에 그 지도 안에서 자기 위치를 추정</strong>하는 문제입니다. 어려운 이유는 <strong>닭과 달걀 문제</strong>이기 때문입니다: 정확한 위치를 알려면 지도가 필요하고, 정확한 지도를 만들려면 위치를 알아야 합니다. 둘 다 불확실한 상태에서 서로를 동시에 풀어야 합니다.</p>
+        <div class="analogy-box">
+          <h4>💡 비유: 눈 가리고 낯선 방 그리기</h4>
+          <p>처음 보는 방에서 손으로 벽을 더듬으며 지도를 그립니다. 그런데 "내가 지금 어디 있는지"도 더듬은 기억(불확실한 위치)으로만 압니다. 위치가 틀리면 지도가 비뚤어지고, 비뚤어진 지도로 위치를 또 잘못 잡는 악순환 — SLAM은 이 둘의 오차를 <strong>확률적으로 함께</strong> 최소화합니다.</p>
+        </div>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"루프 클로저(loop closure)가 왜 중요한가요?"</em> → 돌아다니다 <strong>예전에 왔던 곳을 다시 알아보는</strong> 순간, 그동안 누적된 드리프트를 한꺼번에 보정해 지도 전체를 정합시킬 수 있습니다. 루프 클로저가 없으면 큰 공간에서 지도가 점점 어긋나 닫히지 않습니다.</p>
+      </section>
+
+      <section id="q-astar">
+        <h2>Q19. A* 경로계획과 휴리스틱의 admissibility를 설명하세요</h2>
+        <p><strong>A*</strong>는 각 노드를 <code>f = g + h</code>로 평가합니다: <code>g</code>=출발점에서 여기까지 실제 비용, <code>h</code>=여기서 목표까지의 <strong>추정 비용(휴리스틱)</strong>. 우선순위 큐(heapq)에서 f가 가장 작은 노드를 먼저 확장합니다. 다익스트라에 "목표 방향 감"을 더해 훨씬 적은 노드만 탐색합니다.</p>
+        <p>최단경로를 보장하려면 휴리스틱이 <strong>admissible</strong>(실제 비용을 <strong>절대 과대평가하지 않음</strong>)해야 합니다. 4방향 격자에선 <strong>맨해튼 거리</strong>, 8방향(대각 허용)에선 <strong>대각/유클리드 거리</strong>가 admissible합니다.</p>
+        <pre class="language-python"><code class="language-python">import heapq
+def heuristic(a, b):           # 4방향 격자 → 맨해튼(과대평가 안 함)
+    return abs(a[0]-b[0]) + abs(a[1]-b[1])
+# 예: (0,0)→(3,4)  맨해튼 7, 유클리드 5.0
+#  4방향에서 실제 최소 이동도 7이므로 7은 admissible(&lt;=실제)</code></pre>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"글로벌 플래너와 로컬 플래너(Nav2)의 차이는?"</em> → <strong>글로벌 플래너</strong>(A*/Dijkstra)는 전체 지도에서 출발→목표의 큰 경로를 한 번 계산합니다. <strong>로컬 플래너</strong>(DWB/TEB)는 그 경로를 따라가며 <strong>실시간 장애물 회피와 속도 명령</strong>을 만듭니다. 갑자기 나타난 사람은 로컬이 피하고, 길이 완전히 막히면 글로벌이 재계획합니다.</p>
+      </section>
+
+      <section id="q-occupancy">
+        <h2>Q20. 점유 격자 지도(Occupancy Grid)란?</h2>
+        <p>공간을 <strong>일정 크기의 격자 셀</strong>로 나누고, 각 셀이 <strong>장애물일 확률</strong>을 담는 지도입니다. ROS의 <code>nav_msgs/OccupancyGrid</code>는 각 셀을 0~100(점유 확률 %) 또는 <code>-1</code>(미지) 값으로 표현합니다. 라이다가 셀을 통과하면 "비었음" 쪽으로, 셀에서 반사되면 "점유" 쪽으로 <strong>로그-오즈(log-odds)</strong> 방식으로 확률을 누적 갱신합니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"격자 해상도(cell size)는 어떻게 정하나요?"</em> → 작게 하면 정밀하지만 메모리·연산이 제곱으로 늘고, 크게 하면 좁은 통로를 못 지나갈 수 있습니다. 보통 로봇 폭과 센서 정밀도를 기준으로 5~10cm를 쓰고, 경로계획 시 로봇 반경만큼 장애물을 부풀리는 <strong>인플레이션(inflation)</strong>을 더합니다.</p>
+      </section>
+
+      <!-- ================= 카테고리 G: 인식·학습 ================= -->
+      <div class="qcat"><h3>👁️ G. 인식과 학습제어 (R8 · R10)</h3></div>
+
+      <section id="q-sensors-compare">
+        <h2>Q21. 카메라 · 라이다 · 레이더를 비교하세요</h2>
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; margin:16px 0; font-size:13px;">
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--robotics);">📷 카메라</h4><p style="color:var(--text-muted);">색·질감·표지판 등 <strong>풍부한 의미정보</strong>, 저렴. 단점: 깊이 직접 측정 불가(스테레오/추정 필요), <strong>조명·날씨에 취약</strong>.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--frontend);">📡 라이다(LiDAR)</h4><p style="color:var(--text-muted);">레이저로 <strong>정밀한 3D 거리</strong>를 직접 측정, 조명 무관. 단점: 비싸고, <strong>비·안개·유리</strong>에 약하며 색 정보 없음.</p></div>
+          <div class="glass-panel"><h4 style="font-weight:700; color:var(--devops);">📶 레이더(Radar)</h4><p style="color:var(--text-muted);">전파라 <strong>악천후에 강하고</strong> 도플러로 <strong>속도</strong>를 직접 측정. 단점: 해상도가 낮아 형상 구분이 약함.</p></div>
+        </div>
+        <p>그래서 자율주행은 셋을 <strong>융합</strong>해 서로의 약점을 메웁니다(카메라=무엇인지, 라이다=정확히 어디, 레이더=얼마나 빠르게).</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"OpenCV에서 색 검출을 RGB가 아니라 HSV로 하는 이유는?"</em> → RGB는 밝기 변화에 세 채널이 모두 출렁여 임계값 잡기가 어렵습니다. HSV는 <strong>색상(H)이 조명과 비교적 분리</strong>돼 있어, 그림자가 져도 같은 색을 안정적으로 잡습니다(R8에서 inRange로 실습).</p>
+      </section>
+
+      <section id="q-rl">
+        <h2>Q22. 강화학습(RL)이 지도학습과 다른 점은?</h2>
+        <p><strong>지도학습</strong>은 "입력→정답 라벨" 쌍으로 배웁니다. <strong>강화학습</strong>은 정답 라벨이 없고, 에이전트가 환경에서 <strong>행동(action)</strong>하고 <strong>보상(reward)</strong>을 받으며 <strong>시행착오</strong>로 "장기 누적 보상을 최대화하는 정책(policy)"을 학습합니다. 로봇 제어처럼 "매 순간의 정답은 모르지만 결과의 좋고 나쁨은 아는" 문제에 맞습니다.</p>
+        <p>본편 R10에서 4×4 격자의 Q-러닝을 실제 실행했습니다. 핵심 갱신식:</p>
+        <pre class="language-python"><code class="language-python"># Q-러닝 업데이트: 받은 보상 + 다음 상태 최선값으로 현재 Q를 보정
+Q[s, a] += alpha * (r + gamma * max(Q[s2]) - Q[s, a])
+#          학습률   (보상 + 할인된 미래가치 - 현재추정) = TD 오차
+action = argmax(Q[s])   # 학습된 정책: 그 상태에서 Q가 가장 큰 행동</code></pre>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"탐험(exploration)과 활용(exploitation)의 트레이드오프는?"</em> → 아는 최선만 반복(활용)하면 더 좋은 길을 못 찾고, 무작정 새 행동만 하면(탐험) 학습이 안 됩니다. <strong>ε-greedy</strong>처럼 대부분은 최선을 쓰되 가끔 무작위로 탐험하고, 학습이 진행될수록 ε를 줄여 균형을 맞춥니다.</p>
+      </section>
+
+      <section id="q-sim2real">
+        <h2>Q23. 시뮬레이션(Gazebo)을 먼저 쓰는 이유와 sim-to-real 갭은?</h2>
+        <p>실물 로봇은 비싸고, 망가지고, 한 번 시도에 시간이 오래 걸립니다. <strong>시뮬레이터(Gazebo/Isaac)</strong>에서는 빠르고 안전하게 수천 번 실험하고, 위험한 상황(충돌·낙하)도 마음껏 테스트합니다. 강화학습은 특히 수백만 스텝이 필요해 시뮬이 거의 필수입니다.</p>
+        <p>하지만 <strong>sim-to-real 갭</strong>이 있습니다: 시뮬은 마찰·센서 노이즈·지연·질량을 완벽히 재현하지 못해, 시뮬에서 잘 되던 정책이 실물에서 실패할 수 있습니다. 대책은 <strong>도메인 랜덤화</strong>(마찰·질량·노이즈를 무작위로 흔들어 강건하게 학습), 정밀한 센서 모델링, 실물 미세조정입니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"URDF란 무엇인가요?"</em> → 로봇의 링크(link)와 조인트(joint), 즉 <strong>기구 구조·치수·관절 종류</strong>를 적은 XML 기술 파일입니다. RViz 시각화, TF 트리 생성, Gazebo 물리 시뮬이 모두 이 URDF를 읽어 로봇 모델을 구성합니다(R7 실습).</p>
+      </section>
+
+      <section id="q-realtime-safety">
+        <h2>Q24. 로봇 제어 루프의 실시간성과 안전은 왜 중요한가요?</h2>
+        <p>제어 루프(예: PID, 균형 제어)는 <strong>일정한 주기로 정확히</strong> 돌아야 합니다. 주기가 들쭉날쭉하면(jitter) 미분·적분 항의 <code>dt</code>가 흔들려 제어가 불안정해집니다. 그래서 안전이 중요한 저수준 제어는 <strong>실시간 보장</strong>이 되는 MCU/RTOS에서 고정 주기로 돌리고, 인식·계획 같은 무거운 연산은 상위 컴퓨터(ROS 2)에서 처리하는 <strong>계층 분리</strong>가 표준입니다.</p>
+        <p>안전 설계의 기본: ① <strong>워치독 타이머</strong>(상위 명령이 끊기면 자동 정지) ② <strong>속도·토크·작업공간 한계</strong> 강제 ③ <strong>비상정지(E-stop)</strong>는 소프트웨어를 거치지 않는 하드웨어 경로 ④ 명령 끊김 시 <strong>안전한 기본 상태</strong>(정지)로 수렴.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"<code>/cmd_vel</code>이 끊기면 왜 로봇이 멈춰야 하나요?"</em> → 마지막 속도 명령을 계속 유지하면, 상위 노드나 통신이 죽었을 때 로봇이 <strong>제어 불능 상태로 계속 달려</strong> 위험합니다. 그래서 일정 시간 명령이 없으면 자동으로 0속도로 멈추는 <strong>타임아웃(워치독)</strong>을 둡니다.</p>
+      </section>
+
+      <!-- 마무리 색인 -->
+      <section id="wrap-index">
+        <h2>📑 카테고리 ↔ 본편 챕터 빠른 색인</h2>
+        <table>
+          <thead><tr><th>면접 카테고리</th><th>핵심 키워드</th><th>본편</th></tr></thead>
+          <tbody>
+            <tr><td>좌표·변환</td><td>SO(3)/SE(3)·쿼터니언·TF·REP-103</td><td><a href="chapter-r1.html">R1</a> · <a href="chapter-r7.html">R7</a></td></tr>
+            <tr><td>센서·상태추정</td><td>칼만·센서퓨전·나이퀴스트</td><td><a href="chapter-r2.html">R2</a> · <a href="chapter-r9.html">R9</a></td></tr>
+            <tr><td>제어(PID)</td><td>P/I/D·와인드업·미분킥·피드포워드</td><td><a href="chapter-r5.html">R5</a></td></tr>
+            <tr><td>기구학</td><td>FK/IK·자코비안·특이점·차동구동</td><td><a href="chapter-r4.html">R4</a></td></tr>
+            <tr><td>ROS 2</td><td>DDS·토픽/서비스/액션·QoS·executor</td><td><a href="chapter-r6.html">R6</a> · <a href="chapter-r7.html">R7</a></td></tr>
+            <tr><td>SLAM·내비</td><td>SLAM·루프클로저·A*·점유격자·Nav2</td><td><a href="chapter-r9.html">R9</a></td></tr>
+            <tr><td>인식·학습</td><td>카메라/라이다/레이더·HSV·Q러닝·sim2real</td><td><a href="chapter-r8.html">R8</a> · <a href="chapter-r10.html">R10</a></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px; color:var(--text-muted); font-size:13px;">💡 면접 전략: 답을 외우기보다 <strong>"왜 그렇게 설계했는가"</strong>를 한 문장으로 설명할 수 있게 연습하세요. 면접관은 정답보다 <em>트레이드오프를 이해하는지</em>를 봅니다. 각 질문의 "면접 꼬리 질문"이 바로 그 깊이를 파는 지점입니다.</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const appendixRBQuizzes = [
+      {
+        type: "mcq",
+        question: "오일러각의 짐벌락(Gimbal Lock)을 피하기 위해 회전 표현으로 흔히 쓰는 것은?",
+        options: ["오일러각을 degree로 표기", "쿼터니언", "위도/경도", "RGB 값"],
+        correct: 1,
+        explanation: "쿼터니언(x,y,z,w)은 짐벌락이 없고 보간(SLERP)이 매끄러워 ROS·게임·항공의 자세 표준입니다. 사람에게 보여줄 때만 오일러각으로 변환합니다."
+      },
+      {
+        type: "mcq",
+        question: "칼만 필터에서 측정값의 분산 R이 매우 작을(=측정이 매우 정확할) 때 칼만 게인 K는?",
+        options: ["0에 가까워져 측정을 거의 무시", "1에 가까워져 측정을 많이 반영", "항상 0.5 고정", "음수가 된다"],
+        correct: 1,
+        explanation: "K = P/(P+R). R이 작으면 K→1이라 측정값을 강하게 신뢰하고, R이 크면(노이즈 큼) K→0이라 모델 예측을 유지합니다."
+      },
+      {
+        type: "mcq",
+        question: "오래 걸리는 목표 수행 + 진행 피드백 + 도중 취소가 필요한 ROS 2 통신 방식은?",
+        options: ["토픽(Topic)", "서비스(Service)", "액션(Action)", "파라미터(Parameter)"],
+        correct: 2,
+        explanation: "액션입니다. 흘려보내는 연속 스트림은 토픽, 빠른 요청-응답은 서비스, '저기까지 이동(Nav2)'처럼 오래 걸리고 진행률·취소가 필요하면 액션을 씁니다."
+      },
+      {
+        type: "mcq",
+        question: "PID에서 적분 와인드업(Integral Windup)이 발생하는 주된 원인은?",
+        options: [
+          "미분항이 노이즈를 증폭해서",
+          "액추에이터 포화 중에도 적분항이 계속 누적되어",
+          "비례 게인이 0이어서",
+          "센서 샘플링이 너무 빨라서"
+        ],
+        correct: 1,
+        explanation: "출력이 물리적 한계(포화)에 막혔는데도 ∫e dt가 계속 커지면, 목표 도달 후 부푼 적분이 빠질 때까지 큰 오버슈트가 생깁니다. 적분 클램핑/back-calculation으로 방지합니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "차동구동 로봇의 각속도 w를 구하세요. (좌우 바퀴속도 vL, vR, 바퀴간격 L)",
+        starter: "vL, vR, L = 0.4, 0.6, 0.5\n# 각속도 w = ?\nw = ",
+        validator: {
+          mustContain: ["(vR-vL)/L"],
+          mustNotContain: []
+        },
+        solution: "(vR - vL) / L",
+        explanation: "차동구동: 선속도 v=(vR+vL)/2, 각속도 w=(vR-vL)/L. 여기선 (0.6-0.4)/0.5 = 0.40 rad/s. 양 바퀴가 같으면 직진(w=0)입니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "4방향 격자 A*에서 admissible한 휴리스틱(맨해튼 거리)을 완성하세요.",
+        starter: "def heuristic(a, b):\n    # a, b는 (행, 열) 좌표\n    return ",
+        validator: {
+          mustContain: ["abs(a[0]-b[0])+abs(a[1]-b[1])"],
+          mustNotContain: []
+        },
+        solution: "abs(a[0]-b[0]) + abs(a[1]-b[1])",
+        explanation: "4방향 격자에선 맨해튼 거리가 실제 최소 이동수를 과대평가하지 않아(admissible) A*의 최단경로를 보장합니다. 대각 이동을 허용하면 유클리드/대각 거리를 씁니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", appendixRBQuizzes, "appendix-r-b");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
