@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>부록 R-C - 로보틱스 수학 복습 시트</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+    .qcat { border-radius: 12px; padding: 18px 22px 8px; margin: 28px 0 8px; border-left: 4px solid var(--robotics); background: linear-gradient(135deg, rgba(33,150,243,0.10), transparent); }
+    .qcat h3 { font-weight: 800; color: var(--robotics); font-size: 18px; margin: 0; }
+    .fcard { border-left: 3px solid var(--devops); margin: 8px 0 14px; }
+    .fcard h4 { font-weight: 700; color: var(--devops); }
+    .fcard pre { font-size: 12px; color: var(--text-muted); font-family: var(--font-mono); margin: 0; white-space: pre-wrap; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>부록 R-C</span></div>
+      <h1 style="color: var(--robotics);">부록 R-C: 로보틱스 수학 복습 시트</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">R0이 "아주 밑바닥부터 천천히" 가르치는 교과서라면, R-C는 <strong>시험·실습 직전에 펴 보는 압축 요약 시트</strong>입니다. <strong>삼각함수 · 벡터 · 선형대수 · 확률통계 · 미적분</strong> 5개 영역의 핵심 공식을 "이게 로보틱스 어디서 쓰이나"와 함께 모았습니다. 모든 수치 예제는 실제 실행 결과입니다.</p>
+    </div>
+
+    <div class="concept-section">
+
+      <!-- ================= 1. 삼각함수 ================= -->
+      <div class="qcat"><h3>📐 1. 삼각함수 (Trigonometry)</h3></div>
+
+      <section id="trig-basics">
+        <h2>1-1. 정의 · 단위원 · 특수각</h2>
+        <p>직각삼각형에서 <code>sin θ = 높이/빗변</code>, <code>cos θ = 밑변/빗변</code>, <code>tan θ = 높이/밑변 = sin/cos</code>. 반지름 1인 <strong>단위원</strong> 위의 점은 정확히 <code>(cos θ, sin θ)</code> — 그래서 로봇의 방향(heading)을 (cos, sin)으로 다룹니다.</p>
+        <table>
+          <thead><tr><th>θ</th><th>0°</th><th>30°</th><th>45°</th><th>60°</th><th>90°</th></tr></thead>
+          <tbody>
+            <tr><td><strong>sin</strong></td><td>0</td><td>0.5</td><td>0.7071</td><td>0.8660</td><td>1</td></tr>
+            <tr><td><strong>cos</strong></td><td>1</td><td>0.8660</td><td>0.7071</td><td>0.5</td><td>0</td></tr>
+            <tr><td><strong>tan</strong></td><td>0</td><td>0.5774</td><td>1</td><td>1.7321</td><td>∞</td></tr>
+          </tbody>
+        </table>
+        <p>핵심 항등식: <code>sin²θ + cos²θ = 1</code> (피타고라스), <code>sin(−θ) = −sin θ</code>(기함수), <code>cos(−θ) = cos θ</code>(우함수). 주기는 sin·cos가 360°(2π), tan은 180°(π).</p>
+        <pre class="language-python"><code class="language-python">import numpy as np
+np.sin(np.radians(30))   # 0.5      (도→라디안 먼저!)
+np.cos(np.radians(60))   # 0.5
+np.tan(np.radians(45))   # 1.0
+# 단위원: 방향각 θ → 단위 방향벡터
+theta = np.radians(37)
+heading = np.array([np.cos(theta), np.sin(theta)])  # 길이 1</code></pre>
+      </section>
+
+      <section id="trig-atan2">
+        <h2>1-2. atan2 — 로보틱스에서 가장 중요한 삼각함수</h2>
+        <p>"좌표 (x, y)가 주어졌을 때 그 방향각은?"을 구하는 게 <strong>역삼각함수</strong>입니다. 그냥 <code>atan(y/x)</code>는 <strong>사분면을 구분 못 하고</strong>(x=0에서 0으로 나눔) 항상 −90°~90°만 반환합니다. <code>atan2(y, x)</code>는 부호를 보고 <strong>−180°~180° 전체</strong>를 정확히 줍니다. 인자 순서가 <code>(y, x)</code>인 것에 주의!</p>
+        <pre class="language-python"><code class="language-python">np.degrees(np.arctan2(1, 1))    #  45.0   (1사분면)
+np.degrees(np.arctan2(1, -1))   # 135.0   (2사분면 — atan이라면 -45로 틀림)
+np.degrees(np.arctan2(-1, -1))  # -135.0  (3사분면)
+
+# 각도를 [-180°, 180°]로 감싸기 (heading 정규화 필수 패턴)
+def wrap(a):                       # a: 라디안
+    return (a + np.pi) % (2*np.pi) - np.pi
+np.degrees(wrap(np.radians(190)))  # -170.0</code></pre>
+        <div class="glass-panel fcard">
+          <h4>✅ 검증값</h4>
+          <pre>sin30=0.5 · cos45=0.7071 · tan60=1.7321 · atan2(1,-1)=135° · wrap(190°)=-170°</pre>
+        </div>
+        <p><strong>🤖 어디서 쓰나:</strong> 목표를 바라보는 각도(R4 차동구동 조향), 두 점 사이 방향(R0·R9), IMU yaw 정규화(R2). 로봇 코드에서 방향이 필요하면 십중팔구 <code>atan2</code>입니다.</p>
+      </section>
+
+      <!-- ================= 2. 벡터 ================= -->
+      <div class="qcat"><h3>➡️ 2. 벡터 (Vectors)</h3></div>
+
+      <section id="vec-norm">
+        <h2>2-1. 크기 · 단위벡터 · 거리</h2>
+        <p>벡터의 <strong>크기(노름)</strong>는 <code>‖v‖ = √(vₓ² + v_y² + ...)</code> — 화살표의 길이. <strong>단위벡터</strong>는 같은 방향에 길이만 1로 만든 것(<code>v/‖v‖</code>)으로 "방향만" 표현할 때 씁니다. 두 점 사이 <strong>거리</strong>는 변위 벡터의 크기 <code>‖b − a‖</code>.</p>
+        <pre class="language-python"><code class="language-python">import numpy as np
+v = np.array([3.0, 4.0])
+np.linalg.norm(v)          # 5.0  (3-4-5 삼각형)
+v / np.linalg.norm(v)      # [0.6, 0.8]  단위벡터(길이 1)
+a = np.array([1.,2.]); b = np.array([4.,6.])
+np.linalg.norm(b - a)      # 5.0  두 점 거리</code></pre>
+      </section>
+
+      <section id="vec-dot">
+        <h2>2-2. 내적(Dot) — 각도 · 투영 · 수직 판정</h2>
+        <p><code>a·b = aₓbₓ + a_yb_y + ... = ‖a‖‖b‖cos θ</code>. 결과는 <strong>스칼라(숫자 하나)</strong>. 핵심 활용 3가지:</p>
+        <ul>
+          <li><strong>두 벡터의 사잇각</strong>: <code>cos θ = a·b / (‖a‖‖b‖)</code></li>
+          <li><strong>수직 판정</strong>: <code>a·b = 0</code> ⟺ 직각(90°)</li>
+          <li><strong>투영(projection)</strong>: b 방향으로 a가 얼마나 가는지 = <code>a·b̂</code></li>
+        </ul>
+        <pre class="language-python"><code class="language-python">a = np.array([1.,0.]); b = np.array([1.,1.])
+np.dot(a, b)               # 1.0  (= a @ b)
+ang = np.degrees(np.arccos(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b))))
+ang                        # 45.0  사잇각
+np.dot([1,0],[0,1])        # 0  → 수직(직각)</code></pre>
+        <p><strong>🤖 어디서 쓰나:</strong> 센서가 향한 방향과 목표 방향의 정렬도(코사인 유사도), 빛/힘의 투영, 로봇이 목표를 "앞에" 두고 있는지 판정.</p>
+      </section>
+
+      <section id="vec-cross">
+        <h2>2-3. 외적(Cross) — 수직 벡터 · 방향(부호) · 넓이</h2>
+        <p>3D에서 <code>a × b</code>는 a와 b에 <strong>동시에 수직인 벡터</strong>를 주고, 크기는 두 벡터가 만드는 <strong>평행사변형 넓이</strong>(<code>‖a‖‖b‖sin θ</code>)입니다. 방향은 오른손 법칙. 2D에선 스칼라 <code>aₓb_y − a_ybₓ</code>가 되어 <strong>회전 방향(왼/오)</strong>을 부호로 알려 줍니다(양수=반시계).</p>
+        <pre class="language-python"><code class="language-python">np.cross([1,0,0], [0,1,0])   # [0, 0, 1]  z축(둘 다에 수직)
+# 2D 외적(스칼라) = 좌/우 회전 판별
+def turn(a, b):
+    return a[0]*b[1] - a[1]*b[0]   # &gt;0 반시계(좌), &lt;0 시계(우)
+turn([1,0], [0,1])           # 1 (>0 → 좌회전)</code></pre>
+        <div class="glass-panel fcard">
+          <h4>✅ 검증값</h4>
+          <pre>norm[3,4]=5.0 · unit=[0.6 0.8] · dot(a,b)=1.0(45°) · 수직내적=0 · cross[1,0,0]×[0,1,0]=[0 0 1]</pre>
+        </div>
+        <p><strong>🤖 어디서 쓰나:</strong> 표면 법선(normal) 계산, 토크 <code>τ = r × F</code>, 점이 경로의 왼쪽/오른쪽인지(차선 이탈·경로 추종 R9), 회전축 계산.</p>
+      </section>
+
+      <!-- ================= 3. 선형대수 ================= -->
+      <div class="qcat"><h3>🔢 3. 행렬과 선형대수 (Linear Algebra)</h3></div>
+
+      <section id="mat-ops">
+        <h2>3-1. 행렬곱 · 전치 · 역행렬</h2>
+        <p>행렬은 "벡터를 다른 벡터로 보내는 변환"입니다(회전·확대·투영). <strong>행렬곱은 변환의 합성</strong>이고 <strong>순서가 중요</strong>(<code>AB ≠ BA</code>). <code>Aᵀ</code>(전치)는 행↔열 교환, <code>A⁻¹</code>(역행렬)은 변환을 되돌립니다(<code>A A⁻¹ = I</code>).</p>
+        <pre class="language-python"><code class="language-python">import numpy as np
+A = np.array([[2.,0.],[0.,3.]]); B = np.array([[1.,1.],[0.,1.]])
+A @ B                       # 행렬곱(@ 권장). A @ B ≠ B @ A!
+A.T                         # 전치
+np.linalg.inv(A)            # 역행렬 → [[0.5,0],[0,0.333]]
+np.allclose(A @ np.linalg.inv(A), np.eye(2))   # True</code></pre>
+      </section>
+
+      <section id="mat-det-solve">
+        <h2>3-2. 행렬식(det) · 연립방정식 풀기</h2>
+        <p><strong>행렬식 det(A)</strong>는 그 변환이 <strong>넓이/부피를 몇 배로</strong> 바꾸는지입니다. <code>det = 0</code>이면 차원이 찌부러져(역행렬 없음) 정보가 소실 — 기구학의 <strong>특이점</strong>이 바로 이것(R4). 연립방정식 <code>Ax = b</code>는 <code>np.linalg.solve</code>로 풀며, <strong>역행렬을 직접 구하는 것보다 안정적이고 빠릅니다</strong>.</p>
+        <pre class="language-python"><code class="language-python">np.linalg.det(np.array([[2.,0.],[0.,3.]]))   # 6.0  (넓이 6배)
+# Ax = b  →  x
+A = np.array([[2.,1.],[1.,3.]]); b = np.array([3.,5.])
+np.linalg.solve(A, b)       # [0.8, 1.4]   (inv 쓰지 말 것)</code></pre>
+      </section>
+
+      <section id="mat-rot-eig">
+        <h2>3-3. 회전행렬의 성질 · 고유값 맛보기</h2>
+        <p><strong>회전행렬 R</strong>의 3대 성질(R1): ① <code>RᵀR = I</code>(직교) ② <code>R⁻¹ = Rᵀ</code>(역회전이 공짜) ③ <code>det(R) = +1</code>(넓이 보존, 반사 없음). 그래서 변환을 거꾸로 풀 때 비싼 역행렬 대신 전치만 쓰면 됩니다.</p>
+        <p><strong>고유값/고유벡터</strong>: <code>A v = λ v</code> — 변환해도 <strong>방향이 안 바뀌고 크기만 λ배</strong> 되는 특별한 벡터 v와 그 배율 λ. 공분산 행렬의 고유벡터는 <strong>불확실성 타원의 축 방향</strong>이 되어 위치추정(R9)에서 오차 분포를 그릴 때 씁니다.</p>
+        <pre class="language-python"><code class="language-python">th = np.radians(37)
+R = np.array([[np.cos(th),-np.sin(th)],[np.sin(th),np.cos(th)]])
+np.linalg.det(R)            # 1.0,  R.T @ R == I → True
+# 대칭(공분산형) 행렬의 고유값 — 항상 실수
+w, v = np.linalg.eigh(np.array([[2.,1.],[1.,2.]]))
+w                          # [1., 3.]   (고유값 = 타원 축 길이²의 척도)</code></pre>
+        <div class="glass-panel fcard">
+          <h4>✅ 검증값</h4>
+          <pre>det([[2,0],[0,3]])=6.0 · solve→[0.8 1.4] · det(R)=1.0, RᵀR=I · eig([[2,1],[1,2]])=[1,3]</pre>
+        </div>
+        <p><strong>🤖 어디서 쓰나:</strong> 좌표 변환(R1·R7), FK/IK·자코비안(R4), 특이점 판정(det J=0), 공분산·불확실성 타원(R9 칼만).</p>
+      </section>
+
+      <!-- ================= 4. 확률·통계 ================= -->
+      <div class="qcat"><h3>🎲 4. 확률과 통계 (Probability &amp; Statistics)</h3></div>
+
+      <section id="prob-stats">
+        <h2>4-1. 평균 · 분산 · 표준편차</h2>
+        <p><strong>평균(μ)</strong>은 중심, <strong>분산(σ²)</strong>은 "퍼진 정도"의 제곱 평균, <strong>표준편차(σ)</strong>는 그 제곱근으로 데이터와 같은 단위라 직관적입니다. 센서 노이즈의 세기를 σ로 표현하고, 칼만 필터는 이 분산을 추적합니다(R2·R9).</p>
+        <pre class="language-python"><code class="language-python">import numpy as np
+x = np.array([2.,4.,4.,4.,5.,5.,7.,9.])
+x.mean()    # 5.0   평균 μ
+x.var()     # 4.0   분산 σ²
+x.std()     # 2.0   표준편차 σ</code></pre>
+      </section>
+
+      <section id="prob-gaussian">
+        <h2>4-2. 가우시안(정규분포) · 68-95-99.7 법칙</h2>
+        <p>센서 노이즈는 대개 종 모양 <strong>가우시안 분포</strong> <code>N(μ, σ²)</code>를 따른다고 가정합니다(칼만의 핵심 전제). 외우면 좋은 <strong>68-95-99.7 법칙</strong>: 데이터의 약 <strong>68%가 μ±1σ, 95%가 μ±2σ, 99.7%가 μ±3σ</strong> 안에 들어옵니다. "3σ를 벗어나면 이상치(outlier)"라고 보는 근거입니다.</p>
+        <pre class="language-python"><code class="language-python">from math import erf, sqrt
+def within(k):                 # μ±kσ 안에 들어올 확률
+    return erf(k / sqrt(2))
+within(1)   # 0.6827  (≈68%)
+within(2)   # 0.9545  (≈95%)
+within(3)   # 0.9973  (≈99.7%)</code></pre>
+      </section>
+
+      <section id="prob-bayes">
+        <h2>4-3. 조건부확률 · 베이즈 정리 (위치추정의 뿌리)</h2>
+        <p><strong>베이즈 정리</strong>는 "새 증거를 보고 믿음을 갱신"하는 공식입니다: <code>P(A|B) = P(B|A)·P(A) / P(B)</code>. 사전확률 <code>P(A)</code>(원래 믿음)을 측정 <code>B</code>로 보정해 사후확률 <code>P(A|B)</code>를 얻습니다. <strong>이것이 칼만 필터·파티클 필터·SLAM·점유격자 갱신의 수학적 뿌리</strong>입니다(R9).</p>
+        <pre class="language-python"><code class="language-python"># 예: 부품 고장 진단
+#  사전 고장률 P(고장)=1%,  센서 민감도 P(+|고장)=99%,  오경보 P(+|정상)=5%
+pf, sens, fp = 0.01, 0.99, 0.05
+p_pos  = sens*pf + fp*(1-pf)            # 양성이 나올 전체 확률
+post   = sens*pf / p_pos               # P(고장 | 양성)
+round(post, 4)   # 0.1667  → 양성이어도 실제 고장 확률은 16.7%뿐!</code></pre>
+        <div class="glass-panel fcard">
+          <h4>✅ 검증값</h4>
+          <pre>μ=5.0 σ²=4.0 σ=2.0 · 가우시안 1σ68.3% 2σ95.5% 3σ99.7% · 베이즈 사전1%→사후16.7%</pre>
+        </div>
+        <p><strong>🤖 직관:</strong> 드물게 일어나는 일(고장 1%)은 센서가 양성을 줘도 여전히 드뭅니다. 로봇이 "한 번 본 것"을 맹신하지 않고 <strong>사전 정보와 융합</strong>해야 하는 이유 — 그게 확률적 위치추정의 본질입니다.</p>
+      </section>
+
+      <!-- ================= 5. 미적분 ================= -->
+      <div class="qcat"><h3>∫ 5. 미적분 맛보기 (Calculus for Control)</h3></div>
+
+      <section id="calc-basics">
+        <h2>5-1. 미분 = 변화율, 적분 = 누적</h2>
+        <p>제어와 운동을 이해하는 데 딱 두 개념이면 충분합니다. <strong>미분</strong>은 "순간 변화율"(기울기) — 위치를 미분하면 속도, 속도를 미분하면 가속도. PID의 <strong>D항</strong>이 오차의 미분입니다. <strong>적분</strong>은 "쌓아 더하기"(곡선 아래 넓이) — 속도를 적분하면 이동 거리. PID의 <strong>I항</strong>이 오차의 적분이고, 오도메트리가 속도의 적분입니다.</p>
+        <table>
+          <thead><tr><th>양</th><th>미분 →</th><th>← 적분</th></tr></thead>
+          <tbody>
+            <tr><td>위치 x</td><td>속도 v = dx/dt</td><td>x = ∫v dt</td></tr>
+            <tr><td>속도 v</td><td>가속도 a = dv/dt</td><td>v = ∫a dt</td></tr>
+            <tr><td>오차 e</td><td>D항 = de/dt</td><td>I항 = ∫e dt</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="calc-numeric">
+        <h2>5-2. 수치 미분 · 적분 (코드로 하는 미적분)</h2>
+        <p>로봇은 연속 함수가 아니라 <strong>이산 시간 샘플</strong>(매 dt마다 측정)을 다룹니다. 그래서 미분은 <strong>차분</strong>(<code>(현재−이전)/dt</code>), 적분은 <strong>누적합</strong>(<code>합 × dt</code>, 오일러 적분)으로 근사합니다. PID 한 줄, 오도메트리 한 줄이 정확히 이 형태입니다.</p>
+        <pre class="language-python"><code class="language-python">import numpy as np
+dt = 0.01
+t  = np.arange(0, 1, dt)
+v  = 2.0 * t                     # 속도가 시간에 비례(가속)
+# 수치 미분: 가속도 ≈ 차분/dt  → 일정한 2.0
+a = np.gradient(v, dt)           # ≈ 2.0
+# 수치 적분(오일러): 이동거리 = Σ v·dt
+x = np.cumsum(v) * dt            # 0.5*2*1² = 1.0 에 근접
+round(x[-1], 3)                  # ≈ 0.99 (이산 근사 오차)
+
+# PID/오도메트리에서 쓰는 형태 (한 스텝)
+deriv  = (e - prev_e) / dt       # D항 = 오차의 수치 미분
+integral += e * dt               # I항 = 오차의 수치 적분(누적)</code></pre>
+        <p><strong>🤖 어디서 쓰나:</strong> PID 제어(R5)의 D·I항, 휠 오도메트리(R4 속도→자세 적분), IMU 적분(가속도→속도→위치, 단 드리프트 누적 R2), 신호 변화율 검출.</p>
+      </section>
+
+      <!-- 색인 -->
+      <section id="wrap-index">
+        <h2>📑 수학 영역 ↔ 본편 챕터 색인</h2>
+        <table>
+          <thead><tr><th>수학 영역</th><th>핵심 도구</th><th>주로 쓰는 곳</th></tr></thead>
+          <tbody>
+            <tr><td>삼각함수</td><td><code>sin/cos · atan2 · wrap</code></td><td><a href="chapter-r0.html">R0</a> · <a href="chapter-r4.html">R4</a></td></tr>
+            <tr><td>벡터</td><td><code>norm · dot · cross</code></td><td><a href="chapter-r0.html">R0</a> · <a href="chapter-r1.html">R1</a></td></tr>
+            <tr><td>선형대수</td><td><code>@ · inv · det · solve · eig</code></td><td><a href="chapter-r1.html">R1</a> · <a href="chapter-r4.html">R4</a></td></tr>
+            <tr><td>확률통계</td><td><code>μ/σ · 가우시안 · 베이즈</code></td><td><a href="chapter-r2.html">R2</a> · <a href="chapter-r9.html">R9</a></td></tr>
+            <tr><td>미적분</td><td><code>차분 · cumsum · 오일러적분</code></td><td><a href="chapter-r5.html">R5</a> · <a href="chapter-r4.html">R4</a></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px; color:var(--text-muted); font-size:13px;">💡 더 천천히 배우고 싶으면 <a href="chapter-r0.html">R0. 수학 리부트</a>로, 코드 패턴만 빠르게 찾으려면 <a href="appendix-r-a.html">부록 R-A 치트시트</a>로 가세요. 이 시트는 그 둘 사이의 "복습용 압축본"입니다.</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const appendixRCQuizzes = [
+      {
+        type: "mcq",
+        question: "좌표 (x, y)의 방향각을 4사분면 모두 정확히 구하려면?",
+        options: ["atan(y/x)", "atan2(y, x)", "asin(y)", "acos(x)"],
+        correct: 1,
+        explanation: "atan2(y, x)는 부호로 사분면을 구분해 -180°~180° 전체를 줍니다. atan(y/x)는 -90°~90°만 주고 x=0에서 정의되지 않습니다. 인자 순서가 (y, x)인 것에 주의!"
+      },
+      {
+        type: "mcq",
+        question: "두 벡터의 내적(dot product)이 0이라는 것은 무엇을 뜻하나요?",
+        options: ["두 벡터가 평행", "두 벡터가 수직(직각)", "두 벡터가 같다", "한 벡터가 영벡터"],
+        correct: 1,
+        explanation: "a·b = ‖a‖‖b‖cosθ 이므로 내적이 0이면 cosθ=0, 즉 θ=90°로 수직입니다. (둘 다 0이 아닐 때)"
+      },
+      {
+        type: "mcq",
+        question: "회전행렬 R의 성질로 올바른 것은?",
+        options: ["det(R) = 0", "R의 역행렬은 전치 Rᵀ와 같다", "R은 대칭행렬이다", "R의 모든 원소가 양수다"],
+        correct: 1,
+        explanation: "회전행렬은 직교행렬이라 RᵀR = I, 즉 R⁻¹ = Rᵀ입니다. 또 det(R) = +1(넓이 보존). 그래서 역회전을 전치만으로 공짜로 구합니다."
+      },
+      {
+        type: "mcq",
+        question: "가우시안 분포에서 데이터의 약 95%가 들어오는 범위는?",
+        options: ["μ ± 0.5σ", "μ ± 1σ", "μ ± 2σ", "μ ± 5σ"],
+        correct: 2,
+        explanation: "68-95-99.7 법칙: μ±1σ에 약 68%, μ±2σ에 약 95%, μ±3σ에 약 99.7%. 3σ를 벗어나면 이상치로 봅니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "Ax = b 를 역행렬 없이 안정적으로 푸세요. (numpy)",
+        starter: "import numpy as np\nA = np.array([[2.,1.],[1.,3.]])\nb = np.array([3.,5.])\nx = ",
+        validator: {
+          mustContain: ["np.linalg.solve(A,b)"],
+          mustNotContain: ["inv"]
+        },
+        solution: "np.linalg.solve(A, b)",
+        explanation: "np.linalg.solve(A, b) → [0.8, 1.4]. 역행렬을 직접 구해 곱하는 것보다 수치적으로 안정적이고 빠릅니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "오차 e의 적분항(I항)을 한 스텝 누적하세요. (오일러 적분, dt 사용)",
+        starter: "integral = 0.0\ne, dt = 0.2, 0.01\n# 적분항 누적 (한 줄)\nintegral += ",
+        validator: {
+          mustContain: ["e*dt"],
+          mustNotContain: []
+        },
+        solution: "e * dt",
+        explanation: "수치 적분(오일러): ∫e dt ≈ Σ e·dt. 매 스텝 integral += e*dt로 누적합니다. PID의 I항, 속도→거리 적분이 모두 이 형태입니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", appendixRCQuizzes, "appendix-r-c");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
