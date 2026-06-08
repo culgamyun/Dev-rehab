@@ -39,6 +39,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // 0. 사이드바 리브랜딩 (타이틀 "Dev Rehab" + 클릭 시 대시보드 이동, '대시보드 홈' 항목 제거)
   initSidebarBrand();
 
+  // 0.5 코스 트랙 토글 (풀스택 재활 ↔ 로보틱스) 바인딩
+  initCourseTrackToggle();
+
   // 1. 테마(다크/라이트) 초기화 수행
   initTheme();
 
@@ -269,6 +272,48 @@ function initSidebarBrand() {
       if (li) li.remove();
     }
   });
+}
+
+/**
+ * ==========================================================================
+ * 0.5 코스 트랙 토글 (풀스택 재활 ↔ 로보틱스)
+ * ==========================================================================
+ * 사이드바 상단의 두 탭(.track-tab)으로 두 코스의 네비게이션을 토글한다.
+ * 표시/숨김과 활성 탭 스타일은 <html data-track="..."> 속성이 CSS로 구동하고
+ * (head의 인라인 스크립트가 FOUC 없이 초기값을 세팅), 여기서는 클릭 시 속성
+ * 전환 + localStorage 저장 + 접근성(aria-selected)만 담당한다.
+ * 콘텐츠 페이지 방문 시에는 그 페이지의 트랙을 '마지막 컨텍스트'로 저장해
+ * 대시보드 홈이 직전에 보던 코스로 열리도록 한다.
+ */
+function initCourseTrackToggle() {
+  const tabs = document.querySelectorAll(".track-tab");
+  if (!tabs.length) return;
+
+  const root = document.documentElement;
+  const file = (window.location.pathname.split("/").pop() || "index.html").toLowerCase();
+  const isHome = file === "" || file === "index.html";
+
+  // 콘텐츠 페이지(홈이 아님)는 head 스크립트가 파일명으로 트랙을 강제 지정함 →
+  // 그 값을 '마지막 본 코스'로 저장해 홈 복귀 시 일관성 유지.
+  if (!isHome) {
+    localStorage.setItem("antigravity_track", root.getAttribute("data-track") || "fullstack");
+  }
+
+  const syncAria = () => {
+    const cur = root.getAttribute("data-track") || "fullstack";
+    tabs.forEach(tb => tb.setAttribute("aria-selected", tb.dataset.trackTab === cur ? "true" : "false"));
+  };
+
+  tabs.forEach(tab => {
+    tab.addEventListener("click", () => {
+      const t = tab.dataset.trackTab;
+      root.setAttribute("data-track", t);
+      localStorage.setItem("antigravity_track", t);
+      syncAria();
+    });
+  });
+
+  syncAria();
 }
 
 function initMobileNav() {

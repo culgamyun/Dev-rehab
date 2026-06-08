@@ -6,6 +6,7 @@
   <title>Antigravity Fullstack Rehab Dashboard</title>
   <!-- 로컬 라이브러리 및 공통 스타일시트 연동 -->
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
   <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
@@ -13,125 +14,40 @@
   <!-- ==========================================================================
        1. Left Navigation Sidebar
        ========================================================================== -->
-  <aside id="sidebar">
-    <div class="sidebar-logo">
-      <span>Antigravity</span> Rehab
+    <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
     </div>
-    
     <ul class="nav-menu">
-      <li class="nav-item active" data-chapter-class="backend">
-        <a href="index.html">
-          <span class="nav-item-text">🏠 대시보드 홈</span>
-        </a>
-      </li>
-      
-      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
-      
-      <li class="nav-item" data-chapter-class="backend">
-        <a href="chapter-1.html">
-          <span class="nav-item-text">01. 모던 자바 핵심</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()">
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="backend">
-        <a href="chapter-2.html">
-          <span class="nav-item-text">02. 스프링 부트 3 & JPA</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()">
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="backend">
-        <a href="chapter-3.html">
-          <span class="nav-item-text">03. DB & SQL + QueryDSL</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()">
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="backend">
-        <a href="chapter-4.html">
-          <span class="nav-item-text">04. Security & Redis JWT</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()">
-        </a>
-      </li>
-
-      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
-
-      <li class="nav-item" data-chapter-class="frontend">
-        <a href="chapter-5.html">
-          <span class="nav-item-text">05. React & Next.js 기초</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()">
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="frontend">
-        <a href="chapter-6.html">
-          <span class="nav-item-text">06. 고급 React & Zustand</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()">
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="frontend">
-        <a href="chapter-7.html">
-          <span class="nav-item-text">07. 풀스택 통합 & 소켓</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()">
-        </a>
-      </li>
-
-      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
-
-      <li class="nav-item" data-chapter-class="devops">
-        <a href="chapter-8.html">
-          <span class="nav-item-text">08. DevOps & AWS & MSA</span>
-          <input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()">
-        </a>
-      </li>
-
-      <li style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
-
-      <li class="nav-item" data-chapter-class="test">
-        <a href="appendix-test.html">
-          <span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span>
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="interview">
-        <a href="appendix-interview.html">
-          <span class="nav-item-text">💬 부록 B. 면접 단골 CS & 심화</span>
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="algo">
-        <a href="appendix-algorithm.html">
-          <span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span>
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="ai">
-        <a href="appendix-ai.html">
-          <span class="nav-item-text">🤖 부록 D. AI-Native 통합</span>
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="interview">
-        <a href="appendix-e.html">
-          <span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span>
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="frontend">
-        <a href="appendix-f.html">
-          <span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span>
-        </a>
-      </li>
-      <li class="nav-item" data-chapter-class="devops">
-        <a href="appendix-g.html">
-          <span class="nav-item-text">📡 부록 G. 백엔드 운영</span>
-        </a>
-      </li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R2~R10 · 부록 R-A~C<br><span style="font-size: 11px;">센서 · 제어 · ROS 2 · 인식 · SLAM …<br>(순차 공개 예정)</span></span></li>
     </ul>
-
-    <!-- 사이드바 하단 도구함 -->
     <div class="sidebar-footer">
-      <button class="btn-sidebar btn-open-glossary">
-        <span>📖 용어 사전 (Ctrl+K)</span>
-      </button>
-      <button class="btn-sidebar theme-toggle">
-        <span>☀️ Mode</span>
-      </button>
-      <button class="btn-sidebar btn-reset">
-        <span>🔄 데이터 초기화</span>
-      </button>
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
     </div>
   </aside>
 
@@ -143,8 +59,10 @@
     <!-- 2.1 Top Search Bar & Greeting -->
     <header>
       <div class="header-title">
-        <h1>풀스택 개발자 재활 마스터 코스</h1>
-        <p style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">복귀 준비 완료! 기초부터 핵심 최신 우대 스택까지 하나씩 차례대로 정복해 나갑니다.</p>
+        <h1 data-track="fullstack">풀스택 개발자 재활 마스터 코스</h1>
+        <h1 data-track="robotics">🤖 로보틱스 입문 코스</h1>
+        <p data-track="fullstack" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">복귀 준비 완료! 기초부터 핵심 최신 우대 스택까지 하나씩 차례대로 정복해 나갑니다.</p>
+        <p data-track="robotics" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">기초 수학·좌표계부터 센서·제어·ROS 2·인식·SLAM까지, Python으로 로봇을 한 단계씩 정복합니다.</p>
       </div>
       
       <div class="header-controls">
@@ -206,7 +124,7 @@
     </section>
 
     <!-- 2.3 Chapters Catalog List Grid -->
-    <section style="display:flex; flex-direction:column; gap:16px;">
+    <section data-track="fullstack" style="display:flex; flex-direction:column; gap:16px;">
       <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📑 정규 학습 커리큘럼 로드맵</h2>
       
       <div class="chapters-grid">
@@ -303,7 +221,7 @@
     </section>
 
     <!-- 2.4 Sub Appendix Grid -->
-    <section style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
+    <section data-track="fullstack" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
       <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--accent-color); padding-left: 12px; margin-bottom: 8px;">📂 취업 구인 마켓 관통 스페셜 부록</h2>
       
       <div class="stats-grid">
@@ -385,6 +303,38 @@
           </div>
         </div>
 
+      </div>
+    </section>
+
+    <!-- 2.5 로보틱스 코스 (트랙 토글로 표시) -->
+    <section data-track="robotics" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
+      <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--robotics); padding-left: 12px; margin-bottom: 4px;">🤖 로보틱스 입문 — Python 중심 커리큘럼</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 4px;">기초 수학·좌표계부터 센서·제어·ROS 2·인식·SLAM까지 한 챕터씩. <strong style="color:var(--robotics);">R1</strong>부터 차례로 공개됩니다. (도면/블루프린트 스타일 일러스트)</p>
+
+      <div class="chapters-grid">
+        <!-- R1 — 공개됨 -->
+        <div class="glass-panel chapter-card" onclick="window.location.href='chapter-r1.html'" style="border-left: 3px solid var(--robotics);">
+          <div class="chapter-badge" style="background: var(--robotics); color: #fff;">R1</div>
+          <h3>로보틱스 입문 &amp; 선형대수 기초</h3>
+          <p>로봇 3요소(센서·액추에이터·제어기), 좌표계와 강체 변환, numpy 벡터·행렬 연산, 회전행렬 SO(2)/SO(3)과 동차변환행렬 SE(3)로 점을 변환하는 기초를 다집니다.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-r1">진척도: 시작 전</span>
+            <span>Python · numpy</span>
+          </div>
+        </div>
+      </div>
+
+      <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin: 8px 0 0;">🗺️ 다음 챕터 로드맵 (순차 공개 예정)</h3>
+      <div class="stats-grid" style="opacity: 0.62;">
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R2 🔒</div><h3 style="font-size:15px;">센서와 신호</h3><p>IMU·엔코더·LiDAR·카메라·초음파, 샘플링과 노이즈, 이동평균·간단 칼만 필터.</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R3 🔒</div><h3 style="font-size:15px;">액추에이터 &amp; 임베디드</h3><p>DC/서보/스텝모터, PWM, GPIO, I2C/SPI/UART, 실시간성(시뮬레이션 기반).</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R4 🔒</div><h3 style="font-size:15px;">키네매틱스</h3><p>정/역기구학, DH 파라미터, 자코비안, 차동구동 모바일 로봇 오도메트리.</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R5 🔒</div><h3 style="font-size:15px;">제어 이론 &amp; PID</h3><p>개/폐루프, PID, 상태공간 개념, 튜닝과 matplotlib 추종 시뮬레이션.</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R6 🔒</div><h3 style="font-size:15px;">ROS 2 기초</h3><p>노드·토픽·서비스·액션, rclpy pub/sub, 패키지·colcon·런치.</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R7 🔒</div><h3 style="font-size:15px;">ROS 2 심화 &amp; 시뮬</h3><p>TF2 좌표 변환 트리, URDF 로봇 모델, Gazebo/RViz, 센서 플러그인.</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R8 🔒</div><h3 style="font-size:15px;">인식 (Perception)</h3><p>OpenCV 이미지 처리, 객체·마커 검출, 카메라 캘리브레이션, 포인트클라우드.</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R9 🔒</div><h3 style="font-size:15px;">위치추정·SLAM·내비</h3><p>오도메트리, 칼만/파티클 필터, SLAM 개념, A*/Dijkstra/RRT 경로계획, Nav2.</p></div>
+        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R10 🔒</div><h3 style="font-size:15px;">매니퓰레이션·학습제어</h3><p>모션 플래닝(MoveIt), 그리핑, 로봇 RL 기초, sim-to-real 개요.</p></div>
       </div>
     </section>
   </main>

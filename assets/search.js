@@ -24,7 +24,8 @@ const INDEX_PAGES = [
   "chapter-1.html", "chapter-2.html", "chapter-3.html", "chapter-4.html",
   "chapter-5.html", "chapter-6.html", "chapter-7.html", "chapter-8.html",
   "appendix-test.html", "appendix-interview.html", "appendix-algorithm.html",
-  "appendix-ai.html", "appendix-e.html", "appendix-f.html", "appendix-g.html"
+  "appendix-ai.html", "appendix-e.html", "appendix-f.html", "appendix-g.html",
+  "chapter-r1.html"
 ];
 
 let searchIndexData = null; // 원본 파싱 도큐먼트 배열
