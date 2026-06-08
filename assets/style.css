@@ -975,6 +975,7 @@ svg line {
   }
   .sidebar-logo span,
   .nav-item-text,
+  .nav-section-label,
   .btn-sidebar span {
     display: none;
   }
@@ -1027,6 +1028,7 @@ svg line {
   #sidebar.mobile-open .sidebar-footer { display: flex; margin-top: 8px; }
   #sidebar.mobile-open .nav-item-text,
   #sidebar.mobile-open .btn-sidebar span { display: inline; }
+  #sidebar.mobile-open .nav-section-label { display: list-item; }
   #main-content {
     margin-left: 0;
     width: 100%;
