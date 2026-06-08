@@ -1385,6 +1385,55 @@
       "name": "카메라 보정 (Camera Calibration)",
       "definition": "렌즈 왜곡을 보정하고 내부 파라미터(초점거리 fx·fy, 중심 cx·cy)를 구해 픽셀과 실제 광선 방향을 연결하는 과정입니다.",
       "explanation": "체스보드를 여러 각도로 찍어 cv2.findChessboardCorners·cv2.calibrateCamera로 카메라 행렬 K와 왜곡 계수를 얻습니다. 이를 알아야 픽셀 위치를 실제 거리·각도로 환산하고 마커의 3D 자세(solvePnP)를 구할 수 있습니다."
+    },
+    {
+      "key": "Localization",
+      "chapter": "Robotics 9",
+      "name": "위치추정 (Localization)",
+      "definition": "로봇이 지도 위에서 자신의 현재 위치·방향을 추정하는 것입니다.",
+      "explanation": "오도메트리(R4)는 누적오차로 드리프트하므로, 오도메트리의 예측과 센서(R2) 측정을 칼만/파티클 필터로 융합해 정확도를 높입니다. 파티클 필터 기반 AMCL이 ROS 2에서 널리 쓰입니다."
+    },
+    {
+      "key": "Particle-Filter",
+      "chapter": "Robotics 9",
+      "name": "파티클 필터 (Particle Filter · MCL)",
+      "definition": "수많은 가설(파티클)로 임의의 확률분포를 표현해 위치를 추정하는 몬테카를로 위치추정(MCL) 방법입니다.",
+      "explanation": "예측(이동)→가중(측정 우도)→리샘플링을 반복합니다. 칼만 필터가 하나의 가우시안(단봉)인 것과 달리, 여러 봉우리·비선형 분포를 다룰 수 있어 처음 위치를 모르거나(납치 문제) 복잡한 환경에 강합니다."
+    },
+    {
+      "key": "SLAM",
+      "chapter": "Robotics 9",
+      "name": "SLAM (동시적 위치추정·지도작성)",
+      "definition": "로봇이 미지의 환경에서 자신의 위치추정과 지도작성을 동시에 수행하는 기법입니다.",
+      "explanation": "위치를 알아야 지도를 그리고 지도가 있어야 위치를 아는 닭-달걀 문제를 동시에 풉니다. 이전에 본 곳을 재인식하는 루프 클로저로 누적오차를 보정하며, 결과는 보통 점유 격자 지도(occupancy grid)입니다(slam_toolbox·cartographer)."
+    },
+    {
+      "key": "Loop-Closure",
+      "chapter": "Robotics 9",
+      "name": "루프 클로저 (Loop Closure)",
+      "definition": "로봇이 이전에 방문했던 장소를 다시 인식하여 그동안 쌓인 위치·지도 오차를 한 번에 보정하는 것입니다.",
+      "explanation": "SLAM에서 정확도를 좌우하는 핵심 단계입니다. '여기 전에 왔던 곳이네'를 알아채면 포즈 그래프를 다시 최적화해 누적 드리프트를 크게 줄여 지도가 어긋나지 않게 합니다."
+    },
+    {
+      "key": "A-Star-Search",
+      "chapter": "Robotics 9",
+      "name": "A* 탐색 (A-Star)",
+      "definition": "f = g + h (g=시작부터 온 실제 비용, h=목표까지 추정 비용=휴리스틱)로 유망한 방향을 우선 탐색하는 최단 경로 알고리즘입니다.",
+      "explanation": "휴리스틱이 실제 거리를 넘지 않으면(admissible) 최단 경로를 보장하며, 목표 쪽을 먼저 펼쳐 Dijkstra보다 빠릅니다(h=0이면 Dijkstra와 동일). 격자 4방향 이동에는 맨해튼 거리를 휴리스틱으로 씁니다."
+    },
+    {
+      "key": "Path-Planning-RRT",
+      "chapter": "Robotics 9",
+      "name": "경로계획 · RRT (Path Planning)",
+      "definition": "시작에서 목표까지 장애물을 피하는 경로를 찾는 것으로, 격자 탐색(A*/Dijkstra)과 샘플링 기반(RRT)이 있습니다.",
+      "explanation": "RRT(Rapidly-exploring Random Tree)는 무작위로 트리를 뻗어 고차원·연속 공간(예: 로봇팔)을 탐색합니다. 기본 RRT는 비최적이지만 RRT*는 부모 재선택·재배선으로 점근적으로 최적해에 수렴합니다."
+    },
+    {
+      "key": "Nav2",
+      "chapter": "Robotics 9",
+      "name": "Nav2 (ROS 2 내비게이션 스택)",
+      "definition": "목표 좌표만 주면 경로계획·추종·장애물 회피·복구를 자동으로 수행하는 ROS 2의 완성형 자율주행 스택입니다.",
+      "explanation": "코스트맵(장애물 비용 격자), 글로벌 플래너(전체 경로)+로컬 컨트롤러(실시간 회피), 복구 행동(회전·후진)을 행동 트리(behavior tree)가 지휘합니다. 위치추정은 파티클 필터 기반 AMCL을 씁니다."
     }
   ]
 }
