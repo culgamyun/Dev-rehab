@@ -1259,6 +1259,55 @@
       "name": "상태공간 (State-Space)",
       "definition": "시스템을 상태 변수의 벡터로 보고 ẋ=Ax+Bu 형태의 행렬식으로 동역학을 표현하는 방법입니다.",
       "explanation": "위치·속도처럼 여러 상태가 얽힌 시스템을 행렬로 묶어 한 번에 다룹니다. LQR·칼만 필터(R2)·현대 제어의 기반이며, PID가 다루기 어려운 다변수 시스템에 강합니다."
+    },
+    {
+      "key": "ROS2",
+      "chapter": "Robotics 6",
+      "name": "ROS 2 (Robot Operating System 2)",
+      "definition": "로봇 소프트웨어를 노드로 나누고 그 사이 통신·빌드·실행 도구를 표준으로 제공하는 미들웨어(프레임워크)입니다.",
+      "explanation": "운영체제가 아니라 미들웨어입니다. ROS 1을 재설계해 실시간성·보안·멀티 로봇을 고려했고 DDS 통신 위에 만들어졌습니다. Nav2·MoveIt·Gazebo 등 거대한 생태계를 조립해 쓸 수 있어 대부분의 연구·산업 로봇이 사용합니다."
+    },
+    {
+      "key": "ROS-Node",
+      "chapter": "Robotics 6",
+      "name": "노드 (Node)",
+      "definition": "ROS 2에서 한 가지 일을 담당하는 독립 실행 단위(프로세스)입니다.",
+      "explanation": "'카메라 노드', '제어 노드'처럼 기능별로 쪼갠 레고 블록입니다. 파이썬에서는 rclpy의 Node 클래스를 상속해 만들고, rclpy.spin(node)으로 콜백 루프를 돌립니다. 노드들은 토픽·서비스·액션으로 통신합니다."
+    },
+    {
+      "key": "ROS-Topic",
+      "chapter": "Robotics 6",
+      "name": "토픽 (Topic)",
+      "definition": "노드들이 발행(publish)/구독(subscribe)으로 메시지를 주고받는 비동기·다대다·단방향 스트림 통신입니다.",
+      "explanation": "발행자와 구독자는 서로를 몰라도 토픽 이름만 맞으면 통신합니다(느슨한 결합). 센서값(/scan)·속도 명령(/cmd_vel)처럼 계속 흐르는 데이터에 적합합니다. rclpy의 create_publisher/create_subscription으로 만듭니다."
+    },
+    {
+      "key": "ROS-Service",
+      "chapter": "Robotics 6",
+      "name": "서비스 (Service)",
+      "definition": "요청(request)을 보내면 서버 노드가 처리해 응답(response)을 돌려주는 동기적 1:1 통신입니다.",
+      "explanation": "'상태 알려줘', '설정 바꿔줘'처럼 즉답이 필요한 짧은 단발 요청에 씁니다. 계속 흐르는 데이터는 토픽, 오래 걸리는 작업은 액션이 적합합니다."
+    },
+    {
+      "key": "ROS-Action",
+      "chapter": "Robotics 6",
+      "name": "액션 (Action)",
+      "definition": "오래 걸리는 작업을 목표(goal)·피드백(feedback)·결과(result)로 처리하고 도중 취소도 가능한 통신입니다.",
+      "explanation": "'저 좌표로 이동'(Nav2), '팔을 이 자세로'(MoveIt)처럼 시간이 걸리고 진행 경과가 중요한 일에 씁니다. 음식 배달 추적처럼 목표를 넣고 진행 상황을 보다가 완료 결과를 받습니다."
+    },
+    {
+      "key": "rclpy",
+      "chapter": "Robotics 6",
+      "name": "rclpy (ROS 2 Python 클라이언트)",
+      "definition": "ROS 2를 파이썬으로 다루는 공식 클라이언트 라이브러리입니다.",
+      "explanation": "rclpy.init()으로 초기화하고, Node를 상속해 create_publisher/create_subscription/create_timer로 통신을 구성한 뒤, rclpy.spin(node)으로 콜백 루프를 돌리고 rclpy.shutdown()으로 종료합니다."
+    },
+    {
+      "key": "Colcon",
+      "chapter": "Robotics 6",
+      "name": "colcon (빌드 도구)",
+      "definition": "ROS 2 워크스페이스의 여러 패키지를 한 번에 빌드하는 표준 도구입니다.",
+      "explanation": "워크스페이스 루트에서 colcon build를 실행하면 build/·install/이 생기고, source install/setup.bash로 환경을 등록한 뒤 ros2 run·ros2 launch로 노드를 실행합니다."
     }
   ]
 }
