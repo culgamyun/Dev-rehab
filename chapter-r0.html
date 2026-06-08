@@ -1,0 +1,678 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter R0 - 수학 리부트 (로보틱스 선수지식)</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    /* 로보틱스 블루프린트 도면 (chapter-r* 전용) */
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R2~R10 · 부록 R-A~C<br><span style="font-size: 11px;">센서 · 제어 · ROS 2 · 인식 · SLAM …<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>Chapter R0</span></div>
+      <h1>Chapter R0: 수학 리부트 — 로보틱스 선수지식</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">"수학을 놓은 지 오래라 앞이 캄캄하다" — 괜찮습니다. 이 챕터는 <strong>증명 없이, 직관 · 그림 · 코드로</strong> 필요한 수학만 골라 다시 깔아 줍니다. 수·식·함수 같은 밑바닥부터 시작해 각도·삼각함수, 벡터, 행렬, 미분·적분의 직관, 그리고 확률·정규분포까지 — R1~R10 어디서든 다시 펴 보는 <strong>참고서</strong>로 쓰세요. 모든 코드와 그래프는 Python(numpy·matplotlib)으로 실제 실행·검증했습니다.</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig">
+      <svg class="blueprint" viewBox="0 0 800 300" role="img" aria-label="R0 수학 도구상자가 로보틱스의 어느 능력으로 이어지는지 보여주는 도면">
+        <defs>
+          <pattern id="grid-r0" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern>
+          <marker id="ar0" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#7fd4ff"/></marker>
+        </defs>
+        <rect width="800" height="300" fill="url(#grid-r0)"/>
+        <text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG R0 · 수학 도구상자 → 로봇이 할 수 있는 일</text>
+        <!-- left: math tools -->
+        <g font-size="12">
+          <rect x="40" y="64" width="150" height="32" rx="7" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="115" y="85" fill="#cfe8ff" text-anchor="middle">각도·삼각함수</text>
+          <rect x="40" y="106" width="150" height="32" rx="7" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="115" y="127" fill="#cfe8ff" text-anchor="middle">벡터</text>
+          <rect x="40" y="148" width="150" height="32" rx="7" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="115" y="169" fill="#cfe8ff" text-anchor="middle">행렬</text>
+          <rect x="40" y="190" width="150" height="32" rx="7" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="115" y="211" fill="#cfe8ff" text-anchor="middle">미분·적분</text>
+          <rect x="40" y="232" width="150" height="32" rx="7" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="115" y="253" fill="#cfe8ff" text-anchor="middle">확률·정규분포</text>
+        </g>
+        <!-- right: robotics abilities -->
+        <g font-size="12">
+          <rect x="560" y="64" width="200" height="32" rx="7" fill="rgba(255,179,0,0.10)" stroke="#ffb300"/><text x="660" y="85" fill="#ffe2a6" text-anchor="middle">회전·자세 (R1·R4)</text>
+          <rect x="560" y="106" width="200" height="32" rx="7" fill="rgba(255,179,0,0.10)" stroke="#ffb300"/><text x="660" y="127" fill="#ffe2a6" text-anchor="middle">위치·방향·속도 (R1·R4)</text>
+          <rect x="560" y="148" width="200" height="32" rx="7" fill="rgba(255,179,0,0.10)" stroke="#ffb300"/><text x="660" y="169" fill="#ffe2a6" text-anchor="middle">좌표 변환 SE(3) (R1·R7)</text>
+          <rect x="560" y="190" width="200" height="32" rx="7" fill="rgba(255,179,0,0.10)" stroke="#ffb300"/><text x="660" y="211" fill="#ffe2a6" text-anchor="middle">제어·오도메트리 (R5·R4)</text>
+          <rect x="560" y="232" width="200" height="32" rx="7" fill="rgba(255,179,0,0.10)" stroke="#ffb300"/><text x="660" y="253" fill="#ffe2a6" text-anchor="middle">센서 노이즈·SLAM (R2·R9)</text>
+        </g>
+        <!-- arrows -->
+        <g>
+          <line x1="192" y1="80" x2="558" y2="80" stroke="#7fd4ff" stroke-width="1.4" marker-end="url(#ar0)" opacity="0.8"/>
+          <line x1="192" y1="122" x2="558" y2="122" stroke="#7fd4ff" stroke-width="1.4" marker-end="url(#ar0)" opacity="0.8"/>
+          <line x1="192" y1="164" x2="558" y2="164" stroke="#7fd4ff" stroke-width="1.4" marker-end="url(#ar0)" opacity="0.8"/>
+          <line x1="192" y1="206" x2="558" y2="206" stroke="#7fd4ff" stroke-width="1.4" marker-end="url(#ar0)" opacity="0.8"/>
+          <line x1="192" y1="248" x2="558" y2="248" stroke="#7fd4ff" stroke-width="1.4" marker-end="url(#ar0)" opacity="0.8"/>
+        </g>
+      </svg>
+      <figcaption>R0에서 다지는 다섯 가지 수학 도구가 로보틱스의 어떤 능력으로 이어지는지 한눈에 본 지도입니다. "이걸 왜 배우지?" 싶을 때 여기로 돌아오세요.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- 1. 수와 기호 -->
+      <section id="numbers-symbols">
+        <h2>1. 수와 기호 — 다시 친해지기</h2>
+        <p>수식이 무서운 건 내용보다 <strong>기호</strong> 때문일 때가 많습니다. 로보틱스 글에 자주 나오는 기호만 먼저 친해지면 절반은 해결됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 기호는 "줄임말"일 뿐</h4>
+          <p>θ(세타)는 "각도", Σ(시그마)는 "다 더해라", Δ(델타)는 "변화량(차이)"의 줄임말입니다. 외국어 단어처럼 처음엔 낯설지만, 뜻만 알면 문장이 술술 읽힙니다. 수식은 "압축된 한국어"라고 생각하세요.</p>
+        </div>
+
+        <table>
+          <thead><tr><th>기호</th><th>읽기</th><th>뜻 / 로보틱스에서</th></tr></thead>
+          <tbody>
+            <tr><td>θ, φ, ψ</td><td>세타·파이·프사이</td><td>각도(회전량). 로봇의 방향·관절 각.</td></tr>
+            <tr><td>π</td><td>파이</td><td>원주율 ≈ 3.14159. 각도(라디안)에 등장.</td></tr>
+            <tr><td>Σ</td><td>시그마</td><td>"모두 더하라"(합). 평균·내적 계산.</td></tr>
+            <tr><td>Δ</td><td>델타</td><td>변화량(차이). Δt = 시간 간격, Δx = 위치 변화.</td></tr>
+            <tr><td>x⃗, <strong>v</strong></td><td>벡터 x, v</td><td>화살표/굵은 글씨 = 벡터(크기+방향).</td></tr>
+            <tr><td>x², √x</td><td>제곱·제곱근</td><td>거리(피타고라스)에서 자주 등장.</td></tr>
+          </tbody>
+        </table>
+
+        <p style="margin-top:14px;">단위도 약속입니다. 로보틱스는 국제단위(SI)를 씁니다 — 길이 <strong>미터(m)</strong>, 시간 <strong>초(s)</strong>, 각도 <strong>라디안(rad)</strong>. "cm로 쟀는데 코드가 이상해요"의 90%는 단위 불일치입니다. <strong>항상 단위를 통일</strong>하세요.</p>
+      </section>
+
+      <!-- 2. 함수와 좌표평면 -->
+      <section id="functions-plane">
+        <h2>2. 함수와 좌표평면 — 입력을 출력으로</h2>
+        <p><strong>함수</strong>는 "입력을 넣으면 출력이 나오는 기계"입니다. <code>f(x) = 2x + 1</code>은 "x를 넣으면 2배 하고 1을 더해 돌려주는 기계"죠. 입력 x와 출력 y를 <strong>좌표평면</strong>(가로 x축, 세로 y축)에 점으로 찍어 이으면 <strong>그래프</strong>가 됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 함수 = 자판기</h4>
+          <p>버튼(입력 x)을 누르면 정해진 음료(출력 y)가 나옵니다. 같은 버튼엔 항상 같은 음료 — 그게 함수의 약속입니다. 로봇 제어도 결국 "센서값(입력)을 넣으면 모터 명령(출력)이 나오는 함수"를 설계하는 일입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r0-functions.png" alt="직선 y=2x+1과 포물선 y=x^2을 좌표평면에 그린 블루프린트 그래프" loading="lazy">
+          <figcaption>직선 <code>y = 2x + 1</code>은 일정한 기울기(2)로 곧게 올라가고, 포물선 <code>y = x²</code>는 점점 가팔라집니다. "기울기"가 곧 다음에 배울 미분의 씨앗입니다.</figcaption>
+        </figure>
+
+        <p><strong>기울기(slope)</strong>는 "x가 1 늘 때 y가 얼마나 변하나"입니다. 직선 <code>y = 2x + 1</code>의 기울기는 2 — 어디서나 일정합니다. 포물선은 위치마다 기울기가 달라지죠(왼쪽은 내려가고 오른쪽은 올라감). 이 "위치마다 다른 기울기"를 다루는 게 <strong>미분</strong>(11절)입니다.</p>
+      </section>
+
+      <!-- 3. 지수와 로그 -->
+      <section id="exp-log">
+        <h2>3. 지수와 로그 — 가볍게 짚기</h2>
+        <p><strong>지수</strong>는 "같은 수를 여러 번 곱하기"입니다. <code>2³ = 2×2×2 = 8</code>. <strong>로그</strong>는 그 반대 질문 — "2를 몇 번 곱해야 8이 되지?" → <code>log₂8 = 3</code>. 로그는 "큰 수를 다루기 쉬운 크기로 줄여 주는 자"라고 보면 됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 지수 = 눈덩이, 로그 = 자릿수 세기</h4>
+          <p>지수는 굴릴수록 커지는 눈덩이(폭발적 증가), 로그는 "0이 몇 개냐"로 크기를 재는 자입니다. 로보틱스에서는 <strong>지수 감쇠</strong>가 자주 등장합니다 — 필터에서 "오래된 측정값일수록 가중치를 지수적으로 줄여 잊는다"(R2 센서 필터). 자연상수 <code>e ≈ 2.718</code>은 이런 부드러운 증가·감쇠의 기본 단위입니다.</p>
+        </div>
+
+        <p>지금은 "지수 = 반복 곱(빨리 커짐), 로그 = 그 역(크기를 압축)" 정도만 기억하면 충분합니다. 깊은 내용은 필요할 때(R2 필터, 확률) 다시 꺼내 씁니다.</p>
+      </section>
+
+      <!-- 4. 각도 -->
+      <section id="angles">
+        <h2>4. 각도 — 도(°)와 라디안(rad)</h2>
+        <p>우리는 보통 각도를 <strong>도(degree)</strong>로 씁니다(직각 = 90°, 한 바퀴 = 360°). 하지만 로보틱스·수학·numpy는 거의 <strong>라디안(radian)</strong>을 씁니다. 라디안은 "반지름 1인 원에서 호의 길이로 잰 각도"입니다 — 한 바퀴 = <code>2π</code>(≈6.283) 라디안.</p>
+
+        <figure class="learning-visual blueprint-fig" style="max-width:420px; margin:18px auto;">
+          <svg class="blueprint" viewBox="0 0 360 320" role="img" aria-label="단위원과 라디안을 보여주는 도면">
+            <defs><marker id="aru" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#7fd4ff"/></marker></defs>
+            <text x="16" y="26" fill="#7fd4ff" font-size="13">FIG R0-1 · 단위원 (반지름 1)</text>
+            <circle cx="180" cy="170" r="110" fill="none" stroke="#7fd4ff" stroke-width="1.8"/>
+            <line x1="50" y1="170" x2="310" y2="170" stroke="rgba(200,225,255,0.4)" stroke-width="1"/>
+            <line x1="180" y1="50" x2="180" y2="290" stroke="rgba(200,225,255,0.4)" stroke-width="1"/>
+            <!-- angle theta = 45deg -->
+            <line x1="180" y1="170" x2="258" y2="92" stroke="#ffb300" stroke-width="2.2" marker-end="url(#aru)"/>
+            <path d="M 220 170 A 40 40 0 0 0 208 142" fill="none" stroke="#ffb300" stroke-width="1.6"/>
+            <text x="224" y="158" fill="#ffb300" font-size="12">θ</text>
+            <circle cx="258" cy="92" r="4" fill="#ff5d5d"/>
+            <text x="266" y="90" fill="#cfe8ff" font-size="11">(cos θ, sin θ)</text>
+            <text x="300" y="186" fill="#cfe8ff" font-size="11">x</text>
+            <text x="188" y="64" fill="#cfe8ff" font-size="11">y</text>
+            <text x="60" y="306" fill="rgba(180,220,255,0.7)" font-size="11">360° = 2π rad · 180° = π · 90° = π/2</text>
+          </svg>
+          <figcaption>반지름 1인 원(단위원). 각 θ가 원 위에서 가리키는 점의 좌표가 바로 <code>(cos θ, sin θ)</code>입니다 — 다음 절의 삼각함수가 여기서 나옵니다.</figcaption>
+        </figure>
+
+        <p><strong>변환 공식</strong>은 비례식 하나면 됩니다: <code>180° = π rad</code>. 그래서 <code>라디안 = 도 × π / 180</code>, <code>도 = 라디안 × 180 / π</code>. numpy는 <code>np.radians()</code> · <code>np.degrees()</code>로 바꿔 줍니다. <strong>왜 라디안?</strong> — 미분·적분과 원운동 공식이 라디안에서 가장 깔끔해지기 때문입니다. (실무 팁: 코드에서는 라디안으로 계산하고, 사람에게 보여줄 때만 도로 바꾸세요.)</p>
+      </section>
+
+      <!-- 5. 삼각함수 -->
+      <section id="trig">
+        <h2>5. 삼각함수 — sin · cos · tan</h2>
+        <p>삼각함수는 "각도를 길이(비율)로 바꿔 주는 함수"입니다. 단위원에서 각 θ가 가리키는 점의 <strong>가로 좌표가 cos θ, 세로 좌표가 sin θ</strong>입니다. <code>tan θ = sin θ / cos θ</code>(기울기).</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 관람차 탄 사람의 그림자</h4>
+          <p>관람차(단위원)를 일정하게 도는 사람을 옆에서 보면, 그 사람의 <strong>높이</strong>는 위아래로 물결치며 변합니다 — 이게 <code>sin</code> 곡선입니다. 정면에서 본 <strong>좌우 위치</strong>는 <code>cos</code> 곡선이죠. 회전(각도)이 자연스럽게 <strong>주기적인 파동</strong>으로 바뀝니다. 로봇의 바퀴 회전·관절 운동·진동이 모두 이 파동으로 표현됩니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r0-trig-waves.png" alt="sin과 cos 곡선을 0부터 2파이까지 그린 블루프린트 그래프" loading="lazy">
+          <figcaption><code>sin</code>(파랑)과 <code>cos</code>(주황)은 같은 모양이 <code>π/2</code>만큼 어긋난 파동입니다. 둘 다 −1 ~ +1 사이를 <code>2π</code> 주기로 오갑니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">삼각함수 — numpy는 라디안을 쓴다</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+# numpy의 sin/cos는 '라디안'을 입력으로 받는다 (도 아님!)
+# round로 표시 정리 (컴퓨터는 0.4999999...처럼 미세 오차가 날 수 있음)
+print(round(np.sin(np.radians(30)), 4))   # 30도의 sin = 0.5
+print(round(np.cos(np.radians(60)), 4))   # 60도의 cos = 0.5
+
+# 단위원: 각 θ의 점 = (cos θ, sin θ)
+theta = np.radians(45)
+점 = np.array([np.cos(theta), np.sin(theta)])
+print(np.round(점, 4))          # [0.7071 0.7071]  (= √2/2)</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">0.5
+0.5
+[0.7071 0.7071]</pre>
+        </div>
+        <p style="color:var(--text-muted); font-size:13px;">⚠️ 가장 흔한 실수: <code>np.sin(30)</code>은 "30도"가 아니라 "30<strong>라디안</strong>"의 sin입니다. 항상 <code>np.radians()</code>로 바꿔 넣으세요.</p>
+      </section>
+
+      <!-- 6. atan2 -->
+      <section id="atan2">
+        <h2>6. atan2 — 좌표에서 각도 거꾸로 구하기</h2>
+        <p>삼각함수가 "각도 → 좌표"라면, 로봇은 그 반대도 자주 필요합니다 — <strong>"점 (x, y)는 어느 방향이지?"</strong>(각도 구하기). 이때 쓰는 게 <code>atan2(y, x)</code>입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: atan2 = "어느 쪽을 봐야 하나"</h4>
+          <p>로봇이 (0,0)에 있고 목표가 (3, 4)에 있다면, "몸을 어느 각도로 틀어야 목표를 정면으로 보나?"의 답이 <code>atan2(4, 3)</code>입니다. 그냥 <code>atan(y/x)</code>를 쓰지 않는 이유는, 나눗셈을 하면 <strong>사분면 정보(앞/뒤·좌/우)가 사라지기</strong> 때문입니다. <code>atan2</code>는 x·y의 부호를 따로 보고 −180°~+180° 전 범위의 정확한 방향을 줍니다.</p>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">atan2로 방향(heading) 구하기</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+# (0,0)에서 각 방향의 각도 — atan2(y, x)
+print(np.degrees(np.arctan2(1, 1)))    # 1사분면(↗): 45.0
+print(np.degrees(np.arctan2(1, -1)))   # 2사분면(↖): 135.0  (atan이면 -45로 틀림!)
+
+# 로봇 (1,1) → 목표 (4,5) 를 향하는 방향
+A = np.array([1.0, 1.0]); B = np.array([4.0, 5.0])
+dx, dy = B - A
+print(np.degrees(np.arctan2(dy, dx)))  # 53.13... 도</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">45.0
+135.0
+53.13010235415598</pre>
+        </div>
+        <p><code>atan2</code>는 로보틱스에서 <strong>가장 많이 쓰는 삼각함수</strong> 중 하나입니다 — 목표 방향, 회전 각도, 자세 추정 어디서나 등장합니다.</p>
+      </section>
+
+      <!-- 7. 벡터 -->
+      <section id="vectors">
+        <h2>7. 벡터 — 크기와 방향을 함께</h2>
+        <p>"북동쪽으로 5m"처럼 <strong>크기와 방향이 같이 있는 양</strong>이 벡터입니다. 숫자 하나(스칼라)로는 못 적고, 좌표 성분으로 적습니다: <code>v = (3, 4)</code>. 화살표로 그리면 직관적이죠.</p>
+
+        <figure class="learning-visual blueprint-fig" style="max-width:440px; margin:18px auto;">
+          <svg class="blueprint" viewBox="0 0 380 280" role="img" aria-label="벡터 (3,4)와 그 크기 5를 보여주는 도면">
+            <defs><marker id="avv" markerWidth="10" markerHeight="10" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#7fd4ff"/></marker></defs>
+            <text x="16" y="26" fill="#7fd4ff" font-size="13">FIG R0-2 · 벡터 v = (3, 4)</text>
+            <line x1="60" y1="230" x2="340" y2="230" stroke="rgba(200,225,255,0.4)"/>
+            <line x1="60" y1="230" x2="60" y2="40" stroke="rgba(200,225,255,0.4)"/>
+            <line x1="60" y1="230" x2="300" y2="70" stroke="#7fd4ff" stroke-width="2.4" marker-end="url(#avv)"/>
+            <line x1="60" y1="230" x2="300" y2="230" stroke="#ff5d5d" stroke-width="1.6" stroke-dasharray="5 4"/>
+            <line x1="300" y1="230" x2="300" y2="70" stroke="#48d597" stroke-width="1.6" stroke-dasharray="5 4"/>
+            <text x="180" y="248" fill="#ff5d5d" font-size="12">x = 3</text>
+            <text x="306" y="155" fill="#48d597" font-size="12">y = 4</text>
+            <text x="150" y="135" fill="#cfe8ff" font-size="12">|v| = √(3²+4²) = 5</text>
+          </svg>
+          <figcaption>벡터 (3, 4)는 가로 3, 세로 4만큼의 화살표. 그 <strong>길이(크기, 노름)</strong>는 피타고라스로 <code>√(9+16) = 5</code>입니다.</figcaption>
+        </figure>
+
+        <p>벡터끼리는 <strong>더하기</strong>(화살표 이어 붙이기)와 <strong>스칼라배</strong>(길이 늘이기/줄이기)가 됩니다. 길이를 1로 맞춘 벡터를 <strong>단위벡터</strong>라 하고, "방향만" 필요할 때 씁니다(원래 벡터를 그 크기로 나눔).</p>
+
+        <div class="code-block-header">
+          <span class="code-title">벡터 기초 — 크기 · 단위벡터 · 덧셈</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+v = np.array([3.0, 4.0])
+print("크기(노름):", np.linalg.norm(v))      # 5.0
+print("단위벡터:", np.round(v / np.linalg.norm(v), 2))  # [0.6 0.8] (방향만, 길이 1)
+
+a = np.array([1.0, 2.0]); b = np.array([3.0, 1.0])
+print("덧셈 a+b:", a + b)                     # [4. 3.]
+print("스칼라배 2a:", 2 * a)                  # [2. 4.]</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">크기(노름): 5.0
+단위벡터: [0.6 0.8]
+덧셈 a+b: [4. 3.]
+스칼라배 2a: [2. 4.]</pre>
+        </div>
+      </section>
+
+      <!-- 8. 내적과 외적 -->
+      <section id="dot-cross">
+        <h2>8. 내적과 외적 — 두 벡터의 관계</h2>
+        <p>두 벡터가 주어지면 두 가지 핵심 질문이 생깁니다. <strong>내적(dot)</strong>: "둘이 얼마나 같은 방향인가?" <strong>외적(cross)</strong>: "둘이 만드는 평면의 수직 방향(회전축)은?"</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 내적 = 정렬도 점수, 외적 = 회전축 손가락</h4>
+          <p><strong>내적</strong>은 두 화살표가 나란할수록 큰 값, 수직이면 0, 반대면 음수 — "같은 방향 점수"입니다. 그래서 <strong>내적이 0이면 두 벡터는 직각(수직)</strong>입니다. <strong>외적</strong>은 오른손 법칙 — 오른손으로 첫 벡터에서 둘째 벡터로 감아쥘 때 <strong>엄지가 가리키는 방향</strong>이 결과입니다(회전축·법선). 외적은 3차원에서 정의됩니다.</p>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">내적 · 외적 · 사이 각</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+u = np.array([1.0, 0.0])   # +x 방향
+v = np.array([0.0, 1.0])   # +y 방향
+print("내적 u·v:", np.dot(u, v))   # 0 → 두 벡터는 수직!
+
+# 두 벡터 사이 각도 = arccos(내적 / (크기 곱))
+cos_t = np.dot(u, v) / (np.linalg.norm(u) * np.linalg.norm(v))
+print("사이 각(도):", np.degrees(np.arccos(cos_t)))  # 90.0
+
+# 외적 (3차원) — 오른손 법칙, x × y = z
+x = np.array([1.0, 0.0, 0.0]); y = np.array([0.0, 1.0, 0.0])
+print("외적 x×y:", np.cross(x, y))   # [0. 0. 1.]</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">내적 u·v: 0.0
+사이 각(도): 90.0
+외적 x×y: [0. 0. 1.]</pre>
+        </div>
+      </section>
+
+      <!-- 9. 행렬 -->
+      <section id="matrices">
+        <h2>9. 행렬 — 숫자표이자 '변환 기계'</h2>
+        <p><strong>행렬</strong>은 숫자를 격자로 늘어놓은 표입니다. 하지만 로보틱스에서 더 중요한 정체는 <strong>"벡터를 다른 벡터로 바꾸는 기계"</strong>라는 점입니다 — 행렬에 벡터를 곱하면 그 벡터가 회전·확대·이동됩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 행렬 = 사진 필터</h4>
+          <p>사진(벡터들)에 필터(행렬)를 씌우면 회전되거나 늘어나거나 비틀립니다. 같은 필터는 모든 점에 똑같은 규칙으로 적용되죠. R1의 <strong>회전행렬</strong>은 "모든 점을 같은 각도로 돌리는 필터"이고, <strong>동차변환행렬 SE(3)</strong>는 "돌리고 + 옮기는 필터"입니다. 행렬을 이해하면 R1이 쉬워집니다.</p>
+        </div>
+
+        <p>아무 변화도 주지 않는 행렬이 <strong>항등행렬</strong> <code>I</code>입니다(대각선만 1). "곱해도 그대로" — 숫자의 1과 같은 역할이죠.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">행렬 × 벡터 = 변환</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+# 이 행렬은 'x는 2배, y는 3배 늘이는' 변환 기계
+S = np.array([[2.0, 0.0],
+              [0.0, 3.0]])
+p = np.array([1.0, 1.0])
+print("변환된 점 S·p:", S @ p)   # [2. 3.]  (x→2, y→3)
+
+# 항등행렬 I: 곱해도 그대로 (숫자의 1과 같은 역할)
+I = np.eye(2)
+print("I·p:", I @ p)             # [1. 1.]</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">변환된 점 S·p: [2. 3.]
+I·p: [1. 1.]</pre>
+        </div>
+      </section>
+
+      <!-- 10. 행렬 연산 -->
+      <section id="matrix-ops">
+        <h2>10. 행렬곱 · 전치 · 역행렬 · 행렬식</h2>
+        <p>행렬에는 네 가지 핵심 연산이 있고, 각각 <strong>기하적 의미</strong>가 있습니다.</p>
+        <ul style="font-size:13.5px; line-height:1.95; color:var(--text-muted);">
+          <li><strong>행렬곱 (A @ B)</strong>: 변환을 <strong>이어서 적용</strong>(먼저 B, 그 다음 A). 순서가 중요합니다(보통 A@B ≠ B@A).</li>
+          <li><strong>전치 (A.T)</strong>: 행과 열을 뒤집기. 회전행렬에선 전치가 곧 <strong>역회전</strong>이라 아주 유용합니다(R1).</li>
+          <li><strong>역행렬 (A⁻¹)</strong>: 변환을 <strong>되돌리는</strong> 행렬. <code>A @ A⁻¹ = I</code>.</li>
+          <li><strong>행렬식 (det)</strong>: 그 변환이 넓이/부피를 <strong>몇 배로</strong> 바꾸는지. det=0이면 납작하게 찌부러져 <strong>되돌릴 수 없음</strong>(역행렬 없음), 음수면 <strong>뒤집힘</strong>(거울 반사).</li>
+        </ul>
+
+        <div class="code-block-header">
+          <span class="code-title">전치 · 역행렬 · 행렬식</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+A = np.array([[2.0, 0.0],
+              [0.0, 3.0]])
+print("전치 A.T:\n", A.T)
+print("행렬식 det(A):", np.linalg.det(A))     # 6.0  (넓이 2×3 = 6배)
+print("역행렬 A^-1:\n", np.round(np.linalg.inv(A), 3))  # [[0.5,0],[0,0.333]]
+print("A @ A^-1 = I?", np.allclose(A @ np.linalg.inv(A), np.eye(2)))  # True</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">전치 A.T:
+ [[2. 0.]
+ [0. 3.]]
+행렬식 det(A): 6.0
+역행렬 A^-1:
+ [[0.5   0.   ]
+ [0.    0.333]]
+A @ A^-1 = I? True</pre>
+        </div>
+        <p style="color:var(--text-muted); font-size:13px;">이 네 연산이 R1의 회전행렬·동차변환의 토대입니다. "행렬식 = 넓이 배율", "역행렬 = 되돌리기"만 기억해도 충분합니다.</p>
+      </section>
+
+      <!-- 11. 미분 -->
+      <section id="derivative">
+        <h2>11. 미분 — 그 순간의 변화율(기울기)</h2>
+        <p><strong>미분</strong>은 "지금 이 순간, 얼마나 빨리 변하나?"를 재는 도구입니다. 그래프에서는 그 점에서의 <strong>기울기(접선)</strong>이고, 물리에서는 <strong>위치를 미분하면 속도</strong>, 속도를 미분하면 가속도입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 자동차 계기판의 속도계</h4>
+          <p>주행거리(위치)는 천천히 쌓이지만, 속도계는 "지금 이 순간" 얼마나 빨리 가는지를 보여줍니다 — 그게 미분입니다. 위치 그래프가 가파를수록(기울기 큼) 속도가 빠른 거죠. 로봇은 엔코더로 잰 위치를 미분해 <strong>속도</strong>를 얻고, 그 속도로 모터를 제어합니다(R5).</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r0-derivative.png" alt="f(x)=x^2 곡선과 한 점에서의 접선 기울기를 보여주는 블루프린트 그래프" loading="lazy">
+          <figcaption><code>f(x) = x²</code> 위 한 점(x=1.5)에서의 접선 기울기 = 미분값 <code>f'(1.5) = 3</code>. 곡선의 "그 순간 가파른 정도"가 미분입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">수치 미분 — 위치에서 속도 구하기</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+t = np.linspace(0, 5, 6)     # 시간 0,1,2,3,4,5초
+pos = t**2                   # 위치 = t²  (0,1,4,9,16,25)
+
+# np.gradient: 이웃 값의 차이로 '기울기(속도)'를 수치적으로 계산
+vel = np.gradient(pos, t)
+print("위치:", pos)
+print("속도:", vel)          # 약 2t — 시간이 갈수록 빨라짐</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">위치: [ 0.  1.  4.  9. 16. 25.]
+속도: [1. 2. 4. 6. 8. 9.]</pre>
+        </div>
+        <p style="color:var(--text-muted); font-size:13px;">참고: <code>f(t)=t²</code>의 정확한 미분은 <code>2t</code>(0,2,4,6,8,10)입니다. 가운데 값들은 정확히 맞고, 양 끝(처음·마지막)만 한쪽 이웃만 보고 어림하기에 1·9로 살짝 다릅니다 — 수치 미분의 자연스러운 특성입니다.</p>
+      </section>
+
+      <!-- 12. 적분 -->
+      <section id="integral">
+        <h2>12. 적분 — 누적(넓이)</h2>
+        <p><strong>적분</strong>은 미분의 반대입니다 — "조금씩 쌓아 모두 더하기". 그래프에서는 <strong>곡선 아래 넓이</strong>이고, 물리에서는 <strong>속도를 적분하면 이동거리(위치)</strong>입니다. 로봇이 "내가 얼마나 움직였나"를 바퀴 속도로 추정하는 게 바로 적분 — <strong>오도메트리(odometry)</strong>입니다(R4).</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 물통에 물 붓기</h4>
+          <p>수도꼭지의 세기(속도)가 매 순간 다르더라도, 그것을 시간에 따라 차곡차곡 더하면 물통에 찬 총량(이동거리)을 알 수 있습니다. 빠르게 흐른 구간은 많이, 천천히 흐른 구간은 조금 쌓이죠. 미분이 "쪼개기"라면 적분은 "모으기"입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r0-integral.png" alt="속도 곡선 아래 넓이가 이동거리임을 보여주는 블루프린트 그래프" loading="lazy">
+          <figcaption>속도 곡선 <code>v(t)</code> <strong>아래의 넓이</strong>가 곧 이동한 거리입니다. 주황 막대처럼 잘게 쪼개 더하는 게 수치 적분의 아이디어입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">수치 적분 — 속도에서 이동거리 구하기</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+t = np.linspace(0, 5, 1000)
+v = 2 + 0.6 * t              # 속도 (점점 빨라짐)
+
+# np.trapezoid: 곡선 아래 넓이를 사다리꼴로 누적 (numpy 2.0+; 옛 이름 np.trapz)
+distance = np.trapezoid(v, t)
+print("이동거리(넓이):", round(distance, 2))   # 17.5 m
+
+# 검산: ∫(2 + 0.6t)dt = 2t + 0.3t²  →  (10 + 7.5) - 0 = 17.5
+print("손으로 검산:", 2*5 + 0.3*5**2)           # 17.5</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">이동거리(넓이): 17.5
+손으로 검산: 17.5</pre>
+        </div>
+      </section>
+
+      <!-- 13. 평균·분산·표준편차 -->
+      <section id="stats">
+        <h2>13. 평균 · 분산 · 표준편차 — 흩어짐 재기</h2>
+        <p>센서는 똑같은 값을 재도 매번 조금씩 다릅니다(노이즈). 이 "흩어짐"을 다루는 게 통계입니다. <strong>평균</strong>은 가운데 값, <strong>분산</strong>·<strong>표준편차</strong>는 "평균에서 얼마나 퍼져 있나"입니다(표준편차 = √분산, 단위가 원래 값과 같아 직관적).</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 과녁의 탄착군</h4>
+          <p>평균은 "탄착 중심", 표준편차는 "탄착군이 얼마나 퍼졌나"입니다. 좋은 센서는 표준편차가 작아(촘촘) 믿을 만하고, 나쁜 센서는 넓게 퍼집니다. 로봇은 이 "퍼짐"을 알아야 여러 측정을 똑똑하게 합칠 수 있습니다(R9 칼만 필터의 핵심).</p>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">평균 · 분산 · 표준편차</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+# 거리 센서가 같은 벽을 6번 잰 값 (단위 m) — 매번 조금씩 다름
+data = np.array([2.0, 2.1, 1.9, 2.2, 1.8, 2.0])
+
+print("평균:", data.mean())     # 2.0  (가장 그럴듯한 실제 거리)
+print("분산:", round(data.var(), 5))
+print("표준편차:", round(data.std(), 4))  # ≈0.129 m 만큼 퍼져 있음</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">평균: 2.0
+분산: 0.01667
+표준편차: 0.1291</pre>
+        </div>
+      </section>
+
+      <!-- 14. 정규분포 -->
+      <section id="gaussian">
+        <h2>14. 정규분포 — 센서 노이즈의 모양</h2>
+        <p>대부분의 센서 노이즈는 <strong>정규분포(가우시안, 종 모양)</strong>를 따릅니다 — 평균 근처가 가장 흔하고 멀어질수록 드뭅니다. 이 종 모양은 <strong>평균(중심)</strong>과 <strong>표준편차(폭)</strong> 두 숫자로 완전히 정해집니다.</p>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r0-gaussian.png" alt="정규분포 곡선과 68-95-99.7 규칙을 보여주는 블루프린트 그래프" loading="lazy">
+          <figcaption>정규분포의 <strong>68–95–99.7 규칙</strong>: 측정값의 약 68%가 ±1σ(표준편차) 안에, 95%가 ±2σ, 99.7%가 ±3σ 안에 들어옵니다. "±2σ를 벗어나면 이상치(outlier)일 수 있다"는 판단의 근거가 됩니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">정규분포 확률밀도와 68% 구간</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+def gaussian(x, mu, sigma):
+    """정규분포 확률밀도함수 (종 모양 곡선의 높이)."""
+    return np.exp(-0.5 * ((x - mu) / sigma)**2) / (sigma * np.sqrt(2 * np.pi))
+
+mu, sigma = 0.0, 1.0
+print("중심(평균)에서 가장 높다:", round(float(gaussian(mu, mu, sigma)), 4))  # 0.3989
+
+# ±1σ 안에 약 68%가 들어오는지 촘촘히 적분해 확인
+x = np.linspace(-1, 1, 100001)
+prob = np.trapezoid(gaussian(x, mu, sigma), x)
+print("±1σ 구간 확률:", round(float(prob), 4))    # ≈ 0.6827 (68%)</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops); margin-bottom:6px;">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">중심(평균)에서 가장 높다: 0.3989
+±1σ 구간 확률: 0.6827</pre>
+        </div>
+        <p>정규분포는 R2(센서 노이즈 모델), R9(칼만·파티클 필터)의 심장입니다. "노이즈는 종 모양, 평균·표준편차로 요약된다"만 확실히 잡고 가면 됩니다.</p>
+      </section>
+
+      <!-- 15. 요약 -->
+      <section id="summary">
+        <h2>15. 한 장 요약 — 무엇을 · 어디서 쓰나</h2>
+        <table>
+          <thead><tr><th>도구</th><th>한 줄 직관</th><th>numpy</th><th>쓰이는 곳</th></tr></thead>
+          <tbody>
+            <tr><td>각도(라디안)</td><td>180° = π rad, 코드는 라디안</td><td><code>np.radians / np.degrees</code></td><td>R1·R4 회전</td></tr>
+            <tr><td>sin · cos</td><td>각도 → 단위원 위 좌표</td><td><code>np.sin / np.cos</code></td><td>R1 회전행렬</td></tr>
+            <tr><td>atan2</td><td>좌표 → 방향(각도)</td><td><code>np.arctan2(y, x)</code></td><td>R4 방향, 자세</td></tr>
+            <tr><td>벡터</td><td>크기 + 방향</td><td><code>norm · dot · cross</code></td><td>R1 위치·속도</td></tr>
+            <tr><td>행렬</td><td>벡터를 바꾸는 변환 기계</td><td><code>@ · .T · inv · det</code></td><td>R1 SE(3) 변환</td></tr>
+            <tr><td>미분</td><td>순간 변화율(기울기) = 속도</td><td><code>np.gradient</code></td><td>R5 제어</td></tr>
+            <tr><td>적분</td><td>누적(넓이) = 이동거리</td><td><code>np.trapezoid</code></td><td>R4 오도메트리</td></tr>
+            <tr><td>평균·표준편차</td><td>중심과 흩어짐</td><td><code>.mean() · .std()</code></td><td>R2 센서</td></tr>
+            <tr><td>정규분포</td><td>노이즈의 종 모양</td><td><code>np.exp(...)</code></td><td>R9 칼만 필터</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;">전부 외울 필요 없습니다. <strong>"이런 도구가 있고, 로봇의 이런 상황에서 쓴다"</strong>는 감만 잡으면, 각 챕터에서 필요할 때 이 표로 돌아오면 됩니다. 이제 <a href="chapter-r1.html">R1(로보틱스 입문 &amp; 선형대수)</a>로 자신 있게 들어가세요. 💪</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <!-- 용어 사전 모달 -->
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: 라디안)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const chapterR0Quizzes = [
+      {
+        type: "mcq",
+        question: "180도는 몇 라디안인가요? (numpy·로보틱스가 쓰는 각도 단위)",
+        options: ["π/2 라디안", "π 라디안", "2π 라디안", "360 라디안"],
+        correct: 1,
+        explanation: "한 바퀴(360°)가 2π 라디안이므로 그 절반인 180°는 π 라디안입니다. 변환은 '라디안 = 도 × π/180'. numpy의 sin/cos는 라디안을 입력으로 받으니 np.radians()로 바꿔 넣어야 합니다."
+      },
+      {
+        type: "mcq",
+        question: "두 벡터의 내적(dot product)이 0이면 두 벡터의 관계는?",
+        options: [
+          "서로 수직(직각)이다",
+          "서로 평행(같은 방향)이다",
+          "둘 중 하나가 영벡터다",
+          "크기가 같다"
+        ],
+        correct: 0,
+        explanation: "내적은 '같은 방향 점수'라서, 두 벡터가 수직이면 정확히 0이 됩니다(나란하면 최대, 반대면 음수). 그래서 내적은 직교 여부를 판정하거나 사이 각도(arccos)를 구하는 데 쓰입니다."
+      },
+      {
+        type: "mcq",
+        question: "물리/로보틱스에서 '위치를 미분하면 ___, 속도를 적분하면 ___' 빈칸으로 옳은 것은?",
+        options: [
+          "위치를 미분 → 속도,  속도를 적분 → 이동거리(위치)",
+          "위치를 미분 → 가속도,  속도를 적분 → 속도",
+          "위치를 미분 → 넓이,  속도를 적분 → 기울기",
+          "둘 다 변하지 않는다"
+        ],
+        correct: 0,
+        explanation: "미분은 순간 변화율 → 위치를 미분하면 속도. 적분은 누적(넓이) → 속도를 적분하면 이동거리(위치). 로봇은 엔코더 위치를 미분해 속도를, 바퀴 속도를 적분해 이동량(오도메트리)을 얻습니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "벡터 v를 '방향은 같고 길이는 1'인 단위벡터로 만드는 한 줄을 완성하세요. (힌트: 자기 크기로 나눈다)",
+        starter: "import numpy as np\nv = np.array([3.0, 4.0])\n# v를 단위벡터로 만들어 unit 에 저장\nunit = \nprint(unit)  # [0.6 0.8]",
+        validator: {
+          mustContain: ["v/np.linalg.norm(v)"],
+          mustNotContain: []
+        },
+        solution: "v / np.linalg.norm(v)",
+        explanation: "단위벡터는 벡터를 자신의 크기(노름)로 나눠 만듭니다: v / np.linalg.norm(v). (3,4)의 크기는 5이므로 결과는 (0.6, 0.8) — 방향은 그대로, 길이만 1이 됩니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "로봇(A)에서 목표(B)를 향하는 방향(각도, 라디안)을 atan2로 구하는 한 줄을 완성하세요. (dx, dy 사용)",
+        starter: "import numpy as np\nA = np.array([1.0, 1.0])\nB = np.array([4.0, 5.0])\ndx, dy = B - A          # (3.0, 4.0)\n# A에서 B를 향하는 방향(라디안)을 구하세요\nheading = \nprint(np.degrees(heading))  # 53.13...",
+        validator: {
+          mustContain: ["np.arctan2(dy,dx)"],
+          mustNotContain: ["arctan2(dx,dy)"]
+        },
+        solution: "np.arctan2(dy, dx)",
+        explanation: "방향은 np.arctan2(dy, dx)로 구합니다 — 인자 순서가 (y, x)임에 주의! atan2는 사분면을 구분해 -180°~+180° 전 범위의 정확한 각도를 주므로, 로봇의 목표 방향·heading 계산에 표준으로 쓰입니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", chapterR0Quizzes, "chapter-r0");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
