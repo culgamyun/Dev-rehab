@@ -506,9 +506,12 @@ function initTheme() {
 
 function updateThemeToggleUI(theme) {
   const themeToggles = document.querySelectorAll(".theme-toggle");
+  // 아이콘/라벨을 분리 유지 → 사이드바 접힘 시 .btn-label만 숨고 아이콘(이모지)만 남음
+  const icon = theme === "dark" ? "☀️" : "🌙";
   themeToggles.forEach(toggle => {
-    toggle.innerHTML = theme === "dark" ? "☀️ Mode" : "🌙 Mode";
+    toggle.innerHTML = '<span class="btn-icon">' + icon + '</span><span class="btn-label">Mode</span>';
     toggle.setAttribute("aria-label", theme === "dark" ? "라이트 모드로 전환" : "다크 모드로 전환");
+    toggle.setAttribute("title", "테마 전환");
   });
 }
 
