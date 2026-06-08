@@ -1,0 +1,416 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter R3 - 액추에이터 & 임베디드 기초</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R4~R10 · 부록 R-A~C<br><span style="font-size: 11px;">키네매틱스 · 제어 · ROS 2 · 인식 · SLAM …<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>Chapter R3</span></div>
+      <h1>Chapter R3: 액추에이터 &amp; 임베디드 기초</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">센서가 "감각"이라면 액추에이터는 로봇의 "근육"입니다. DC·서보·스텝 모터가 각각 어떻게 움직이는지, 디지털 신호로 속도·각도를 조절하는 <strong>PWM</strong>, 그리고 이 모든 걸 제어하는 임베디드 기초(<strong>GPIO·I2C·SPI·UART·실시간성</strong>)를 다룹니다. (모터 제어의 <strong>수학부는 Python으로 실행 검증</strong>했고, 하드웨어 제어 코드는 라즈베리파이 <code>gpiozero</code> 표준 패턴으로 제시합니다.)</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig">
+      <svg class="blueprint" viewBox="0 0 800 300" role="img" aria-label="DC, 서보, 스텝 모터 세 종류와 제어 방식을 비교한 도면">
+        <defs>
+          <pattern id="grid-r3" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern>
+        </defs>
+        <rect width="800" height="300" fill="url(#grid-r3)"/>
+        <text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG R3 · 모터 3종 — 무엇을 잘하나</text>
+        <g>
+          <rect x="40" y="70" width="230" height="170" rx="10" fill="rgba(127,212,255,0.08)" stroke="#7fd4ff" stroke-width="1.5"/>
+          <text x="155" y="100" fill="#7fd4ff" font-size="15" text-anchor="middle">DC 모터</text>
+          <text x="155" y="130" fill="#cfe8ff" font-size="12" text-anchor="middle">연속 회전 (빠름)</text>
+          <text x="155" y="154" fill="rgba(180,220,255,0.8)" font-size="11" text-anchor="middle">속도 = 전압(PWM)</text>
+          <text x="155" y="174" fill="rgba(180,220,255,0.8)" font-size="11" text-anchor="middle">방향 = 극성(H-브리지)</text>
+          <text x="155" y="210" fill="#48d597" font-size="11" text-anchor="middle">바퀴 · 팬 · 주행</text>
+        </g>
+        <g>
+          <rect x="285" y="70" width="230" height="170" rx="10" fill="rgba(255,179,0,0.08)" stroke="#ffb300" stroke-width="1.5"/>
+          <text x="400" y="100" fill="#ffb300" font-size="15" text-anchor="middle">서보 모터</text>
+          <text x="400" y="130" fill="#cfe8ff" font-size="12" text-anchor="middle">목표 각도 유지</text>
+          <text x="400" y="154" fill="rgba(180,220,255,0.8)" font-size="11" text-anchor="middle">각도 = 펄스폭(1~2ms)</text>
+          <text x="400" y="174" fill="rgba(180,220,255,0.8)" font-size="11" text-anchor="middle">내부 폐루프 제어</text>
+          <text x="400" y="210" fill="#48d597" font-size="11" text-anchor="middle">로봇팔 관절 · 조향</text>
+        </g>
+        <g>
+          <rect x="530" y="70" width="230" height="170" rx="10" fill="rgba(72,213,151,0.08)" stroke="#48d597" stroke-width="1.5"/>
+          <text x="645" y="100" fill="#48d597" font-size="15" text-anchor="middle">스텝 모터</text>
+          <text x="645" y="130" fill="#cfe8ff" font-size="12" text-anchor="middle">정밀 각도 분할</text>
+          <text x="645" y="154" fill="rgba(180,220,255,0.8)" font-size="11" text-anchor="middle">한 스텝 = 1.8° (예)</text>
+          <text x="645" y="174" fill="rgba(180,220,255,0.8)" font-size="11" text-anchor="middle">오픈루프 위치제어</text>
+          <text x="645" y="210" fill="#48d597" font-size="11" text-anchor="middle">3D 프린터 · CNC</text>
+        </g>
+        <text x="400" y="272" fill="rgba(180,220,255,0.7)" font-size="12" text-anchor="middle">속도가 필요하면 DC · 각도 유지가 필요하면 서보 · 정밀 위치가 필요하면 스텝</text>
+      </svg>
+      <figcaption>모터 세 종류는 잘하는 일이 다릅니다 — <strong>DC</strong>는 빠른 연속 회전(바퀴), <strong>서보</strong>는 정해진 각도 유지(관절), <strong>스텝</strong>은 한 칸씩 정밀 이동(3D 프린터). 용도에 맞게 고릅니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- 1. 액추에이터란 -->
+      <section id="actuator-intro">
+        <h2>1. 액추에이터란? — 로봇의 근육</h2>
+        <p><strong>액추에이터(actuator)</strong>는 전기 에너지를 <strong>물리적 운동</strong>(회전·직선 이동)으로 바꾸는 장치입니다. 로보틱스에서 가장 흔한 액추에이터가 <strong>전기 모터</strong>이고, 위에서 본 세 종류(DC·서보·스텝)가 대부분을 차지합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 센서가 눈·귀라면, 액추에이터는 팔·다리</h4>
+          <p>R2의 센서가 "세상을 들여오는" 입력이라면, 액추에이터는 "세상에 영향을 주는" 출력입니다. 제어기(뇌)가 센서값을 보고 "바퀴를 60%로 돌려라", "팔을 90도로 펴라" 같은 명령을 내리면, 액추에이터가 그걸 실제 움직임으로 만듭니다. 이 챕터는 그 명령을 <strong>전기 신호로 정확히 표현하는 법</strong>을 배웁니다.</p>
+        </div>
+      </section>
+
+      <!-- 2. DC 모터 -->
+      <section id="dc-motor">
+        <h2>2. DC 모터 — 가장 단순한 회전</h2>
+        <p><strong>DC 모터</strong>는 전압을 걸면 계속 도는, 가장 단순하고 흔한 모터입니다. 두 가지만 기억하면 됩니다.</p>
+        <ul style="font-size:13.5px; line-height:1.95; color:var(--text-muted);">
+          <li><strong>속도 ∝ 전압</strong>: 전압이 높을수록 빨리 돕니다. 그런데 디지털 제어기는 "중간 전압"을 직접 못 만듭니다 → 그래서 <strong>PWM</strong>(다음 절)을 씁니다.</li>
+          <li><strong>방향 = 극성</strong>: 두 단자의 +/−를 바꾸면 반대로 돕니다. 이 극성을 전자적으로 뒤집는 회로가 <strong>H-브리지(H-bridge)</strong>입니다(모터 드라이버 칩에 내장).</li>
+        </ul>
+        <p>DC 모터는 빠르지만 "지금 몇 도인지"는 스스로 모릅니다(위치 피드백 없음). 그래서 정확한 위치가 필요하면 R2의 <strong>엔코더</strong>를 붙여 회전을 셉니다.</p>
+      </section>
+
+      <!-- 3. PWM -->
+      <section id="pwm">
+        <h2>3. PWM — 디지털로 아날로그 흉내내기</h2>
+        <p>디지털 핀은 ON(예: 5V)과 OFF(0V) 두 값만 냅니다. 그런데 <strong>아주 빠르게 켰다 껐다</strong> 하면서 <strong>켜진 시간의 비율</strong>을 조절하면, 모터·LED는 그 <strong>평균값</strong>을 느낍니다. 이것이 <strong>PWM(펄스폭 변조)</strong>입니다. 켜진 시간 비율을 <strong>듀티 사이클(duty cycle)</strong>이라 합니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 형광등 깜빡임 vs 밝기 조절</h4>
+          <p>형광등을 1초에 한 번 켰다 끄면 깜빡임이 보이지만, 1초에 1000번 켰다 끄면 우리 눈엔 "절반 밝기"로 보입니다. PWM도 똑같습니다 — 너무 빨라서 모터는 개별 펄스를 못 느끼고 <strong>평균 전압</strong>만 느껴 그 속도로 돕니다. 듀티 50%면 평균 전압의 절반입니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r3-pwm.png" alt="25, 50, 75 퍼센트 듀티 사이클의 PWM 사각파와 평균 전압을 보여주는 블루프린트 그래프" loading="lazy">
+          <figcaption>듀티 사이클(켜진 시간 비율)이 클수록 평균 전압(점선)이 높아지고, 모터는 더 빨리 돕니다. 25% → 1.25V, 50% → 2.5V, 75% → 3.75V (공급 5V 기준).</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">PWM 듀티 사이클 → 평균 전압(속도)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">def pwm_average(duty, v_supply=5.0):
+    # 평균 전압 = 듀티 사이클 × 공급 전압 (duty는 0.0~1.0)
+    return duty * v_supply
+
+for d in [0.0, 0.25, 0.5, 0.75, 1.0]:
+    print(f"듀티 {int(d*100):3d}% -> 평균 {pwm_average(d):.2f} V")</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">듀티   0% -> 평균 0.00 V
+듀티  25% -> 평균 1.25 V
+듀티  50% -> 평균 2.50 V
+듀티  75% -> 평균 3.75 V
+듀티 100% -> 평균 5.00 V</pre>
+        </div>
+      </section>
+
+      <!-- 4. 서보 -->
+      <section id="servo">
+        <h2>4. 서보 모터 — 정해진 각도로</h2>
+        <p><strong>서보 모터</strong>는 "이 각도로 가서 유지해"라고 명령하는 모터입니다. 내부에 위치 센서와 제어 회로(폐루프)가 있어, 명령한 각도를 스스로 잡고 버팁니다. 로봇팔 관절·조향에 씁니다.</p>
+
+        <p>표준 RC 서보는 <strong>50Hz(주기 20ms)</strong>로 펄스를 받고, <strong>펄스의 폭(1~2ms)</strong>이 목표 각도를 정합니다 — <code>1.0ms → 0°</code>, <code>1.5ms → 90°(중앙)</code>, <code>2.0ms → 180°</code>. PWM이 "켜진 비율"로 속도를 정했다면, 서보는 "펄스 폭"으로 위치를 정합니다.</p>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r3-servo.png" alt="펄스폭 1에서 2ms가 각도 0에서 180도로 선형 대응하는 블루프린트 그래프" loading="lazy">
+          <figcaption>서보의 펄스폭(1~2ms)과 각도(0~180°)는 선형 관계입니다. 1.5ms는 정확히 가운데(90°)입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">서보 펄스폭 → 각도</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">def pulse_to_angle(pulse_ms):
+    # 표준 RC 서보: 1.0ms->0°, 2.0ms->180° (그 사이는 선형)
+    return (pulse_ms - 1.0) / (2.0 - 1.0) * 180.0
+
+for p in [1.0, 1.5, 2.0]:
+    print(f"펄스폭 {p}ms -> {pulse_to_angle(p):.0f}°")</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">펄스폭 1.0ms -> 0°
+펄스폭 1.5ms -> 90°
+펄스폭 2.0ms -> 180°</pre>
+        </div>
+      </section>
+
+      <!-- 5. 스텝 모터 -->
+      <section id="stepper">
+        <h2>5. 스텝 모터 — 한 칸씩 정밀하게</h2>
+        <p><strong>스텝 모터</strong>는 전기 펄스 하나에 <strong>정확히 정해진 각도(한 스텝)</strong>만큼 돕니다. 펄스를 세기만 하면 위치를 알 수 있어(엔코더 없이) 정밀 위치 제어가 가능합니다 — 3D 프린터·CNC의 주인공입니다.</p>
+
+        <p><strong>스텝각 = 360° ÷ 한 바퀴 스텝 수</strong>. 흔한 모터는 한 바퀴에 200스텝이라 <strong>스텝각이 1.8°</strong>입니다. 50스텝 보내면 정확히 90° 회전하죠. 단, 너무 빨리 보내거나 부하가 크면 <strong>스텝을 놓칠(skip)</strong> 수 있고(피드백이 없어 모름), <strong>마이크로스테핑</strong>으로 한 스텝을 더 잘게 나눠 부드럽게 만들 수 있습니다.</p>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r3-stepper.png" alt="스텝 수에 따라 1.8도씩 계단처럼 증가하는 각도 그래프" loading="lazy">
+          <figcaption>스텝 모터는 한 스텝마다 정확히 1.8°씩 "계단"처럼 움직입니다. 스텝을 세면 현재 각도를 알 수 있습니다(오픈루프).</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">스텝 수 → 회전 각도</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">def step_angle(steps_per_rev):
+    # 한 스텝의 각도 = 360도를 '한 바퀴 스텝 수'로 나눔
+    return 360 / steps_per_rev
+
+spr = 200                     # 한 바퀴 200스텝 (흔한 사양)
+print("스텝각:", step_angle(spr), "도")          # 1.8
+print("50스텝 회전:", 50 * step_angle(spr), "도") # 90.0</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">스텝각: 1.8 도
+50스텝 회전: 90.0 도</pre>
+        </div>
+      </section>
+
+      <!-- 6. GPIO -->
+      <section id="gpio">
+        <h2>6. GPIO &amp; 임베디드 — 모터를 코드로 움직이기</h2>
+        <p>이 모터들을 실제로 돌리려면 컴퓨터의 <strong>핀</strong>으로 신호를 내보내야 합니다. <strong>GPIO(General-Purpose Input/Output)</strong>는 그 범용 디지털 핀으로, 출력 모드면 HIGH(켜짐)/LOW(꺼짐)를 내보내고 입력 모드면 버튼·스위치 상태를 읽습니다.</p>
+
+        <div class="card-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:16px; margin:16px 0;">
+          <div class="glass-panel" style="border-top:3px solid var(--robotics);">
+            <h4 style="font-weight:700; color:var(--robotics);">MCU (마이크로컨트롤러)</h4>
+            <p style="font-size:13px; color:var(--text-muted);">아두이노·STM32 등. OS 없이 코드가 직접 돈다 → <strong>실시간성·정밀 타이밍에 강함</strong>. PWM·센서 읽기 같은 저수준 제어 담당.</p>
+          </div>
+          <div class="glass-panel" style="border-top:3px solid var(--frontend);">
+            <h4 style="font-weight:700; color:var(--frontend);">SBC (싱글보드 컴퓨터)</h4>
+            <p style="font-size:13px; color:var(--text-muted);">라즈베리파이·젯슨 등. 리눅스 OS 위에서 Python·카메라·네트워크 → <strong>고수준 연산</strong>(인식·계획)에 강함. 흔히 MCU와 역할 분담.</p>
+          </div>
+        </div>
+
+        <p>파이썬에서는 라즈베리파이의 <code>gpiozero</code> 라이브러리로 모터·서보를 간단히 다룹니다. 아래는 공식 표준 패턴입니다(이 학습 환경에는 GPIO 하드웨어가 없어 실행은 안 되지만, 라즈베리파이에서 그대로 동작합니다).</p>
+
+        <div class="code-block-header">
+          <span class="code-title">gpiozero로 DC 모터 · 서보 제어 (라즈베리파이)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python"># 실행 환경: Raspberry Pi + gpiozero  (pip install gpiozero)
+# ※ 이 학습 환경엔 GPIO가 없어 실행되지 않습니다 — 패턴 학습용
+from gpiozero import Motor, AngularServo
+from time import sleep
+
+# DC 모터: H-브리지 드라이버의 두 입력 핀(GPIO 번호)에 연결
+motor = Motor(forward=17, backward=18)
+motor.forward(0.6)        # 60% 속도로 전진 (gpiozero가 내부적으로 PWM 생성)
+sleep(2)
+motor.stop()
+
+# 서보 모터: 각도로 직접 명령
+servo = AngularServo(27, min_angle=0, max_angle=180)
+servo.angle = 90          # 90도(중앙)로 이동
+sleep(1)
+servo.angle = 0           # 0도로 이동</code></pre>
+        <p style="color:var(--text-muted); font-size:13px;">앞에서 손으로 계산한 PWM 듀티·서보 펄스폭을 <code>gpiozero</code>가 알아서 만들어 줍니다 — <code>motor.forward(0.6)</code>이 듀티 60% PWM을, <code>servo.angle = 90</code>이 1.5ms 펄스를 생성합니다.</p>
+      </section>
+
+      <!-- 7. 통신 프로토콜 -->
+      <section id="protocols">
+        <h2>7. 통신 프로토콜 — I2C · SPI · UART</h2>
+        <p>센서·드라이버 같은 부품들은 제어기와 <strong>직렬 통신</strong>으로 데이터를 주고받습니다. 대표 3종을 핀 수·속도·용도로 비교하면 선택이 쉽습니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 세 가지 대화 방식</h4>
+          <p><strong>UART</strong>는 두 사람의 1:1 전화(서로 약속한 속도로), <strong>I2C</strong>는 한 회의실에서 이름표(주소)로 부르는 다자 회의(선 2개), <strong>SPI</strong>는 빠른 전용 회선이지만 상대가 늘어날 때마다 선택 버튼(CS)이 하나씩 더 필요한 방식입니다.</p>
+        </div>
+
+        <table>
+          <thead><tr><th>프로토콜</th><th>선(핀)</th><th>속도</th><th>특징 / 용도</th></tr></thead>
+          <tbody>
+            <tr><td><strong>I2C</strong></td><td>2선 (SDA·SCL)</td><td>중속</td><td>주소로 여러 장치를 한 버스에 연결. IMU·소형 센서 다수 연결에 편리.</td></tr>
+            <tr><td><strong>SPI</strong></td><td>4선 (MOSI·MISO·SCLK·CS)</td><td>고속 (전이중)</td><td>빠른 데이터(디스플레이·SD카드). 장치마다 CS 선이 따로 필요.</td></tr>
+            <tr><td><strong>UART</strong></td><td>2선 (TX·RX)</td><td>중속 (비동기)</td><td>1:1 통신. GPS·블루투스·디버그 콘솔. 보드레이트(예 9600·115200) 약속 필요.</td></tr>
+          </tbody>
+        </table>
+        <p style="color:var(--text-muted); font-size:13px;">고르는 감: <strong>센서 여러 개를 선 적게</strong> → I2C, <strong>빠른 전송</strong> → SPI, <strong>장치 하나와 단순 연결</strong> → UART.</p>
+      </section>
+
+      <!-- 8. 실시간성 -->
+      <section id="realtime">
+        <h2>8. 실시간성 — 제때 도는 제어 루프</h2>
+        <p>로봇 제어는 보통 <strong>고정된 주기</strong>로 도는 루프입니다 — 예: 1초에 100번(100Hz)씩 "센서 읽기 → 계산 → 모터 명령". 이때 중요한 건 <strong>매번 정확히 같은 간격</strong>으로 도는 것(<strong>실시간성</strong>)입니다. 간격이 들쭉날쭉(<strong>지터, jitter</strong>)하면 제어가 불안정해집니다.</p>
+
+        <div class="glass-panel" style="border-left:3px solid var(--interview); margin-top:6px;">
+          <h4 style="font-weight:700; color:var(--interview);">⚠️ 왜 MCU가 실시간에 강한가</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;">라즈베리파이 같은 <strong>OS 기반(SBC)</strong>은 여러 프로그램을 동시에 돌리느라 가끔 제어 루프가 밀립니다(비결정적 지연). 반면 <strong>MCU</strong>는 OS 없이 코드가 직접 돌고 인터럽트로 정확한 타이밍을 보장해 <strong>결정론적(deterministic)</strong>입니다. 그래서 실무에선 "MCU가 실시간 저수준 제어(모터·PWM), SBC가 고수준 연산(인식·계획)"으로 <strong>역할을 나눕니다</strong>. 엄격한 마감 시간을 반드시 지켜야 하면 '하드 실시간', 가끔 늦어도 되면 '소프트 실시간'이라 부릅니다.</p>
+        </div>
+      </section>
+
+      <!-- 9. 요약 -->
+      <section id="summary">
+        <h2>9. 한 장 요약</h2>
+        <table>
+          <thead><tr><th>주제</th><th>한 줄 정리</th><th>핵심 수치/공식</th></tr></thead>
+          <tbody>
+            <tr><td>DC 모터</td><td>빠른 연속 회전</td><td>속도∝전압, 방향=극성(H-브리지)</td></tr>
+            <tr><td>PWM</td><td>빠른 On/Off로 평균값 조절</td><td>평균전압 = 듀티 × 공급전압</td></tr>
+            <tr><td>서보 모터</td><td>정해진 각도 유지(폐루프)</td><td>1~2ms 펄스 @50Hz → 0~180°</td></tr>
+            <tr><td>스텝 모터</td><td>한 스텝씩 정밀(오픈루프)</td><td>스텝각 = 360 / 스텝수 (1.8°)</td></tr>
+            <tr><td>GPIO</td><td>범용 디지털 입출력 핀</td><td>HIGH/LOW, gpiozero</td></tr>
+            <tr><td>I2C / SPI / UART</td><td>직렬 통신 3종</td><td>2선주소 / 4선고속 / 2선1:1</td></tr>
+            <tr><td>실시간성</td><td>일정 주기·낮은 지터</td><td>MCU=결정론, SBC=고수준</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;">이제 로봇은 감지(R2)하고 움직일(R3) 수 있습니다. 다음 <a href="chapter-r1.html">R1</a>의 좌표·변환과 합쳐, R4(키네매틱스)에서 "모터를 얼마나 돌리면 팔 끝이 어디로 가는지"를 계산합니다. 💪</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: PWM)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const chapterR3Quizzes = [
+      {
+        type: "mcq",
+        question: "PWM에서 '듀티 사이클(켜진 시간 비율)'을 높이면 DC 모터는 어떻게 되나요?",
+        options: [
+          "평균 전압이 높아져 더 빨리 돈다",
+          "회전 방향이 반대로 바뀐다",
+          "각도가 정확히 유지된다",
+          "아무 변화가 없다"
+        ],
+        correct: 0,
+        explanation: "PWM은 빠른 On/Off의 '켜진 비율(듀티)'로 평균 전압을 정합니다. 평균 전압 = 듀티 × 공급 전압이므로, 듀티를 높이면 평균 전압이 올라가 모터가 더 빨리 돕니다. 방향은 극성(H-브리지)이 정합니다."
+      },
+      {
+        type: "mcq",
+        question: "표준 RC 서보 모터에 1.5ms 펄스를 주면 어느 각도로 가나요? (1.0ms=0°, 2.0ms=180°)",
+        options: ["0° (한쪽 끝)", "45°", "90° (가운데)", "180° (반대쪽 끝)"],
+        correct: 2,
+        explanation: "서보의 펄스폭(1~2ms)과 각도(0~180°)는 선형 관계입니다. 1.5ms는 1.0ms와 2.0ms의 정확히 중간이므로 90°(가운데)입니다."
+      },
+      {
+        type: "mcq",
+        question: "센서 여러 개를 '선을 적게(2선)' 쓰면서 주소로 구분해 한 버스에 연결하기 좋은 통신 프로토콜은?",
+        options: ["I2C", "SPI", "UART", "PWM"],
+        correct: 0,
+        explanation: "I2C는 SDA·SCL 2선만으로 여러 장치를 주소로 구분해 연결합니다. SPI는 빠르지만 장치마다 CS 선이 필요하고(4선+), UART는 1:1 통신입니다. PWM은 통신이 아니라 모터·LED 제어 신호입니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "PWM의 평균 전압을 구하는 한 줄을 완성하세요. (듀티 사이클 duty와 공급 전압 v_supply 사용)",
+        starter: "def pwm_average(duty, v_supply=5.0):\n    # 평균 전압 = 듀티 사이클 × 공급 전압\n    return ",
+        validator: {
+          mustContain: ["duty*v_supply"],
+          mustNotContain: []
+        },
+        solution: "duty * v_supply",
+        explanation: "PWM의 평균 전압은 '듀티 사이클 × 공급 전압'입니다. duty가 0.6, v_supply가 5.0이면 평균 3.0V. 이 평균 전압이 모터 속도를 정합니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "스텝 모터의 '한 스텝 각도'를 구하는 한 줄을 완성하세요. (한 바퀴 스텝 수 steps_per_rev 사용)",
+        starter: "def step_angle(steps_per_rev):\n    # 한 스텝의 각도 = 360도를 한 바퀴 스텝 수로 나눔\n    return ",
+        validator: {
+          mustContain: ["360", "/steps_per_rev"],
+          mustNotContain: ["*"]
+        },
+        solution: "360 / steps_per_rev",
+        explanation: "한 스텝의 각도 = 360 / steps_per_rev 입니다. 한 바퀴가 200스텝이면 360/200 = 1.8°. 스텝을 세면 현재 각도를 알 수 있어 오픈루프 정밀 제어가 가능합니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", chapterR3Quizzes, "chapter-r3");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

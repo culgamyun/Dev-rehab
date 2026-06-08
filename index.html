@@ -44,7 +44,8 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
-      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R3~R10 · 부록 R-A~C<br><span style="font-size: 11px;">액추에이터 · 제어 · ROS 2 · 인식 · SLAM …<br>(순차 공개 예정)</span></span></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R4~R10 · 부록 R-A~C<br><span style="font-size: 11px;">키네매틱스 · 제어 · ROS 2 · 인식 · SLAM …<br>(순차 공개 예정)</span></span></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
@@ -344,11 +345,20 @@
             <span>Python · numpy · matplotlib</span>
           </div>
         </div>
+        <!-- R3 — 공개됨 -->
+        <div class="glass-panel chapter-card" onclick="window.location.href='chapter-r3.html'" style="border-left: 3px solid var(--robotics);">
+          <div class="chapter-badge" style="background: var(--robotics); color: #fff;">R3</div>
+          <h3>액추에이터 &amp; 임베디드</h3>
+          <p>DC·서보·스텝 모터, PWM 듀티로 속도 조절, 서보 펄스폭으로 각도 제어, GPIO·I2C·SPI·UART와 실시간성. 모터 제어 수학은 실행 검증, 하드웨어는 gpiozero 패턴.</p>
+          <div class="chapter-meta">
+            <span class="card-progress-text" data-chapter="chapter-r3">진척도: 시작 전</span>
+            <span>Python · gpiozero</span>
+          </div>
+        </div>
       </div>
 
       <h3 style="font-size: 14px; font-weight: 700; color: var(--text-muted); margin: 8px 0 0;">🗺️ 다음 챕터 로드맵 (순차 공개 예정)</h3>
       <div class="stats-grid" style="opacity: 0.62;">
-        <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R3 🔒</div><h3 style="font-size:15px;">액추에이터 &amp; 임베디드</h3><p>DC/서보/스텝모터, PWM, GPIO, I2C/SPI/UART, 실시간성(시뮬레이션 기반).</p></div>
         <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R4 🔒</div><h3 style="font-size:15px;">키네매틱스</h3><p>정/역기구학, DH 파라미터, 자코비안, 차동구동 모바일 로봇 오도메트리.</p></div>
         <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R5 🔒</div><h3 style="font-size:15px;">제어 이론 &amp; PID</h3><p>개/폐루프, PID, 상태공간 개념, 튜닝과 matplotlib 추종 시뮬레이션.</p></div>
         <div class="glass-panel chapter-card robotics-locked"><div class="chapter-badge">R6 🔒</div><h3 style="font-size:15px;">ROS 2 기초</h3><p>노드·토픽·서비스·액션, rclpy pub/sub, 패키지·colcon·런치.</p></div>

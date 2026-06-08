@@ -1112,6 +1112,55 @@
       "name": "칼만 필터 (Kalman Filter)",
       "definition": "예측값과 측정값을 각각의 불확실성에 따라 가중평균하여 최적 추정을 구하는 필터입니다.",
       "explanation": "1D 칼만은 매 단계 ① 예측(불확실성 증가) ② 칼만이득 K=P/(P+R) ③ 갱신(예측을 측정 쪽으로 K만큼 당김)으로 동작합니다. R이 크면(측정 못 믿음) K→0, P가 크면 K→1. R9에서 다차원으로 확장돼 위치추정·SLAM의 핵심이 됩니다."
+    },
+    {
+      "key": "Actuator",
+      "chapter": "Robotics 3",
+      "name": "액추에이터 (Actuator)",
+      "definition": "전기 등의 에너지를 회전·직선 운동 같은 물리적 움직임으로 바꾸는 장치로, 로봇의 '근육'에 해당합니다.",
+      "explanation": "로보틱스에서 가장 흔한 액추에이터는 전기 모터(DC·서보·스텝)입니다. 센서가 세상을 들여오는 입력이라면, 액추에이터는 세상에 영향을 주는 출력입니다."
+    },
+    {
+      "key": "PWM",
+      "chapter": "Robotics 3",
+      "name": "펄스폭 변조 (PWM)",
+      "definition": "디지털 핀을 빠르게 켰다 껐다 하며 '켜진 시간 비율(듀티 사이클)'로 평균 전압을 조절하는 기법입니다.",
+      "explanation": "평균 전압 = 듀티 사이클 × 공급 전압. 너무 빨라서 모터·LED는 개별 펄스를 못 느끼고 평균값만 느낍니다. DC 모터 속도·LED 밝기 조절의 표준 방법이며, gpiozero가 내부적으로 생성합니다."
+    },
+    {
+      "key": "Servo-Motor",
+      "chapter": "Robotics 3",
+      "name": "서보 모터 (Servo Motor)",
+      "definition": "명령한 목표 각도로 이동해 그 자세를 유지하는, 내부 폐루프 제어가 있는 모터입니다.",
+      "explanation": "표준 RC 서보는 50Hz(주기 20ms)로 펄스를 받고, 펄스폭 1~2ms가 각도 0~180°를 정합니다(1.5ms=90° 중앙). 로봇팔 관절·조향에 쓰입니다."
+    },
+    {
+      "key": "Stepper-Motor",
+      "chapter": "Robotics 3",
+      "name": "스텝 모터 (Stepper Motor)",
+      "definition": "전기 펄스 하나에 정해진 각도(한 스텝)만큼 정확히 회전하는 모터로, 펄스를 세어 위치를 압니다(오픈루프).",
+      "explanation": "스텝각 = 360° / 한 바퀴 스텝 수. 흔히 200스텝/회전이라 1.8°/스텝입니다. 엔코더 없이 정밀 위치 제어가 가능해 3D 프린터·CNC에 쓰이며, 과부하 시 스텝을 놓칠 수 있습니다."
+    },
+    {
+      "key": "GPIO",
+      "chapter": "Robotics 3",
+      "name": "범용 입출력 핀 (GPIO)",
+      "definition": "프로그램으로 제어하는 범용 디지털 핀으로, 출력은 HIGH/LOW를 내보내고 입력은 버튼·스위치 상태를 읽습니다.",
+      "explanation": "라즈베리파이·아두이노의 핀이 GPIO입니다. 파이썬에서는 gpiozero 라이브러리로 Motor·Servo 등을 간단히 제어합니다. MCU는 실시간 저수준 제어, SBC는 고수준 연산에 강해 역할을 나눕니다."
+    },
+    {
+      "key": "Serial-Protocols",
+      "chapter": "Robotics 3",
+      "name": "직렬 통신 (I2C · SPI · UART)",
+      "definition": "부품들이 제어기와 데이터를 주고받는 대표 직렬 통신 3종입니다.",
+      "explanation": "I2C(2선 SDA·SCL, 주소로 다중 장치), SPI(4선 MOSI·MISO·SCLK·CS, 고속 전이중), UART(2선 TX·RX, 비동기, 보드레이트 약속). '센서 여럿·선 적게'면 I2C, '빠른 전송'이면 SPI, '1:1 단순 연결'이면 UART."
+    },
+    {
+      "key": "Real-Time-Control",
+      "chapter": "Robotics 3",
+      "name": "실시간 제어 (Real-Time Control)",
+      "definition": "센서 읽기→계산→모터 명령 루프를 일정한 주기로 정확히 반복하는 제어 방식입니다.",
+      "explanation": "주기가 들쭉날쭉(지터)하면 제어가 불안정해집니다. OS 기반 SBC는 비결정적 지연이 있어, OS 없이 도는 MCU가 인터럽트로 정확한 타이밍을 보장해 실시간에 강합니다. 마감을 반드시 지키면 하드 실시간, 가끔 늦어도 되면 소프트 실시간입니다."
     }
   ]
 }
