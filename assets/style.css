@@ -172,7 +172,7 @@ input, button {
   html.sidebar-collapsed .sidebar-logo span,
   html.sidebar-collapsed .nav-item-text,
   html.sidebar-collapsed .nav-section-label,
-  html.sidebar-collapsed .btn-sidebar span,
+  html.sidebar-collapsed .btn-label,
   html.sidebar-collapsed .track-label {
     display: none;
   }
@@ -182,6 +182,14 @@ input, button {
   }
   html.sidebar-collapsed .sidebar-progress-check {
     display: none; /* 아이콘만 남는 폭에서는 체크박스 숨김(펼치면 복원) */
+  }
+  /* 접힘 시 footer 버튼은 아이콘(이모지)만 가운데 표시 */
+  html.sidebar-collapsed .sidebar-footer .btn-sidebar {
+    padding: 10px 0;
+    gap: 0;
+  }
+  html.sidebar-collapsed .btn-icon {
+    font-size: 17px;
   }
   html.sidebar-collapsed .course-track-switch {
     flex-direction: column;
