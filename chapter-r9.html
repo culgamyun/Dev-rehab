@@ -1,0 +1,343 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter R9 - 위치추정 · SLAM · 내비게이션</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R10 · 부록 R-A~C<br><span style="font-size: 11px;">매니퓰레이션 · 학습제어 …<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>Chapter R9</span></div>
+      <h1>Chapter R9: 위치추정 · SLAM · 내비게이션</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">"<strong>내가 어디 있고(위치추정)</strong>, <strong>주변은 어떻게 생겼고(지도)</strong>, <strong>목표까지 어떻게 가지(경로계획)</strong>" — 자율 이동 로봇의 세 가지 핵심 질문입니다. R2의 센서·R4의 오도메트리·R8의 인식을 모두 합치는 종착지입니다. 칼만/파티클 필터, SLAM, 그리고 <strong>A* 경로계획</strong>을 다룹니다. (A* 경로계획과 1D 칼만 위치추정은 numpy로 <strong>실제 실행 검증</strong>했습니다.)</p>
+    </div>
+
+    <figure class="learning-visual">
+      <img src="assets/learning-visuals/chapter-r9-astar.png" alt="장애물이 있는 격자에서 A* 알고리즘이 시작에서 목표까지 최단 경로를 찾은 결과" loading="lazy">
+      <figcaption>A* 알고리즘이 장애물(검정)을 피해 시작(파랑)에서 목표(빨강 별)까지 <strong>최단 경로(초록)</strong>를 찾았습니다. 18칸(17 이동)으로 맨해튼 최적입니다. (실제 실행 결과)</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- 1. 세 가지 문제 -->
+      <section id="r9-intro">
+        <h2>1. 자율주행의 세 가지 질문</h2>
+        <p>방을 돌아다니는 청소 로봇을 떠올려 보세요. 스스로 움직이려면 끊임없이 세 가지를 풀어야 합니다.</p>
+        <div class="card-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(210px,1fr)); gap:16px; margin:16px 0;">
+          <div class="glass-panel" style="border-top:3px solid var(--robotics);"><h4 style="font-weight:700; color:var(--robotics);">📍 위치추정</h4><p style="font-size:13px; color:var(--text-muted);">"내가 지금 지도의 어디에 있나?" — 오도메트리(R4)+센서(R2)를 필터로 융합.</p></div>
+          <div class="glass-panel" style="border-top:3px solid var(--test);"><h4 style="font-weight:700; color:var(--test);">🗺️ 지도작성</h4><p style="font-size:13px; color:var(--text-muted);">"주변이 어떻게 생겼나?" — LiDAR·카메라로 점유 격자 지도 만들기.</p></div>
+          <div class="glass-panel" style="border-top:3px solid var(--frontend);"><h4 style="font-weight:700; color:var(--frontend);">🧭 경로계획</h4><p style="font-size:13px; color:var(--text-muted);">"목표까지 어떻게 가나?" — 장애물을 피하는 최적 경로 찾기.</p></div>
+        </div>
+        <p>위치추정과 지도작성을 <strong>동시에</strong> 푸는 것이 <strong>SLAM</strong>이고, 경로를 찾아 따라가는 것이 <strong>내비게이션</strong>입니다.</p>
+      </section>
+
+      <!-- 2. 위치추정 -->
+      <section id="localization">
+        <h2>2. 위치추정 — 필터로 오차를 다스리기</h2>
+        <p>오도메트리(R4)만으로는 바퀴 미끄러짐 때문에 <strong>오차가 누적</strong>됩니다(R2 드리프트). 그래서 오도메트리의 <strong>예측</strong>과 센서의 <strong>측정</strong>을 <strong>필터</strong>로 융합해 더 정확한 위치를 추정합니다. R2의 칼만 필터에 <strong>이동(예측) 단계</strong>를 더한 형태입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 칼만(촛불) vs 파티클(반딧불 떼)</h4>
+          <p><strong>칼만 필터</strong>는 위치 가설이 <strong>하나의 봉우리(가우시안)</strong> — 촛불 하나로 "여기쯤"이라 보는 식이라 선형·단봉 상황에 최적입니다. <strong>파티클 필터(몬테카를로 위치추정)</strong>는 수백~수천 개의 <strong>반딧불(파티클)</strong>로 "여기일 수도, 저기일 수도" 하는 <strong>여러 봉우리·비선형</strong> 분포를 표현합니다 — 처음에 어디 있는지 전혀 모를 때나 복잡한 지도에서 강합니다.</p>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">1D 칼만 위치추정 — 오도메트리(예측) + 센서(갱신)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+def localize(meas, motions, R, Q, x0=0.0, P0=1.0):
+    x, P = x0, P0
+    out = []
+    for z, u in zip(meas, motions):
+        x = x + u; P = P + Q          # ① 예측: 오도메트리(R4)로 u만큼 이동
+        K = P / (P + R)               # ② 갱신: 센서 측정과 가중평균 (R2 칼만)
+        x = x + K * (z - x); P = (1 - K) * P
+        out.append(x)
+    return out
+
+rng = np.random.default_rng(7)
+true = np.cumsum(np.ones(10))             # 실제 위치 1,2,...,10
+motions = np.ones(10)                     # 오도메트리: 매번 +1
+meas = true + rng.normal(0, 0.5, 10)      # 센서 측정(노이즈)
+est = localize(meas, motions, R=0.25, Q=0.04)
+print(f"실제 {true[-1]} / 측정(노이즈) {meas[-1]:.2f} / 칼만 추정 {est[-1]:.3f}")</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">실제 10.0 / 측정(노이즈) 9.69 / 칼만 추정 9.888</pre>
+        </div>
+        <p style="color:var(--text-muted); font-size:13px;">칼만 추정(9.888)이 노이즈 섞인 단일 측정(9.69)보다 실제값(10.0)에 더 가깝습니다 — 예측과 측정을 똑똑하게 합친 덕분입니다.</p>
+      </section>
+
+      <!-- 3. SLAM -->
+      <section id="slam">
+        <h2>3. SLAM — 닭이 먼저냐 달걀이 먼저냐</h2>
+        <p><strong>SLAM(동시적 위치추정·지도작성)</strong>은 로보틱스의 유명한 난제입니다. <strong>위치를 알아야 지도를 정확히 그리고, 지도가 있어야 위치를 정확히 안다</strong> — 둘이 서로 의존하는 닭-달걀 문제를 <strong>동시에</strong> 추정해 풉니다.</p>
+
+        <figure class="learning-visual blueprint-fig" style="max-width:520px; margin:18px auto;">
+          <svg class="blueprint" viewBox="0 0 460 200" role="img" aria-label="SLAM의 위치추정과 지도작성이 서로 의존하는 순환 도면">
+            <defs><marker id="ar9" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#ffb300"/></marker></defs>
+            <text x="20" y="28" fill="#7fd4ff" font-size="13">FIG R9 · SLAM — 상호 의존</text>
+            <rect x="40" y="80" width="150" height="56" rx="10" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff" stroke-width="1.6"/><text x="115" y="106" fill="#cfe8ff" font-size="13" text-anchor="middle">위치추정</text><text x="115" y="124" fill="rgba(180,220,255,0.7)" font-size="10" text-anchor="middle">내가 어디?</text>
+            <rect x="270" y="80" width="150" height="56" rx="10" fill="rgba(72,213,151,0.10)" stroke="#48d597" stroke-width="1.6"/><text x="345" y="106" fill="#cfe8ff" font-size="13" text-anchor="middle">지도작성</text><text x="345" y="124" fill="rgba(180,220,255,0.7)" font-size="10" text-anchor="middle">주변은?</text>
+            <path d="M 192 96 H 268" stroke="#ffb300" stroke-width="1.8" marker-end="url(#ar9)"/><text x="230" y="88" fill="#ffb300" font-size="10" text-anchor="middle">위치로 지도 갱신</text>
+            <path d="M 268 122 H 192" stroke="#ffb300" stroke-width="1.8" marker-end="url(#ar9)"/><text x="230" y="140" fill="#ffb300" font-size="10" text-anchor="middle">지도로 위치 보정</text>
+            <text x="230" y="178" fill="rgba(180,220,255,0.75)" font-size="11" text-anchor="middle">루프 클로저: 예전에 본 곳 재인식 → 누적오차 한 번에 보정</text>
+          </svg>
+          <figcaption>SLAM은 위치추정과 지도작성을 번갈아 갱신하며 동시에 풉니다. 이전에 방문한 곳을 다시 알아보는 <strong>루프 클로저</strong>가 누적오차를 크게 줄여 줍니다.</figcaption>
+        </figure>
+        <p>실무에서는 2D LiDAR SLAM(<code>slam_toolbox</code>, gmapping)이나 그래프 기반 SLAM(포즈 그래프 최적화)을 씁니다. 결과물은 보통 <strong>점유 격자 지도(occupancy grid)</strong> — 각 칸이 "비었다/막혔다/모른다"로 표시된 지도이고, 이게 다음 경로계획의 입력이 됩니다.</p>
+      </section>
+
+      <!-- 4. 경로계획 -->
+      <section id="path-planning">
+        <h2>4. 경로계획 — A*로 길찾기</h2>
+        <p>지도가 생겼으니 목표까지 길을 찾습니다. 격자/그래프에서 최단 경로를 찾는 대표 방법들입니다.</p>
+        <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
+          <li><strong>Dijkstra</strong>: 시작점에서 모든 방향으로 균등하게 퍼지며 탐색 — 정확하지만 느림.</li>
+          <li><strong>A*</strong>: 각 칸의 비용 <code>f = g + h</code> (g=시작부터 온 실제 거리, h=목표까지 <strong>추정</strong> 거리=휴리스틱)로, <strong>목표 쪽을 우선</strong> 탐색해 훨씬 빠릅니다. 휴리스틱이 실제 거리를 넘지 않으면(admissible) <strong>최단 경로를 보장</strong>합니다. (h=0이면 Dijkstra와 같음.)</li>
+          <li><strong>RRT / RRT*</strong>: 무작위로 트리를 뻗어 탐색 — 로봇팔처럼 <strong>차원이 높거나 연속</strong>인 공간에 적합(RRT*는 점점 최적해에 수렴).</li>
+        </ul>
+
+        <div class="code-block-header">
+          <span class="code-title">A* 경로계획 (격자, 맨해튼 휴리스틱)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import heapq
+
+def heuristic(a, b):
+    return abs(a[0]-b[0]) + abs(a[1]-b[1])      # 맨해튼 거리 (h)
+
+def astar(grid, start, goal):                   # grid: 0=빈칸, 1=장애물
+    H, W = grid.shape
+    open_set = [(0, start)]                      # 우선순위 큐 (f, 칸)
+    came_from = {}
+    g = {start: 0}                              # 시작~각 칸의 실제 비용
+    while open_set:
+        _, cur = heapq.heappop(open_set)         # f가 가장 작은 칸 꺼내기
+        if cur == goal:                          # 도착 → 경로 복원
+            path = [cur]
+            while cur in came_from:
+                cur = came_from[cur]; path.append(cur)
+            return path[::-1]
+        for dr, dc in [(-1,0),(1,0),(0,-1),(0,1)]:        # 상하좌우
+            nr, nc = cur[0]+dr, cur[1]+dc
+            if 0 &lt;= nr &lt; H and 0 &lt;= nc &lt; W and grid[nr, nc] == 0:
+                ng = g[cur] + 1
+                if (nr, nc) not in g or ng &lt; g[(nr, nc)]:
+                    g[(nr, nc)] = ng
+                    f = ng + heuristic((nr, nc), goal)     # f = g + h
+                    heapq.heappush(open_set, (f, (nr, nc)))
+                    came_from[(nr, nc)] = cur
+    return None
+
+path = astar(grid, start, goal)
+print("경로 길이:", len(path), "스텝 | 장애물 통과?", any(grid[r,c]==1 for r,c in path))</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨 — 위 그래프가 이 결과)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">경로 길이: 18 스텝 | 장애물 통과? False</pre>
+        </div>
+      </section>
+
+      <!-- 5. Nav2 -->
+      <section id="nav2">
+        <h2>5. (개요) Nav2 — ROS 2 내비게이션 스택</h2>
+        <p>이 모든 걸 직접 짜는 대신, ROS 2는 <strong>Nav2</strong>라는 완성된 내비게이션 스택을 제공합니다(R6 생태계의 힘). 목표 좌표만 주면 알아서 길을 찾아 따라갑니다. 핵심 구성:</p>
+        <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
+          <li><strong>코스트맵(costmap)</strong>: 지도에 장애물·여유 공간을 비용으로 칠한 격자.</li>
+          <li><strong>글로벌 플래너</strong>: 전체 경로 계획(A* 등). <strong>로컬 플래너</strong>: 눈앞 장애물을 실시간 회피(DWA 등).</li>
+          <li><strong>복구 행동(recovery)</strong>: 막히면 제자리 회전·후진 등으로 빠져나오기. 전체를 <strong>행동 트리(behavior tree)</strong>가 지휘.</li>
+        </ul>
+        <p>위치추정엔 보통 파티클 필터 기반 <strong>AMCL</strong>(적응형 몬테카를로 위치추정)을, 지도엔 SLAM 결과(점유 격자)를 씁니다 — 이 챕터의 조각들이 그대로 모인 셈입니다.</p>
+      </section>
+
+      <!-- 6. 요약 -->
+      <section id="summary">
+        <h2>6. 한 장 요약</h2>
+        <table>
+          <thead><tr><th>주제</th><th>한 줄 정리</th><th>핵심</th></tr></thead>
+          <tbody>
+            <tr><td>위치추정</td><td>오도메트리(예측)+센서(측정) 융합</td><td>칼만(단봉)·파티클(다봉)</td></tr>
+            <tr><td>칼만 vs 파티클</td><td>가우시안 선형 vs 임의·비선형</td><td>MCL=파티클 위치추정</td></tr>
+            <tr><td>SLAM</td><td>위치추정+지도작성 동시</td><td>닭-달걀, 루프 클로저</td></tr>
+            <tr><td>Dijkstra / A*</td><td>균등 탐색 vs 휴리스틱 우선</td><td>A*: f = g + h (admissible → 최적)</td></tr>
+            <tr><td>RRT</td><td>무작위 트리, 고차원·연속</td><td>RRT*는 점근 최적</td></tr>
+            <tr><td>Nav2</td><td>ROS 2 완성형 내비게이션</td><td>코스트맵·글로벌/로컬·복구</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;">이제 로봇이 스스로 길을 찾아 이동합니다. 마지막 <strong>R10(매니퓰레이션 &amp; 학습기반 제어)</strong>에서는 로봇팔로 물체를 집고(MoveIt), 강화학습으로 정책을 배우는 sim-to-real을 다룹니다(곧 공개). 💪</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: SLAM)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const chapterR9Quizzes = [
+      {
+        type: "mcq",
+        question: "SLAM(동시적 위치추정·지도작성)이 본질적으로 어려운 이유는?",
+        options: [
+          "위치를 알아야 지도를 그리고, 지도가 있어야 위치를 아는 상호 의존(닭-달걀)",
+          "카메라가 비싸서",
+          "GPS가 항상 정확해서 불필요해서",
+          "경로계획과 무관해서"
+        ],
+        correct: 0,
+        explanation: "SLAM은 위치추정과 지도작성이 서로 의존하는 닭-달걀 문제를 동시에 풉니다. 이전에 본 곳을 다시 알아보는 '루프 클로저'로 누적오차를 보정하는 것이 정확도의 핵심입니다."
+      },
+      {
+        type: "mcq",
+        question: "A*가 Dijkstra보다 보통 더 빠르게 목표를 찾는 이유는?",
+        options: [
+          "휴리스틱 h(목표까지 추정 거리)로 목표 방향을 우선 탐색하기 때문",
+          "장애물을 무시하기 때문",
+          "무작위로 탐색하기 때문",
+          "메모리를 쓰지 않기 때문"
+        ],
+        correct: 0,
+        explanation: "A*는 f = g + h로, g(실제 온 거리)에 h(목표까지 추정 거리=휴리스틱)를 더해 목표 쪽을 우선 탐색합니다. h가 실제 거리를 넘지 않으면(admissible) 최단 경로를 보장하며, h=0이면 Dijkstra와 같아집니다."
+      },
+      {
+        type: "mcq",
+        question: "위치가 '여러 곳일 수도' 있는 다봉(multi-modal)·비선형 상황에 더 강한 위치추정 필터는?",
+        options: [
+          "칼만 필터 (단일 가우시안)",
+          "파티클 필터 (몬테카를로 위치추정)",
+          "이동평균 필터",
+          "PID 제어기"
+        ],
+        correct: 1,
+        explanation: "파티클 필터(MCL)는 수많은 가설(파티클)로 임의의·여러 봉우리 분포를 표현해, 처음 위치를 모르거나 비선형인 상황에 강합니다. 칼만 필터는 하나의 가우시안(단봉)이라 선형·단봉 상황에 최적입니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "A*의 휴리스틱 — 두 격자 칸 a, b 사이의 맨해튼 거리를 완성하세요.",
+        starter: "def heuristic(a, b):\n    # 맨해튼 거리 = |행 차이| + |열 차이|\n    return ",
+        validator: {
+          mustContain: ["abs(a[0]-b[0])+abs(a[1]-b[1])"],
+          mustNotContain: []
+        },
+        solution: "abs(a[0]-b[0]) + abs(a[1]-b[1])",
+        explanation: "맨해튼 거리는 행 차이와 열 차이의 절댓값을 더한 것입니다: abs(a[0]-b[0]) + abs(a[1]-b[1]). 4방향 격자 이동에서 실제 최단 거리를 넘지 않는(admissible) 휴리스틱이라 A*의 최단 경로를 보장합니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "A*의 비용 점수 f를 완성하세요. (g: 시작부터 온 실제 비용, h: 목표까지 휴리스틱)",
+        starter: "def f_score(g, h):\n    # A*의 핵심: f = g + h\n    return ",
+        validator: {
+          mustContain: ["g+h"],
+          mustNotContain: ["g-h", "g*h"]
+        },
+        solution: "g + h",
+        explanation: "A*는 f = g + h로 다음 탐색 칸을 고릅니다. g는 이미 온 실제 거리, h는 목표까지 남은 추정 거리입니다. f가 가장 작은 칸을 먼저 펼쳐 목표 쪽으로 효율적으로 나아갑니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", chapterR9Quizzes, "chapter-r9");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
