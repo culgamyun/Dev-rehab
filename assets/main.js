@@ -48,6 +48,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // 1.5 모바일 햄버거 네비게이션 (≤768px에서 사이드바 메뉴 토글)
   initMobileNav();
 
+  // 1.6 사이드바 접기/펼치기 토글 + 드래그 리사이즈 (≥769px)
+  initSidebarResizer();
+
   // 2. 학습 진척도 시스템 로드 및 초기 렌더링
   initProgress();
 
@@ -340,6 +343,136 @@ function initMobileNav() {
   // 메뉴 항목(페이지 이동) 클릭 시 자동으로 닫힘
   sidebar.querySelectorAll(".nav-menu a").forEach((a) => {
     a.addEventListener("click", () => setOpen(false));
+  });
+}
+
+/**
+ * ==========================================================================
+ * 1.6 사이드바 접기/펼치기 토글 + 드래그 리사이즈 (데스크탑·태블릿 ≥769px)
+ * ==========================================================================
+ * 좁은 화면에서 사이드바가 아이콘 레일(80px)로 줄면 챕터 이름이 안 보이던 문제를
+ * 사용자가 직접 제어하도록: ① 우측 경계 토글 버튼(‹/›)으로 접기/펼치기,
+ * ② 우측 경계 드래그 핸들로 너비 자유 조정(150px 미만으로 끌면 자동 접힘 스냅).
+ * 상태는 localStorage에 저장돼 전 페이지·재방문 시 유지된다.
+ * FOUC 방지를 위해 초기 접힘/너비는 각 페이지 head의 인라인 스크립트가 선반영하고,
+ * 여기서는 버튼/핸들 주입 + 동기화 + 이벤트만 담당한다.
+ */
+function initSidebarResizer() {
+  const sidebar = document.getElementById("sidebar");
+  if (!sidebar) return;
+  if (sidebar.querySelector(".sidebar-resizer")) return; // 중복 주입 방지
+
+  const root = document.documentElement;
+  const MIN_W = 200;      // 펼침 최소 너비(텍스트 가독 한계)
+  const MAX_W = 460;      // 펼침 최대 너비
+  const DEFAULT_W = 280;  // 기본 펼침 너비
+  const COLLAPSE_AT = 150; // 드래그로 이 미만이 되면 접힘으로 스냅
+
+  // 접기/펼치기 토글 버튼
+  const btn = document.createElement("button");
+  btn.className = "sidebar-collapse-btn";
+  btn.type = "button";
+  btn.setAttribute("aria-label", "사이드바 접기/펼치기");
+  sidebar.appendChild(btn);
+
+  // 우측 경계 드래그 핸들
+  const resizer = document.createElement("div");
+  resizer.className = "sidebar-resizer";
+  resizer.setAttribute("role", "separator");
+  resizer.setAttribute("aria-orientation", "vertical");
+  resizer.title = "드래그하여 너비 조정 · 더블클릭 시 기본값";
+  sidebar.appendChild(resizer);
+
+  const isCollapsed = () => root.classList.contains("sidebar-collapsed");
+
+  function setExpandedWidth(w) {
+    w = Math.max(MIN_W, Math.min(MAX_W, Math.round(w)));
+    root.classList.remove("sidebar-collapsed");
+    root.style.setProperty("--sidebar-w", w + "px");
+  }
+  function collapse() {
+    root.classList.add("sidebar-collapsed");
+    root.style.removeProperty("--sidebar-w"); // CSS의 레일 너비(80px)가 적용되도록
+  }
+  function syncBtn() {
+    btn.textContent = isCollapsed() ? "›" : "‹";
+    btn.title = isCollapsed() ? "사이드바 펼치기" : "사이드바 접기";
+    btn.setAttribute("aria-expanded", isCollapsed() ? "false" : "true");
+  }
+  function persist() {
+    const collapsed = isCollapsed();
+    localStorage.setItem("sidebar_collapsed", collapsed ? "1" : "0");
+    if (!collapsed) {
+      const w = parseInt(getComputedStyle(root).getPropertyValue("--sidebar-w"), 10);
+      if (w) localStorage.setItem("sidebar_width", String(w));
+    }
+  }
+
+  syncBtn();
+
+  // ① 토글 버튼
+  btn.addEventListener("click", () => {
+    if (isCollapsed()) {
+      const saved = parseInt(localStorage.getItem("sidebar_width"), 10);
+      setExpandedWidth(saved >= MIN_W ? saved : DEFAULT_W);
+    } else {
+      collapse();
+    }
+    syncBtn();
+    persist();
+  });
+
+  // ② 드래그 리사이즈 (마우스·터치 통합: Pointer Events)
+  let dragging = false;
+  resizer.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    dragging = true;
+    resizer.classList.add("dragging");
+    root.classList.add("sidebar-dragging");
+    try { resizer.setPointerCapture(e.pointerId); } catch (_) {}
+  });
+  resizer.addEventListener("pointermove", (e) => {
+    if (!dragging) return;
+    const w = e.clientX - sidebar.getBoundingClientRect().left;
+    if (w < COLLAPSE_AT) {
+      collapse();
+    } else {
+      setExpandedWidth(w);
+    }
+    syncBtn();
+  });
+  const endDrag = (e) => {
+    if (!dragging) return;
+    dragging = false;
+    resizer.classList.remove("dragging");
+    root.classList.remove("sidebar-dragging");
+    try { resizer.releasePointerCapture(e.pointerId); } catch (_) {}
+    persist();
+  };
+  resizer.addEventListener("pointerup", endDrag);
+  resizer.addEventListener("pointercancel", endDrag);
+
+  // 더블클릭으로 기본 너비 복원
+  resizer.addEventListener("dblclick", () => {
+    setExpandedWidth(DEFAULT_W);
+    syncBtn();
+    persist();
+  });
+
+  // 키보드 접근성: 핸들 포커스 후 좌우 화살표로 16px씩 조정
+  resizer.tabIndex = 0;
+  resizer.addEventListener("keydown", (e) => {
+    const cur = isCollapsed() ? 80 : (parseInt(getComputedStyle(root).getPropertyValue("--sidebar-w"), 10) || DEFAULT_W);
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      const next = cur - 16;
+      if (next < COLLAPSE_AT) collapse(); else setExpandedWidth(next);
+      syncBtn(); persist();
+    } else if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setExpandedWidth(cur + 16);
+      syncBtn(); persist();
+    }
   });
 }
 
