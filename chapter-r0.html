@@ -247,6 +247,11 @@ print(np.round(점, 4))          # [0.7071 0.7071]  (= √2/2)</code></pre>
           <p>로봇이 (0,0)에 있고 목표가 (3, 4)에 있다면, "몸을 어느 각도로 틀어야 목표를 정면으로 보나?"의 답이 <code>atan2(4, 3)</code>입니다. 그냥 <code>atan(y/x)</code>를 쓰지 않는 이유는, 나눗셈을 하면 <strong>사분면 정보(앞/뒤·좌/우)가 사라지기</strong> 때문입니다. <code>atan2</code>는 x·y의 부호를 따로 보고 −180°~+180° 전 범위의 정확한 방향을 줍니다.</p>
         </div>
 
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r0-atan2-bearing-photo.webp" alt="테스트 매트 위 모바일 로봇이 목표 마커를 향해 방향각을 맞추는 실험 장면" loading="lazy">
+          <figcaption>목표가 로봇의 어느 사분면에 있는지까지 함께 봐야 정확한 heading을 얻습니다 — 그 판단을 <code>atan2(y, x)</code>가 해 줍니다.</figcaption>
+        </figure>
+
         <div class="code-block-header">
           <span class="code-title">atan2로 방향(heading) 구하기</span>
           <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>

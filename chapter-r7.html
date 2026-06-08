@@ -115,6 +115,10 @@
           <h4>💡 비유로 이해하기: 비행 시뮬레이터</h4>
           <p>조종사는 진짜 비행기로 위험한 상황을 연습하지 않습니다 — 시뮬레이터에서 수없이 반복하죠. 로봇도 마찬가지입니다. 이때 <strong>Gazebo</strong>는 "물리 법칙이 도는 가상 세계(시뮬레이터)"이고, <strong>RViz</strong>는 "센서·로봇 상태를 들여다보는 계기판(시각화)"입니다 — 둘은 역할이 다릅니다(5절에서 구분).</p>
         </div>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r7-simulation-real-rig-photo.webp" alt="장애물 코스 위 실제 모바일 로봇과 옆 모니터의 시뮬레이션 장면이 함께 보이는 실험실" loading="lazy">
+          <figcaption>시뮬레이션에서 반복 검증한 환경과 실제 테스트 코스를 맞춰 보면, sim-to-real에서 무엇이 달라지는지 빠르게 찾을 수 있습니다.</figcaption>
+        </figure>
       </section>
 
       <!-- 2. TF2 -->
@@ -173,6 +177,10 @@ print("같은 점의 base_link 좌표:", np.round(lookup("base_link", "laser") @
       <section id="urdf">
         <h2>3. URDF — 로봇의 몸을 XML로</h2>
         <p>시뮬레이터·RViz가 로봇을 그리고 TF를 만들려면 "이 로봇이 어떻게 생겼는지"를 알아야 합니다. 그 명세가 <strong>URDF(Unified Robot Description Format)</strong> — 로봇을 <strong>링크(link)</strong>와 <strong>조인트(joint)</strong>로 기술하는 XML입니다.</p>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r7-urdf-robot-assembly-photo.webp" alt="모바일 로봇의 링크, 바퀴, 조인트 부품이 분해 조립 형태로 작업대에 정리된 장면" loading="lazy">
+          <figcaption>URDF는 실제 부품을 링크와 조인트로 나눠 적는 설계도입니다. 이 구조가 RViz와 Gazebo의 로봇 모델이 됩니다.</figcaption>
+        </figure>
         <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
           <li><strong>링크(link)</strong>: 강체 한 덩어리 — 모양(<code>visual</code>), 충돌 영역(<code>collision</code>), 질량·관성(<code>inertial</code>).</li>
           <li><strong>조인트(joint)</strong>: 두 링크(parent·child)를 연결. 주요 타입 — <code>revolute</code>(각도 한계 있는 회전), <code>continuous</code>(무한 회전, 예: 바퀴), <code>prismatic</code>(직선 이동), <code>fixed</code>(고정). (이 밖에 <code>floating</code>·<code>planar</code>도 있어 총 6종.)</li>

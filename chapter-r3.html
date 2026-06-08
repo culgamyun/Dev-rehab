@@ -122,6 +122,11 @@
           <h4>💡 비유로 이해하기: 센서가 눈·귀라면, 액추에이터는 팔·다리</h4>
           <p>R2의 센서가 "세상을 들여오는" 입력이라면, 액추에이터는 "세상에 영향을 주는" 출력입니다. 제어기(뇌)가 센서값을 보고 "바퀴를 60%로 돌려라", "팔을 90도로 펴라" 같은 명령을 내리면, 액추에이터가 그걸 실제 움직임으로 만듭니다. 이 챕터는 그 명령을 <strong>전기 신호로 정확히 표현하는 법</strong>을 배웁니다.</p>
         </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r3-actuator-muscle-photo.webp" alt="로봇 관절 테스트 장치와 DC 모터, 서보 모터, 스텝 모터가 작업대에 정리된 장면" loading="lazy">
+          <figcaption>모터와 구동 장치는 제어기의 숫자 명령을 실제 회전·이동·집기 동작으로 바꾸는 로봇의 근육입니다.</figcaption>
+        </figure>
       </section>
 
       <!-- 2. DC 모터 -->
@@ -280,6 +285,11 @@ servo.angle = 0           # 0도로 이동</code></pre>
           <h4>💡 비유로 이해하기: 세 가지 대화 방식</h4>
           <p><strong>UART</strong>는 두 사람의 1:1 전화(서로 약속한 속도로), <strong>I2C</strong>는 한 회의실에서 이름표(주소)로 부르는 다자 회의(선 2개), <strong>SPI</strong>는 빠른 전용 회선이지만 상대가 늘어날 때마다 선택 버튼(CS)이 하나씩 더 필요한 방식입니다.</p>
         </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r3-embedded-bus-photo.webp" alt="마이크로컨트롤러와 센서 보드, 모터 드라이버가 여러 케이블로 연결된 임베디드 로봇 회로 작업대" loading="lazy">
+          <figcaption>I2C·SPI·UART 같은 통신 규약은 제어기와 센서·모터 드라이버가 같은 약속으로 데이터를 주고받게 해 줍니다.</figcaption>
+        </figure>
 
         <table>
           <thead><tr><th>프로토콜</th><th>선(핀)</th><th>속도</th><th>특징 / 용도</th></tr></thead>

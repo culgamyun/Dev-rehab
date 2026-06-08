@@ -114,6 +114,11 @@
           <p>눈을 감고도 "내 팔이 굽었는지(고유수용성)"는 알 수 있죠 — 근육·관절의 감각입니다. 반면 "앞에 벽이 있는지(외부수용성)"는 눈·귀로 바깥을 봐야 압니다. 로봇도 같습니다: <strong>엔코더·IMU</strong>는 자기 몸 상태를, <strong>LiDAR·카메라·초음파</strong>는 환경을 감지합니다.</p>
         </div>
 
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r2-sensor-suite-photo.webp" alt="모바일 로봇과 라이다, 카메라, IMU, 초음파 센서 모듈이 함께 놓인 센서 구성 장면" loading="lazy">
+          <figcaption>좋은 로봇은 자기 몸 상태를 재는 센서와 바깥 환경을 보는 센서를 함께 묶어 상황을 판단합니다.</figcaption>
+        </figure>
+
         <table>
           <thead><tr><th>분류</th><th>뜻</th><th>예</th></tr></thead>
           <tbody>
@@ -328,6 +333,11 @@ print("이동평균 첫 3개:", np.round(ma[:3], 3))  # [1.966 1.973 1.988]</cod
           <h4>💡 비유로 이해하기: 두 친구의 길 안내 합치기</h4>
           <p>한 친구는 "여기쯤일 거야"(예측), 다른 친구는 "방금 표지판 봤어"(측정)라고 합니다. 둘 다 조금씩 틀릴 수 있죠. 칼만 필터는 각 친구가 <strong>얼마나 자신 있는지(불확실성)</strong>를 따져 더 믿을 만한 쪽으로 기운 평균을 냅니다. 그 가중치가 <strong>칼만 이득 K</strong>입니다.</p>
         </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r2-kalman-guidance-photo.webp" alt="모바일 로봇, 바닥 경로 표시, 랜드마크, 노트북 궤적 화면이 함께 보이는 센서 융합 실험 장면" loading="lazy">
+          <figcaption>오도메트리 예측과 외부 센서 측정을 함께 써서, 어느 한쪽만 믿을 때보다 더 안정적인 위치 추정을 만듭니다.</figcaption>
+        </figure>
 
         <p>1D(스칼라) 칼만은 매 측정마다 세 줄로 끝납니다 — <strong>① 예측</strong>(불확실성 P가 Q만큼 커짐) → <strong>② 이득</strong> <code>K = P / (P + R)</code> → <strong>③ 갱신</strong>(예측값을 측정 쪽으로 K만큼 당김). 여기서 R은 측정 노이즈, Q는 과정(변화) 노이즈입니다.</p>
 

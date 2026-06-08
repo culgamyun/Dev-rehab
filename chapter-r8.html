@@ -109,6 +109,11 @@
           <p>이미지는 수십만 개의 색 타일(픽셀)로 된 벽화입니다. 컴퓨터는 "고양이"를 통째로 보는 게 아니라 타일 색만 봅니다. 인식이란 이 타일 더미에서 "여기 빨간 동그라미가 있네", "이 윤곽은 삼각형이군" 하고 <strong>패턴과 의미를 찾아내는</strong> 일입니다.</p>
         </div>
 
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r8-perception-pipeline-photo.webp" alt="산업용 카메라가 색깔 도형을 촬영하고 모니터에는 흐릿한 검출 결과가 보이는 컴퓨터 비전 실험 장면" loading="lazy">
+          <figcaption>카메라는 픽셀을 만들고, 전처리와 검출을 거치면 로봇이 쓸 수 있는 물체 위치와 의미가 됩니다.</figcaption>
+        </figure>
+
         <div class="code-block-header">
           <span class="code-title">이미지 = 픽셀 배열 (BGR), HSV로 변환</span>
           <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
@@ -236,6 +241,10 @@ print("검출된 마커 ID:", ids.flatten().tolist())   # [23]</code></pre>
       <section id="calibration">
         <h2>5. (개요) 카메라 보정과 깊이</h2>
         <p>지금까지는 <strong>픽셀 위치</strong>만 구했습니다. "그래서 실제로 몇 미터 앞이지?"에 답하려면 두 가지가 더 필요합니다.</p>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r8-camera-calibration-photo.webp" alt="머신비전 카메라가 체스보드 보정판을 향하고 있는 로봇 비전 캘리브레이션 장면" loading="lazy">
+          <figcaption>카메라 보정은 픽셀 좌표를 실제 광선 방향과 연결하기 위한 준비입니다. 이 과정이 있어야 2D 검출이 3D 자세 추정으로 이어집니다.</figcaption>
+        </figure>
         <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
           <li><strong>카메라 보정(calibration)</strong>: 렌즈는 직선을 휘게 만듭니다(왜곡). 체스보드를 여러 각도로 찍어(<code>cv2.findChessboardCorners</code> → <code>cv2.calibrateCamera</code>) <strong>내부 파라미터 행렬 K</strong>(초점거리 fx·fy, 중심 cx·cy)와 왜곡 계수를 구하면, 픽셀 ↔ 실제 광선 방향을 정확히 연결할 수 있습니다.</li>
           <li><strong>깊이(depth)</strong>: 일반 카메라는 거리를 모릅니다. <strong>RGB-D 카메라</strong>(예: RealSense)나 <strong>스테레오</strong>(두 카메라의 시차), <strong>LiDAR</strong>(R2)로 깊이를 얻어 <strong>포인트클라우드</strong>(3D 점 집합)를 만듭니다.</li>
