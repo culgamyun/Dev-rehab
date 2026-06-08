@@ -1063,6 +1063,55 @@
       "name": "정규분포 (Normal Distribution, Gaussian)",
       "definition": "평균 근처가 가장 흔하고 멀어질수록 드문 종 모양의 확률분포로, 평균과 표준편차 두 값으로 정해집니다.",
       "explanation": "대부분의 센서 노이즈가 정규분포를 따릅니다. 68-95-99.7 규칙(±1σ에 68%, ±2σ에 95%, ±3σ에 99.7%)으로 이상치를 판단합니다. R2(센서 모델)·R9(칼만/파티클 필터)의 핵심입니다."
+    },
+    {
+      "key": "Proprioceptive-Exteroceptive",
+      "chapter": "Robotics 2",
+      "name": "고유수용성·외부수용성 센서 (Proprioceptive / Exteroceptive)",
+      "definition": "로봇 자신의 상태를 재는 센서(고유수용성)와 바깥 환경을 재는 센서(외부수용성)로 나누는 분류입니다.",
+      "explanation": "고유수용성은 IMU·엔코더처럼 자세·회전 같은 내부 상태를, 외부수용성은 LiDAR·카메라·초음파처럼 거리·영상 같은 환경 정보를 측정합니다. 좋은 로봇은 둘을 융합해 세상을 파악합니다."
+    },
+    {
+      "key": "IMU",
+      "chapter": "Robotics 2",
+      "name": "관성 측정 장치 (IMU)",
+      "definition": "가속도계·자이로스코프·지자기계를 한 칩에 모아 로봇의 가속도·각속도·방위를 측정하는 센서입니다.",
+      "explanation": "가속도계는 가속도와 중력(기울기), 자이로는 각속도, 지자기계는 방위를 잽니다. 자이로는 적분 시 드리프트가 생겨, 가속도계·지자기계로 보정하는 센서 융합이 필요합니다."
+    },
+    {
+      "key": "Encoder",
+      "chapter": "Robotics 2",
+      "name": "엔코더 (Encoder)",
+      "definition": "바퀴·모터·관절의 회전량을 펄스로 세어 위치·속도를 측정하는 센서입니다.",
+      "explanation": "증분형/절대형이 있고, 분해능은 PPR로 표기합니다. 쿼드러처(A·B 90° 위상차)를 쓰면 회전 방향을 알고 분해능이 4배(CPR=PPR×4)가 됩니다. 회전수×바퀴 원둘레로 이동거리를 구합니다(오도메트리)."
+    },
+    {
+      "key": "Time-of-Flight",
+      "chapter": "Robotics 2",
+      "name": "비행시간 (Time of Flight, ToF)",
+      "definition": "신호(소리·빛)를 쏘고 반사되어 돌아오는 시간으로 거리를 재는 원리입니다.",
+      "explanation": "거리 = 속도 × 왕복시간 ÷ 2 (갔다 돌아오므로 2로 나눔). 초음파는 음속(≈343 m/s), LiDAR는 광속을 씁니다. LiDAR는 회전 스캔으로 주변 거리 지도를 만들어 SLAM에 쓰입니다."
+    },
+    {
+      "key": "Nyquist-Theorem",
+      "chapter": "Robotics 2",
+      "name": "나이퀴스트-섀넌 표본화 정리 (Nyquist-Shannon)",
+      "definition": "신호를 손실 없이 디지털로 담으려면 신호 최고 주파수의 2배보다 빠르게 샘플링해야 한다는 정리입니다.",
+      "explanation": "이 조건을 어기면 에일리어싱(aliasing)으로 가짜 저주파 신호가 생깁니다(빠른 선풍기가 멈춰 보이는 현상). 실무에서는 안전하게 5~10배로 샘플링합니다."
+    },
+    {
+      "key": "Moving-Average-Filter",
+      "chapter": "Robotics 2",
+      "name": "이동평균 필터 (Moving Average)",
+      "definition": "최근 N개 값의 평균으로 신호를 부드럽게 만들어 노이즈를 줄이는 가장 간단한 필터입니다.",
+      "explanation": "노이즈는 위아래로 무작위라 평균 내면 상쇄됩니다. 창(window)이 클수록 매끈해지지만 변화에 대한 반응이 느려지는(지연) 트레이드오프가 있습니다. np.convolve로 구현합니다."
+    },
+    {
+      "key": "Kalman-Filter",
+      "chapter": "Robotics 2",
+      "name": "칼만 필터 (Kalman Filter)",
+      "definition": "예측값과 측정값을 각각의 불확실성에 따라 가중평균하여 최적 추정을 구하는 필터입니다.",
+      "explanation": "1D 칼만은 매 단계 ① 예측(불확실성 증가) ② 칼만이득 K=P/(P+R) ③ 갱신(예측을 측정 쪽으로 K만큼 당김)으로 동작합니다. R이 크면(측정 못 믿음) K→0, P가 크면 K→1. R9에서 다차원으로 확장돼 위치추정·SLAM의 핵심이 됩니다."
     }
   ]
 }

@@ -1,0 +1,481 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter R2 - 센서와 신호</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R3~R10 · 부록 R-A~C<br><span style="font-size: 11px;">액추에이터 · 제어 · ROS 2 · 인식 · SLAM …<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>Chapter R2</span></div>
+      <h1>Chapter R2: 센서와 신호</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">로봇의 "감각기관"을 다룹니다. IMU·엔코더·LiDAR·초음파·카메라가 각각 무엇을 어떻게 측정하는지, 그 측정값을 컴퓨터로 들여오는 <strong>샘플링</strong>과 피할 수 없는 <strong>노이즈</strong>를 이해하고, <strong>이동평균</strong>과 <strong>1D 칼만 필터</strong>로 노이즈를 걸러 깨끗한 값을 얻는 법까지. (R0의 정규분포·평균이 여기서 쓰입니다. 모든 코드·그래프는 Python으로 실행 검증했습니다.)</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig">
+      <svg class="blueprint" viewBox="0 0 800 330" role="img" aria-label="센서 분류: 고유수용성 센서와 외부수용성 센서를 보여주는 도면">
+        <defs>
+          <pattern id="grid-r2" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern>
+          <marker id="ar2" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#7fd4ff"/></marker>
+        </defs>
+        <rect width="800" height="330" fill="url(#grid-r2)"/>
+        <text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG R2 · 센서 분류 — 무엇을 감지하나</text>
+        <!-- robot center -->
+        <rect x="350" y="150" width="100" height="60" rx="10" fill="rgba(255,179,0,0.12)" stroke="#ffb300" stroke-width="1.6"/>
+        <text x="400" y="185" fill="#ffe2a6" font-size="13" text-anchor="middle">로봇</text>
+        <!-- proprioceptive (self) -->
+        <text x="150" y="80" fill="#48d597" font-size="13" text-anchor="middle">고유수용성 (내 상태)</text>
+        <rect x="60" y="100" width="180" height="30" rx="6" fill="rgba(72,213,151,0.10)" stroke="#48d597"/><text x="150" y="120" fill="#cfe8ff" font-size="12" text-anchor="middle">IMU — 가속도·각속도·방위</text>
+        <rect x="60" y="138" width="180" height="30" rx="6" fill="rgba(72,213,151,0.10)" stroke="#48d597"/><text x="150" y="158" fill="#cfe8ff" font-size="12" text-anchor="middle">엔코더 — 바퀴·관절 회전</text>
+        <line x1="240" y1="150" x2="348" y2="172" stroke="#48d597" stroke-width="1.4" marker-end="url(#ar2)"/>
+        <!-- exteroceptive (world) -->
+        <text x="650" y="80" fill="#7fd4ff" font-size="13" text-anchor="middle">외부수용성 (바깥 환경)</text>
+        <rect x="560" y="100" width="190" height="30" rx="6" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="655" y="120" fill="#cfe8ff" font-size="12" text-anchor="middle">LiDAR — 거리·지도</text>
+        <rect x="560" y="138" width="190" height="30" rx="6" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="655" y="158" fill="#cfe8ff" font-size="12" text-anchor="middle">카메라 — 영상</text>
+        <rect x="560" y="176" width="190" height="30" rx="6" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff"/><text x="655" y="196" fill="#cfe8ff" font-size="12" text-anchor="middle">초음파 — 근거리 장애물</text>
+        <line x1="560" y1="180" x2="452" y2="182" stroke="#7fd4ff" stroke-width="1.4" marker-end="url(#ar2)"/>
+        <text x="400" y="290" fill="rgba(180,220,255,0.75)" font-size="12" text-anchor="middle">고유수용성 = "내 몸이 어떤 상태인가" · 외부수용성 = "바깥 세상이 어떤가"</text>
+      </svg>
+      <figcaption>센서는 크게 둘로 나뉩니다 — 로봇 자신의 상태를 재는 <strong>고유수용성(proprioceptive)</strong> 센서(IMU·엔코더)와, 바깥 환경을 재는 <strong>외부수용성(exteroceptive)</strong> 센서(LiDAR·카메라·초음파). 좋은 로봇은 이 둘을 합쳐 세상을 파악합니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- 1. 센서란 -->
+      <section id="sensor-intro">
+        <h2>1. 센서란? — 로봇의 감각기관</h2>
+        <p>센서는 물리 세계(빛·소리·움직임·자기장)를 <strong>숫자(전기 신호)</strong>로 바꿔 로봇에게 들려주는 장치입니다. 분류 기준 두 가지를 알아 두면 정리가 쉽습니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 내 몸의 감각 vs 바깥을 보는 감각</h4>
+          <p>눈을 감고도 "내 팔이 굽었는지(고유수용성)"는 알 수 있죠 — 근육·관절의 감각입니다. 반면 "앞에 벽이 있는지(외부수용성)"는 눈·귀로 바깥을 봐야 압니다. 로봇도 같습니다: <strong>엔코더·IMU</strong>는 자기 몸 상태를, <strong>LiDAR·카메라·초음파</strong>는 환경을 감지합니다.</p>
+        </div>
+
+        <table>
+          <thead><tr><th>분류</th><th>뜻</th><th>예</th></tr></thead>
+          <tbody>
+            <tr><td>고유수용성 (proprioceptive)</td><td>로봇 <strong>자신</strong>의 상태(자세·속도·관절각)</td><td>IMU, 엔코더</td></tr>
+            <tr><td>외부수용성 (exteroceptive)</td><td>로봇 <strong>바깥</strong> 환경(거리·영상·장애물)</td><td>LiDAR, 카메라, 초음파</td></tr>
+            <tr><td>능동 (active)</td><td>스스로 신호(빛·소리)를 <strong>쏘고</strong> 반사를 측정</td><td>LiDAR, 초음파</td></tr>
+            <tr><td>수동 (passive)</td><td>외부 에너지를 <strong>받기만</strong> 함</td><td>카메라, 지자기계</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- 2. IMU -->
+      <section id="imu">
+        <h2>2. IMU — 관성 측정 장치</h2>
+        <p><strong>IMU(Inertial Measurement Unit)</strong>는 보통 세 가지 센서를 한 칩에 모은 것입니다. 로봇·드론·스마트폰의 "자세 감각"을 담당합니다.</p>
+
+        <div class="card-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:16px; margin:18px 0;">
+          <div class="glass-panel" style="border-top:3px solid var(--robotics);">
+            <h4 style="font-weight:700; color:var(--robotics);">가속도계 (Accelerometer)</h4>
+            <p style="font-size:13px; color:var(--text-muted);">선형 <strong>가속도</strong>를 측정(m/s²). 정지 시엔 <strong>중력</strong>을 느껴 기울기(roll·pitch)를 알 수 있음. 단, 진동에 민감.</p>
+          </div>
+          <div class="glass-panel" style="border-top:3px solid var(--test);">
+            <h4 style="font-weight:700; color:var(--test);">자이로스코프 (Gyroscope)</h4>
+            <p style="font-size:13px; color:var(--text-muted);">각속도(회전 속도, rad/s)를 측정. 빠른 회전을 잘 잡지만, 적분하면 <strong>드리프트(bias drift)</strong>로 서서히 틀어짐.</p>
+          </div>
+          <div class="glass-panel" style="border-top:3px solid var(--frontend);">
+            <h4 style="font-weight:700; color:var(--frontend);">지자기계 (Magnetometer)</h4>
+            <p style="font-size:13px; color:var(--text-muted);">지구 자기장으로 <strong>방위(yaw, 나침반)</strong>를 측정. 주변 금속·전류에 교란될 수 있음.</p>
+          </div>
+        </div>
+
+        <p>각 센서는 장단점이 뚜렷합니다 — 가속도계는 길게 보면 안정적이지만 진동에 흔들리고, 자이로는 순간 회전에 강하지만 시간이 갈수록 드리프트합니다. 그래서 실무에서는 <strong>센서 융합(sensor fusion)</strong>으로 서로의 약점을 메웁니다(상보 필터·칼만 필터). 융합의 기초가 이 챕터 뒤의 필터입니다.</p>
+        <div class="glass-panel" style="border-left:3px solid var(--interview); margin-top:14px;">
+          <h4 style="font-weight:700; color:var(--interview);">⚠️ 핵심: 자이로 드리프트</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;">자이로의 각속도를 적분(R0의 적분!)하면 각도가 나오지만, 미세한 바이어스 오차가 계속 쌓여 <strong>몇 초~몇 분이면 눈에 띄게 틀어집니다</strong>. 그래서 가속도계(중력 기준)·지자기계(방위 기준)로 주기적으로 보정합니다.</p>
+        </div>
+      </section>
+
+      <!-- 3. 엔코더 -->
+      <section id="encoder">
+        <h2>3. 엔코더 — 회전을 숫자로</h2>
+        <p><strong>엔코더(encoder)</strong>는 바퀴·모터·관절이 <strong>얼마나 돌았는지</strong>를 셉니다. 모바일 로봇이 "내가 얼마나 갔나"를 추정하는(오도메트리, R4) 출발점입니다.</p>
+
+        <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
+          <li><strong>증분형(incremental)</strong>: 회전할 때 펄스를 셈(상대 변화). 전원이 꺼지면 절대 위치를 잃음.</li>
+          <li><strong>절대형(absolute)</strong>: 각 위치마다 고유 코드 → 전원을 켜자마자 절대 각도를 앎.</li>
+          <li><strong>분해능 PPR/CPR</strong>: 회전당 펄스 수(PPR). <strong>쿼드러처</strong>(A·B 두 신호가 90° 어긋남)를 쓰면 방향도 알고 분해능이 <strong>4배</strong>(CPR = PPR×4)가 됩니다.</li>
+        </ul>
+
+        <figure class="learning-visual blueprint-fig" style="max-width:560px; margin:18px auto;">
+          <svg class="blueprint" viewBox="0 0 560 200" role="img" aria-label="엔코더 쿼드러처 A B 신호 도면">
+            <text x="20" y="28" fill="#7fd4ff" font-size="13">FIG R2-1 · 쿼드러처 (A·B 90° 위상차)</text>
+            <text x="24" y="70" fill="#7fd4ff" font-size="12">A</text>
+            <path d="M40,90 H80 V55 H120 V90 H160 V55 H200 V90 H240 V55 H280 V90 H320 V55 H360 V90 H400 V55 H440 V90 H480" fill="none" stroke="#7fd4ff" stroke-width="2"/>
+            <text x="24" y="140" fill="#ffb300" font-size="12">B</text>
+            <path d="M40,160 H100 V125 H140 V160 H180 V125 H220 V160 H260 V125 H300 V160 H340 V125 H380 V160 H420 V125 H460 V160 H480" fill="none" stroke="#ffb300" stroke-width="2"/>
+            <text x="120" y="186" fill="rgba(180,220,255,0.7)" font-size="11">A가 B보다 앞서면 정방향, 뒤지면 역방향 · 모서리마다 카운트 → 4배 분해능</text>
+          </svg>
+          <figcaption>두 신호 A·B의 위상차로 <strong>회전 방향</strong>을 알아내고, 두 신호의 오르내림(모서리)을 모두 세어 <strong>분해능을 4배</strong>로 높입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">엔코더 카운트 → 이동 거리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+PPR = 1024            # 엔코더 분해능 (회전당 펄스)
+CPR = PPR * 4         # 쿼드러처(A·B 2상) → 카운트는 4배
+wheel_r = 0.05        # 바퀴 반지름 5cm
+
+def distance(counts):
+    revolutions = counts / CPR          # 카운트 → 회전수
+    return 2 * np.pi * wheel_r * revolutions   # 회전수 × 바퀴 원둘레
+
+# 4096 카운트 = 정확히 1회전 = 바퀴 원둘레만큼 전진
+print("1회전(4096 카운트) 이동거리:", round(distance(4096), 4), "m")</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">1회전(4096 카운트) 이동거리: 0.3142 m</pre>
+        </div>
+      </section>
+
+      <!-- 4. 거리 센서 -->
+      <section id="rangefinders">
+        <h2>4. 거리 센서 — 초음파 · LiDAR · 적외선</h2>
+        <p>거리 센서의 대표 원리는 <strong>비행시간(ToF, Time of Flight)</strong>입니다 — 신호(소리/빛)를 쏘고 돌아오는 시간을 재서 거리를 계산합니다. 신호가 <strong>갔다가 돌아오므로 왕복 시간을 2로 나눠야</strong> 편도 거리가 됩니다.</p>
+
+        <figure class="learning-visual blueprint-fig" style="max-width:560px; margin:18px auto;">
+          <svg class="blueprint" viewBox="0 0 560 180" role="img" aria-label="초음파 비행시간 거리 측정 도면">
+            <defs><marker id="ar2b" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#7fd4ff"/></marker>
+            <marker id="ar2c" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#ffb300"/></marker></defs>
+            <text x="20" y="28" fill="#7fd4ff" font-size="13">FIG R2-2 · 비행시간(ToF) 거리 측정</text>
+            <rect x="40" y="70" width="50" height="50" rx="6" fill="rgba(255,179,0,0.12)" stroke="#ffb300"/><text x="65" y="100" fill="#ffe2a6" font-size="11" text-anchor="middle">센서</text>
+            <rect x="470" y="55" width="24" height="80" fill="rgba(127,212,255,0.12)" stroke="#7fd4ff"/><text x="482" y="150" fill="#cfe8ff" font-size="11" text-anchor="middle">벽</text>
+            <line x1="95" y1="85" x2="465" y2="85" stroke="#7fd4ff" stroke-width="1.8" marker-end="url(#ar2b)"/><text x="250" y="78" fill="#7fd4ff" font-size="11">신호 발사 →</text>
+            <line x1="465" y1="110" x2="95" y2="110" stroke="#ffb300" stroke-width="1.8" stroke-dasharray="5 4" marker-end="url(#ar2c)"/><text x="250" y="128" fill="#ffb300" font-size="11">← 반사 에코</text>
+            <text x="250" y="165" fill="rgba(180,220,255,0.75)" font-size="11" text-anchor="middle">거리 = 속도 × 왕복시간 ÷ 2</text>
+          </svg>
+          <figcaption>초음파는 <strong>소리</strong>(음속 ≈ 343 m/s), LiDAR는 <strong>빛</strong>(광속)을 쏩니다. 둘 다 왕복 시간으로 거리를 재며, 왕복이므로 2로 나눕니다.</figcaption>
+        </figure>
+
+        <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
+          <li><strong>초음파(ultrasonic)</strong>: 소리의 ToF. 싸고 간단하지만 좁은 범위·낮은 정밀도. 음속(≈343 m/s, 상온)은 온도에 따라 변함.</li>
+          <li><strong>LiDAR</strong>: 빛의 ToF를 360° 회전 스캔 → 주변 거리 지도(점군). SLAM·내비게이션의 핵심(R9).</li>
+          <li><strong>적외선(IR)</strong>: 근거리 거리·근접 감지에 사용. 밝은 햇빛·표면 색에 민감.</li>
+        </ul>
+
+        <div class="code-block-header">
+          <span class="code-title">초음파 비행시간 → 거리</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">speed_of_sound = 343.0   # 상온(약 20°C) 공기 중 음속 (m/s)
+
+def distance_from_tof(tof_seconds):
+    # 소리가 '갔다가 돌아온' 왕복 시간 → 2로 나눠 편도 거리
+    return speed_of_sound * tof_seconds / 2
+
+# 왕복 0.01초(10ms) 걸렸다면?
+print("거리:", distance_from_tof(0.01), "m")   # 1.715 m</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">거리: 1.715 m</pre>
+        </div>
+      </section>
+
+      <!-- 5. 샘플링 -->
+      <section id="sampling">
+        <h2>5. 샘플링 — 연속 세계를 띄엄띄엄 담기</h2>
+        <p>센서는 연속적인 실제 값을 <strong>일정 간격으로 띄엄띄엄</strong> 읽습니다. 1초에 몇 번 읽나가 <strong>샘플링 주파수(Hz)</strong>입니다. 너무 느리게 읽으면 신호를 놓칩니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 선풍기 날개가 거꾸로 도는 영상</h4>
+          <p>빠르게 도는 선풍기를 카메라(느린 샘플링)로 찍으면 날개가 멈추거나 거꾸로 도는 것처럼 보입니다 — 가짜 신호죠. 이게 <strong>에일리어싱(aliasing)</strong>입니다. <strong>나이퀴스트-섀넌 정리</strong>는 "신호의 가장 빠른 진동(최고 주파수)의 <strong>2배보다 빠르게</strong> 샘플링해야 원래 신호를 잃지 않는다"고 말합니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r2-sampling.png" alt="5Hz 신호를 6Hz로 표본화하여 가짜 1Hz가 생기는 에일리어싱 그래프" loading="lazy">
+          <figcaption>실제 5 Hz 신호(파랑)를 6 Hz로(나이퀴스트 10 Hz 미만) 표본화하면, 점들이 엉뚱한 <strong>1 Hz 가짜 신호</strong>(주황)처럼 보입니다 — 에일리어싱. 5 Hz를 담으려면 최소 10 Hz로 샘플링해야 합니다.</figcaption>
+        </figure>
+        <p style="color:var(--text-muted); font-size:13px;">실무 규칙: "관심 있는 가장 빠른 변화의 2배 이상으로 샘플링하라." 더 안전하게는 5~10배를 씁니다.</p>
+      </section>
+
+      <!-- 6. 노이즈 -->
+      <section id="noise">
+        <h2>6. 노이즈 — 완벽한 센서는 없다</h2>
+        <p>같은 것을 재도 측정값은 매번 조금씩 다릅니다. 이 <strong>노이즈</strong>는 대부분 <strong>정규분포(가우시안)</strong>를 따릅니다(R0 14절). 그래서 "측정값 = 참값 + 가우시안 노이즈"로 모델링합니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">노이즈 섞인 센서 데이터 시뮬레이션</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+rng = np.random.default_rng(42)          # 재현 가능한 난수(시드 고정)
+t = np.linspace(0, 10, 200)
+true = np.where(t &lt; 5, 2.0, 3.0)         # 참값: 5초에 벽이 2.0m → 3.0m로 바뀜(계단)
+noise = rng.normal(0, 0.15, size=t.size) # 평균 0, 표준편차 0.15 가우시안 노이즈
+measured = true + noise                  # 센서가 실제로 읽는 값
+
+print("노이즈 표준편차:", round((measured - true).std(), 3))   # ≈ 0.132
+print("측정 첫 3개:", np.round(measured[:3], 3))               # [2.046 1.844 2.113]</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">노이즈 표준편차: 0.132
+측정 첫 3개: [2.046 1.844 2.113]</pre>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r2-noise.png" alt="참값(계단)과 노이즈 섞인 측정값을 보여주는 블루프린트 그래프" loading="lazy">
+          <figcaption>매끈한 참값(파랑) 주위로 측정값(빨강 점)이 흩어집니다. 이 흩어짐(노이즈)을 어떻게 걸러 참값에 가깝게 만들지가 <strong>필터</strong>의 임무입니다.</figcaption>
+        </figure>
+        <p>노이즈에는 가우시안 백색잡음 외에도 <strong>바이어스</strong>(일정한 치우침), <strong>드리프트</strong>(서서히 변함), <strong>이상치</strong>(가끔 튀는 값)가 있습니다. 다음 두 필터로 이를 다스립니다.</p>
+      </section>
+
+      <!-- 7. 이동평균 -->
+      <section id="moving-average">
+        <h2>7. 이동평균 필터 — 가장 간단한 노이즈 제거</h2>
+        <p><strong>이동평균(moving average)</strong>은 "최근 N개 값의 평균"으로 부드럽게 만듭니다. 노이즈는 위아래로 무작위라 평균 내면 상쇄됩니다. 단, 창(window)이 클수록 매끈해지지만 <strong>반응이 느려집니다(지연)</strong>.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">이동평균 필터 (np.convolve)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+def moving_average(x, w):
+    kernel = np.ones(w) / w               # 균등 가중치 (각각 1/w)
+    return np.convolve(x, kernel, mode="valid")
+
+ma = moving_average(measured, 11)         # 최근 11개의 평균
+print("길이:", measured.size, "->", ma.size)   # 200 -> 190 (가장자리 손실)
+print("이동평균 첫 3개:", np.round(ma[:3], 3))  # [1.966 1.973 1.988]</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">길이: 200 -> 190
+이동평균 첫 3개: [1.966 1.973 1.988]</pre>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r2-moving-average.png" alt="측정값과 이동평균 필터 결과를 비교한 블루프린트 그래프" loading="lazy">
+          <figcaption>이동평균(주황)은 노이즈를 매끈하게 지웁니다. 하지만 5초의 <strong>계단 변화에서 한 박자 늦게</strong> 따라오는 걸 볼 수 있습니다 — 평활과 반응속도는 맞바꿈(trade-off) 관계입니다.</figcaption>
+        </figure>
+      </section>
+
+      <!-- 8. 칼만 -->
+      <section id="kalman">
+        <h2>8. 1D 칼만 필터 — 예측과 측정의 똑똑한 가중평균</h2>
+        <p><strong>칼만 필터</strong>는 로보틱스에서 가장 중요한 필터입니다. 핵심 아이디어는 <strong>"예측(내가 예상한 값)과 측정(센서가 준 값)을 신뢰도에 따라 가중평균"</strong>하는 것입니다. 둘 중 더 믿을 만한 쪽에 더 큰 가중치를 줍니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 두 친구의 길 안내 합치기</h4>
+          <p>한 친구는 "여기쯤일 거야"(예측), 다른 친구는 "방금 표지판 봤어"(측정)라고 합니다. 둘 다 조금씩 틀릴 수 있죠. 칼만 필터는 각 친구가 <strong>얼마나 자신 있는지(불확실성)</strong>를 따져 더 믿을 만한 쪽으로 기운 평균을 냅니다. 그 가중치가 <strong>칼만 이득 K</strong>입니다.</p>
+        </div>
+
+        <p>1D(스칼라) 칼만은 매 측정마다 세 줄로 끝납니다 — <strong>① 예측</strong>(불확실성 P가 Q만큼 커짐) → <strong>② 이득</strong> <code>K = P / (P + R)</code> → <strong>③ 갱신</strong>(예측값을 측정 쪽으로 K만큼 당김). 여기서 R은 측정 노이즈, Q는 과정(변화) 노이즈입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">1D 칼만 필터</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+def kalman_1d(z, R, Q, x0, P0=1.0):
+    x, P = x0, P0          # 상태 추정 x, 불확실성 P
+    out = []
+    for m in z:
+        P = P + Q              # ① 예측: 시간이 흘러 불확실성 증가
+        K = P / (P + R)        # ② 칼만 이득 (0~1): R이 크면 측정을 덜 믿음
+        x = x + K * (m - x)    # ③ 갱신: 예측을 측정 쪽으로 K만큼 당김
+        P = (1 - K) * P        #    측정을 반영해 불확실성 감소
+        out.append(x)
+    return np.array(out)
+
+est = kalman_1d(measured, R=0.15**2, Q=0.01, x0=measured[0])
+print("계단 전 추정(4~5s):", round(est[(t &gt;= 4) &amp; (t &lt; 5)].mean(), 3))  # ≈ 1.95
+print("계단 후 추정(9~10s):", round(est[t &gt;= 9].mean(), 3))             # ≈ 3.03</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">계단 전 추정(4~5s): 1.952
+계단 후 추정(9~10s): 3.034</pre>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r2-kalman.png" alt="측정값, 참값, 칼만 추정을 비교한 블루프린트 그래프" loading="lazy">
+          <figcaption>칼만 추정(초록)은 노이즈를 부드럽게 걸러내면서도 5초의 계단 변화를 <strong>빠르게 추종</strong>합니다. 이득 Q·R을 조절해 "얼마나 빠르게 vs 얼마나 매끈하게"를 튜닝합니다. 칼만은 R9의 위치추정·SLAM에서 다차원으로 확장됩니다.</figcaption>
+        </figure>
+      </section>
+
+      <!-- 9. 요약 -->
+      <section id="summary">
+        <h2>9. 한 장 요약</h2>
+        <table>
+          <thead><tr><th>주제</th><th>한 줄 정리</th><th>핵심 수치/공식</th></tr></thead>
+          <tbody>
+            <tr><td>센서 분류</td><td>내 상태(고유수용성) vs 환경(외부수용성)</td><td>IMU·엔코더 / LiDAR·카메라·초음파</td></tr>
+            <tr><td>IMU</td><td>가속도계+자이로+지자기계</td><td>자이로는 드리프트 → 융합 필요</td></tr>
+            <tr><td>엔코더</td><td>회전을 카운트 → 거리</td><td>CPR = PPR×4, 거리 = 2πr·회전수</td></tr>
+            <tr><td>거리 센서</td><td>비행시간(ToF)</td><td>거리 = 속도 × 왕복시간 ÷ 2</td></tr>
+            <tr><td>샘플링</td><td>띄엄띄엄 읽기, 에일리어싱 주의</td><td>나이퀴스트: 최고주파수 × 2 이상</td></tr>
+            <tr><td>노이즈</td><td>측정 = 참값 + 가우시안</td><td>평균·표준편차로 요약(R0)</td></tr>
+            <tr><td>이동평균</td><td>최근 N개 평균, 매끈하나 지연</td><td>창 ↑ → 평활 ↑·반응 ↓</td></tr>
+            <tr><td>1D 칼만</td><td>예측+측정 가중평균</td><td>K = P/(P+R)</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;">이제 로봇은 깨끗한 센서값을 얻었습니다. 다음 <a href="chapter-r1.html">R1</a>의 좌표 변환과 합치면 "어디서 무엇을 보고 있는지"를 알 수 있고, R4(키네매틱스)·R9(SLAM)로 이어집니다. 💪</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: 칼만)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const chapterR2Quizzes = [
+      {
+        type: "mcq",
+        question: "LiDAR와 카메라는 어떤 분류의 센서인가요?",
+        options: [
+          "외부수용성(exteroceptive) — 바깥 환경을 측정",
+          "고유수용성(proprioceptive) — 로봇 자신의 상태를 측정",
+          "둘 다 엔코더의 한 종류다",
+          "능동 센서가 아니므로 분류 불가"
+        ],
+        correct: 0,
+        explanation: "LiDAR·카메라·초음파는 바깥 환경(거리·영상)을 측정하는 외부수용성 센서입니다. 반면 IMU·엔코더는 로봇 자신의 상태(자세·회전)를 재는 고유수용성 센서입니다."
+      },
+      {
+        type: "mcq",
+        question: "최고 주파수가 10Hz인 신호를 손실 없이 디지털로 담으려면 최소 샘플링 주파수는? (나이퀴스트-섀넌 정리)",
+        options: ["5Hz", "10Hz", "20Hz", "100Hz"],
+        correct: 2,
+        explanation: "나이퀴스트-섀넌 표본화 정리에 따라 신호의 최고 주파수의 2배보다 빠르게 샘플링해야 합니다. 10Hz 신호라면 최소 20Hz. 그보다 느리면 에일리어싱으로 가짜 신호가 생깁니다(실무에선 더 안전하게 5~10배)."
+      },
+      {
+        type: "mcq",
+        question: "1D 칼만 필터의 이득 K = P/(P+R)에서, 측정 노이즈 R이 매우 커지면 K는 어떻게 되나요?",
+        options: [
+          "K가 0에 가까워져 측정을 덜 믿고 예측을 더 신뢰한다",
+          "K가 1에 가까워져 측정을 전적으로 신뢰한다",
+          "K가 음수가 된다",
+          "K는 R과 무관하다"
+        ],
+        correct: 0,
+        explanation: "R(측정 노이즈)이 커지면 분모가 커져 K = P/(P+R)는 0에 가까워집니다. 그러면 갱신식 x = x + K(z-x)에서 측정 z의 영향이 작아져 예측을 더 신뢰하게 됩니다. 즉 '센서를 못 믿을수록 측정을 덜 반영'합니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "이동평균 필터의 핵심인 '균등 가중치 커널'을 완성하세요. 길이 w의 각 원소가 1/w인 배열을 만듭니다.",
+        starter: "import numpy as np\ndef moving_average(x, w):\n    # 길이 w, 각 원소가 1/w 인 커널을 만드세요\n    kernel = \n    return np.convolve(x, kernel, mode=\"valid\")",
+        validator: {
+          mustContain: ["np.ones(w)/w"],
+          mustNotContain: []
+        },
+        solution: "np.ones(w) / w",
+        explanation: "np.ones(w)는 1로 채운 길이 w 배열이고, 이를 w로 나누면 각 원소가 1/w인 균등 가중치 커널이 됩니다. 이 커널로 합성곱(convolve)하면 '최근 w개의 평균' = 이동평균이 됩니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "1D 칼만 필터의 '칼만 이득 K' 한 줄을 완성하세요. 예측 불확실성 P와 측정 노이즈 R로 구합니다.",
+        starter: "def kalman_step(x, P, z, R, Q):\n    P = P + Q                 # 예측: 불확실성 증가\n    # 칼만 이득 K 를 구하세요 (예측 P, 측정 노이즈 R)\n    K = \n    x = x + K * (z - x)       # 갱신\n    P = (1 - K) * P\n    return x, P",
+        validator: {
+          mustContain: ["P/(P+R)"],
+          mustNotContain: ["np.linalg"]
+        },
+        solution: "P / (P + R)",
+        explanation: "칼만 이득 K = P / (P + R)입니다. P(예측 불확실성)가 크면 K→1(측정을 더 믿음), R(측정 노이즈)이 크면 K→0(예측을 더 믿음). 이 K로 예측과 측정을 가중평균합니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", chapterR2Quizzes, "chapter-r2");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
