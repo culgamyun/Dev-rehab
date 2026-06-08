@@ -1,0 +1,328 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>부록 R-A - Python for Robotics 치트시트</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">부록 R-B~C<br><span style="font-size: 11px;">면접 CS · 수학 복습<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>부록 R-A</span></div>
+      <h1>부록 R-A: Python for Robotics 치트시트</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">코스 전체에서 가장 자주 쓴 <code>numpy · scipy · matplotlib · OpenCV</code> 패턴을 한곳에 모았습니다. 실습하다 "그 한 줄 뭐였지?" 싶을 때 펴 보세요. (수치 예제는 전부 실제 실행 결과입니다.)</p>
+    </div>
+
+    <div class="concept-section">
+
+      <!-- 1. numpy 기초 -->
+      <section id="numpy-basics">
+        <h2>1. numpy — 배열 기초</h2>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+a = np.array([1.0, 2.0, 3.0])        # 1D 벡터
+M = np.array([[1, 2], [3, 4]])       # 2D 행렬
+np.zeros((2, 3)); np.ones(4); np.eye(3)        # 0/1/단위행렬
+np.linspace(0, 10, 5)                # [0, 2.5, 5, 7.5, 10]
+np.arange(0, 1, 0.25)                # [0, 0.25, 0.5, 0.75]
+a.shape; a.dtype; a.reshape(3, 1)    # 모양·타입·재배열
+a[0]; a[-1]; a[1:3]; M[:, 0]; M[0, :]   # 인덱싱·슬라이싱(행/열)
+a * 2; a + 1; a ** 2                  # 브로드캐스트(원소별)
+np.clip(a, 0, 2)                     # 범위 제한 [0,2]
+np.cumsum(a); a.mean(); a.std()      # 누적합·평균·표준편차(R0·R2)</code></pre>
+      </section>
+
+      <!-- 2. 벡터 -->
+      <section id="vectors">
+        <h2>2. 벡터 — 거리 · 각도 · 방향 (R0·R1)</h2>
+        <pre class="language-python"><code class="language-python">import numpy as np
+a = np.array([1.0, 2.0]); b = np.array([4.0, 6.0])
+
+np.linalg.norm(b - a)                # 두 점 거리 → 5.0
+np.dot(a, b)         # 또는 a @ b     # 내적
+np.cross([1,0,0], [0,1,0])           # 외적(3D) → [0, 0, 1]
+v = np.array([3.0, 4.0])
+v / np.linalg.norm(v)                # 단위벡터 → [0.6, 0.8]
+np.degrees(np.arctan2(4, 3))         # 방향(도) → 53.13  (atan2(y, x)!)</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:8px 0 14px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 검증값</h4>
+          <pre style="font-size:12px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">norm 5.0 · unit [0.6 0.8] · dot 0(수직) · cross [0 0 1] · atan2(4,3) 53.13°</pre>
+        </div>
+      </section>
+
+      <!-- 3. 행렬 -->
+      <section id="matrices">
+        <h2>3. 행렬 · 선형대수 (R0·R1·R4)</h2>
+        <pre class="language-python"><code class="language-python">import numpy as np
+A = np.array([[2.0, 0.0], [0.0, 3.0]])
+
+A @ B                                # 행렬곱(@ 권장, 순서 중요!)
+A.T                                  # 전치
+np.linalg.inv(A)                     # 역행렬 → [[0.5,0],[0,0.333]]
+np.linalg.det(A)                     # 행렬식 → 6.0 (넓이 배율)
+np.linalg.solve(A, np.array([2.,3.]))   # Ax=b 풀기 → [1, 1] (inv보다 안정)
+np.allclose(A @ np.linalg.inv(A), np.eye(2))   # 검증 → True</code></pre>
+      </section>
+
+      <!-- 4. 회전 -->
+      <section id="rotations">
+        <h2>4. 회전 · 변환 — numpy & scipy (R1)</h2>
+        <p>직접 만든 회전행렬과, <code>scipy</code>로 오일러각↔쿼터니언↔행렬을 자유롭게 변환합니다(R1의 짐벌락 대안=쿼터니언).</p>
+        <pre class="language-python"><code class="language-python">import numpy as np
+from scipy.spatial.transform import Rotation as Rot
+
+# 직접 만든 2D/3D 회전행렬 (R1)
+def rot_z(t):
+    c, s = np.cos(t), np.sin(t)
+    return np.array([[c,-s,0], [s,c,0], [0,0,1]])
+
+# SE(3) 동차변환행렬 (R1·R7)
+def make_T(R, p):
+    T = np.eye(4); T[:3,:3] = R; T[:3,3] = p; return T
+
+# scipy: 오일러 ↔ 쿼터니언 ↔ 행렬 (실무 표준)
+r = Rot.from_euler('z', 90, degrees=True)
+r.as_quat()        # 쿼터니언 (x,y,z,w) → [0, 0, 0.7071, 0.7071]
+r.as_matrix()      # 3x3 회전행렬
+r.as_euler('xyz', degrees=True)   # 오일러각 복원 → [0, 0, 90]
+r.apply([1, 0, 0]) # 점 회전 → [0, 1, 0]
+(Rot.from_euler('z', 30, degrees=True) * Rot.from_euler('x', 45, degrees=True))  # 회전 합성</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:8px 0 14px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 검증값 (z축 90°)</h4>
+          <pre style="font-size:12px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">quat [0 0 0.7071 0.7071] · apply([1,0,0]) → [0 1 0] · euler 복원 [0 0 90]</pre>
+        </div>
+      </section>
+
+      <!-- 5. 각도 유틸 -->
+      <section id="angles">
+        <h2>5. 각도 유틸 (R0·R4)</h2>
+        <pre class="language-python"><code class="language-python">import numpy as np
+np.radians(180)      # 도 → 라디안 (π ≈ 3.1416)
+np.degrees(np.pi)    # 라디안 → 도 (180)
+np.arctan2(y, x)     # 좌표 → 방향(사분면 구분) ※ 인자 순서 (y, x)
+
+# 각도를 [-π, π] 범위로 감싸기 (heading 정규화에 필수)
+def wrap_angle(a):
+    return (a + np.pi) % (2*np.pi) - np.pi
+np.degrees(wrap_angle(np.radians(370)))   # → 10.0</code></pre>
+      </section>
+
+      <!-- 6. matplotlib -->
+      <section id="matplotlib">
+        <h2>6. matplotlib — 빠른 시각화 (R0·R2·R5)</h2>
+        <pre class="language-python"><code class="language-python">import matplotlib.pyplot as plt
+import numpy as np
+
+t = np.linspace(0, 10, 100)
+plt.plot(t, np.sin(t), label="sin")     # 선 그래프
+plt.scatter([1,2,3], [4,5,6])           # 산점도
+plt.plot(xs, ys, "o-")                  # 궤적(점+선)
+plt.imshow(grid, cmap="gray")           # 격자·이미지(R9)
+plt.axhline(1.0, ls="--")               # 기준선(목표값 등)
+plt.xlabel("t"); plt.ylabel("y"); plt.legend(); plt.grid(True)
+plt.savefig("out.png", dpi=130)         # 저장 (또는 plt.show())</code></pre>
+      </section>
+
+      <!-- 7. OpenCV -->
+      <section id="opencv">
+        <h2>7. OpenCV — 영상 처리 빠른 참조 (R8)</h2>
+        <pre class="language-python"><code class="language-python">import cv2, numpy as np
+
+img = cv2.imread("photo.jpg")           # 읽기 (BGR 순서! RGB 아님)
+gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+hsv  = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   # H는 0~179
+mask = cv2.inRange(hsv, (0,100,100), (10,255,255))   # 색 마스크
+edges = cv2.Canny(blur, 50, 150)              # 엣지
+cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+x, y, w, h = cv2.boundingRect(cnts[0])        # 외접 사각형
+# ArUco (OpenCV 4.7+)
+d = cv2.aruco.getPredefinedDictionary(cv2.aruco.DICT_4X4_50)
+det = cv2.aruco.ArucoDetector(d, cv2.aruco.DetectorParameters())
+corners, ids, _ = det.detectMarkers(gray)</code></pre>
+      </section>
+
+      <!-- 8. 챕터별 핵심 -->
+      <section id="by-chapter">
+        <h2>8. 챕터별 "이건 어디서?" 빠른 색인</h2>
+        <table>
+          <thead><tr><th>필요한 것</th><th>핵심 함수</th><th>챕터</th></tr></thead>
+          <tbody>
+            <tr><td>거리·각도·단위벡터</td><td><code>norm · arctan2 · cross</code></td><td><a href="chapter-r0.html">R0</a></td></tr>
+            <tr><td>회전·SE(3) 변환</td><td><code>rot_z · make_T · scipy Rotation</code></td><td><a href="chapter-r1.html">R1</a></td></tr>
+            <tr><td>노이즈 필터</td><td><code>np.convolve · 1D 칼만</code></td><td><a href="chapter-r2.html">R2</a></td></tr>
+            <tr><td>FK/IK·자코비안</td><td><code>cos/sin 합성 · 코사인법칙</code></td><td><a href="chapter-r4.html">R4</a></td></tr>
+            <tr><td>PID 시뮬·그래프</td><td><code>적분 루프 · matplotlib</code></td><td><a href="chapter-r5.html">R5</a></td></tr>
+            <tr><td>ROS 노드</td><td><code>rclpy · create_publisher</code></td><td><a href="chapter-r6.html">R6</a></td></tr>
+            <tr><td>좌표 변환 트리</td><td><code>SE(3) 합성 · invert_T</code></td><td><a href="chapter-r7.html">R7</a></td></tr>
+            <tr><td>영상 인식</td><td><code>cv2.inRange · Canny · ArUco</code></td><td><a href="chapter-r8.html">R8</a></td></tr>
+            <tr><td>경로계획·위치추정</td><td><code>A*(heapq) · 칼만</code></td><td><a href="chapter-r9.html">R9</a></td></tr>
+            <tr><td>강화학습</td><td><code>Q-러닝 갱신 · argmax</code></td><td><a href="chapter-r10.html">R10</a></td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px; color:var(--text-muted); font-size:13px;">💡 설치: <code>pip install numpy scipy matplotlib opencv-python</code> (ROS는 별도, R6 참고). 이 치트시트만 옆에 두면 대부분의 실습을 막힘 없이 따라갈 수 있습니다.</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const appendixRAQuizzes = [
+      {
+        type: "mcq",
+        question: "numpy에서 행렬곱(matrix multiply)에 권장되는 연산자는?",
+        options: ["A * B (원소별 곱)", "A @ B (행렬곱)", "A + B", "A ** B"],
+        correct: 1,
+        explanation: "@ 가 행렬곱입니다. *는 원소별(element-wise) 곱이라 다릅니다. 회전·변환 합성(R1)·자코비안(R4) 등에서 @를 씁니다."
+      },
+      {
+        type: "mcq",
+        question: "OpenCV(cv2)로 읽은 컬러 이미지의 채널 순서는? (R8 단골 함정)",
+        options: ["RGB", "BGR", "HSV", "그레이스케일"],
+        correct: 1,
+        explanation: "OpenCV는 BGR 순서입니다. matplotlib 등으로 표시하려면 cv2.cvtColor(img, COLOR_BGR2RGB)로 변환해야 색이 맞습니다."
+      },
+      {
+        type: "mcq",
+        question: "오일러각·회전행렬·쿼터니언을 서로 변환할 때 쓰기 좋은 표준 도구는?",
+        options: [
+          "scipy.spatial.transform.Rotation",
+          "numpy.random",
+          "matplotlib.pyplot",
+          "cv2.inRange"
+        ],
+        correct: 0,
+        explanation: "scipy의 Rotation 클래스가 from_euler/as_quat/as_matrix/apply로 회전 표현 간 변환과 점 회전·합성을 모두 지원합니다. 짐벌락(R1) 없는 쿼터니언을 다룰 때 특히 유용합니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "두 점 a, b 사이의 유클리드 거리를 한 줄로 구하세요. (numpy)",
+        starter: "import numpy as np\na = np.array([1.0, 2.0]); b = np.array([4.0, 6.0])\n# a와 b 사이 거리\ndist = ",
+        validator: {
+          mustContain: ["np.linalg.norm(b-a)"],
+          mustNotContain: []
+        },
+        solution: "np.linalg.norm(b - a)",
+        explanation: "두 점 사이 거리는 변위 벡터(b - a)의 크기(노름)입니다: np.linalg.norm(b - a). (3,4)이므로 5.0. R0·R9에서 자주 씁니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "선형 방정식 Ax = b 를 푸세요. (역행렬보다 안정적인 함수 사용)",
+        starter: "import numpy as np\nA = np.array([[2.0, 0.0], [0.0, 3.0]])\nb = np.array([2.0, 3.0])\n# Ax = b 의 해 x\nx = ",
+        validator: {
+          mustContain: ["np.linalg.solve(A,b)"],
+          mustNotContain: ["inv"]
+        },
+        solution: "np.linalg.solve(A, b)",
+        explanation: "np.linalg.solve(A, b)가 Ax=b를 풉니다 → [1, 1]. np.linalg.inv(A) @ b 보다 수치적으로 안정적이고 빠르므로 권장됩니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", appendixRAQuizzes, "appendix-r-a");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
