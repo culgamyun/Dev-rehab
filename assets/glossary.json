@@ -1161,6 +1161,55 @@
       "name": "실시간 제어 (Real-Time Control)",
       "definition": "센서 읽기→계산→모터 명령 루프를 일정한 주기로 정확히 반복하는 제어 방식입니다.",
       "explanation": "주기가 들쭉날쭉(지터)하면 제어가 불안정해집니다. OS 기반 SBC는 비결정적 지연이 있어, OS 없이 도는 MCU가 인터럽트로 정확한 타이밍을 보장해 실시간에 강합니다. 마감을 반드시 지키면 하드 실시간, 가끔 늦어도 되면 소프트 실시간입니다."
+    },
+    {
+      "key": "Forward-Kinematics",
+      "chapter": "Robotics 4",
+      "name": "정기구학 (Forward Kinematics, FK)",
+      "definition": "각 관절의 각도로부터 로봇 손끝(말단)의 위치를 계산하는 것으로, 답이 항상 유일합니다.",
+      "explanation": "2링크 평면 팔의 손끝은 x=L1·cosθ1+L2·cos(θ1+θ2), y=L1·sinθ1+L2·sin(θ1+θ2)입니다. 다관절 로봇은 각 링크의 동차변환행렬(R1)을 곱으로 이어 FK를 구합니다."
+    },
+    {
+      "key": "Inverse-Kinematics",
+      "chapter": "Robotics 4",
+      "name": "역기구학 (Inverse Kinematics, IK)",
+      "definition": "손끝의 목표 위치로부터 각 관절이 가져야 할 각도를 거꾸로 구하는 것입니다.",
+      "explanation": "FK와 달리 해가 여러 개(팔꿈치 위/아래)이거나 아예 없을(도달 불가) 수 있습니다. 2링크는 코사인 제2법칙과 atan2로 풉니다. 로봇은 장애물·관절 한계를 보고 여러 해 중 하나를 고릅니다."
+    },
+    {
+      "key": "DH-Parameters",
+      "chapter": "Robotics 4",
+      "name": "DH 파라미터 (Denavit-Hartenberg)",
+      "definition": "로봇의 각 링크를 a(길이)·α(비틀림)·d(오프셋)·θ(관절각) 4개 값으로 표준화해 기술하는 방법입니다.",
+      "explanation": "각 링크를 4개 파라미터로 적으면 링크마다 동차변환행렬 하나가 나오고, 이를 곱으로 이어 붙이면 전체 정기구학이 됩니다. classic DH와 modified DH 두 관습이 있어 하나로 통일해 씁니다."
+    },
+    {
+      "key": "Jacobian",
+      "chapter": "Robotics 4",
+      "name": "자코비안 (Jacobian)",
+      "definition": "관절 속도를 손끝 속도로 변환하는 행렬로, 정기구학을 미분한 것입니다(ẋ = J·θ̇).",
+      "explanation": "'관절 속도 → 손끝 속도' 환율표 같은 역할입니다. det(J)=0이 되는 자세가 특이점(singularity)으로, 그 방향으로 움직일 수 없어 제어가 불안정해집니다(예: 2링크 팔이 완전히 펴진 상태)."
+    },
+    {
+      "key": "Singularity",
+      "chapter": "Robotics 4",
+      "name": "특이점 (Singularity)",
+      "definition": "자코비안의 행렬식이 0이 되어 로봇이 어떤 방향으로의 움직임 자유도를 잃는 자세입니다.",
+      "explanation": "2링크 팔이 완전히 펴진(θ2=0) 순간이 대표적입니다. 특이점 근처에서는 작은 손끝 움직임에 관절 속도가 폭발적으로 커져 IK·속도 제어가 불안정해지므로, 제어에서 특이점 회피가 중요합니다."
+    },
+    {
+      "key": "Differential-Drive",
+      "chapter": "Robotics 4",
+      "name": "차동구동 (Differential Drive)",
+      "definition": "좌·우 두 바퀴의 속도를 따로 조절해 전진과 회전을 만드는 모바일 로봇 구동 방식입니다.",
+      "explanation": "선속도 v=(vR+vL)/2, 각속도 ω=(vR−vL)/L(L=바퀴 간격). 두 바퀴 속도가 같으면 직진, 반대면 제자리 회전, 다르면 곡선입니다. 청소로봇·AMR이 많이 씁니다."
+    },
+    {
+      "key": "Odometry",
+      "chapter": "Robotics 4",
+      "name": "오도메트리 (Odometry)",
+      "definition": "바퀴(엔코더) 속도를 시간에 따라 적분해 로봇의 현재 위치·방향을 추정하는 방법입니다.",
+      "explanation": "x+=v·cosθ·dt 처럼 매 순간 위치를 갱신합니다. 간단하지만 바퀴 미끄러짐·측정 오차가 누적되는 단점이 있어, LiDAR·IMU와 융합해 보정합니다(R9 SLAM·위치추정)."
     }
   ]
 }

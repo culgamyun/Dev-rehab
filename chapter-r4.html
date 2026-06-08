@@ -1,0 +1,424 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter R4 - 키네매틱스</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li data-track="robotics" style="font-size: 12px; color: var(--text-muted); padding: 10px 16px; line-height: 1.6;"><span class="nav-item-text">R5~R10 · 부록 R-A~C<br><span style="font-size: 11px;">제어(PID) · ROS 2 · 인식 · SLAM …<br>(순차 공개 예정)</span></span></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span>📖 용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span>☀️ Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span>🔄 데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>Chapter R4</span></div>
+      <h1>Chapter R4: 키네매틱스 (기구학)</h1>
+      <p style="font-size: 14px; color: var(--text-muted);">"모터를 이만큼 돌리면 팔 끝이 어디로 갈까?" 그 반대로 "팔 끝을 저기로 보내려면 각 관절을 몇 도 돌려야 할까?" — 이것이 <strong>키네매틱스(기구학)</strong>입니다. 2링크 로봇팔로 <strong>정기구학(FK)·역기구학(IK)·자코비안</strong>을, 그리고 <strong>차동구동 모바일 로봇</strong>의 오도메트리를 numpy로 직접 풀어 봅니다. (R0의 삼각함수·atan2·행렬, R1의 좌표변환이 여기서 빛을 발합니다. 모든 코드는 실행 검증했고, 특히 <strong>FK→IK→FK 왕복이 정확히 맞는지</strong> 확인합니다.)</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig">
+      <svg class="blueprint" viewBox="0 0 800 320" role="img" aria-label="2링크 로봇팔의 관절 각도와 손끝 위치를 보여주는 도면">
+        <defs>
+          <pattern id="grid-r4" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern>
+        </defs>
+        <rect width="800" height="320" fill="url(#grid-r4)"/>
+        <text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG R4 · 2링크 로봇팔 — 관절각 ↔ 손끝 위치</text>
+        <!-- base at (140,260) -->
+        <line x1="140" y1="260" x2="380" y2="120" stroke="#7fd4ff" stroke-width="6" stroke-linecap="round"/>
+        <line x1="380" y1="120" x2="600" y2="170" stroke="#ffb300" stroke-width="6" stroke-linecap="round"/>
+        <rect x="128" y="248" width="24" height="24" rx="4" fill="#48d597"/>
+        <circle cx="380" cy="120" r="9" fill="#7fd4ff" stroke="#0a1929" stroke-width="2"/>
+        <circle cx="600" cy="170" r="11" fill="#ff5d5d" stroke="#0a1929" stroke-width="2"/>
+        <text x="120" y="292" fill="#48d597" font-size="12">베이스 (0,0)</text>
+        <text x="245" y="178" fill="#7fd4ff" font-size="13">링크1 (L1)</text>
+        <text x="475" y="128" fill="#ffb300" font-size="13">링크2 (L2)</text>
+        <text x="150" y="238" fill="#cfe8ff" font-size="13">θ1</text>
+        <text x="388" y="150" fill="#cfe8ff" font-size="13">θ2</text>
+        <text x="612" y="168" fill="#ffb6b6" font-size="13">손끝 (x, y)</text>
+        <!-- FK / IK arrows -->
+        <text x="430" y="250" fill="#48d597" font-size="13">정기구학(FK): (θ1, θ2) ──▶ (x, y)   [항상 유일]</text>
+        <text x="430" y="278" fill="#ffb300" font-size="13">역기구학(IK): (x, y) ──▶ (θ1, θ2)   [보통 2해]</text>
+      </svg>
+      <figcaption>관절 각도(θ1, θ2)와 손끝 위치(x, y)는 동전의 양면입니다. 각도에서 위치를 구하는 게 <strong>정기구학(FK)</strong>, 위치에서 각도를 구하는 게 <strong>역기구학(IK)</strong>입니다.</figcaption>
+    </figure>
+
+    <div class="concept-section">
+
+      <!-- 1. 키네매틱스란 -->
+      <section id="kinematics-intro">
+        <h2>1. 키네매틱스란? — 관절 공간 ↔ 작업 공간</h2>
+        <p>로봇은 <strong>관절(joint)</strong>을 돌려 움직이지만, 우리가 원하는 건 <strong>손끝(말단, end-effector)</strong>이 특정 위치에 가는 것입니다. 이 두 세계를 잇는 수학이 키네매틱스입니다 — <strong>관절 공간</strong>(각 관절 각도)과 <strong>작업 공간</strong>(손끝의 x, y 위치) 사이의 변환.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 굴착기 조종</h4>
+          <p>굴착기 기사는 여러 레버(관절)를 조작해 버킷(손끝)을 원하는 자리로 보냅니다. "레버를 이렇게 당기면 버킷이 어디로 갈까?"가 <strong>정기구학(FK)</strong>, "버킷을 저기 보내려면 레버를 각각 얼마나?"가 <strong>역기구학(IK)</strong>입니다. 숙련 기사는 머릿속으로 IK를 푸는 셈이죠. 로봇은 이걸 수식으로 정확히 계산합니다.</p>
+        </div>
+        <p>FK는 늘 답이 하나로 딱 정해지지만(각도를 알면 손끝은 한 곳), IK는 <strong>여러 답</strong>이 있거나(팔을 굽히는 두 가지 방법) <strong>아예 답이 없을</strong> 수도 있습니다(팔이 닿지 않는 곳). 이 차이를 직접 코드로 확인해 봅니다.</p>
+      </section>
+
+      <!-- 2. FK -->
+      <section id="forward-kinematics">
+        <h2>2. 정기구학(FK) — 관절각에서 손끝 위치로</h2>
+        <p>2링크 평면 팔을 생각합니다. 링크 길이 <code>L1, L2</code>, 관절 각도 <code>θ1, θ2</code>. 손끝 위치는 삼각함수로 바로 나옵니다(R0의 sin·cos가 여기 쓰입니다).</p>
+        <div class="glass-panel" style="text-align:center; font-family:var(--font-mono); font-size:14px; padding:16px; margin:12px 0;">
+          x = L1·cos(θ1) + L2·cos(θ1+θ2)<br>
+          y = L1·sin(θ1) + L2·sin(θ1+θ2)
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r4-fk.png" alt="관절각 30도 45도일 때 2링크 팔의 손끝 위치를 보여주는 블루프린트 그래프" loading="lazy">
+          <figcaption>θ1=30°, θ2=45°를 넣으면 손끝은 (1.07, 1.27)에 놓입니다. 첫 링크가 θ1만큼, 둘째 링크가 거기서 θ2만큼 더 꺾인 결과입니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">정기구학 — 관절각 → 손끝 위치</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+L1, L2 = 1.0, 0.8
+
+def fk(th1, th2):
+    x = L1*np.cos(th1) + L2*np.cos(th1 + th2)
+    y = L1*np.sin(th1) + L2*np.sin(th1 + th2)
+    return np.array([x, y])
+
+print(np.round(fk(np.radians(30), np.radians(45)), 4))   # 손끝 (x, y)</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">[1.0731 1.2727]</pre>
+        </div>
+      </section>
+
+      <!-- 3. IK -->
+      <section id="inverse-kinematics">
+        <h2>3. 역기구학(IK) — 손끝 위치에서 관절각으로</h2>
+        <p>이제 거꾸로, 손끝 목표 <code>(x, y)</code>에서 관절각을 구합니다. <strong>코사인 제2법칙</strong>(R0의 삼각함수)으로 둘째 관절각 θ2를 먼저 구하고, <code>atan2</code>(R0의 그 함수!)로 θ1을 맞춥니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 팔을 굽히는 두 가지 방법</h4>
+          <p>책상 위 컵을 잡을 때, 팔꿈치를 <strong>위로 올려서</strong>도, <strong>아래로 내려서</strong>도 같은 컵에 닿을 수 있습니다. 그래서 IK는 보통 <strong>두 개의 해</strong>(elbow-up / elbow-down)를 가집니다. 로봇은 장애물·관절 한계를 보고 둘 중 하나를 고릅니다.</p>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r4-ik.png" alt="같은 목표점에 도달하는 elbow-up과 elbow-down 두 가지 팔 자세를 보여주는 블루프린트 그래프" loading="lazy">
+          <figcaption>같은 목표(별)에 두 가지 자세로 도달합니다 — 팔꿈치를 위로(초록), 아래로(주황). 두 해 모두 손끝은 정확히 같은 곳에 옵니다.</figcaption>
+        </figure>
+
+        <div class="code-block-header">
+          <span class="code-title">역기구학 — 손끝 위치 → 관절각 (두 해)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+L1, L2 = 1.0, 0.8
+
+def ik(x, y, elbow_up=True):
+    # 1) 코사인 제2법칙으로 둘째 관절각 θ2
+    c2 = (x*x + y*y - L1**2 - L2**2) / (2*L1*L2)
+    c2 = np.clip(c2, -1, 1)                          # 수치 안전(±1 범위)
+    s2 = np.sqrt(1 - c2**2) * (1 if elbow_up else -1)  # 두 부호 = 두 해
+    th2 = np.arctan2(s2, c2)
+    # 2) atan2로 첫째 관절각 θ1
+    th1 = np.arctan2(y, x) - np.arctan2(L2*np.sin(th2), L1 + L2*np.cos(th2))
+    return np.degrees(th1), np.degrees(th2)
+
+target = fk(np.radians(30), np.radians(45))   # 앞서 FK로 만든 손끝
+print("elbow-up:  ", np.round(ik(target[0], target[1], True), 2))
+print("elbow-down:", np.round(ik(target[0], target[1], False), 2))</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨 — FK→IK 왕복)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">elbow-up:   [30. 45.]
+elbow-down: [ 69.73 -45.  ]</pre>
+        </div>
+        <p style="color:var(--text-muted); font-size:13px;">✔️ elbow-up이 원래 각도(30°, 45°)를 정확히 되찾았습니다 — FK로 만든 점을 IK가 그대로 역추적했다는 뜻(왕복 검증). elbow-down은 다른 각도지만 손끝은 같은 위치입니다.</p>
+      </section>
+
+      <!-- 4. DH -->
+      <section id="dh-parameters">
+        <h2>4. DH 파라미터 — 복잡한 로봇을 표준으로 기술</h2>
+        <p>2링크는 손으로 풀 수 있지만, 6축 로봇팔은 어떻게 체계적으로 기술할까요? <strong>Denavit-Hartenberg(DH) 파라미터</strong>는 각 링크를 단 <strong>4개의 숫자</strong>로 표준화해 적습니다. 그러면 R1에서 배운 <strong>동차변환행렬</strong>을 링크마다 하나씩 만들어 <strong>곱으로 이어 붙이면</strong>(R1의 프레임 합성!) 전체 FK가 완성됩니다.</p>
+
+        <table>
+          <thead><tr><th>파라미터</th><th>의미</th></tr></thead>
+          <tbody>
+            <tr><td><strong>a</strong> (링크 길이)</td><td>이웃한 두 관절축 사이의 거리</td></tr>
+            <tr><td><strong>α</strong> (링크 비틀림)</td><td>이웃한 두 관절축 사이의 각도</td></tr>
+            <tr><td><strong>d</strong> (링크 오프셋)</td><td>축 방향으로의 거리</td></tr>
+            <tr><td><strong>θ</strong> (관절각)</td><td>관절이 돌린 각도(회전 관절이면 이게 변수)</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:12px;">핵심만 기억하세요: <strong>"각 링크 = 4개 파라미터 = 변환행렬 하나, 다 곱하면 FK"</strong>. 우리가 2절에서 손으로 푼 2링크 FK가 바로 DH의 특수한 경우입니다. (표기법에 <strong>classic DH</strong>와 <strong>modified DH</strong> 두 관습이 있어, 책마다 순서가 조금 다를 수 있습니다 — 한 가지로 통일해 쓰면 됩니다.)</p>
+      </section>
+
+      <!-- 5. Jacobian -->
+      <section id="jacobian">
+        <h2>5. 자코비안 — 관절 속도에서 손끝 속도로</h2>
+        <p>FK가 "각도 → 위치"라면, <strong>자코비안(Jacobian) J</strong>는 그것의 <strong>속도 버전</strong>입니다 — "관절이 도는 속도(θ̇)"를 "손끝이 움직이는 속도(ẋ)"로 바꿉니다: <code>ẋ = J · θ̇</code>. 즉 J는 FK를 미분한 행렬(R0의 미분 + 행렬)입니다.</p>
+
+        <div class="analogy-box">
+          <h4>💡 비유로 이해하기: 환율표</h4>
+          <p>자코비안은 "관절 속도 → 손끝 속도" 환율표입니다. 각 관절을 1만큼 더 빨리 돌리면 손끝이 어느 방향으로 얼마나 빨라지는지를 알려주죠. 로봇이 "손끝을 이 방향으로 부드럽게 움직여라"는 명령을 관절 속도로 번역할 때 씁니다.</p>
+        </div>
+
+        <div class="code-block-header">
+          <span class="code-title">2링크 팔의 자코비안과 특이점(det)</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+L1, L2 = 1.0, 0.8
+
+def jacobian(th1, th2):
+    s1, s12 = np.sin(th1), np.sin(th1 + th2)
+    c1, c12 = np.cos(th1), np.cos(th1 + th2)
+    return np.array([[-L1*s1 - L2*s12, -L2*s12],
+                     [ L1*c1 + L2*c12,  L2*c12]])
+
+J = jacobian(np.radians(30), np.radians(45))
+print("J =\n", np.round(J, 4))
+print("det(J) =", round(float(np.linalg.det(J)), 4))   # 0이면 특이점!</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">J =
+ [[-1.2727 -0.7727]
+ [ 1.0731  0.2071]]
+det(J) = 0.5657</pre>
+        </div>
+        <div class="glass-panel" style="border-left:3px solid var(--interview); margin-top:6px;">
+          <h4 style="font-weight:700; color:var(--interview);">⚠️ 특이점(Singularity)</h4>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;"><code>det(J) = 0</code>이 되는 자세를 <strong>특이점</strong>이라 합니다(R0의 행렬식!). 2링크 팔이 <strong>완전히 펴진(θ2=0)</strong> 순간이 대표적 — 그 방향으로는 손끝을 움직일 수 없어 자유도를 잃고, IK·속도 제어가 불안정해집니다. 로봇 제어에서 특이점을 피하는 건 중요한 주제입니다.</p>
+        </div>
+      </section>
+
+      <!-- 6. Differential drive -->
+      <section id="differential-drive">
+        <h2>6. 차동구동 모바일 로봇 — 두 바퀴로 움직이기</h2>
+        <p>로봇팔이 아닌 <strong>바퀴 로봇</strong>의 기구학도 봅니다. 가장 흔한 <strong>차동구동(differential drive)</strong>은 좌·우 바퀴 속도를 따로 줘서 움직입니다 — 둘이 같으면 직진, 다르면 회전. 바퀴 간격을 <code>L</code>이라 하면:</p>
+        <div class="glass-panel" style="text-align:center; font-family:var(--font-mono); font-size:14px; padding:16px; margin:12px 0;">
+          선속도 v = (v_R + v_L) / 2 &nbsp;&nbsp;&nbsp; 각속도 ω = (v_R − v_L) / L
+        </div>
+
+        <figure class="learning-visual blueprint-fig" style="max-width:520px; margin:18px auto;">
+          <svg class="blueprint" viewBox="0 0 460 220" role="img" aria-label="차동구동 로봇의 좌우 바퀴 속도와 회전을 보여주는 도면">
+            <defs><marker id="ar4" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#7fd4ff"/></marker></defs>
+            <text x="20" y="28" fill="#7fd4ff" font-size="13">FIG R4-1 · 차동구동</text>
+            <rect x="170" y="80" width="120" height="70" rx="10" fill="rgba(127,212,255,0.10)" stroke="#7fd4ff" stroke-width="1.6"/>
+            <rect x="160" y="70" width="18" height="40" rx="3" fill="#48d597"/><rect x="282" y="70" width="18" height="40" rx="3" fill="#ffb300"/>
+            <rect x="160" y="120" width="18" height="40" rx="3" fill="#48d597"/><rect x="282" y="120" width="18" height="40" rx="3" fill="#ffb300"/>
+            <text x="120" y="100" fill="#48d597" font-size="12">v_L</text>
+            <text x="306" y="100" fill="#ffb300" font-size="12">v_R</text>
+            <line x1="230" y1="115" x2="360" y2="115" stroke="#7fd4ff" stroke-width="2" marker-end="url(#ar4)"/>
+            <text x="320" y="106" fill="#7fd4ff" font-size="12">v (전진)</text>
+            <path d="M 230 60 A 40 40 0 0 1 270 80" fill="none" stroke="#ff5d5d" stroke-width="1.8"/>
+            <text x="246" y="52" fill="#ff5d5d" font-size="12">ω</text>
+            <text x="120" y="195" fill="rgba(180,220,255,0.75)" font-size="11">v_L=v_R → 직진 · v_L=−v_R → 제자리 회전 · 다르면 곡선</text>
+          </svg>
+          <figcaption>좌·우 바퀴 속도 차이가 회전(ω)을, 평균이 전진(v)을 만듭니다. 이 둘을 시간에 따라 더하면(적분) 로봇의 위치를 추정합니다 — <strong>오도메트리</strong>.</figcaption>
+        </figure>
+
+        <p>로봇의 현재 위치 <code>(x, y, θ)</code>를 매 순간 조금씩 갱신(R0의 적분!)하면 "내가 어디 있나"를 추정합니다. 이것이 R2의 엔코더와 만나는 <strong>오도메트리(odometry)</strong>입니다.</p>
+
+        <div class="code-block-header">
+          <span class="code-title">차동구동 오도메트리 — 바퀴 속도 → 궤적</span>
+          <button class="btn-copy" onclick="copyCode(this)">코드 복사</button>
+        </div>
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+def diff_drive_step(x, y, th, vl, vr, L, dt):
+    v = (vr + vl) / 2          # 선속도 = 두 바퀴 평균
+    w = (vr - vl) / L          # 각속도 = 속도 차 / 바퀴 간격
+    x += v * np.cos(th) * dt   # 위치·방향을 dt만큼 적분
+    y += v * np.sin(th) * dt
+    th += w * dt
+    return x, y, th
+
+# 좌회전 곡선: 오른쪽 바퀴가 더 빠름 (vl=0.8, vr=1.2), 간격 0.5m, 5초
+x, y, th = 0.0, 0.0, 0.0
+for _ in range(500):
+    x, y, th = diff_drive_step(x, y, th, 0.8, 1.2, 0.5, 0.01)
+print("최종 위치:", round(x, 3), round(y, 3), " 방향(rad):", round(th, 3))</code></pre>
+        <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+          <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
+          <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">최종 위치: -0.938 2.071  방향(rad): 4.0</pre>
+        </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r4-diffdrive.png" alt="직진과 좌회전 곡선 두 가지 바퀴 속도에 따른 로봇 궤적 그래프" loading="lazy">
+          <figcaption>바퀴 속도가 같으면 직진(파랑), 오른쪽이 빠르면 왼쪽으로 휘는 원호(초록)를 그립니다. 엔코더로 잰 바퀴 속도를 이렇게 적분해 위치를 추정합니다.</figcaption>
+        </figure>
+        <p style="color:var(--text-muted); font-size:13px;">⚠️ 오도메트리는 바퀴 미끄러짐·오차가 <strong>쌓입니다</strong>(R2 자이로 드리프트처럼). 그래서 LiDAR·IMU와 합쳐 보정하는 게 R9의 SLAM·위치추정입니다.</p>
+      </section>
+
+      <!-- 7. 요약 -->
+      <section id="summary">
+        <h2>7. 한 장 요약</h2>
+        <table>
+          <thead><tr><th>주제</th><th>한 줄 정리</th><th>핵심 공식</th></tr></thead>
+          <tbody>
+            <tr><td>정기구학 FK</td><td>관절각 → 손끝 위치 (유일해)</td><td>x=L1cosθ1+L2cos(θ1+θ2)</td></tr>
+            <tr><td>역기구학 IK</td><td>손끝 위치 → 관절각 (보통 2해)</td><td>코사인 법칙 + atan2</td></tr>
+            <tr><td>DH 파라미터</td><td>링크를 4개 숫자로 표준 기술</td><td>a, α, d, θ → 변환행렬 곱</td></tr>
+            <tr><td>자코비안 J</td><td>관절 속도 → 손끝 속도</td><td>ẋ = J·θ̇, det(J)=0 → 특이점</td></tr>
+            <tr><td>차동구동</td><td>두 바퀴 속도 → 전진·회전</td><td>v=(vR+vL)/2, ω=(vR−vL)/L</td></tr>
+            <tr><td>오도메트리</td><td>속도를 적분해 위치 추정</td><td>오차 누적 → SLAM으로 보정(R9)</td></tr>
+          </tbody>
+        </table>
+        <p style="margin-top:14px;">이제 로봇은 감지(R2)하고, 움직이고(R3), "어떻게 움직이면 어디로 가는지"(R4)까지 압니다. 다음 <strong>R5(제어·PID)</strong>에서는 "목표에 정확히 도달하도록 모터를 실시간으로 조절"하는 법을 배웁니다(곧 공개). 💪</p>
+      </section>
+
+      <!-- Quiz -->
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: 역기구학)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-java.min.js"></script>
+  <script src="lib/prism-python.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const chapterR4Quizzes = [
+      {
+        type: "mcq",
+        question: "'로봇 손끝의 목표 위치로부터 각 관절이 몇 도 돌아야 하는지'를 거꾸로 구하는 것은?",
+        options: [
+          "역기구학 (Inverse Kinematics, IK)",
+          "정기구학 (Forward Kinematics, FK)",
+          "자코비안 (Jacobian)",
+          "오도메트리 (Odometry)"
+        ],
+        correct: 0,
+        explanation: "위치 → 관절각이 역기구학(IK)입니다. 반대로 관절각 → 위치는 정기구학(FK)이고 항상 유일해입니다. IK는 보통 여러 해(elbow-up/down)를 가지거나 도달 불가일 수 있습니다."
+      },
+      {
+        type: "mcq",
+        question: "2링크 평면 로봇팔이 작업공간 안의 한 점에 도달할 때, 일반적으로 IK 해는 몇 개인가요?",
+        options: ["항상 정확히 1개", "보통 2개 (팔꿈치 위/아래)", "항상 무한개", "항상 0개(불가능)"],
+        correct: 1,
+        explanation: "같은 손끝 위치에 팔꿈치를 위로(elbow-up) 또는 아래로(elbow-down) 굽혀 도달할 수 있어 보통 2개의 해가 있습니다. 경계(완전히 편 자세)에서는 1개, 작업공간 밖이면 0개입니다."
+      },
+      {
+        type: "mcq",
+        question: "차동구동 로봇에서 왼쪽·오른쪽 바퀴 속도가 같으면(vL = vR) 로봇은?",
+        options: [
+          "제자리에서 회전한다",
+          "멈춘다",
+          "직진한다 (각속도 ω = 0)",
+          "뒤로 간다"
+        ],
+        correct: 2,
+        explanation: "ω = (vR − vL)/L 이므로 vL = vR이면 ω = 0 → 회전 없이 직진합니다. 제자리 회전은 vL = −vR(반대 방향 같은 속도)일 때입니다."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "2링크 팔 정기구학(FK)의 손끝 x좌표를 완성하세요. x = L1·cos(θ1) + L2·cos(θ1+θ2)",
+        starter: "import numpy as np\ndef fk_x(th1, th2, L1, L2):\n    # 손끝 x = L1*cos(θ1) + L2*cos(θ1+θ2)\n    return ",
+        validator: {
+          mustContain: ["L1*np.cos(th1)", "L2*np.cos(th1+th2)"],
+          mustNotContain: []
+        },
+        solution: "L1*np.cos(th1) + L2*np.cos(th1 + th2)",
+        explanation: "손끝 x좌표는 두 링크의 x방향 성분을 더한 것입니다: 첫 링크 L1*cos(θ1) + 둘째 링크 L2*cos(θ1+θ2). 둘째 링크의 각도가 θ1+θ2(누적)임에 주의하세요."
+      },
+      {
+        type: "code",
+        language: "python",
+        prompt: "차동구동 로봇의 각속도 ω를 완성하세요. (오른쪽 vr, 왼쪽 vl 바퀴 속도, 바퀴 간격 L)",
+        starter: "def angular_velocity(vl, vr, L):\n    # 각속도 ω = (오른쪽 - 왼쪽 바퀴속도) / 바퀴 간격\n    return ",
+        validator: {
+          mustContain: ["(vr-vl)/L"],
+          mustNotContain: ["(vl-vr)"]
+        },
+        solution: "(vr - vl) / L",
+        explanation: "각속도 ω = (vr − vl) / L 입니다. 오른쪽이 더 빠르면(vr>vl) ω가 양수가 되어 왼쪽으로 회전합니다. 부호 순서(vr−vl)가 회전 방향을 정하므로 중요합니다."
+      }
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", chapterR4Quizzes, "chapter-r4");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
