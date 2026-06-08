@@ -1434,6 +1434,48 @@
       "name": "Nav2 (ROS 2 내비게이션 스택)",
       "definition": "목표 좌표만 주면 경로계획·추종·장애물 회피·복구를 자동으로 수행하는 ROS 2의 완성형 자율주행 스택입니다.",
       "explanation": "코스트맵(장애물 비용 격자), 글로벌 플래너(전체 경로)+로컬 컨트롤러(실시간 회피), 복구 행동(회전·후진)을 행동 트리(behavior tree)가 지휘합니다. 위치추정은 파티클 필터 기반 AMCL을 씁니다."
+    },
+    {
+      "key": "Manipulation",
+      "chapter": "Robotics 10",
+      "name": "매니퓰레이션 (Manipulation)",
+      "definition": "로봇팔로 물체를 집고·옮기고·놓는 등 환경을 조작하는 일입니다.",
+      "explanation": "R4 기구학으로 팔 끝을 어디로 보낼지 알고, 모션 플래닝으로 충돌 없는 경로를 찾고, 그리핑으로 실제로 잡습니다. MoveIt이 이 과정을 통합 지원합니다. 물체 불확실성 때문에 여전히 어려운 연구 주제입니다."
+    },
+    {
+      "key": "Motion-Planning",
+      "chapter": "Robotics 10",
+      "name": "모션 플래닝 (Motion Planning)",
+      "definition": "시작 자세에서 목표 자세까지 장애물에 부딪히지 않는 로봇의 경로를 찾는 것입니다.",
+      "explanation": "관절 각도들의 공간인 구성공간(C-space)에서의 경로 찾기로 바꿔, 고차원에 강한 RRT/RRT*·PRM 같은 샘플링 플래너(R9)를 씁니다. MoveIt이 IK·충돌 검사·플래너·궤적 실행을 묶어 제공합니다."
+    },
+    {
+      "key": "MoveIt",
+      "chapter": "Robotics 10",
+      "name": "MoveIt",
+      "definition": "ROS의 로봇팔 모션 플래닝 프레임워크로, 역기구학·충돌 검사·경로계획·궤적 실행을 통합 제공합니다.",
+      "explanation": "로봇팔의 충돌 없는 움직임을 직접 짜는 대신 MoveIt에 맡깁니다. URDF/SRDF로 로봇을 기술하고, 다양한 플래너(OMPL의 RRT 등)로 경로를 생성해 실행합니다."
+    },
+    {
+      "key": "Reinforcement-Learning",
+      "chapter": "Robotics 10",
+      "name": "강화학습 (Reinforcement Learning, RL)",
+      "definition": "에이전트가 환경과 상호작용하며 상태·행동·보상으로 시행착오를 통해 보상을 최대화하는 정책을 학습하는 방법입니다.",
+      "explanation": "정답(라벨)을 주지 않고 보상만 줍니다. 마르코프 결정과정(MDP)으로 모델링하고, 탐험(새 행동) vs 활용(아는 최선)을 ε-greedy로 균형 잡습니다. 실제 로봇 RL은 보통 신경망(심층 강화학습 DQN·PPO)으로 확장됩니다."
+    },
+    {
+      "key": "Q-Learning",
+      "chapter": "Robotics 10",
+      "name": "Q-러닝 (Q-Learning)",
+      "definition": "각 (상태, 행동)의 가치 Q(s,a)를 시간차 학습으로 갱신해 최적 정책을 찾는 가치 기반 강화학습 알고리즘입니다.",
+      "explanation": "갱신식은 Q(s,a) ← Q(s,a) + α[r + γ·maxQ(s')− Q(s,a)]입니다. r은 보상, γ는 할인율, α는 학습률입니다. 학습 후에는 각 상태에서 Q가 가장 큰 행동(argmax)을 따르는 그리디 정책을 씁니다."
+    },
+    {
+      "key": "Sim-to-Real",
+      "chapter": "Robotics 10",
+      "name": "Sim-to-Real",
+      "definition": "시뮬레이션에서 학습한 정책을 실제 로봇으로 옮기는 것으로, 시뮬-현실 차이(reality gap)를 극복하는 것이 핵심입니다.",
+      "explanation": "실물 학습은 느리고 위험해 시뮬(R7)에서 빠르게 학습합니다. 시뮬의 물리·외형 파라미터를 무작위로 바꾸는 도메인 랜덤화(domain randomization)로 강건한 정책을 만들고, 전문가 시연을 따라 배우는 모방학습으로 학습을 가속합니다."
     }
   ]
 }
