@@ -1343,6 +1343,48 @@
       "name": "robot_state_publisher",
       "definition": "URDF 로봇 모델과 조인트 상태로부터 각 링크의 TF 변환을 자동으로 발행하는 ROS 2 노드입니다.",
       "explanation": "URDF의 고정 조인트는 static TF, 움직이는 조인트는 조인트 각도(joint_states)를 받아 dynamic TF로 발행합니다. 덕분에 RViz·TF2가 로봇의 각 부위가 어디 있는지 알 수 있습니다."
+    },
+    {
+      "key": "Computer-Vision",
+      "chapter": "Robotics 8",
+      "name": "컴퓨터 비전 (Computer Vision · OpenCV)",
+      "definition": "카메라 영상(픽셀 배열)에서 물체·색·모양·마커 같은 의미를 추출하는 기술이며, OpenCV가 대표 라이브러리입니다.",
+      "explanation": "이미지는 numpy 배열이고 OpenCV는 채널을 BGR 순서로 저장합니다(RGB와 반대 — 흔한 함정). '픽셀→전처리→검출→의미(위치·ID)' 파이프라인으로 동작하며, 검출 결과를 좌표(R1)로 바꿔 로봇 행동에 씁니다."
+    },
+    {
+      "key": "HSV-Color-Space",
+      "chapter": "Robotics 8",
+      "name": "HSV 색 공간 (Hue-Saturation-Value)",
+      "definition": "색을 색상(H)·채도(S)·명도(V)로 분리해 표현하는 색 공간으로, 조명 변화에 강해 색 검출에 유리합니다.",
+      "explanation": "밝기가 변해도 색상(H)은 비교적 일정해 특정 색을 범위로 잡기 쉽습니다. cv2.cvtColor(BGR2HSV)로 변환하고 cv2.inRange로 마스크를 만듭니다. OpenCV에서 H는 0~179 범위입니다(360°의 절반)."
+    },
+    {
+      "key": "Canny-Edge",
+      "chapter": "Robotics 8",
+      "name": "캐니 엣지 검출 (Canny)",
+      "definition": "이미지에서 밝기가 급변하는 경계선(엣지)을 이중 임계값으로 검출하는 알고리즘입니다.",
+      "explanation": "cv2.Canny(이미지, 낮은임계, 높은임계)로 호출하며, 보통 GaussianBlur로 노이즈를 줄인 뒤 적용합니다. 검출된 엣지로 물체의 모양·경계를 찾고, findContours로 닫힌 윤곽선을 추출합니다."
+    },
+    {
+      "key": "Contour",
+      "chapter": "Robotics 8",
+      "name": "윤곽선 (Contour)",
+      "definition": "이진 이미지에서 같은 밝기 영역의 외곽 경계를 이은 곡선으로, 물체의 위치·크기·모양을 분석하는 데 씁니다.",
+      "explanation": "cv2.findContours로 추출하고, cv2.boundingRect(외접 사각형)·cv2.contourArea(면적)·cv2.moments(무게중심 cx=M10/M00)로 물체 정보를 얻습니다. 색 마스크나 엣지에서 객체를 잡아낼 때 핵심입니다."
+    },
+    {
+      "key": "ArUco-Marker",
+      "chapter": "Robotics 8",
+      "name": "ArUco 마커 (ArUco Marker)",
+      "definition": "ID가 인코딩된 흑백 정사각 패턴으로, 빠르고 정확한 물체 식별·위치·자세 추정에 쓰이는 로보틱스의 'QR코드'입니다.",
+      "explanation": "OpenCV 4.7+에서는 cv2.aruco.ArucoDetector 객체로 detectMarkers(img)를 호출합니다(옛 함수형 API에서 변경). 카메라 보정과 합쳐 solvePnP로 마커의 3D 자세(SE(3), R1)를 구해 도킹·물체 집기에 활용합니다."
+    },
+    {
+      "key": "Camera-Calibration",
+      "chapter": "Robotics 8",
+      "name": "카메라 보정 (Camera Calibration)",
+      "definition": "렌즈 왜곡을 보정하고 내부 파라미터(초점거리 fx·fy, 중심 cx·cy)를 구해 픽셀과 실제 광선 방향을 연결하는 과정입니다.",
+      "explanation": "체스보드를 여러 각도로 찍어 cv2.findChessboardCorners·cv2.calibrateCamera로 카메라 행렬 K와 왜곡 계수를 얻습니다. 이를 알아야 픽셀 위치를 실제 거리·각도로 환산하고 마커의 3D 자세(solvePnP)를 구할 수 있습니다."
     }
   ]
 }
