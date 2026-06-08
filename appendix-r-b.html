@@ -89,6 +89,10 @@
           <h4>💡 비유: 사람의 "어디에" + "어느 쪽을 보고"</h4>
           <p><strong>SO(3)</strong>는 제자리에서 몸을 어느 방향으로 틀었는지(고개 방향)만 말합니다. <strong>SE(3)</strong>는 "지금 부엌에 서서 창문 쪽을 보고 있다"처럼 <strong>위치(평행이동)와 방향(회전)을 한 덩어리</strong>로 말합니다. 로봇 팔 끝(end-effector)이 "공간 어디에서 어느 자세로" 있는지는 항상 SE(3)입니다.</p>
         </div>
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/appendix-r-b-interview-whiteboard-photo.webp" alt="로봇팔과 모바일 로봇 모델 앞 화이트보드에 좌표계와 경로 개념이 스케치된 면접 준비 장면" loading="lazy">
+          <figcaption>면접 질문은 좌표·제어·ROS·SLAM 개념을 말로 풀어내는 연습입니다. 실제 장비를 떠올리면 답변 구조가 더 선명해집니다.</figcaption>
+        </figure>
         <p>회전행렬 R(SO(3))의 핵심 성질 3가지: ① <strong>직교</strong>(RᵀR = I) ② <strong>역행렬 = 전치</strong>(R⁻¹ = Rᵀ, 그래서 역변환이 공짜) ③ <strong>det(R) = +1</strong>(거울반사 없는 순수 회전). 이 성질 덕분에 변환을 거꾸로 푸는 비용이 거의 없습니다.</p>
         <pre class="language-python"><code class="language-python">import numpy as np
 # SE(3): 회전 R(3x3) + 위치 p(3,)를 4x4 한 덩어리로

@@ -145,6 +145,11 @@
           <p><strong>센서</strong>는 눈·귀·피부(감각기관)로 바깥세상의 정보를 들여오고, <strong>액추에이터(모터)</strong>는 근육처럼 실제로 몸을 움직이며, <strong>제어기(컴퓨터)</strong>는 뇌가 되어 "지금 들어온 정보로 무엇을 할지" 결정합니다. 로봇 공부는 결국 이 세 기관이 <strong>좌표(숫자)</strong>로 대화하게 만드는 일입니다.</p>
         </div>
 
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r1-sense-plan-act-photo.webp" alt="센서가 달린 모바일 로봇, 제어 노트북, 액추에이터 테스트 장치가 나란히 놓인 로보틱스 작업대" loading="lazy">
+          <figcaption>센서가 상태를 읽고, 제어기가 판단하고, 액추에이터가 움직이는 Sense-Plan-Act 흐름을 실제 장비 배치로 본 모습입니다.</figcaption>
+        </figure>
+
         <div class="card-grid" style="display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:16px; margin:18px 0;">
           <div class="glass-panel" style="border-top:3px solid var(--robotics);">
             <h4 style="font-weight:700; color:var(--robotics); margin-bottom:6px;">👁️ 센서 (Sense)</h4>
@@ -201,6 +206,11 @@
           <h4>💡 비유로 이해하기: 지도와 "현재 위치 + 바라보는 방향"</h4>
           <p>내비게이션을 켜면 화면엔 두 가지가 있습니다 — 도시 전체 지도(<strong>월드 프레임</strong>)와, 그 위에서 "내가 선 자리 + 내가 향한 방향"을 나타내는 화살표(<strong>바디 프레임</strong>). 앞으로 1m 가라는 명령은 <strong>바디 프레임 기준</strong>("내 코앞")이지만, 지도에 점을 찍으려면 <strong>월드 프레임</strong> 좌표로 바꿔야 합니다. 이 "프레임 사이 좌표 변환"이 로보틱스의 가장 기본 연산입니다.</p>
         </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r1-coordinate-frames-photo.webp" alt="모바일 로봇과 바닥 좌표축, 로봇 본체 좌표축이 함께 보이는 좌표계 실험 장면" loading="lazy">
+          <figcaption>월드 프레임과 로봇 바디 프레임은 같은 공간을 다른 기준으로 봅니다. 좌표 변환은 이 두 기준을 오가는 번역입니다.</figcaption>
+        </figure>
 
         <p>좌표축을 잡는 방식은 약속이 필요합니다. 로보틱스는 거의 항상 <strong>오른손 좌표계(right-handed)</strong>를 씁니다. 오른손 엄지(x)·검지(y)·중지(z)를 서로 직각으로 펴면 x→y→z의 방향이 정해집니다. 특히 ROS 생태계의 표준 규약 <strong>REP&nbsp;103</strong>은 로봇 바디 프레임을 다음과 같이 고정합니다.</p>
 
@@ -366,6 +376,11 @@ print("역행렬 == 전치?", np.allclose(np.linalg.inv(R), R.T))   # True</code
           <h4>💡 비유로 이해하기: SE(3) = "주소 변환 도장" 하나</h4>
           <p>"{B} 프레임 좌표"를 "{W} 프레임 좌표"로 바꾸려면 원래는 ① 회전하고 ② 이동하는 두 단계가 필요합니다. 동차변환행렬은 이 두 단계를 <strong>도장 하나(행렬 한 번 곱)</strong>로 찍어 줍니다. 비결은 점에 <strong>1을 하나 덧붙이는 것</strong>(동차좌표) — (x, y, z) → (x, y, z, 1). 이 1 덕분에 "곱셈(회전)"과 "덧셈(이동)"을 한 번의 행렬곱으로 합칠 수 있습니다.</p>
         </div>
+
+        <figure class="learning-visual">
+          <img src="assets/learning-visuals/chapter-r1-se3-transform-photo.webp" alt="로봇팔과 카메라 보정판에 여러 좌표 프레임이 붙어 있는 캘리브레이션 실험 장면" loading="lazy">
+          <figcaption>베이스·관절·카메라 프레임이 사슬처럼 이어질 때, SE(3) 변환을 곱해 한 기준에서 다른 기준의 위치와 방향을 구합니다.</figcaption>
+        </figure>
 
         <p>여러 프레임은 변환을 <strong>곱으로 이어 붙여(chaining)</strong> 연결합니다. "월드→베이스" 변환 <code>T_w_b</code>와 "베이스→센서" 변환 <code>T_b_c</code>가 있으면, "월드→센서"는 그냥 <code>T_w_b @ T_b_c</code>입니다.</p>
 
