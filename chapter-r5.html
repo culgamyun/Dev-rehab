@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter R5 - 제어 이론 기초 (PID)</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -23,6 +23,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -60,6 +61,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -172,9 +176,34 @@
         </figure>
       </section>
 
-      <!-- 5. PID sim -->
+      <!-- 5. Practical PID -->
+      <section id="pid-practice">
+        <h2>5. 실무 PID 주의점 — 포화·와인드업·미분 노이즈</h2>
+        <p>교과서 PID 식만 그대로 쓰면 실제 로봇에서는 쉽게 흔들립니다. 모터 출력에는 한계가 있고, 센서에는 노이즈가 있으며, 목표값이 갑자기 바뀔 수 있기 때문입니다. 그래서 실무 PID에는 보통 다음 보강이 들어갑니다.</p>
+        <ul style="font-size:13.5px; line-height:1.9; color:var(--text-muted);">
+          <li><strong>출력 포화(saturation)</strong>: 모터 명령은 <code>-100%</code>~<code>100%</code> 같은 물리 한계를 넘지 못하므로 최종 출력 <code>u</code>를 제한합니다.</li>
+          <li><strong>anti-windup</strong>: 출력이 이미 한계에 걸렸는데도 I항만 계속 쌓이면 목표를 지나친 뒤 크게 튑니다. 적분값 클램핑, 조건부 적분, back-calculation으로 막습니다.</li>
+          <li><strong>derivative-on-measurement</strong>: 목표값이 계단처럼 바뀔 때 오차 미분을 쓰면 큰 스파이크(미분 킥)가 생깁니다. 측정값의 미분을 쓰면 이 충격을 줄일 수 있습니다.</li>
+          <li><strong>D항 필터링</strong>: 미분은 노이즈를 증폭하므로 저역통과 필터를 함께 쓰거나, 노이즈가 큰 시스템에서는 D를 작게 둡니다.</li>
+        </ul>
+        <pre class="language-python"><code class="language-python">def pid_step(target, measured, prev_measured, integral, dt,
+             Kp, Ki, Kd, I_MAX, U_MAX, output_saturated=False):
+    e = target - measured
+
+    if not output_saturated:
+        integral += e * dt
+    integral = max(min(integral, I_MAX), -I_MAX)     # anti-windup
+
+    d_meas = (measured - prev_measured) / dt         # derivative-on-measurement
+    D = -Kd * d_meas
+    u = Kp*e + Ki*integral + D
+    u = max(min(u, U_MAX), -U_MAX)                   # actuator saturation
+    return u, integral</code></pre>
+      </section>
+
+      <!-- 6. PID sim -->
       <section id="pid-sim">
-        <h2>5. PID 한눈에 — P vs PI vs PID 시뮬레이션</h2>
+        <h2>6. PID 한눈에 — P vs PI vs PID 시뮬레이션</h2>
         <p>이제 세 항을 합쳐 직접 돌려 봅니다. 외란(load)이 있는 간단한 시스템(질량+감쇠)을 목표 1.0으로 보내며, <strong>P만 / PI / PID</strong>를 비교합니다.</p>
 
         <div class="code-block-header">
@@ -216,9 +245,9 @@ PID : 최종 1.000,  최대(오버슈트) 1.193</pre>
         <p>세 줄 요약: <strong>P는 빠르게 다가가되 살짝 못 미치고(잔류오차), I가 그 오차를 끝내 0으로, D가 출렁임을 가라앉힌다.</strong></p>
       </section>
 
-      <!-- 6. Tuning -->
+      <!-- 7. Tuning -->
       <section id="tuning">
-        <h2>6. 게인 튜닝 — 세 손잡이 맞추기</h2>
+        <h2>7. 게인 튜닝 — 세 손잡이 맞추기</h2>
         <p>PID 성능은 세 게인 <code>Kp, Ki, Kd</code>를 어떻게 맞추느냐에 달렸습니다. 각 게인을 키울 때의 대략적 효과를 표로 익혀 두면 감을 잡기 좋습니다.</p>
 
         <table>
@@ -241,27 +270,27 @@ PID : 최종 1.000,  최대(오버슈트) 1.193</pre>
         </div>
       </section>
 
-      <!-- 7. State space -->
+      <!-- 8. State space -->
       <section id="state-space">
-        <h2>7. (참고) 상태공간 — 더 큰 그림</h2>
+        <h2>8. (참고) 상태공간 — 더 큰 그림</h2>
         <p>PID는 오차 하나만 보지만, 더 복잡한 시스템(여러 상태가 얽힌)은 <strong>상태공간(state-space)</strong>으로 다룹니다. 시스템을 <strong>상태 변수</strong>(위치·속도 등)의 벡터 <code>x</code>로 보고, <code>ẋ = A·x + B·u</code>(R1의 행렬!)로 동역학을 적습니다. 위 시뮬레이션의 (위치 p, 속도 v)가 바로 2개짜리 상태입니다.</p>
         <p style="color:var(--text-muted); font-size:13px;">상태공간은 LQR·칼만 필터(R2의 칼만이 여기로 확장!)·현대 제어의 기반입니다. 지금은 "여러 상태를 행렬로 묶어 한 번에 다룬다"는 감만 잡으면 충분합니다.</p>
       </section>
 
-      <!-- 8. 요약 -->
+      <!-- 9. 요약 -->
       <section id="summary">
-        <h2>8. 한 장 요약</h2>
+        <h2>9. 한 장 요약</h2>
         <table>
           <thead><tr><th>항</th><th>보는 것</th><th>역할</th><th>주의</th></tr></thead>
           <tbody>
             <tr><td><strong>P</strong> (비례)</td><td>지금 오차</td><td>오차에 비례해 밀기 (빠름)</td><td>잔류오차 남음</td></tr>
-            <tr><td><strong>I</strong> (적분)</td><td>쌓인 오차</td><td>잔류오차 제거</td><td>와인드업·오버슈트</td></tr>
-            <tr><td><strong>D</strong> (미분)</td><td>오차 변화율</td><td>오버슈트·진동 억제</td><td>노이즈에 민감</td></tr>
+            <tr><td><strong>I</strong> (적분)</td><td>쌓인 오차</td><td>잔류오차 제거</td><td>와인드업 방지 필요</td></tr>
+            <tr><td><strong>D</strong> (미분)</td><td>변화율</td><td>오버슈트·진동 억제</td><td>측정 미분·필터 권장</td></tr>
             <tr><td colspan="2"><strong>폐루프</strong></td><td>출력을 되먹여 오차 보정</td><td>외란에 강함</td></tr>
             <tr><td colspan="2"><strong>튜닝</strong></td><td>P로 빠르게·I로 정확히·D로 부드럽게</td><td>지글러-니콜스 출발점</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:14px;">이제 로봇은 감지(R2)·구동(R3)·기구학(R4)·정밀 제어(R5)를 모두 갖췄습니다. 다음 <strong>R6(ROS 2)</strong>부터는 이 조각들을 실제 로봇 소프트웨어로 묶는 <strong>프레임워크</strong>를 배웁니다(곧 공개). 💪</p>
+        <p style="margin-top:14px;">이제 로봇은 감지(R2)·구동(R3)·기구학(R4)·정밀 제어(R5)를 모두 갖췄습니다. 다음 <strong>R6(ROS 2)</strong>부터는 이 조각들을 실제 로봇 소프트웨어로 묶는 <strong>프레임워크</strong>를 배웁니다. 💪</p>
       </section>
 
       <!-- Quiz -->

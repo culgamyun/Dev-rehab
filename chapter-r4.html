@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter R4 - 키네매틱스</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -23,6 +23,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -60,6 +61,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -243,17 +247,20 @@ def jacobian(th1, th2):
 
 J = jacobian(np.radians(30), np.radians(45))
 print("J =\n", np.round(J, 4))
-print("det(J) =", round(float(np.linalg.det(J)), 4))   # 0이면 특이점!</code></pre>
+singular_values = np.linalg.svd(J, compute_uv=False)
+print("det(J) =", round(float(np.linalg.det(J)), 4))   # 2x2라서 det 확인 가능
+print("최소 특이값 =", round(float(singular_values[-1]), 4))</code></pre>
         <div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
           <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
           <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">J =
- [[-1.2727 -0.7727]
+[[-1.2727 -0.7727]
  [ 1.0731  0.2071]]
-det(J) = 0.5657</pre>
+det(J) = 0.5657
+최소 특이값 = 0.3107</pre>
         </div>
         <div class="glass-panel" style="border-left:3px solid var(--interview); margin-top:6px;">
           <h4 style="font-weight:700; color:var(--interview);">⚠️ 특이점(Singularity)</h4>
-          <p style="font-size:13px; color:var(--text-muted); margin:0;"><code>det(J) = 0</code>이 되는 자세를 <strong>특이점</strong>이라 합니다(R0의 행렬식!). 2링크 팔이 <strong>완전히 펴진(θ2=0)</strong> 순간이 대표적 — 그 방향으로는 손끝을 움직일 수 없어 자유도를 잃고, IK·속도 제어가 불안정해집니다. 로봇 제어에서 특이점을 피하는 건 중요한 주제입니다.</p>
+          <p style="font-size:13px; color:var(--text-muted); margin:0;"><strong>특이점</strong>은 자코비안이 <strong>랭크를 잃는</strong> 자세입니다. 이 예제처럼 2×2 정방 자코비안이면 <code>det(J)=0</code>으로 확인할 수 있지만, 일반 로봇팔에서는 최소 특이값(SVD)이나 manipulability를 함께 봅니다. 2링크 팔이 <strong>완전히 펴진(θ2=0)</strong> 순간이 대표적 — 그 방향으로는 손끝을 움직일 수 없어 자유도를 잃고, IK·속도 제어가 불안정해집니다.</p>
         </div>
       </section>
 
@@ -325,12 +332,12 @@ print("최종 위치:", round(x, 3), round(y, 3), " 방향(rad):", round(th, 3))
             <tr><td>정기구학 FK</td><td>관절각 → 손끝 위치 (유일해)</td><td>x=L1cosθ1+L2cos(θ1+θ2)</td></tr>
             <tr><td>역기구학 IK</td><td>손끝 위치 → 관절각 (보통 2해)</td><td>코사인 법칙 + atan2</td></tr>
             <tr><td>DH 파라미터</td><td>링크를 4개 숫자로 표준 기술</td><td>a, α, d, θ → 변환행렬 곱</td></tr>
-            <tr><td>자코비안 J</td><td>관절 속도 → 손끝 속도</td><td>ẋ = J·θ̇, det(J)=0 → 특이점</td></tr>
+            <tr><td>자코비안 J</td><td>관절 속도 → 손끝 속도</td><td>ẋ = J·θ̇, rank 감소 → 특이점</td></tr>
             <tr><td>차동구동</td><td>두 바퀴 속도 → 전진·회전</td><td>v=(vR+vL)/2, ω=(vR−vL)/L</td></tr>
             <tr><td>오도메트리</td><td>속도를 적분해 위치 추정</td><td>오차 누적 → SLAM으로 보정(R9)</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:14px;">이제 로봇은 감지(R2)하고, 움직이고(R3), "어떻게 움직이면 어디로 가는지"(R4)까지 압니다. 다음 <strong>R5(제어·PID)</strong>에서는 "목표에 정확히 도달하도록 모터를 실시간으로 조절"하는 법을 배웁니다(곧 공개). 💪</p>
+        <p style="margin-top:14px;">이제 로봇은 감지(R2)하고, 움직이고(R3), "어떻게 움직이면 어디로 가는지"(R4)까지 압니다. 다음 <strong>R5(제어·PID)</strong>에서는 "목표에 정확히 도달하도록 모터를 실시간으로 조절"하는 법을 배웁니다. 💪</p>
       </section>
 
       <!-- Quiz -->

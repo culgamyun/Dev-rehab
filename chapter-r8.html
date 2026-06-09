@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter R8 - 인식 (Perception · OpenCV)</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -23,6 +23,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -60,6 +61,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -73,7 +77,7 @@
     <div class="chapter-header">
       <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>Chapter R8</span></div>
       <h1>Chapter R8: 인식 (Perception · OpenCV)</h1>
-      <p style="font-size: 14px; color: var(--text-muted);">카메라가 본 픽셀 덩어리에서 <strong>"빨간 공이 여기 있다", "마커 23번이 저기 있다"</strong> 같은 <strong>의미</strong>를 뽑아내는 것이 인식(perception)입니다. <code>opencv-python</code>으로 색 검출·엣지/윤곽선·ArUco 마커 검출을 다룹니다. (이 챕터의 모든 OpenCV 코드는 <strong>실제로 실행</strong>해 결과 이미지를 만들었습니다 — opencv 4.13.0.)</p>
+      <p style="font-size: 14px; color: var(--text-muted);">카메라가 본 픽셀 덩어리에서 <strong>"빨간 공이 여기 있다", "마커 23번이 저기 있다"</strong> 같은 <strong>의미</strong>를 뽑아내는 것이 인식(perception)입니다. <code>opencv-python</code>으로 색 검출·엣지/윤곽선을 다루고, ArUco 모듈이 없는 환경은 <code>opencv-contrib-python</code>을 씁니다. 예제 이미지는 OpenCV로 생성한 결과입니다.</p>
     </div>
 
     <figure class="learning-visual blueprint-fig">
@@ -158,7 +162,10 @@ img = np.full((300, 300, 3), 255, np.uint8)        # 흰 배경
 cv2.circle(img, (150, 130), 60, (0, 0, 255), -1)   # 빨간 공 (BGR)
 
 hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-mask = cv2.inRange(hsv, (0, 100, 100), (10, 255, 255))   # 빨강 범위 마스크
+# 빨강은 Hue 원형의 양 끝(0 근처, 179 근처)에 걸치므로 두 구간을 합칩니다.
+mask1 = cv2.inRange(hsv, (0, 100, 100), (10, 255, 255))
+mask2 = cv2.inRange(hsv, (170, 100, 100), (179, 255, 255))
+mask = cv2.bitwise_or(mask1, mask2)
 
 cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 c = max(cnts, key=cv2.contourArea)                  # 가장 큰 윤곽선
@@ -170,7 +177,7 @@ print(f"공 중심=({cx},{cy})  바운딩박스=({x},{y},{w},{h})")</code></pre>
           <h4 style="font-weight:700; color:var(--devops);">✅ 실행 결과 (검증됨)</h4>
           <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">공 중심=(150,130)  바운딩박스=(90,70,121,121)</pre>
         </div>
-        <p style="color:var(--text-muted); font-size:13px;">중심이 정확히 우리가 그린 공의 중심(150,130)과 일치합니다. 이 픽셀 좌표를 카메라 모델(6절)로 실제 거리·방향으로 바꾸면 로봇이 공을 향해 움직일 수 있습니다.</p>
+        <p style="color:var(--text-muted); font-size:13px;">중심이 정확히 우리가 그린 공의 중심(150,130)과 일치합니다. 빨강은 HSV Hue의 0/179 경계에 걸치므로 실제 색 검출에서는 보통 낮은 빨강과 높은 빨강 두 구간을 합칩니다. 이 픽셀 좌표를 카메라 모델(6절)로 실제 거리·방향으로 바꾸면 로봇이 공을 향해 움직일 수 있습니다.</p>
       </section>
 
       <!-- 3. 엣지/윤곽선 -->
@@ -250,7 +257,7 @@ print("검출된 마커 ID:", ids.flatten().tolist())   # [23]</code></pre>
           <li><strong>카메라 보정(calibration)</strong>: 렌즈는 직선을 휘게 만듭니다(왜곡). 체스보드를 여러 각도로 찍어(<code>cv2.findChessboardCorners</code> → <code>cv2.calibrateCamera</code>) <strong>내부 파라미터 행렬 K</strong>(초점거리 fx·fy, 중심 cx·cy)와 왜곡 계수를 구하면, 픽셀 ↔ 실제 광선 방향을 정확히 연결할 수 있습니다.</li>
           <li><strong>깊이(depth)</strong>: 일반 카메라는 거리를 모릅니다. <strong>RGB-D 카메라</strong>(예: RealSense)나 <strong>스테레오</strong>(두 카메라의 시차), <strong>LiDAR</strong>(R2)로 깊이를 얻어 <strong>포인트클라우드</strong>(3D 점 집합)를 만듭니다.</li>
         </ul>
-        <p>마커의 코너 픽셀 + 카메라 행렬 K를 합치면(<code>solvePnP</code>) 마커의 <strong>3D 자세(SE(3), R1!)</strong>가 나옵니다 — 인식이 좌표·변환으로 이어지는 지점입니다.</p>
+        <p>마커의 코너 픽셀 + 카메라 행렬 K를 합치면(<code>solvePnP</code>) 마커의 <strong>3D 자세(SE(3), R1!)</strong>가 나옵니다 — 인식이 좌표·변환으로 이어지는 지점입니다. ROS 관례에서는 일반 로봇 프레임이 <code>x</code> 앞, <code>y</code> 왼쪽, <code>z</code> 위를 쓰지만, 카메라 optical frame은 <code>z</code>가 렌즈 앞, <code>x</code>가 이미지 오른쪽, <code>y</code>가 이미지 아래를 향합니다. 카메라 결과를 TF2에 넣을 때 이 차이를 명확히 해야 축이 뒤집히지 않습니다.</p>
       </section>
 
       <!-- 6. 요약 -->
@@ -267,7 +274,7 @@ print("검출된 마커 ID:", ids.flatten().tolist())   # [23]</code></pre>
             <tr><td>보정·깊이</td><td>픽셀 → 실제 거리·3D 자세</td><td><code>calibrateCamera</code>, <code>solvePnP</code></td></tr>
           </tbody>
         </table>
-        <p style="margin-top:14px;">이제 로봇이 "본다". 다음 <strong>R9(SLAM·내비게이션)</strong>에서는 이 인식과 R2 센서·R4 오도메트리를 합쳐 "지도를 그리며 길을 찾는" 법을 배웁니다(곧 공개). 💪</p>
+        <p style="margin-top:14px;">이제 로봇이 "본다". 다음 <strong>R9(SLAM·내비게이션)</strong>에서는 이 인식과 R2 센서·R4 오도메트리를 합쳐 "지도를 그리며 길을 찾는" 법을 배웁니다. 💪</p>
       </section>
 
       <!-- Quiz -->
@@ -337,14 +344,14 @@ print("검출된 마커 ID:", ids.flatten().tolist())   # [23]</code></pre>
       {
         type: "code",
         language: "python",
-        prompt: "HSV 이미지에서 빨간색 범위 (0,100,100)~(10,255,255)의 마스크를 만드세요.",
-        starter: "import cv2\nhsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)\n# (0,100,100)~(10,255,255) 범위의 마스크 생성\nmask = ",
+        prompt: "HSV 이미지에서 빨간색 마스크를 만드세요. Hue의 낮은 빨강(0~10)과 높은 빨강(170~179)을 모두 포함해야 합니다.",
+        starter: "import cv2\nhsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)\nmask1 = cv2.inRange(hsv, (0, 100, 100), (10, 255, 255))\nmask2 = cv2.inRange(hsv, (170, 100, 100), (179, 255, 255))\n# 두 마스크 합치기\nmask = ",
         validator: {
-          mustContain: ["cv2.inRange(hsv"],
+          mustContain: ["cv2.bitwise_or"],
           mustNotContain: []
         },
-        solution: "cv2.inRange(hsv, (0, 100, 100), (10, 255, 255))",
-        explanation: "cv2.inRange(hsv, 하한, 상한)은 각 픽셀이 범위 안이면 255(흰), 밖이면 0(검)인 마스크를 만듭니다. 이 마스크의 윤곽선을 찾아 물체 위치·크기를 구합니다."
+        solution: "cv2.bitwise_or(mask1, mask2)",
+        explanation: "OpenCV HSV에서 H는 0~179이고 빨강은 원형 Hue의 양 끝에 걸칩니다. 그래서 0~10과 170~179 두 마스크를 만든 뒤 bitwise_or로 합칩니다."
       },
       {
         type: "code",

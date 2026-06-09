@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter R3 - 액추에이터 & 임베디드 기초</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -23,6 +23,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -60,6 +61,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -185,7 +189,7 @@ for d in [0.0, 0.25, 0.5, 0.75, 1.0]:
 
         <figure class="learning-visual">
           <img src="assets/learning-visuals/chapter-r3-servo.png" alt="펄스폭 1에서 2ms가 각도 0에서 180도로 선형 대응하는 블루프린트 그래프" loading="lazy">
-          <figcaption>서보의 펄스폭(1~2ms)과 각도(0~180°)는 선형 관계입니다. 1.5ms는 정확히 가운데(90°)입니다.</figcaption>
+          <figcaption>표준 RC 서보에서는 보통 펄스폭 1~2ms가 각도 0~180° 근처에 대응하고, 1.5ms가 중앙(약 90°)입니다. 실제 범위와 선형성은 서보마다 보정이 필요합니다.</figcaption>
         </figure>
 
         <div class="code-block-header">
@@ -209,13 +213,13 @@ for p in [1.0, 1.5, 2.0]:
       <!-- 5. 스텝 모터 -->
       <section id="stepper">
         <h2>5. 스텝 모터 — 한 칸씩 정밀하게</h2>
-        <p><strong>스텝 모터</strong>는 전기 펄스 하나에 <strong>정확히 정해진 각도(한 스텝)</strong>만큼 돕니다. 펄스를 세기만 하면 위치를 알 수 있어(엔코더 없이) 정밀 위치 제어가 가능합니다 — 3D 프린터·CNC의 주인공입니다.</p>
+        <p><strong>스텝 모터</strong>는 전기 펄스 하나에 <strong>정해진 각도(한 스텝)</strong>만큼 돌도록 설계된 모터입니다. 이상적으로는 펄스를 세기만 해도 위치를 알 수 있어(엔코더 없이) 정밀 위치 제어가 가능합니다 — 3D 프린터·CNC의 주인공입니다.</p>
 
-        <p><strong>스텝각 = 360° ÷ 한 바퀴 스텝 수</strong>. 흔한 모터는 한 바퀴에 200스텝이라 <strong>스텝각이 1.8°</strong>입니다. 50스텝 보내면 정확히 90° 회전하죠. 단, 너무 빨리 보내거나 부하가 크면 <strong>스텝을 놓칠(skip)</strong> 수 있고(피드백이 없어 모름), <strong>마이크로스테핑</strong>으로 한 스텝을 더 잘게 나눠 부드럽게 만들 수 있습니다.</p>
+        <p><strong>스텝각 = 360° ÷ 한 바퀴 스텝 수</strong>. 흔한 모터는 한 바퀴에 200스텝이라 <strong>스텝각이 1.8°</strong>입니다. 이상적으로 50스텝을 보내면 90° 회전합니다. 단, 너무 빨리 보내거나 부하가 크면 <strong>스텝을 놓칠(skip)</strong> 수 있고(피드백이 없어 모름), <strong>마이크로스테핑</strong>으로 한 스텝을 더 잘게 나눠 부드럽게 만들 수 있습니다.</p>
 
         <figure class="learning-visual">
           <img src="assets/learning-visuals/chapter-r3-stepper.png" alt="스텝 수에 따라 1.8도씩 계단처럼 증가하는 각도 그래프" loading="lazy">
-          <figcaption>스텝 모터는 한 스텝마다 정확히 1.8°씩 "계단"처럼 움직입니다. 스텝을 세면 현재 각도를 알 수 있습니다(오픈루프).</figcaption>
+          <figcaption>200스텝/회전 모터는 명령 기준으로 한 스텝마다 1.8°씩 "계단"처럼 움직입니다. 실제 위치 정확도는 부하·속도·드라이버 설정과 스텝 손실 여부에 좌우됩니다.</figcaption>
         </figure>
 
         <div class="code-block-header">
@@ -377,7 +381,7 @@ servo.angle = 0           # 0도로 이동</code></pre>
         question: "표준 RC 서보 모터에 1.5ms 펄스를 주면 어느 각도로 가나요? (1.0ms=0°, 2.0ms=180°)",
         options: ["0° (한쪽 끝)", "45°", "90° (가운데)", "180° (반대쪽 끝)"],
         correct: 2,
-        explanation: "서보의 펄스폭(1~2ms)과 각도(0~180°)는 선형 관계입니다. 1.5ms는 1.0ms와 2.0ms의 정확히 중간이므로 90°(가운데)입니다."
+        explanation: "표준 RC 서보에서는 보통 1.0ms≈0°, 1.5ms≈90°, 2.0ms≈180°로 해석합니다. 다만 실제 서보의 끝점과 선형성은 모델마다 달라 보정이 필요합니다."
       },
       {
         type: "mcq",

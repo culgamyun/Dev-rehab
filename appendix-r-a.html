@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>부록 R-A - Python for Robotics 치트시트</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -23,6 +23,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -60,6 +61,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -73,7 +77,7 @@
     <div class="chapter-header">
       <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>부록 R-A</span></div>
       <h1>부록 R-A: Python for Robotics 치트시트</h1>
-      <p style="font-size: 14px; color: var(--text-muted);">코스 전체에서 가장 자주 쓴 <code>numpy · scipy · matplotlib · OpenCV</code> 패턴을 한곳에 모았습니다. 실습하다 "그 한 줄 뭐였지?" 싶을 때 펴 보세요. (수치 예제는 전부 실제 실행 결과입니다.)</p>
+      <p style="font-size: 14px; color: var(--text-muted);">코스 전체에서 가장 자주 쓴 <code>numpy · scipy · matplotlib · OpenCV</code> 패턴을 한곳에 모았습니다. 실습하다 "그 한 줄 뭐였지?" 싶을 때 펴 보세요. 검증값이 붙은 수치 예제는 실제 실행 결과이며, 일부 블록은 빠른 참조용 패턴입니다.</p>
     </div>
 
     <figure class="learning-visual">
@@ -123,6 +127,7 @@ np.degrees(np.arctan2(4, 3))         # 방향(도) → 53.13  (atan2(y, x)!)</co
         <h2>3. 행렬 · 선형대수 (R0·R1·R4)</h2>
         <pre class="language-python"><code class="language-python">import numpy as np
 A = np.array([[2.0, 0.0], [0.0, 3.0]])
+B = np.array([[1.0, 2.0], [3.0, 4.0]])
 
 A @ B                                # 행렬곱(@ 권장, 순서 중요!)
 A.T                                  # 전치
@@ -167,6 +172,7 @@ r.apply([1, 0, 0]) # 점 회전 → [0, 1, 0]
         <pre class="language-python"><code class="language-python">import numpy as np
 np.radians(180)      # 도 → 라디안 (π ≈ 3.1416)
 np.degrees(np.pi)    # 라디안 → 도 (180)
+x, y = 3.0, 4.0
 np.arctan2(y, x)     # 좌표 → 방향(사분면 구분) ※ 인자 순서 (y, x)
 
 # 각도를 [-π, π] 범위로 감싸기 (heading 정규화에 필수)
@@ -182,6 +188,8 @@ np.degrees(wrap_angle(np.radians(370)))   # → 10.0</code></pre>
 import numpy as np
 
 t = np.linspace(0, 10, 100)
+xs, ys = [0, 1, 2], [0, 1, 1]
+grid = np.array([[0, 1], [1, 0]])
 plt.plot(t, np.sin(t), label="sin")     # 선 그래프
 plt.scatter([1,2,3], [4,5,6])           # 산점도
 plt.plot(xs, ys, "o-")                  # 궤적(점+선)
@@ -196,10 +204,14 @@ plt.savefig("out.png", dpi=130)         # 저장 (또는 plt.show())</code></pre
         <h2>7. OpenCV — 영상 처리 빠른 참조 (R8)</h2>
         <pre class="language-python"><code class="language-python">import cv2, numpy as np
 
-img = cv2.imread("photo.jpg")           # 읽기 (BGR 순서! RGB 아님)
+img = np.full((240, 240, 3), 255, np.uint8)
+cv2.circle(img, (120, 120), 50, (0, 0, 255), -1)  # 예제용 빨간 원(BGR)
 gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 hsv  = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)   # H는 0~179
-mask = cv2.inRange(hsv, (0,100,100), (10,255,255))   # 색 마스크
+mask1 = cv2.inRange(hsv, (0,100,100), (10,255,255))
+mask2 = cv2.inRange(hsv, (170,100,100), (179,255,255))
+mask = cv2.bitwise_or(mask1, mask2)      # 빨강은 Hue 양 끝을 합침
+blur = cv2.GaussianBlur(gray, (5,5), 0)
 edges = cv2.Canny(blur, 50, 150)              # 엣지
 cnts, _ = cv2.findContours(mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 x, y, w, h = cv2.boundingRect(cnts[0])        # 외접 사각형
@@ -227,7 +239,7 @@ corners, ids, _ = det.detectMarkers(gray)</code></pre>
             <tr><td>강화학습</td><td><code>Q-러닝 갱신 · argmax</code></td><td><a href="chapter-r10.html">R10</a></td></tr>
           </tbody>
         </table>
-        <p style="margin-top:14px; color:var(--text-muted); font-size:13px;">💡 설치: <code>pip install numpy scipy matplotlib opencv-python</code> (ROS는 별도, R6 참고). 이 치트시트만 옆에 두면 대부분의 실습을 막힘 없이 따라갈 수 있습니다.</p>
+        <p style="margin-top:14px; color:var(--text-muted); font-size:13px;">💡 설치: <code>pip install numpy scipy matplotlib opencv-python</code> (ArUco 모듈이 없는 환경은 <code>opencv-contrib-python</code> 사용, ROS는 별도, R6 참고). 이 치트시트만 옆에 두면 대부분의 실습을 막힘 없이 따라갈 수 있습니다.</p>
       </section>
 
       <!-- Quiz -->
