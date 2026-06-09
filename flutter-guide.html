@@ -39,17 +39,7 @@
   }
 
   /* ── THEME TOGGLE BUTTON ── */
-  .theme-toggle{
-    position:fixed;top:20px;right:22px;z-index:50;
-    display:flex;align-items:center;gap:8px;
-    background:var(--bg-soft);border:1px solid var(--line);
-    color:var(--ink);border-radius:99px;padding:8px 16px;cursor:pointer;
-    font-family:var(--mono);font-size:.78rem;font-weight:500;
-    box-shadow:0 4px 18px rgba(0,0,0,.18);transition:.22s;
-  }
-  .theme-toggle:hover{border-color:var(--flutter);transform:translateY(-1px)}
-  .theme-toggle .ti{font-size:.95rem;line-height:1}
-  html[data-theme="light"] .theme-toggle{box-shadow:0 4px 18px rgba(60,80,120,.12)}
+  /* (자체 우상단 theme-toggle 제거 — 대시보드 사이드바 footer의 Mode 버튼 사용) */
 
   /* ---------- LAYOUT ---------- */
   .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 24px}
@@ -81,8 +71,8 @@
   nav.toc a.active{color:var(--flutter);border-left-color:var(--flutter);background:rgba(84,197,248,.07)}
 
   /* ---------- HERO ---------- */
-  header.hero{
-    padding:80px 0 56px;text-align:left;
+  .hero{
+    padding:48px 0 40px;text-align:left;max-width:880px;
   }
   .badge{
     display:inline-flex;align-items:center;gap:8px;
@@ -91,15 +81,16 @@
     padding:6px 14px;border-radius:99px;letter-spacing:.05em;margin-bottom:22px;
   }
   .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--flutter);box-shadow:0 0 10px var(--flutter)}
-  header.hero h1{
-    font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,6vw,4rem);
-    line-height:1.05;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:18px;
+  .hero h1{
+    font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,3.6vw,3rem);
+    line-height:1.14;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:18px;
+    word-break:keep-all;
   }
-  header.hero h1 .accent{
+  .hero h1 .accent{
     background:linear-gradient(120deg,var(--flutter),var(--purple));
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   }
-  header.hero p.sub{
+  .hero p.sub{
     font-size:1.08rem;color:var(--ink-dim);max-width:640px;font-family:'Gowun Dodum',sans-serif;
   }
   .hero-meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px}
@@ -312,7 +303,7 @@
       <div class="breadcrumb"><span>모바일 코스 (Flutter)</span> &gt; <span>Flutter 마스터 가이드</span></div>
     </div>
 
-    <header class="hero">
+    <div class="hero">
       <div class="badge"><span class="dot"></span>FLUTTER · DART · 면접 대비 학습 가이드</div>
       <h1>Flutter <span class="accent">완전 정복</span><br>기초 문법부터 심화 아키텍처까지</h1>
       <p class="sub">위젯·상태관리·렌더링 파이프라인·비동기까지, 면접관의 "왜?"에 답할 수 있도록 개념의 뿌리를 짚는 학습 자료입니다. React 경험을 가진 분을 위한 매핑 포인트도 함께 담았습니다.</p>
@@ -322,7 +313,7 @@
         <div class="m"><b>Dart</b><span>언어 기초</span></div>
         <div class="m"><b>Riverpod</b><span>상태관리</span></div>
       </div>
-    </header>
+    </div>
 
 
     <!-- 0 WHAT IS FLUTTER -->
