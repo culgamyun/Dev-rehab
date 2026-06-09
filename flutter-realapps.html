@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>실전 Flutter · 유명 앱 화면 재현</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+<script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
+<script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="lib/prism.min.css">
+<style>
+  :root{
+    --radius:14px; --mono:'JetBrains Mono',monospace;
+    --kr:'IBM Plex Sans KR',sans-serif; --display:'Space Grotesk',sans-serif;
+  }
+  /* Flutter 컴포넌트 색상 토큰 → 대시보드 테마 토큰에 매핑(라이트/다크 자동 추종).
+     ※ 실제 앱 화면 목업(.rf/.ga/.xy/.bmw/.du/.ob 등)의 색은 규칙에 하드코딩되어 테마와 무관하게 고정. */
+  #main-content{
+    --bg:transparent; --bg-soft:var(--bg-card); --bg-card:var(--bg-glass);
+    --line:var(--border-color); --ink:var(--text-color);
+    --ink-dim:var(--text-muted); --ink-faint:var(--text-muted);
+    --flutter:#54c5f8; --flutter-deep:#0468d7; --accent:#ffd33d;
+    --green:#3fb950; --red:#f85149; --purple:#bc8cff; --orange:#ff9e64; --pink:#f778ba;
+    --code-bg:#0a0e14; --code-bar:#11161f; --hero-h1:var(--text-color);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  /* 본문 타이포그래피는 콘텐츠 영역에만 적용(사이드바는 대시보드 Pretendard 유지) */
+  #main-content{font-family:var(--kr);line-height:1.7;-webkit-font-smoothing:antialiased}
+
+  .theme-toggle{position:fixed;top:20px;right:22px;z-index:50;display:flex;align-items:center;gap:8px;background:var(--bg-soft);border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:8px 16px;cursor:pointer;font-family:var(--mono);font-size:.78rem;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);transition:.22s}
+  .theme-toggle:hover{border-color:var(--flutter);transform:translateY(-1px)}
+  .theme-toggle .ti{font-size:.95rem;line-height:1}
+
+  .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px}
+
+  header.hero{padding:78px 0 46px}
+  .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(84,197,248,.1);border:1px solid rgba(84,197,248,.3);color:var(--flutter);font-family:var(--mono);font-size:.74rem;font-weight:500;padding:6px 14px;border-radius:99px;letter-spacing:.05em;margin-bottom:22px}
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--flutter);box-shadow:0 0 10px var(--flutter)}
+  header.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,5.5vw,3.5rem);line-height:1.06;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:16px}
+  header.hero h1 .accent{background:linear-gradient(120deg,var(--flutter),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  header.hero p.sub{font-size:1.06rem;color:var(--ink-dim);max-width:640px;font-family:'Gowun Dodum',sans-serif}
+
+  .intro-note{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px;margin:24px 0 8px;font-size:.92rem;color:var(--ink-dim)}
+  .intro-note b{color:var(--ink)}
+
+  /* APP CASE BLOCK */
+  .case{margin:46px 0;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--bg-soft)}
+  .case-head{display:flex;align-items:center;gap:16px;padding:22px 26px;border-bottom:1px solid var(--line);background:var(--bg-card)}
+  .case-logo{width:50px;height:50px;border-radius:13px;display:grid;place-items:center;font-family:var(--display);font-weight:700;font-size:1.4rem;color:#fff;flex-shrink:0}
+  .case-head .meta h2{font-family:var(--display);font-weight:700;font-size:1.45rem;color:var(--hero-h1);line-height:1.1}
+  .case-head .meta .cat{font-size:.8rem;color:var(--ink-faint);font-family:var(--mono);margin-top:3px}
+  .case-head .num{margin-left:auto;font-family:var(--display);font-weight:700;font-size:2.4rem;color:var(--line)}
+
+  .case-body{display:grid;grid-template-columns:300px 1fr;gap:0}
+  @media(max-width:820px){.case-body{grid-template-columns:1fr}}
+
+  /* PHONE MOCKUP */
+  .phone-col{padding:28px 24px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;border-right:1px solid var(--line);background:linear-gradient(165deg,rgba(84,197,248,.04),transparent)}
+  @media(max-width:820px){.phone-col{border-right:none;border-bottom:1px solid var(--line)}}
+  .phone{width:248px;height:512px;background:#000;border-radius:34px;padding:9px;box-shadow:0 18px 50px rgba(0,0,0,.45);position:relative;flex-shrink:0}
+  .phone .notch{position:absolute;top:9px;left:50%;transform:translateX(-50%);width:90px;height:22px;background:#000;border-radius:0 0 14px 14px;z-index:20}
+  .screen{width:100%;height:100%;border-radius:26px;overflow:hidden;position:relative;background:#fff;font-family:var(--kr)}
+  .screen *{box-sizing:border-box}
+  .phone-cap{margin-top:16px;font-size:.78rem;color:var(--ink-faint);text-align:center;font-family:'Gowun Dodum',sans-serif}
+
+  /* EXPLAIN COLUMN */
+  .explain{padding:26px 28px}
+  .explain p{color:var(--ink-dim);font-size:.95rem;margin-bottom:14px}
+  .explain p b{color:var(--ink)}
+  .explain h3{font-size:.82rem;font-family:var(--mono);text-transform:uppercase;letter-spacing:.1em;color:var(--flutter);margin:20px 0 10px;font-weight:600}
+  .widget-tags{display:flex;flex-wrap:wrap;gap:7px;margin:6px 0 18px}
+  .wtag{font-family:var(--mono);font-size:.74rem;padding:4px 11px;border-radius:7px;background:rgba(84,197,248,.1);border:1px solid rgba(84,197,248,.28);color:var(--flutter)}
+
+  .code{background:var(--code-bg);border:1px solid var(--line);border-radius:11px;margin:8px 0 4px;overflow:hidden}
+  .code .bar{display:flex;align-items:center;gap:7px;padding:9px 13px;background:var(--code-bar);border-bottom:1px solid var(--line)}
+  .code .bar .d{width:10px;height:10px;border-radius:50%}
+  .code .bar .d.r{background:#ff5f56}.code .bar .d.y{background:#ffbd2e}.code .bar .d.g{background:#27c93f}
+  .code .bar .fn{font-family:var(--mono);font-size:.72rem;color:var(--ink-faint);margin-left:7px}
+  .code pre{padding:15px 17px;overflow-x:auto;font-family:var(--mono);font-size:.78rem;line-height:1.65;color:#e6edf3}
+  .code pre::-webkit-scrollbar{height:7px}.code pre::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  .tok-k{color:#ff7b72}.tok-c{color:#8b949e;font-style:italic}.tok-s{color:#a5d6ff}.tok-t{color:#79c0ff}.tok-f{color:#d2a8ff}.tok-n{color:#79c0ff}.tok-p{color:#ffa657}.tok-an{color:#7ee787}
+
+  .maps{background:rgba(188,140,255,.07);border:1px solid rgba(188,140,255,.28);border-radius:10px;padding:13px 15px 13px 40px;margin:14px 0;font-size:.88rem;position:relative;color:var(--ink-dim)}
+  .maps::before{content:"⚛️";position:absolute;left:13px;top:12px}
+  .maps b{color:var(--ink)}
+  .tryit{background:rgba(255,211,61,.07);border:1px solid rgba(255,211,61,.28);border-radius:10px;padding:11px 15px 11px 38px;margin:12px 0;font-size:.86rem;position:relative;color:var(--ink-dim)}
+  .tryit::before{content:"👆";position:absolute;left:13px;top:10px}
+  .tryit b{color:var(--ink)}
+
+  .div{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:30px 0}
+  footer{border-top:1px solid var(--line);margin-top:46px;padding:38px 0 60px;text-align:center;color:var(--ink-faint);font-size:.85rem}
+
+  /* ============ IN-SCREEN APP STYLES ============ */
+  /* Reflectly */
+  .rf{height:100%;background:linear-gradient(165deg,#6d5dd3,#8b6fe0 55%,#b89bf0);padding:22px 18px;color:#fff;display:flex;flex-direction:column}
+  .rf-top{display:flex;justify-content:space-between;align-items:center;font-size:.72rem;opacity:.85;margin-bottom:24px}
+  .rf-greet{font-size:1.32rem;font-weight:700;line-height:1.25;margin-bottom:6px}
+  .rf-sub{font-size:.8rem;opacity:.8;margin-bottom:26px}
+  .rf-card{background:rgba(255,255,255,.16);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.22);border-radius:20px;padding:18px;margin-bottom:14px;cursor:pointer;transition:.25s}
+  .rf-card:hover{transform:translateY(-3px);background:rgba(255,255,255,.24)}
+  .rf-card .ic{font-size:1.5rem;margin-bottom:8px}
+  .rf-card .t{font-size:.92rem;font-weight:600}
+  .rf-card .d{font-size:.72rem;opacity:.8;margin-top:3px}
+  .rf-mood{display:flex;justify-content:space-around;margin-top:auto;padding-top:14px}
+  .rf-mood span{font-size:1.6rem;cursor:pointer;transition:.2s;filter:grayscale(.4);opacity:.7}
+  .rf-mood span:hover{transform:scale(1.25);filter:none;opacity:1}
+
+  /* Google Ads dashboard */
+  .ga{height:100%;background:#fff;color:#202124;display:flex;flex-direction:column}
+  .ga-bar{background:#1a73e8;color:#fff;padding:16px 16px 14px;display:flex;align-items:center;gap:10px}
+  .ga-bar .gt{font-weight:600;font-size:.95rem}
+  .ga-body{padding:14px;overflow-y:auto;flex:1}
+  .ga-stat{background:#f1f3f4;border-radius:12px;padding:13px 14px;margin-bottom:10px}
+  .ga-stat .lbl{font-size:.68rem;color:#5f6368;text-transform:uppercase;letter-spacing:.04em}
+  .ga-stat .val{font-size:1.5rem;font-weight:700;margin-top:2px;color:#202124}
+  .ga-stat .chg{font-size:.72rem;font-weight:600;margin-top:2px}
+  .ga-stat .chg.up{color:#1e8e3e}.ga-stat .chg.down{color:#d93025}
+  .ga-chart{display:flex;align-items:flex-end;gap:5px;height:64px;margin-top:8px}
+  .ga-chart .bar{flex:1;background:#1a73e8;border-radius:3px 3px 0 0;transition:height .8s cubic-bezier(.2,.8,.2,1);min-height:4px}
+
+  /* Xianyu / Alibaba commerce feed */
+  .xy{height:100%;background:#f5f5f5;display:flex;flex-direction:column}
+  .xy-bar{background:#fff;padding:13px 14px;display:flex;align-items:center;gap:8px;border-bottom:1px solid #eee}
+  .xy-search{flex:1;background:#f0f0f0;border-radius:99px;padding:7px 13px;font-size:.74rem;color:#999}
+  .xy-feed{flex:1;overflow-y:auto;padding:10px;column-count:2;column-gap:10px}
+  .xy-item{break-inside:avoid;background:#fff;border-radius:12px;overflow:hidden;margin-bottom:10px;cursor:pointer;transition:.2s}
+  .xy-item:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(0,0,0,.1)}
+  .xy-img{height:80px;display:grid;place-items:center;font-size:1.8rem}
+  .xy-info{padding:8px 9px}
+  .xy-info .nm{font-size:.74rem;color:#333;line-height:1.35;font-weight:500}
+  .xy-info .pr{font-size:.92rem;color:#ff4400;font-weight:700;margin-top:4px}
+  .xy-info .pr small{font-size:.62rem;font-weight:400}
+
+  /* BMW */
+  .bmw{height:100%;background:linear-gradient(180deg,#0a0a0c,#16181d);color:#fff;display:flex;flex-direction:column;padding:20px 18px}
+  .bmw-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .bmw-logo{width:30px;height:30px;border-radius:50%;border:2px solid #fff;display:grid;place-items:center;font-size:.6rem;font-weight:700}
+  .bmw-model{font-size:.72rem;color:#8b95a5;letter-spacing:.05em}
+  .bmw-name{font-size:1.15rem;font-weight:700;margin-bottom:18px}
+  .bmw-car{height:100px;display:grid;place-items:center;font-size:3.4rem;margin-bottom:6px}
+  .bmw-row{display:flex;gap:10px;margin-bottom:14px}
+  .bmw-tile{flex:1;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:14px;padding:12px}
+  .bmw-tile .l{font-size:.62rem;color:#8b95a5;text-transform:uppercase}
+  .bmw-tile .v{font-size:1.05rem;font-weight:700;margin-top:4px}
+  .bmw-tile .v small{font-size:.62rem;color:#8b95a5;font-weight:400}
+  .bmw-act{margin-top:auto;display:flex;gap:10px}
+  .bmw-btn{flex:1;background:#0066b1;border:none;color:#fff;border-radius:11px;padding:11px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:var(--kr);transition:.2s}
+  .bmw-btn:hover{background:#0077cc}
+  .bmw-btn.ghost{background:rgba(255,255,255,.08)}
+  .bmw-charge-bar{height:5px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:6px}
+  .bmw-charge-fill{height:100%;background:linear-gradient(90deg,#34d399,#10b981);border-radius:99px;width:0;transition:width 1.2s ease}
+
+  /* Learning app (Duolingo-style) */
+  .du{height:100%;background:#fff;display:flex;flex-direction:column}
+  .du-top{background:#58cc02;padding:16px 16px 14px;color:#fff;display:flex;align-items:center;justify-content:space-between}
+  .du-streak{display:flex;align-items:center;gap:5px;font-weight:700;font-size:.95rem}
+  .du-hearts{display:flex;align-items:center;gap:4px;font-size:.85rem;font-weight:600}
+  .du-body{flex:1;overflow-y:auto;padding:16px 14px;background:#fff}
+  .du-unit{text-align:center;margin-bottom:6px;font-size:.7rem;color:#afafaf;text-transform:uppercase;letter-spacing:.08em;font-weight:700}
+  .du-path{display:flex;flex-direction:column;align-items:center;gap:13px;padding:8px 0}
+  .du-node{width:62px;height:58px;border-radius:50%;display:grid;place-items:center;font-size:1.6rem;cursor:pointer;border:none;position:relative;transition:transform .15s}
+  .du-node:active{transform:translateY(3px)}
+  .du-node.done{background:#58cc02;box-shadow:0 4px 0 #4aa802}
+  .du-node.current{background:#ffc800;box-shadow:0 4px 0 #e0a800;animation:bob 1.6s ease-in-out infinite}
+  .du-node.lock{background:#e5e5e5;box-shadow:0 4px 0 #cfcfcf;cursor:not-allowed}
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+  .du-xp{position:fixed;pointer-events:none;font-weight:800;color:#ffc800;font-size:1.1rem;opacity:0;z-index:30}
+  .du-off1{margin-left:-44px}.du-off2{margin-left:44px}.du-off3{margin-left:-22px}.du-off4{margin-left:22px}
+
+  ul.bul{margin:6px 0 14px;list-style:none}
+  ul.bul li{position:relative;padding:4px 0 4px 20px;color:var(--ink-dim);font-size:.92rem}
+  ul.bul li::before{content:"▹";position:absolute;left:2px;color:var(--flutter)}
+  ul.bul li b{color:var(--ink)}
+  .pagelink{display:inline-flex;align-items:center;gap:6px;color:var(--flutter);text-decoration:none;font-size:.9rem;font-family:var(--mono);border:1px solid var(--line);padding:7px 13px;border-radius:8px;transition:.2s}
+  .pagelink:hover{border-color:var(--flutter);background:rgba(84,197,248,.06)}
+
+  /* SECTION DIVIDER HEADING */
+  .seclabel{display:flex;align-items:center;gap:14px;margin:54px 0 6px}
+  .seclabel .sn{font-family:var(--mono);font-size:.78rem;font-weight:700;color:var(--bg);background:var(--accent);width:auto;padding:3px 9px;border-radius:7px}
+  .seclabel h2{font-family:var(--display);font-weight:700;font-size:1.7rem;color:var(--hero-h1)}
+  .seclabel .jd{margin-left:auto;font-size:.7rem;font-family:var(--mono);color:var(--green);border:1px solid rgba(63,185,80,.4);background:rgba(63,185,80,.08);padding:3px 10px;border-radius:99px}
+  .seclede{color:var(--ink-dim);margin:0 0 8px;font-family:'Gowun Dodum',sans-serif;font-size:1rem}
+
+  /* ONBOARDING — multi-step phone */
+  .ob-dots{display:flex;gap:6px;justify-content:center;margin:14px 0 4px}
+  .ob-dots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);transition:.3s}
+  .ob-dots span.on{background:#fff;width:20px;border-radius:4px}
+  .obscreen{height:100%;display:flex;flex-direction:column;padding:26px 20px 20px;color:#fff;position:relative;transition:opacity .4s}
+  .ob1{background:linear-gradient(165deg,#58cc02,#3a9a02)}
+  .ob2{background:linear-gradient(165deg,#1cb0f6,#0a82c4)}
+  .ob3{background:linear-gradient(165deg,#ce82ff,#9b4dca)}
+  .ob4{background:linear-gradient(165deg,#ff9600,#e07b00)}
+  .ob-hero{font-size:3.6rem;text-align:center;margin:30px 0 18px}
+  .ob-h{font-size:1.32rem;font-weight:700;text-align:center;line-height:1.3;margin-bottom:10px}
+  .ob-p{font-size:.83rem;opacity:.9;text-align:center;line-height:1.5;padding:0 6px}
+  .ob-opts{display:flex;flex-direction:column;gap:9px;margin-top:18px}
+  .ob-opt{background:rgba(255,255,255,.16);border:1.5px solid rgba(255,255,255,.25);border-radius:13px;padding:12px 14px;font-size:.85rem;font-weight:600;cursor:pointer;transition:.2s;display:flex;align-items:center;gap:10px}
+  .ob-opt:hover{background:rgba(255,255,255,.28)}
+  .ob-opt.sel{background:#fff;color:#222;border-color:#fff}
+  .ob-cta{margin-top:auto;background:#fff;color:#333;border:none;border-radius:13px;padding:13px;font-size:.92rem;font-weight:700;cursor:pointer;font-family:var(--kr);box-shadow:0 4px 0 rgba(0,0,0,.15);transition:.12s}
+  .ob-cta:active{transform:translateY(3px);box-shadow:0 1px 0 rgba(0,0,0,.15)}
+
+  /* FUNNEL */
+  .fn{height:100%;background:#fff;color:#202124;display:flex;flex-direction:column}
+  .fn-bar{background:#202124;color:#fff;padding:15px 16px;font-weight:600;font-size:.92rem;display:flex;align-items:center;gap:8px}
+  .fn-body{padding:16px 14px;flex:1;overflow-y:auto}
+  .fn-step{margin-bottom:7px}
+  .fn-step .fl{display:flex;justify-content:space-between;font-size:.74rem;margin-bottom:3px}
+  .fn-step .fl .fname{color:#5f6368;font-weight:500}
+  .fn-step .fl .fpct{font-weight:700;color:#202124}
+  .fn-track{height:30px;background:#f1f3f4;border-radius:6px;overflow:hidden;position:relative}
+  .fn-fill{height:100%;border-radius:6px;width:0;transition:width 1s cubic-bezier(.2,.8,.2,1);display:flex;align-items:center;padding-left:9px;font-size:.7rem;color:#fff;font-weight:600}
+  .fn-drop{font-size:.66rem;color:#d93025;text-align:right;margin-top:2px;font-weight:600}
+  .fn-insight{margin-top:10px;background:#fef7e0;border:1px solid #fde293;border-radius:9px;padding:10px 12px;font-size:.72rem;color:#7a5900;line-height:1.5}
+
+  /* RESPONSIVE demo */
+  .resp-wrap{display:flex;gap:18px;align-items:flex-start;flex-wrap:wrap;justify-content:center}
+  .resp-dev{display:flex;flex-direction:column;align-items:center;gap:8px}
+  .resp-dev .rcap{font-size:.74rem;color:var(--ink-faint);font-family:var(--mono)}
+  .rphone{width:150px;height:300px;background:#000;border-radius:24px;padding:7px;flex-shrink:0}
+  .rtab{width:340px;height:300px;background:#000;border-radius:20px;padding:9px;flex-shrink:0}
+  .rscreen{width:100%;height:100%;border-radius:18px;overflow:hidden;background:#f4f7fb}
+  .lr-top{background:#58cc02;color:#fff;padding:10px;font-size:.72rem;font-weight:700;display:flex;justify-content:space-between;align-items:center}
+  .lr-grid{padding:9px;display:grid;gap:7px}
+  .lr-grid.one{grid-template-columns:1fr}
+  .lr-grid.two{grid-template-columns:1fr 1fr}
+  .lr-card{background:#fff;border-radius:10px;padding:11px 9px;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+  .lr-card .ci{font-size:1.4rem}
+  .lr-card .ct{font-size:.62rem;color:#444;margin-top:4px;font-weight:600}
+  .rtab .lr-side{display:grid;grid-template-columns:96px 1fr;height:100%}
+  .rtab .lr-nav{background:#fff;border-right:1px solid #e8e8e8;padding:10px 7px;display:flex;flex-direction:column;gap:8px}
+  .rtab .lr-navitem{font-size:.6rem;color:#666;padding:7px 5px;border-radius:7px;text-align:center;font-weight:600}
+  .rtab .lr-navitem.act{background:#ddf4cc;color:#3a8a00}
+  .rtab .lr-main{padding:10px;overflow:hidden}
+
+  /* QA ACCORDION */
+  .qa{border:1px solid var(--line);border-radius:13px;overflow:hidden;margin:10px 0;background:var(--bg-card)}
+  .qa summary{padding:15px 18px;cursor:pointer;font-weight:600;font-size:.96rem;color:var(--ink);list-style:none;display:flex;align-items:center;gap:10px;transition:.18s}
+  .qa summary::-webkit-details-marker{display:none}
+  .qa summary:hover{background:rgba(84,197,248,.05)}
+  .qa summary .qmark{font-family:var(--display);color:var(--flutter);font-weight:700;flex-shrink:0}
+  .qa summary .arrow{margin-left:auto;transition:.25s;color:var(--ink-faint);font-size:.8rem}
+  .qa[open] summary .arrow{transform:rotate(90deg)}
+  .qa[open] summary{border-bottom:1px solid var(--line);background:rgba(84,197,248,.04)}
+  .qa-ans{padding:16px 18px;font-size:.92rem;color:var(--ink-dim);line-height:1.7}
+  .qa-ans b{color:var(--ink)}
+  .qa-ans .star{color:var(--accent)}
+  .qa-ans code{font-family:var(--mono);font-size:.85em;background:var(--bg-soft);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--flutter)}
+  .qa-tag{display:inline-block;font-size:.68rem;font-family:var(--mono);color:var(--green);background:rgba(63,185,80,.1);padding:2px 8px;border-radius:6px;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="false" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="true" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span class="btn-icon">☀️</span><span class="btn-label">Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span class="btn-icon">🔄</span><span class="btn-label">데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>모바일 코스 (Flutter)</span> &gt; <span>실전 Flutter · 앱 재현 &amp; 면접</span></div>
+    </div>
+
+  <header class="hero">
+    <div class="badge"><span class="dot"></span>REAL-WORLD FLUTTER · 화면 재현 + 코드 매핑</div>
+    <h1>유명 앱은 Flutter를<br><span class="accent">이렇게</span> 씁니다</h1>
+    <p class="sub">실제 Flutter로 만들어진 앱들의 핵심 화면을 재현하고, 어떤 위젯·개념이 쓰였는지 코드와 함께 짚습니다. 면접에서 "이런 화면을 이렇게 구현한다"고 구체적으로 말할 수 있게 됩니다.</p>
+    <div class="intro-note">
+      <b>읽는 법:</b> 왼쪽은 실제 앱 화면의 재현(클릭·호버 가능), 오른쪽은 그걸 만드는 Flutter 코드와 사용된 개념입니다. 화면 속 요소를 직접 만져보면서 코드와 연결해 보세요. 아래 다섯 앱은 모두 실제로 Flutter(또는 Flutter 기반 모듈)로 제작·운영된 사례입니다.
+    </div>
+  </header>
+
+  <!-- ============ 1. REFLECTLY ============ -->
+  <div class="case">
+    <div class="case-head">
+      <div class="case-logo" style="background:linear-gradient(135deg,#7b66e0,#a78bfa)">R</div>
+      <div class="meta"><h2>Reflectly</h2><div class="cat">AI 저널링 · 멘탈 웰니스 · Flutter 초기 대표작</div></div>
+      <div class="num">01</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="rf">
+              <div class="rf-top"><span>9:41</span><span>오늘 · 6월 8일</span></div>
+              <div class="rf-greet">좋은 아침이에요,<br>창한님 ☀️</div>
+              <div class="rf-sub">오늘 하루는 어떻게 시작하고 싶나요?</div>
+              <div class="rf-card" onclick="this.querySelector('.d').textContent='탭됨! 저널 작성 화면으로 이동 →'">
+                <div class="ic">✍️</div>
+                <div class="t">오늘의 저널 쓰기</div>
+                <div class="d">생각을 적어보세요</div>
+              </div>
+              <div class="rf-card" onclick="this.querySelector('.d').textContent='탭됨! 명상 시작 →'">
+                <div class="ic">🧘</div>
+                <div class="t">5분 마음챙김</div>
+                <div class="d">차분하게 호흡하기</div>
+              </div>
+              <div class="rf-mood">
+                <span title="아주 좋음">😄</span><span title="좋음">🙂</span>
+                <span title="보통">😐</span><span title="별로">😟</span><span title="나쁨">😢</span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">기분 이모지·카드를 눌러보세요</div>
+      </div>
+      <div class="explain">
+        <p><b>왜 유명한가:</b> Reflectly는 React Native에서 <b>Flutter로 전환</b>한 초기 대표 사례로, "Flutter로 이렇게 부드럽고 아름다운 UI가 가능하다"를 증명했습니다. 수백만 다운로드를 기록했죠.</p>
+
+        <h3>핵심 — 그라데이션 + 글래스모피즘 카드</h3>
+        <p>화면 전체를 덮는 부드러운 그라데이션 배경 위에, 반투명 카드를 얹는 게 시그니처입니다. Flutter에선 <b>위젯 조합만으로</b> 이걸 그립니다.</p>
+        <div class="widget-tags">
+          <span class="wtag">Container</span><span class="wtag">BoxDecoration</span>
+          <span class="wtag">LinearGradient</span><span class="wtag">BackdropFilter</span>
+          <span class="wtag">GestureDetector</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">reflectly_card.dart</span></div>
+          <pre><span class="tok-c">// 그라데이션 배경 — CSS의 linear-gradient에 해당</span>
+<span class="tok-t">Container</span>(
+  decoration: <span class="tok-t">BoxDecoration</span>(
+    gradient: <span class="tok-t">LinearGradient</span>(
+      begin: <span class="tok-t">Alignment</span>.topCenter,
+      end: <span class="tok-t">Alignment</span>.bottomCenter,
+      colors: [<span class="tok-t">Color</span>(<span class="tok-n">0xFF6D5DD3</span>), <span class="tok-t">Color</span>(<span class="tok-n">0xFFB89BF0</span>)],
+    ),
+  ),
+  child: <span class="tok-t">GestureDetector</span>(            <span class="tok-c">// 탭 감지</span>
+    onTap: () => _openJournal(),
+    child: <span class="tok-t">ClipRRect</span>(             <span class="tok-c">// 모서리 둥글게 자르기</span>
+      borderRadius: <span class="tok-t">BorderRadius</span>.circular(<span class="tok-n">20</span>),
+      child: <span class="tok-t">BackdropFilter</span>(       <span class="tok-c">// 반투명 블러(글래스 효과)</span>
+        filter: <span class="tok-t">ImageFilter</span>.blur(sigmaX: <span class="tok-n">8</span>, sigmaY: <span class="tok-n">8</span>),
+        child: <span class="tok-t">Text</span>(<span class="tok-s">'오늘의 저널 쓰기'</span>),
+      ),
+    ),
+  ),
+)</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>BoxDecoration + LinearGradient</code> = CSS <code>background: linear-gradient()</code>, <code>BackdropFilter.blur</code> = CSS <code>backdrop-filter: blur()</code>, <code>GestureDetector</code> = <code>onClick</code> 핸들러.</div>
+        <div class="tryit"><b>면접 활용:</b> "Reflectly 스타일의 글래스모피즘 카드를 <code>BackdropFilter</code>와 <code>BoxDecoration</code> 조합으로 구현해봤습니다" — 시각적 완성도를 어필할 수 있는 포인트.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 2. GOOGLE ADS ============ -->
+  <div class="case">
+    <div class="case-head">
+      <div class="case-logo" style="background:linear-gradient(135deg,#4285f4,#1a73e8)">G</div>
+      <div class="meta"><h2>Google Ads</h2><div class="cat">실시간 캠페인 대시보드 · Google 자체 제작</div></div>
+      <div class="num">02</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="ga">
+              <div class="ga-bar"><span style="font-size:1.1rem">📊</span><span class="gt">캠페인 성과</span></div>
+              <div class="ga-body">
+                <div class="ga-stat">
+                  <div class="lbl">노출수 (오늘)</div>
+                  <div class="val" id="gaImp">0</div>
+                  <div class="chg up">▲ 12.4% 전일 대비</div>
+                  <div class="ga-chart" id="gaChart"></div>
+                </div>
+                <div class="ga-stat">
+                  <div class="lbl">클릭수</div>
+                  <div class="val" id="gaClk">0</div>
+                  <div class="chg up">▲ 8.1%</div>
+                </div>
+                <div class="ga-stat">
+                  <div class="lbl">비용</div>
+                  <div class="val" id="gaCost">₩0</div>
+                  <div class="chg down">▼ 3.2%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">숫자가 실시간으로 카운트업됩니다</div>
+      </div>
+      <div class="explain">
+        <p><b>왜 유명한가:</b> Google이 <b>자사 제품</b>을 Flutter로 만든 첫 대형 사례입니다. "Google이 직접 쓴다"는 게 프레임워크 신뢰의 결정적 근거가 됐죠. 실시간 통계·차트·알림이 핵심입니다.</p>
+
+        <h3>핵심 — 실시간 데이터 + 애니메이션 카운터</h3>
+        <p>이 포지션 JD의 <b>"사용자 데이터 모니터링"</b>과 직결됩니다. 서버에서 받은 숫자를 부드럽게 갱신하고, 막대 차트로 시각화하는 패턴이에요.</p>
+        <div class="widget-tags">
+          <span class="wtag">StreamBuilder</span><span class="wtag">TweenAnimationBuilder</span>
+          <span class="wtag">Card</span><span class="wtag">CustomPaint</span><span class="wtag">fl_chart</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">ads_dashboard.dart</span></div>
+          <pre><span class="tok-c">// 실시간 통계 — 서버 스트림을 구독해 자동 갱신</span>
+<span class="tok-t">StreamBuilder</span>&lt;<span class="tok-t">Stats</span>&gt;(
+  stream: adsRepo.liveStats(),     <span class="tok-c">// 실시간 데이터 흐름</span>
+  builder: (context, snap) {
+    <span class="tok-k">final</span> imp = snap.data?.impressions ?? <span class="tok-n">0</span>;
+    <span class="tok-c">// 숫자가 0 → 목표값으로 부드럽게 카운트업</span>
+    <span class="tok-k">return</span> <span class="tok-t">TweenAnimationBuilder</span>&lt;<span class="tok-t">int</span>&gt;(
+      tween: <span class="tok-t">IntTween</span>(begin: <span class="tok-n">0</span>, end: imp),
+      duration: <span class="tok-t">Duration</span>(milliseconds: <span class="tok-n">900</span>),
+      builder: (_, value, __) => <span class="tok-t">Text</span>(
+        <span class="tok-s">'$value'</span>,
+        style: <span class="tok-t">TextStyle</span>(fontSize: <span class="tok-n">24</span>, fontWeight: <span class="tok-t">FontWeight</span>.bold),
+      ),
+    );
+  },
+)</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>StreamBuilder</code> = WebSocket/SSE 구독 + 상태 갱신, <code>TweenAnimationBuilder</code> = react-spring/framer-motion의 숫자 애니메이션, <code>fl_chart</code> = recharts/chart.js.</div>
+        <div class="tryit"><b>면접 활용:</b> "이탈 지점 분석 대시보드를 <code>StreamBuilder</code>로 실시간 갱신하고, 지표 변화를 <code>TweenAnimationBuilder</code>로 시각화해 사용자가 변화를 직관적으로 인지하게 만들 수 있습니다."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 3. XIANYU (Alibaba) ============ -->
+  <div class="case">
+    <div class="case-head">
+      <div class="case-logo" style="background:linear-gradient(135deg,#ff6a00,#ff4400)">闲</div>
+      <div class="meta"><h2>Xianyu (闲鱼) · Alibaba</h2><div class="cat">중고거래 커머스 · 5천만+ DAU급 대규모 운영</div></div>
+      <div class="num">03</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="xy">
+              <div class="xy-bar"><span style="font-size:1.1rem">🐟</span><div class="xy-search">중고 맥북 검색...</div></div>
+              <div class="xy-feed" id="xyFeed"></div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">스크롤되는 2열 상품 피드</div>
+      </div>
+      <div class="explain">
+        <p><b>왜 유명한가:</b> 알리바바의 중고거래 앱으로, <b>초대규모 트래픽</b>을 Flutter로 감당한 사례입니다. iOS 개발자 부족을 Flutter로 해결했고, 성능 저하 없이 확장에 성공했죠.</p>
+
+        <h3>핵심 — 무한 스크롤 + 지연 로딩 그리드</h3>
+        <p>상품 수천 개를 한 번에 그리면 메모리가 터집니다. <b>화면에 보이는 것만 그때그때 생성</b>하는 게 핵심이에요. <a href="#" style="color:var(--flutter)">3-트리 가이드</a>에서 본 성능 원칙이 그대로 적용됩니다.</p>
+        <div class="widget-tags">
+          <span class="wtag">GridView.builder</span><span class="wtag">SliverGrid</span>
+          <span class="wtag">CachedNetworkImage</span><span class="wtag">ListView.builder</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">xianyu_feed.dart</span></div>
+          <pre><span class="tok-c">// 무한 그리드 — 보이는 항목만 lazy 생성 (메모리 절약)</span>
+<span class="tok-t">GridView</span>.builder(
+  gridDelegate: <span class="tok-t">SliverGridDelegateWithFixedCrossAxisCount</span>(
+    crossAxisCount: <span class="tok-n">2</span>,             <span class="tok-c">// 2열</span>
+    mainAxisSpacing: <span class="tok-n">10</span>,
+    crossAxisSpacing: <span class="tok-n">10</span>,
+  ),
+  itemCount: products.length,
+  itemBuilder: (context, i) {
+    <span class="tok-k">return</span> <span class="tok-t">ProductCard</span>(
+      key: <span class="tok-t">ValueKey</span>(products[i].id),   <span class="tok-c">// 신원 고정(재정렬 안전)</span>
+      product: products[i],
+      <span class="tok-c">// 이미지는 캐싱 — 스크롤 시 재다운로드 방지</span>
+      image: <span class="tok-t">CachedNetworkImage</span>(imageUrl: products[i].img),
+    );
+  },
+)</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>GridView.builder</code> = react-window/virtualized 리스트, <code>CachedNetworkImage</code> = 이미지 lazy-load + 캐시 라이브러리, <code>ValueKey</code> = <code>key</code> prop.</div>
+        <div class="tryit"><b>면접 활용:</b> "대규모 리스트는 <code>.builder</code> 생성자로 지연 렌더링해 메모리를 관리하고, 이미지는 캐싱으로 스크롤 성능을 확보합니다" — 성능 의식이 있는 지원자로 평가받습니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 4. BMW ============ -->
+  <div class="case">
+    <div class="case-head">
+      <div class="case-logo" style="background:linear-gradient(135deg,#0066b1,#003d6b)">M</div>
+      <div class="meta"><h2>My BMW</h2><div class="cat">커넥티드카 · 30개국 운영 · 엔터프라이즈급</div></div>
+      <div class="num">04</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="bmw">
+              <div class="bmw-top">
+                <div class="bmw-logo">BMW</div>
+                <div class="bmw-model">i4 eDrive40</div>
+              </div>
+              <div class="bmw-name">내 차량</div>
+              <div class="bmw-car">🚗</div>
+              <div class="bmw-row">
+                <div class="bmw-tile">
+                  <div class="l">주행 가능</div>
+                  <div class="v" id="bmwRange">— <small>km</small></div>
+                </div>
+                <div class="bmw-tile">
+                  <div class="l">배터리</div>
+                  <div class="v" id="bmwBat">—<small>%</small></div>
+                  <div class="bmw-charge-bar"><div class="bmw-charge-fill" id="bmwFill"></div></div>
+                </div>
+              </div>
+              <div class="bmw-act">
+                <button class="bmw-btn" onclick="this.textContent='🔓 잠금 해제됨'">🔒 도어 잠금</button>
+                <button class="bmw-btn ghost" onclick="this.textContent='❄️ 작동 중'">공조 켜기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">버튼을 눌러 차량을 제어해보세요</div>
+      </div>
+      <div class="explain">
+        <p><b>왜 유명한가:</b> BMW는 iOS/Android 두 버전이 따로 놀던 문제를 <b>Flutter 단일 코드베이스</b>로 통합했습니다. 1년에 1만 개 이상 빌드를 찍어내며 빠른 배포를 증명한 엔터프라이즈 사례죠.</p>
+
+        <h3>핵심 — 상태 동기화 + 디바이스 연동</h3>
+        <p>차량(IoT)에서 오는 실시간 상태(배터리·위치)를 앱에 반영하고, 앱에서 차량으로 명령을 보냅니다. <b>전역 상태관리</b>가 필수예요.</p>
+        <div class="widget-tags">
+          <span class="wtag">Riverpod</span><span class="wtag">Notifier</span>
+          <span class="wtag">AnimatedContainer</span><span class="wtag">FutureBuilder</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">bmw_vehicle.dart</span></div>
+          <pre><span class="tok-c">// 차량 상태를 전역 관리 (여러 화면이 공유) — Notifier (Riverpod 3 표준)</span>
+<span class="tok-k">final</span> vehicleProvider = <span class="tok-t">NotifierProvider</span>&lt;
+    <span class="tok-t">VehicleNotifier</span>, <span class="tok-t">VehicleState</span>&gt;(<span class="tok-t">VehicleNotifier</span>.new);
+
+<span class="tok-k">class</span> <span class="tok-t">VehicleNotifier</span> <span class="tok-k">extends</span> <span class="tok-t">Notifier</span>&lt;<span class="tok-t">VehicleState</span>&gt; {
+  <span class="tok-an">@override</span>
+  <span class="tok-t">VehicleState</span> <span class="tok-f">build</span>() => <span class="tok-t">VehicleState</span>.initial();
+
+  <span class="tok-c">// 차량에 잠금 명령 전송 → 응답으로 상태 갱신</span>
+  <span class="tok-t">Future</span>&lt;<span class="tok-t">void</span>&gt; <span class="tok-f">lockDoors</span>() <span class="tok-k">async</span> {
+    state = state.copyWith(isLocking: <span class="tok-k">true</span>);
+    <span class="tok-k">await</span> api.sendCommand(<span class="tok-t">Command</span>.lock);
+    state = state.copyWith(isLocked: <span class="tok-k">true</span>, isLocking: <span class="tok-k">false</span>);
+  }
+}
+
+<span class="tok-c">// UI에서 구독 → 배터리 변화 시 자동 리빌드</span>
+<span class="tok-k">final</span> battery = ref.watch(vehicleProvider).batteryLevel;</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>NotifierProvider</code> = Redux store + 액션, <code>copyWith</code> = 불변 상태 업데이트(<code>{...state, isLocked:true}</code>), <code>ref.watch</code> = <code>useSelector</code>.</div>
+        <div class="tryit"><b>면접 활용:</b> "여러 화면이 공유하는 상태는 <code>Riverpod</code>의 <code>Notifier</code>로 단방향 관리하고, 비동기 명령은 로딩→성공 상태를 명시적으로 전이시킵니다." — 아키텍처 설계 역량 어필.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ 5. LEARNING APP (the actual job) ============ -->
+  <div class="case" style="border-color:var(--flutter);box-shadow:0 0 0 1px rgba(84,197,248,.2)">
+    <div class="case-head" style="background:linear-gradient(135deg,rgba(88,204,2,.12),transparent)">
+      <div class="case-logo" style="background:linear-gradient(135deg,#58cc02,#46a302)">🦉</div>
+      <div class="meta"><h2>게이미피케이션 학습 앱</h2><div class="cat">듀오링고 스타일 · ⭐ 지원하신 포지션과 직결</div></div>
+      <div class="num">05</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="du">
+              <div class="du-top">
+                <div class="du-streak">🔥 <span id="duStreak">7</span>일</div>
+                <div class="du-hearts">💎 <span id="duXp">450</span></div>
+                <div class="du-hearts">❤️ 5</div>
+              </div>
+              <div class="du-body">
+                <div class="du-unit">Unit 1 · 기초</div>
+                <div class="du-path">
+                  <button class="du-node done du-off3" onclick="duClick(this,event)">⭐</button>
+                  <button class="du-node done du-off1" onclick="duClick(this,event)">📘</button>
+                  <button class="du-node done du-off2" onclick="duClick(this,event)">✏️</button>
+                  <button class="du-node current du-off4" onclick="duClick(this,event)">🎯</button>
+                  <button class="du-node lock du-off2">🔒</button>
+                  <button class="du-node lock du-off1">🔒</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">노란 노드(🎯)를 눌러 XP를 얻어보세요</div>
+      </div>
+      <div class="explain">
+        <p><b>이게 바로 그 포지션입니다.</b> JD의 <b>"스트릭·레벨·보상"</b> 게이미피케이션이 정확히 이런 화면이에요. 듀오링고의 학습 경로(스킬 트리)와 스트릭 카운터를 재현했습니다.</p>
+
+        <h3>핵심 — 스트릭 · XP · 스킬 트리 + 보상 애니메이션</h3>
+        <p>레슨 완료 시 XP가 튀어오르고, 노드가 잠금 해제되는 <b>성취감의 시각화</b>가 생명입니다. 면접에서 이 화면을 "이렇게 만들겠다"고 설명할 수 있어야 해요.</p>
+        <div class="widget-tags">
+          <span class="wtag">AnimatedScale</span><span class="wtag">Hero</span>
+          <span class="wtag">CustomPaint</span><span class="wtag">Riverpod</span>
+          <span class="wtag">implicit animations</span><span class="wtag">Lottie</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">streak_lesson.dart</span></div>
+          <pre><span class="tok-c">// 스트릭 상태 — 자정 리셋 로직 포함, 전역 관리 (Notifier · Riverpod 3 표준)</span>
+<span class="tok-k">final</span> streakProvider = <span class="tok-t">NotifierProvider</span>&lt;<span class="tok-t">StreakNotifier</span>, <span class="tok-t">int</span>&gt;(
+  <span class="tok-t">StreakNotifier</span>.new);
+
+<span class="tok-k">class</span> <span class="tok-t">StreakNotifier</span> <span class="tok-k">extends</span> <span class="tok-t">Notifier</span>&lt;<span class="tok-t">int</span>&gt; {
+  <span class="tok-an">@override</span>
+  <span class="tok-t">int</span> <span class="tok-f">build</span>() { _loadAndCheck(); <span class="tok-k">return</span> <span class="tok-n">0</span>; }
+
+  <span class="tok-c">// 마지막 학습일이 어제면 연속, 그 전이면 0으로 리셋</span>
+  <span class="tok-t">void</span> <span class="tok-f">completeToday</span>() {
+    <span class="tok-k">final</span> last = _prefs.lastStudyDate;
+    <span class="tok-k">if</span> (_isYesterday(last)) state = state + <span class="tok-n">1</span>;  <span class="tok-c">// 스트릭 +1</span>
+    <span class="tok-k">else if</span> (!_isToday(last)) state = <span class="tok-n">1</span>;       <span class="tok-c">// 끊김 → 재시작</span>
+    _prefs.lastStudyDate = <span class="tok-t">DateTime</span>.now();
+  }
+}
+
+<span class="tok-c">// 레슨 노드 — 완료 시 통통 튀는 보상 애니메이션</span>
+<span class="tok-t">AnimatedScale</span>(
+  scale: isCompleted ? <span class="tok-n">1.0</span> : <span class="tok-n">0.85</span>,
+  duration: <span class="tok-t">Duration</span>(milliseconds: <span class="tok-n">300</span>),
+  curve: <span class="tok-t">Curves</span>.elasticOut,        <span class="tok-c">// 탄성 효과(통통)</span>
+  child: <span class="tok-t">LessonNode</span>(icon: <span class="tok-t">Icons</span>.star),
+)</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>AnimatedScale + Curves.elasticOut</code> = framer-motion <code>spring</code> 애니메이션, <code>Lottie</code> = lottie-react(보상 폭죽 효과), <code>Notifier</code> = Redux/Zustand 스토어.</div>
+        <div class="tryit"><b>⭐ 면접 결정타:</b> "스트릭은 자정 리셋·연속 판정 로직을 <code>Notifier</code>에 캡슐화하고 로컬에 영속화하며, 레슨 완료 보상은 <code>AnimatedScale</code>의 <code>elasticOut</code> 커브나 <code>Lottie</code>로 성취감을 극대화합니다. 오프라인 학습 후 서버 동기화도 큐로 처리합니다." → 이 한 단락이면 게이미피케이션 이해도를 완벽히 증명합니다.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =================================================================== -->
+  <!-- JD 맞춤 심화 섹션 -->
+  <!-- =================================================================== -->
+
+  <!-- ===== 6. ONBOARDING ===== -->
+  <div class="seclabel"><span class="sn">JD ①</span><h2>온보딩 플로우 — 신규 유저 여정</h2><span class="jd">"온보딩부터 학습 플로우까지 전체 설계"</span></div>
+  <p class="seclede">신규 유저가 앱을 켜고 첫 레슨에 도달하기까지. 이탈이 가장 많이 일어나는 구간이라, 리드가 직접 설계해야 하는 핵심 여정입니다.</p>
+
+  <div class="case">
+    <div class="case-head">
+      <div class="case-logo" style="background:linear-gradient(135deg,#58cc02,#46a302)">①</div>
+      <div class="meta"><h2>4단계 온보딩</h2><div class="cat">동기 질문 → 목표 설정 → 레벨 진단 → 첫 보상</div></div>
+      <div class="num">06</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="obscreen ob1" id="obStep" data-step="1">
+              <div class="ob-dots"><span class="on"></span><span></span><span></span><span></span></div>
+              <div class="ob-hero">🦉</div>
+              <div class="ob-h">안녕하세요!<br>왜 학습을 시작하시나요?</div>
+              <div class="ob-p">동기를 알면 맞춤 목표를 추천해 드려요</div>
+              <div class="ob-opts">
+                <div class="ob-opt" onclick="obSelect(this)">💼 <span>커리어 성장</span></div>
+                <div class="ob-opt" onclick="obSelect(this)">✈️ <span>여행 준비</span></div>
+                <div class="ob-opt" onclick="obSelect(this)">🧠 <span>두뇌 단련</span></div>
+              </div>
+              <button class="ob-cta" onclick="obNext()">계속하기</button>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">옵션을 고르고 "계속하기"를 눌러보세요</div>
+      </div>
+      <div class="explain">
+        <p><b>설계 의도:</b> 온보딩은 <b>"가치를 빨리 체감시켜 이탈을 막는"</b> 구간입니다. 듀오링고는 첫 화면에서 <b>동기를 묻고</b>, 부담 없는 진단으로 레벨을 정한 뒤, <b>첫 레슨에서 바로 보상</b>을 줘서 "할 만하다"는 느낌을 만듭니다.</p>
+
+        <h3>핵심 — PageView 단계 전환 + 진행 상태</h3>
+        <p>여러 단계를 좌우로 넘기고, 각 단계의 선택을 모아 마지막에 서버로 보냅니다. 진행 표시줄로 "거의 다 왔다"는 동기를 부여하는 게 포인트.</p>
+        <div class="widget-tags">
+          <span class="wtag">PageView</span><span class="wtag">PageController</span>
+          <span class="wtag">AnimatedSwitcher</span><span class="wtag">Stepper</span><span class="wtag">Riverpod</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">onboarding_flow.dart</span></div>
+          <pre><span class="tok-c">// 온보딩 단계를 좌우로 넘기는 PageView</span>
+<span class="tok-k">final</span> _controller = <span class="tok-t">PageController</span>();
+
+<span class="tok-t">PageView</span>(
+  controller: _controller,
+  physics: <span class="tok-t">NeverScrollableScrollPhysics</span>(),  <span class="tok-c">// 버튼으로만 이동</span>
+  onPageChanged: (i) => ref.read(onboardingProvider.notifier).setStep(i),
+  children: [
+    <span class="tok-t">MotivationStep</span>(),   <span class="tok-c">// 1. 동기 질문</span>
+    <span class="tok-t">GoalStep</span>(),         <span class="tok-c">// 2. 일일 목표(5분/10분/15분)</span>
+    <span class="tok-t">PlacementStep</span>(),    <span class="tok-c">// 3. 레벨 진단(건너뛰기 가능)</span>
+    <span class="tok-t">FirstRewardStep</span>(),  <span class="tok-c">// 4. 첫 보상 → 가입 유도</span>
+  ],
+);
+
+<span class="tok-c">// "계속" 버튼 → 다음 단계로 부드럽게 이동</span>
+<span class="tok-t">void</span> <span class="tok-f">next</span>() => _controller.nextPage(
+  duration: <span class="tok-t">Duration</span>(milliseconds: <span class="tok-n">350</span>),
+  curve: <span class="tok-t">Curves</span>.easeOutCubic,
+);</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>PageView + PageController</code> = 스텝 캐러셀(react-swipeable-views), <code>onPageChanged</code>로 단계별 선택을 전역 상태에 누적하는 건 멀티스텝 폼의 상태 관리와 동일합니다.</div>
+        <div class="tryit"><b>면접 활용:</b> "온보딩은 <code>PageView</code>로 단계를 구성하고 선택값을 <code>Riverpod</code>에 누적해 마지막에 한 번에 제출합니다. 진행 표시줄과 '건너뛰기' 옵션으로 이탈을 줄이고, A/B 테스트로 단계 순서를 최적화합니다."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 7. API / GraphQL ===== -->
+  <div class="seclabel"><span class="sn">JD ②</span><h2>API · GraphQL 연동</h2><span class="jd">"RESTful API 또는 GraphQL 백엔드 연동" + 백엔드 강점</span></div>
+  <p class="seclede">창한님의 가장 강력한 무기. Spring 백엔드를 직접 만들어본 프론트 리드는 흔치 않습니다. API 설계까지 이해한 프론트엔드라는 점을 코드로 증명하세요.</p>
+
+  <div class="case" style="border-color:var(--flutter);box-shadow:0 0 0 1px rgba(84,197,248,.2)">
+    <div class="case-head" style="background:linear-gradient(135deg,rgba(84,197,248,.1),transparent)">
+      <div class="case-logo" style="background:linear-gradient(135deg,#54c5f8,#0468d7)">②</div>
+      <div class="meta"><h2>계층형 네트워크 설계</h2><div class="cat">REST + GraphQL · ⭐ 창한님 백엔드 경험 직결</div></div>
+      <div class="num">07</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div style="height:100%;background:#0d1117;color:#e6edf3;padding:18px 14px;display:flex;flex-direction:column;font-family:var(--mono);font-size:.66rem">
+              <div style="color:#54c5f8;font-weight:700;margin-bottom:12px;font-size:.78rem">🔌 데이터 흐름</div>
+              <div style="background:#161b22;border:1px solid #2d3643;border-radius:9px;padding:10px;margin-bottom:8px">
+                <div style="color:#7ee787">① Widget</div>
+                <div style="color:#6e7781;font-size:.6rem;margin-top:2px">ref.watch(lessonProvider)</div>
+              </div>
+              <div style="text-align:center;color:#54c5f8">↓</div>
+              <div style="background:#161b22;border:1px solid #2d3643;border-radius:9px;padding:10px;margin:8px 0">
+                <div style="color:#d2a8ff">② Repository</div>
+                <div style="color:#6e7781;font-size:.6rem;margin-top:2px">캐시 확인 → 없으면 호출</div>
+              </div>
+              <div style="text-align:center;color:#54c5f8">↓</div>
+              <div style="background:#161b22;border:1px solid #2d3643;border-radius:9px;padding:10px;margin:8px 0">
+                <div style="color:#ffa657">③ ApiClient (Dio)</div>
+                <div style="color:#6e7781;font-size:.6rem;margin-top:2px">토큰 첨부 · 재시도 · 에러변환</div>
+              </div>
+              <div style="text-align:center;color:#54c5f8">↓</div>
+              <div style="background:#0066b1;border-radius:9px;padding:10px;margin-top:8px;text-align:center">
+                <div style="color:#fff">🌱 Spring Boot</div>
+                <div style="color:#cce;font-size:.6rem;margin-top:2px">REST / GraphQL</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">UI는 Repository만 알면 됨 (관심사 분리)</div>
+      </div>
+      <div class="explain">
+        <p><b>설계 핵심:</b> UI가 HTTP를 직접 부르지 않습니다. <b>Repository 패턴</b>으로 "데이터를 어디서 가져오는지"를 UI에서 숨겨, 서버가 REST든 GraphQL이든 UI 코드는 그대로예요. 백엔드를 아는 사람이 설계하는 방식입니다.</p>
+
+        <h3>핵심 — Dio + Repository + 토큰 인터셉터</h3>
+        <div class="widget-tags">
+          <span class="wtag">Dio</span><span class="wtag">Repository</span>
+          <span class="wtag">Interceptor</span><span class="wtag">freezed</span><span class="wtag">graphql_flutter</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">api_client.dart</span></div>
+          <pre><span class="tok-c">// 모든 요청에 토큰 자동 첨부 + 401 시 갱신 (인터셉터)</span>
+dio.interceptors.add(<span class="tok-t">InterceptorsWrapper</span>(
+  onRequest: (options, handler) {
+    options.headers[<span class="tok-s">'Authorization'</span>] = <span class="tok-s">'Bearer $token'</span>;
+    handler.next(options);
+  },
+  onError: (e, handler) <span class="tok-k">async</span> {
+    <span class="tok-k">if</span> (e.response?.statusCode == <span class="tok-n">401</span>) {
+      <span class="tok-k">await</span> _refreshToken();        <span class="tok-c">// 토큰 갱신 후 재시도</span>
+      <span class="tok-k">return</span> handler.resolve(<span class="tok-k">await</span> _retry(e.requestOptions));
+    }
+    handler.next(e);
+  },
+));
+
+<span class="tok-c">// Repository — UI는 이것만 호출 (출처를 모름)</span>
+<span class="tok-k">class</span> <span class="tok-t">LessonRepository</span> {
+  <span class="tok-t">Future</span>&lt;<span class="tok-t">List</span>&lt;<span class="tok-t">Lesson</span>&gt;&gt; <span class="tok-f">getLessons</span>() <span class="tok-k">async</span> {
+    <span class="tok-k">final</span> res = <span class="tok-k">await</span> _api.get(<span class="tok-s">'/lessons'</span>);
+    <span class="tok-k">return</span> (res.data <span class="tok-k">as</span> <span class="tok-t">List</span>).map(<span class="tok-t">Lesson</span>.fromJson).toList();
+  }
+}</pre>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">graphql_query.dart</span></div>
+          <pre><span class="tok-c">// GraphQL — 필요한 필드만 골라 요청 (오버페칭 방지)</span>
+<span class="tok-k">const</span> q = <span class="tok-s">'''
+  query GetProgress(\$userId: ID!) {
+    user(id: \$userId) {
+      streak
+      xp
+      lessons { id title completed }
+    }
+  }
+'''</span>;
+<span class="tok-k">final</span> result = <span class="tok-k">await</span> client.query(<span class="tok-t">QueryOptions</span>(document: gql(q)));</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>Dio + Interceptor</code> = axios 인터셉터, <code>Repository</code> = API 서비스 레이어/커스텀 훅, <code>graphql_flutter</code> = Apollo Client. 토큰 자동 갱신 로직은 양쪽이 동일합니다.</div>
+        <div class="tryit"><b>⭐ 면접 결정타:</b> "Spring으로 REST·GraphQL API를 직접 설계·구현해봤기 때문에, 프론트에서 <code>Repository</code> 패턴으로 관심사를 분리하고 인터셉터로 인증·에러를 일괄 처리합니다. 오버페칭이 문제면 GraphQL로, 단순 CRUD면 REST로 — 백엔드 트레이드오프를 알고 프론트를 설계할 수 있습니다." → 백엔드+프론트를 잇는 유일한 강점.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 8. RETENTION FUNNEL ===== -->
+  <div class="seclabel"><span class="sn">JD ③</span><h2>이탈 분석 퍼널</h2><span class="jd">"사용자 데이터 모니터링 및 이탈 지점 분석/개선"</span></div>
+  <p class="seclede">데이터 기반으로 개선을 반복하는 문화. 어느 단계에서 유저가 떨어져 나가는지 보고, 가설을 세워 개선하는 사이클의 출발점입니다.</p>
+
+  <div class="case">
+    <div class="case-head">
+      <div class="case-logo" style="background:linear-gradient(135deg,#202124,#5f6368)">③</div>
+      <div class="meta"><h2>온보딩 퍼널 분석</h2><div class="cat">단계별 잔존율 · 이탈 지점 시각화</div></div>
+      <div class="num">08</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col">
+        <div class="phone">
+          <div class="notch"></div>
+          <div class="screen">
+            <div class="fn">
+              <div class="fn-bar"><span style="font-size:1rem">📉</span> 온보딩 퍼널</div>
+              <div class="fn-body" id="fnBody"></div>
+            </div>
+          </div>
+        </div>
+        <div class="phone-cap">막대가 차오르며 이탈 지점을 표시</div>
+      </div>
+      <div class="explain">
+        <p><b>읽는 법:</b> 각 단계의 잔존율을 보면 <b>"앱 실행 → 동기 선택"에서 32%가 빠지는</b> 게 보입니다. 여기가 개선 1순위. 가설("질문이 너무 무겁다")을 세우고 A/B 테스트로 검증하는 거예요.</p>
+
+        <h3>핵심 — 이벤트 로깅 + 퍼널 집계</h3>
+        <p>프론트에서 각 단계 진입/이탈을 <b>이벤트로 기록</b>하고, 분석 도구로 보냅니다. 이 데이터가 곧 개선의 근거.</p>
+        <div class="widget-tags">
+          <span class="wtag">Firebase Analytics</span><span class="wtag">Amplitude</span>
+          <span class="wtag">RouteObserver</span><span class="wtag">fl_chart</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">funnel_tracking.dart</span></div>
+          <pre><span class="tok-c">// 각 온보딩 단계 진입을 이벤트로 기록</span>
+<span class="tok-t">void</span> <span class="tok-f">logStep</span>(<span class="tok-t">String</span> step) {
+  analytics.logEvent(
+    name: <span class="tok-s">'onboarding_step'</span>,
+    parameters: {<span class="tok-s">'step'</span>: step, <span class="tok-s">'ts'</span>: <span class="tok-t">DateTime</span>.now().toIso8601String()},
+  );
+}
+
+<span class="tok-c">// 화면 전환을 자동 추적하는 RouteObserver</span>
+<span class="tok-k">class</span> <span class="tok-t">AnalyticsObserver</span> <span class="tok-k">extends</span> <span class="tok-t">RouteObserver</span>&lt;<span class="tok-t">PageRoute</span>&gt; {
+  <span class="tok-an">@override</span>
+  <span class="tok-t">void</span> <span class="tok-f">didPush</span>(<span class="tok-t">Route</span> route, <span class="tok-t">Route</span>? prev) {
+    <span class="tok-k">super</span>.didPush(route, prev);
+    analytics.setCurrentScreen(screenName: route.settings.name);
+  }
+}
+
+<span class="tok-c">// 이탈률 = 1 − (다음단계 진입 / 현재단계 진입)</span>
+<span class="tok-k">double</span> dropRate = <span class="tok-n">1</span> - (next / current);</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>Firebase Analytics/Amplitude</code>는 웹과 동일 SDK, <code>RouteObserver</code> = React Router의 페이지뷰 추적 미들웨어. 퍼널 차트는 recharts와 같은 발상입니다.</div>
+        <div class="tryit"><b>면접 활용:</b> "각 단계에 이벤트 로깅을 심어 퍼널을 집계하고, 이탈이 큰 구간에 가설을 세워 A/B 테스트로 검증합니다. 예를 들어 동기 선택 단계 이탈이 높으면 질문을 가볍게 바꾸거나 순서를 뒤로 미뤄 비교합니다." → "데이터 기반 반복" 문화에 정확히 부합.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 9. RESPONSIVE ===== -->
+  <div class="seclabel"><span class="sn">JD ④</span><h2>반응형 인터랙티브 UI</h2><span class="jd">"반응형 인터랙티브 UI/UX 구현"</span></div>
+  <p class="seclede">같은 코드로 폰과 태블릿을 모두 대응. Flutter 크로스플랫폼의 핵심 역량이자, JD가 명시한 요구사항입니다.</p>
+
+  <div class="case">
+    <div class="case-head">
+      <div class="case-logo" style="background:linear-gradient(135deg,#1cb0f6,#0a82c4)">④</div>
+      <div class="meta"><h2>적응형 레이아웃</h2><div class="cat">폰: 세로 스택 · 태블릿: 사이드바 + 그리드</div></div>
+      <div class="num">09</div>
+    </div>
+    <div class="case-body">
+      <div class="phone-col" style="grid-column:1/-1;border-right:none;border-bottom:1px solid var(--line)">
+        <div class="resp-wrap">
+          <div class="resp-dev">
+            <div class="rphone">
+              <div class="rscreen">
+                <div class="lr-top"><span>🦉 학습</span><span>🔥7</span></div>
+                <div class="lr-grid one">
+                  <div class="lr-card"><div class="ci">📘</div><div class="ct">기초 단어</div></div>
+                  <div class="lr-card"><div class="ci">✏️</div><div class="ct">문법</div></div>
+                  <div class="lr-card"><div class="ci">🎧</div><div class="ct">듣기</div></div>
+                </div>
+              </div>
+            </div>
+            <div class="rcap">📱 Phone &lt; 600dp · 1열</div>
+          </div>
+          <div class="resp-dev">
+            <div class="rtab">
+              <div class="rscreen">
+                <div class="lr-side">
+                  <div class="lr-nav">
+                    <div class="lr-navitem act">🏠 홈</div>
+                    <div class="lr-navitem">📚 학습</div>
+                    <div class="lr-navitem">🏆 랭킹</div>
+                    <div class="lr-navitem">👤 프로필</div>
+                  </div>
+                  <div class="lr-main">
+                    <div class="lr-top" style="border-radius:8px"><span>🦉 오늘의 학습</span><span>🔥7 · 💎450</span></div>
+                    <div class="lr-grid two" style="padding:9px 0 0">
+                      <div class="lr-card"><div class="ci">📘</div><div class="ct">기초 단어</div></div>
+                      <div class="lr-card"><div class="ci">✏️</div><div class="ct">문법</div></div>
+                      <div class="lr-card"><div class="ci">🎧</div><div class="ct">듣기</div></div>
+                      <div class="lr-card"><div class="ci">🗣️</div><div class="ct">말하기</div></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="rcap">💻 Tablet ≥ 600dp · 사이드바 + 2열</div>
+          </div>
+        </div>
+      </div>
+      <div class="explain" style="grid-column:1/-1">
+        <p><b>설계 핵심:</b> 화면 너비를 기준으로 <b>레이아웃 자체를 바꿉니다.</b> 폰은 하단 탭 + 세로 스택, 태블릿은 좌측 사이드바 + 다열 그리드. 같은 위젯을 재배치할 뿐, 비즈니스 로직은 공유해요.</p>
+        <h3>핵심 — LayoutBuilder + 브레이크포인트</h3>
+        <div class="widget-tags">
+          <span class="wtag">LayoutBuilder</span><span class="wtag">MediaQuery</span>
+          <span class="wtag">Flexible</span><span class="wtag">Wrap</span><span class="wtag">OrientationBuilder</span>
+        </div>
+        <div class="code">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">adaptive_layout.dart</span></div>
+          <pre><span class="tok-c">// 너비에 따라 레이아웃을 분기 (반응형의 핵심)</span>
+<span class="tok-t">LayoutBuilder</span>(
+  builder: (context, constraints) {
+    <span class="tok-k">if</span> (constraints.maxWidth &gt;= <span class="tok-n">600</span>) {
+      <span class="tok-c">// 태블릿: 사이드바 + 그리드</span>
+      <span class="tok-k">return</span> <span class="tok-t">Row</span>(children: [
+        <span class="tok-t">NavigationRail</span>(destinations: _navItems),  <span class="tok-c">// 좌측 메뉴</span>
+        <span class="tok-t">Expanded</span>(child: <span class="tok-t">LessonGrid</span>(columns: <span class="tok-n">2</span>)),
+      ]);
+    }
+    <span class="tok-c">// 폰: 하단 탭 + 1열</span>
+    <span class="tok-k">return</span> <span class="tok-t">Scaffold</span>(
+      body: <span class="tok-t">LessonGrid</span>(columns: <span class="tok-n">1</span>),
+      bottomNavigationBar: <span class="tok-t">NavigationBar</span>(destinations: _navItems),
+    );
+  },
+)</pre>
+        </div>
+        <div class="maps"><b>React 매핑:</b> <code>LayoutBuilder</code> = CSS 미디어 쿼리 / <code>useMediaQuery</code> 훅, <code>NavigationRail↔NavigationBar</code> 전환 = 반응형 사이드바↔하단바. 같은 데이터로 레이아웃만 바꾸는 발상이 동일합니다.</div>
+        <div class="tryit"><b>면접 활용:</b> "<code>LayoutBuilder</code>로 600dp 브레이크포인트를 잡아 폰은 <code>NavigationBar</code>, 태블릿은 <code>NavigationRail</code>로 전환하고 그리드 열 수를 조정합니다. 로직은 공유하고 레이아웃 위젯만 분기해 유지보수성을 지킵니다."</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== 10. COLLABORATION Q&A ===== -->
+  <div class="seclabel"><span class="sn">JD ⑤</span><h2>협업 · 프로세스 면접 답변집</h2><span class="jd">"기획/디자인과 긴밀히 협업 · 데이터 기반 반복"</span></div>
+  <p class="seclede">기술 질문만큼 중요한 게 협업·리더십 질문입니다. 리드 포지션이라 더더욱. 자주 나오는 질문과 모범 답변을 정리했어요 (클릭해서 펼치기).</p>
+
+  <details class="qa">
+    <summary><span class="qmark">Q.</span> 기획자·디자이너와 의견이 충돌하면 어떻게 푸나요?<span class="arrow">▶</span></summary>
+    <div class="qa-ans">
+      <span class="qa-tag">협업 · 갈등 해결</span>
+      <p>"먼저 <b>충돌의 층위를 구분</b>합니다. 취향 문제인지, 데이터로 답할 수 있는 문제인지요. 데이터로 답할 수 있으면 <b>A/B 테스트나 사용성 지표</b>로 결정하자고 제안합니다. 취향·방향성 문제면 각자의 <b>의도와 우려</b>를 명확히 한 뒤, 사용자 가치 기준으로 좁힙니다. 기술적 제약(성능·일정)이 있으면 <b>대안을 2~3개 만들어</b> 트레이드오프를 같이 보게 합니다. 제 역할은 '안 된다'가 아니라 '이 방향이면 이 비용, 저 방향이면 저 비용'을 투명하게 보여주는 것이라 생각합니다."</p>
+    </div>
+  </details>
+
+  <details class="qa">
+    <summary><span class="qmark">Q.</span> 디자이너가 Flutter로 구현하기 어려운 디자인을 요청하면?<span class="arrow">▶</span></summary>
+    <div class="qa-ans">
+      <span class="qa-tag">기술 협업</span>
+      <p>"무조건 거절하지 않습니다. 먼저 <b>구현 난이도와 성능 비용을 솔직히 공유</b>하고, <b>의도(왜 이 효과가 필요한지)</b>를 묻습니다. 의도가 '생동감'이라면, <code>Rive</code>나 <code>Lottie</code>로 더 가볍게 같은 느낌을 낼 대안을 제시합니다. Flutter는 커스텀 페인팅(<code>CustomPaint</code>)으로 거의 모든 디자인이 가능하지만, <b>60fps를 깨지 않는 선</b>을 함께 정하는 게 중요합니다. 디자인 시스템을 <b>공통 위젯/토큰으로 컴포넌트화</b>해두면 이런 협의 자체가 줄어듭니다."</p>
+    </div>
+  </details>
+
+  <details class="qa">
+    <summary><span class="qmark">Q.</span> 데이터 기반으로 개선한 경험을 말해주세요.<span class="arrow">▶</span></summary>
+    <div class="qa-ans">
+      <span class="qa-tag">데이터 기반 반복</span>
+      <p>"개선은 <b>측정 → 가설 → 실험 → 검증</b> 사이클로 접근합니다. 예를 들어 학습 앱에서 '온보딩 완료율이 낮다'는 지표를 봤다면, 퍼널을 쪼개 <b>어느 단계 이탈이 큰지</b> 특정합니다. 동기 선택 단계 이탈이 높다는 가설이 서면, <b>질문을 가볍게 바꾼 버전</b>과 원본을 A/B로 돌려 완료율을 비교합니다. 통계적으로 유의미하면 적용하고, 아니면 다음 가설로 넘어갑니다. <b>한 번에 하나씩 바꿔</b> 인과를 명확히 하는 게 핵심입니다."</p>
+    </div>
+  </details>
+
+  <details class="qa">
+    <summary><span class="qmark">Q.</span> 프론트엔드 리드로서 코드 품질과 일정을 어떻게 균형 잡나요?<span class="arrow">▶</span></summary>
+    <div class="qa-ans">
+      <span class="qa-tag">리더십 · 아키텍처</span>
+      <p>"전부 완벽하게 갈 수 없으니 <b>핵심 경로와 주변부를 구분</b>합니다. 결제·학습 플로우 같은 핵심은 테스트와 리뷰를 엄격히, 실험적 기능은 빠르게 내보고 데이터로 검증합니다. <b>기술 부채는 숨기지 않고 가시화</b>해 백로그로 관리하고, 스프린트마다 일정 비율을 상환에 배정합니다. 또 <b>공통 위젯·아키텍처 컨벤션(폴더 구조, 상태관리 규칙)</b>을 문서화해두면 팀 전체 속도가 올라가 장기적으로 일정도 지켜집니다."</p>
+    </div>
+  </details>
+
+  <details class="qa">
+    <summary><span class="qmark">Q.</span> React 경험은 있지만 Flutter 리드는 처음인데, 괜찮을까요?<span class="arrow">▶</span></summary>
+    <div class="qa-ans">
+      <span class="qa-tag">⭐ 약점 정면 돌파</span>
+      <p><span class="star">★</span> "프론트엔드 <b>설계 원칙은 프레임워크를 초월</b>합니다. 상태 관리, 컴포넌트 합성, 리렌더 최적화, 관심사 분리 — 이 사고방식은 React에서 충분히 단련했고, Flutter에 1:1로 매핑됩니다(<code>useState↔setState</code>, <code>Context↔Riverpod</code>, 가상DOM↔위젯트리). 문법은 학습 곡선이 짧고, 실제로 토이 프로젝트로 검증했습니다. 게다가 <b>Spring 백엔드를 직접 만들어본 경험</b>은 API 설계까지 이해한 프론트 리드라는 흔치 않은 강점이라, 팀의 프론트-백엔드 협업을 매끄럽게 만들 수 있습니다."</p>
+    </div>
+  </details>
+
+  <div class="div"></div>
+  <div style="text-align:center;padding:10px 0 4px">
+    <p style="color:var(--ink-dim);margin-bottom:16px;font-size:.95rem">개념을 더 깊이 복습하려면 메인 가이드로 돌아가세요</p>
+    <a class="pagelink" href="flutter-guide.html">← Flutter 마스터 가이드 (기초~심화)</a>
+  </div>
+
+    <footer class="flutter-foot">
+      <p>실전 Flutter · 유명 앱 화면 재현 · 면접 대비용 학습 자료</p>
+      <p style="margin-top:6px;font-size:.8rem">모든 화면은 실제 Flutter 앱 사례를 학습용으로 재현한 것입니다 · made with <span style="color:var(--flutter)">♦</span> for 창한's 기술면접</p>
+    </footer>
+
+    </main>
+
+  <!-- 용어 사전 모달 -->
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+
+<script>
+// in-app mockup demo animations (앱 화면 인터랙션)
+
+// reveal-on-scroll + trigger in-app animations once visible
+function animateGoogleAds(){
+  // count up numbers
+  const ups=[['gaImp',12840,''],['gaClk',1043,''],['gaCost',847200,'₩']];
+  ups.forEach(([id,end,pre])=>{
+    const el=document.getElementById(id); if(!el||el.dataset.done)return; el.dataset.done=1;
+    let s=null,dur=1000;
+    function step(t){if(!s)s=t;const p=Math.min((t-s)/dur,1);
+      const v=Math.floor(p*end); el.textContent=pre+v.toLocaleString();
+      if(p<1)requestAnimationFrame(step);}
+    requestAnimationFrame(step);
+  });
+  // chart bars
+  const chart=document.getElementById('gaChart');
+  if(chart&&!chart.dataset.done){chart.dataset.done=1;
+    const h=[40,65,50,80,60,95,70,85];
+    h.forEach(v=>{const b=document.createElement('div');b.className='bar';chart.appendChild(b);
+      setTimeout(()=>b.style.height=v+'%',60);});
+  }
+}
+function animateBmw(){
+  const r=document.getElementById('bmwRange'),b=document.getElementById('bmwBat'),f=document.getElementById('bmwFill');
+  if(r.dataset.done)return; r.dataset.done=1;
+  let rv=0,bv=0;const ri=setInterval(()=>{rv+=12;if(rv>=389){rv=389;clearInterval(ri);}r.innerHTML=rv+' <small>km</small>';},20);
+  const bi=setInterval(()=>{bv+=2;if(bv>=78){bv=78;clearInterval(bi);}b.innerHTML=bv+'<small>%</small>';f.style.width=bv+'%';},22);
+}
+function buildXianyu(){
+  const feed=document.getElementById('xyFeed'); if(!feed||feed.dataset.done)return; feed.dataset.done=1;
+  const items=[['💻','맥북 프로 14 M3','1,250,000','거의새것'],['📱','아이폰 15 Pro','980,000','S급'],
+    ['🎧','에어팟 맥스','420,000','새상품'],['⌚','애플워치 9','350,000','미개봉'],
+    ['📷','소니 A7 IV','2,100,000','풀박스'],['🎮','PS5 슬림','480,000','정품'],
+    ['⌨️','키크론 Q1','120,000','커스텀'],['🖥️','LG 32 모니터','390,000','무결점']];
+  const colors=['#fef3e2','#e8f4fd','#f0e8fd','#e8fdf0','#fde8ec','#e8ecfd','#fdf8e8','#eafdec'];
+  items.forEach((it,i)=>{
+    const d=document.createElement('div');d.className='xy-item';
+    d.innerHTML=`<div class="xy-img" style="background:${colors[i]}">${it[0]}</div>
+      <div class="xy-info"><div class="nm">${it[1]}</div>
+      <div class="pr"><small>₩</small>${it[2]}</div>
+      <div style="font-size:.62rem;color:#999;margin-top:3px">${it[3]}</div></div>`;
+    feed.appendChild(d);
+  });
+}
+// duolingo XP popup
+function duClick(node,e){
+  if(node.classList.contains('lock'))return;
+  // unlock next if current
+  if(node.classList.contains('current')){
+    node.classList.remove('current');node.classList.add('done');
+    const all=[...document.querySelectorAll('.du-node')];
+    const idx=all.indexOf(node);
+    if(all[idx+1]&&all[idx+1].classList.contains('lock')){
+      all[idx+1].classList.remove('lock');all[idx+1].classList.add('current');
+      all[idx+1].textContent='🎯';
+    }
+    // bump streak + xp
+    const st=document.getElementById('duStreak'),xp=document.getElementById('duXp');
+    st.textContent=parseInt(st.textContent)+1;
+    xp.textContent=parseInt(xp.textContent)+20;
+  }
+  // floating +20 XP
+  const pop=document.createElement('div');pop.className='du-xp';pop.textContent='+20 XP';
+  document.body.appendChild(pop);
+  const r=node.getBoundingClientRect();
+  pop.style.left=(r.left+r.width/2-18)+'px';pop.style.top=(r.top-6)+'px';
+  pop.animate([{opacity:0,transform:'translateY(0) scale(.7)'},
+    {opacity:1,transform:'translateY(-22px) scale(1.15)',offset:.4},
+    {opacity:0,transform:'translateY(-46px) scale(1)'}],
+    {duration:1000,easing:'cubic-bezier(.2,.8,.2,1)'});
+  setTimeout(()=>pop.remove(),1000);
+}
+
+// ===== onboarding multi-step =====
+const obSteps=[
+  {cls:'ob1',dot:0,hero:'🦉',h:'안녕하세요!<br>왜 학습을 시작하시나요?',p:'동기를 알면 맞춤 목표를 추천해 드려요',
+   opts:[['💼','커리어 성장'],['✈️','여행 준비'],['🧠','두뇌 단련']],cta:'계속하기'},
+  {cls:'ob2',dot:1,hero:'🎯',h:'하루 목표를<br>정해볼까요?',p:'작게 시작할수록 꾸준해져요',
+   opts:[['☕','5분 · 가볍게'],['🔥','10분 · 보통'],['💪','15분 · 진지하게']],cta:'계속하기'},
+  {cls:'ob3',dot:2,hero:'📊',h:'레벨을<br>확인해볼게요',p:'간단한 진단으로 시작점을 정해요 (건너뛰기 가능)',
+   opts:[['🌱','처음이에요'],['🌿','조금 알아요'],['🌳','꽤 알아요']],cta:'진단 시작'},
+  {cls:'ob4',dot:3,hero:'🎉',h:'첫 보상 획득!<br>+50 XP',p:'벌써 첫걸음을 뗐어요. 이대로 계속할까요?',
+   opts:[],cta:'무료로 시작하기 🚀'},
+];
+let obIdx=0, obPicked=false;
+function obSelect(el){
+  [...el.parentElement.children].forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel'); obPicked=true;
+}
+function obRender(){
+  const s=obSteps[obIdx]; const box=document.getElementById('obStep');
+  if(!box)return;
+  box.style.opacity=0;
+  setTimeout(()=>{
+    box.className='obscreen '+s.cls;
+    const dots=s.opts!==undefined?'<div class="ob-dots">'+[0,1,2,3].map(i=>`<span class="${i===s.dot?'on':''}"></span>`).join('')+'</div>':'';
+    const opts=s.opts.length?'<div class="ob-opts">'+s.opts.map(o=>`<div class="ob-opt" onclick="obSelect(this)">${o[0]} <span>${o[1]}</span></div>`).join('')+'</div>':'';
+    box.innerHTML=`${dots}<div class="ob-hero">${s.hero}</div><div class="ob-h">${s.h}</div><div class="ob-p">${s.p}</div>${opts}<button class="ob-cta" onclick="obNext()">${s.cta}</button>`;
+    box.style.opacity=1;
+    obPicked=false;
+  },220);
+}
+function obNext(){
+  // last step → restart
+  if(obIdx>=obSteps.length-1){ obIdx=0; obRender(); return; }
+  obIdx++; obRender();
+}
+
+// ===== funnel =====
+function buildFunnel(){
+  const body=document.getElementById('fnBody'); if(!body||body.dataset.done)return; body.dataset.done=1;
+  const steps=[
+    ['앱 실행',100,'#1a73e8',''],
+    ['동기 선택',68,'#1a73e8','-32%'],
+    ['목표 설정',61,'#1a73e8','-7%'],
+    ['레벨 진단',44,'#fbbc04','-17%'],
+    ['첫 레슨 완료',39,'#34a853','-5%'],
+    ['가입 완료',31,'#34a853','-8%'],
+  ];
+  steps.forEach((s,i)=>{
+    const d=document.createElement('div');d.className='fn-step';
+    d.innerHTML=`<div class="fl"><span class="fname">${s[0]}</span><span class="fpct">${s[1]}%</span></div>
+      <div class="fn-track"><div class="fn-fill" style="background:${s[2]}">${s[1]}%</div></div>
+      ${s[3]?`<div class="fn-drop">▼ ${s[3]} 이탈</div>`:''}`;
+    body.appendChild(d);
+    setTimeout(()=>{d.querySelector('.fn-fill').style.width=s[1]+'%';},120+i*130);
+  });
+  // insight
+  setTimeout(()=>{
+    const ins=document.createElement('div');ins.className='fn-insight';
+    ins.innerHTML='💡 <b>인사이트:</b> "동기 선택"에서 32% 이탈 — 최대 누수 지점. 질문을 가볍게 바꾸는 A/B 테스트 권장.';
+    body.appendChild(ins);
+  },120+steps.length*130+200);
+}
+
+// fire animations when each case scrolls into view
+const io=new IntersectionObserver((ents)=>{
+  ents.forEach(en=>{ if(!en.isIntersecting)return;
+    const id=en.target.dataset.anim;
+    if(id==='ga')animateGoogleAds();
+    if(id==='bmw')animateBmw();
+    if(id==='xy')buildXianyu();
+    if(id==='fn')buildFunnel();
+  });
+},{threshold:.3});
+document.querySelectorAll('.ga').forEach(el=>{el.closest('.case').dataset.anim='ga';io.observe(el.closest('.case'));});
+document.querySelectorAll('.bmw').forEach(el=>{el.closest('.case').dataset.anim='bmw';io.observe(el.closest('.case'));});
+document.querySelectorAll('.xy').forEach(el=>{el.closest('.case').dataset.anim='xy';io.observe(el.closest('.case'));});
+document.querySelectorAll('.fn').forEach(el=>{el.closest('.case').dataset.anim='fn';io.observe(el.closest('.case'));});
+</script>
+</body>
+</html>

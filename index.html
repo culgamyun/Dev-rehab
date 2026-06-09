@@ -6,7 +6,7 @@
   <title>Antigravity Fullstack Rehab Dashboard</title>
   <!-- 로컬 라이브러리 및 공통 스타일시트 연동 -->
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -20,6 +20,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -57,6 +58,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -75,8 +79,10 @@
       <div class="header-title">
         <h1 data-track="fullstack">풀스택 개발자 재활 마스터 코스</h1>
         <h1 data-track="robotics">🤖 로보틱스 입문 코스</h1>
+        <h1 data-track="flutter">📱 Flutter 모바일 코스</h1>
         <p data-track="fullstack" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">복귀 준비 완료! 기초부터 핵심 최신 우대 스택까지 하나씩 차례대로 정복해 나갑니다.</p>
         <p data-track="robotics" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">기초 수학·좌표계부터 센서·제어·ROS 2·인식·SLAM까지, Python으로 로봇을 한 단계씩 정복합니다.</p>
+        <p data-track="flutter" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Dart·위젯·렌더링·상태관리(Riverpod)부터 유명 앱 화면 재현·면접 대비까지. React 경험을 Flutter로 잇는 모바일 트랙입니다.</p>
       </div>
       
       <div class="header-controls">
@@ -443,6 +449,33 @@
         <div class="glass-panel chapter-card" onclick="window.location.href='appendix-r-a.html'" style="border-left: 3px solid var(--robotics);"><div class="chapter-badge" style="background: var(--robotics); color:#fff;">부록 R-A</div><h3>Python for Robotics 치트시트</h3><p>numpy·scipy·matplotlib·opencv 빈출 패턴을 한곳에 — 벡터·행렬·회전(scipy Rotation)·각도·영상처리·챕터별 색인. 실습 중 빠른 참조용(실행 검증).</p></div>
         <div class="glass-panel chapter-card" onclick="window.location.href='appendix-r-b.html'" style="border-left: 3px solid var(--robotics);"><div class="chapter-badge" style="background: var(--robotics); color:#fff;">부록 R-B</div><h3>로보틱스 면접 CS 단골 Q&amp;A</h3><p>좌표변환·상태추정·PID·기구학·ROS 2·SLAM·인식 7개 카테고리 24문항. 각 답에 "왜"와 면접 꼬리 질문까지(본편 검증 기반).</p></div>
         <div class="glass-panel chapter-card" onclick="window.location.href='appendix-r-c.html'" style="border-left: 3px solid var(--robotics);"><div class="chapter-badge" style="background: var(--robotics); color:#fff;">부록 R-C</div><h3>로보틱스 수학 복습 시트</h3><p>삼각함수·벡터·선형대수·확률통계·미적분 5개 영역 핵심 공식을 "로보틱스 어디서 쓰나"와 함께 압축. 실습·면접 직전 복습용(수치 실행 검증).</p></div>
+      </div>
+    </section>
+
+    <!-- Flutter 모바일 트랙 로드맵 -->
+    <section data-track="flutter" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
+      <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--frontend); padding-left: 12px; margin-bottom: 4px;">📱 Flutter 모바일 — 마스터 &amp; 면접 트랙</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 4px;">Dart 문법부터 위젯·3-트리 렌더링·Riverpod 상태관리까지 개념을 다지고(가이드), 유명 앱 화면 재현과 채용 JD 맞춤 면접 대비까지(실전). <strong style="color:var(--frontend);">2026 최신</strong> API 기준(Riverpod 3 · Material 3 · Impeller).</p>
+
+      <div class="chapters-grid">
+        <div class="glass-panel chapter-card" onclick="window.location.href='flutter-guide.html'" style="border-left: 3px solid var(--frontend);">
+          <div class="chapter-badge" style="background: var(--frontend); color: #fff;">가이드</div>
+          <h3>Flutter 마스터 가이드 (기초~심화)</h3>
+          <p>Dart 기초·Null Safety·Dart 3 신문법, "모든 것은 위젯", 레이아웃, Stateless/Stateful, 3-트리 렌더링, 생명주기·BuildContext, Future/Stream, Riverpod(Notifier), 성능 최적화 + React↔Flutter 매핑·면접 치트시트.</p>
+          <div class="chapter-meta">
+            <span>개념 정복 · 평생 참고</span>
+            <span>Dart · Flutter · Riverpod 3</span>
+          </div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='flutter-realapps.html'" style="border-left: 3px solid var(--frontend);">
+          <div class="chapter-badge" style="background: var(--frontend); color: #fff;">실전</div>
+          <h3>실전 Flutter · 앱 재현 &amp; 면접</h3>
+          <p>Reflectly·Google Ads·Xianyu·BMW·게이미피케이션 학습앱의 핵심 화면을 위젯 코드로 재현하고, 온보딩·API/GraphQL·이탈 퍼널·반응형·협업 Q&amp;A까지 채용 JD에 맞춘 면접 대비 시나리오.</p>
+          <div class="chapter-meta">
+            <span>면접 대비 · 화면 재현</span>
+            <span>위젯 코드 · 면접 답변집</span>
+          </div>
+        </div>
       </div>
     </section>
   </main>

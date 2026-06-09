@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flutter 마스터 가이드 · 기초부터 심화까지</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+<script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
+<script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
+<link rel="stylesheet" href="assets/style.css">
+<link rel="stylesheet" href="lib/prism.min.css">
+<style>
+  :root{
+    --radius:14px;
+    --mono:'JetBrains Mono',monospace;
+    --kr:'IBM Plex Sans KR',sans-serif;
+    --display:'Space Grotesk',sans-serif;
+  }
+  /* Flutter 컴포넌트 색상 토큰 → 대시보드 테마 토큰에 매핑(라이트/다크 자동 추종).
+     ※ 실제 앱 화면 목업(.rf/.ga/.xy/.bmw/.du 등)의 색은 규칙에 하드코딩되어 테마와 무관하게 고정. */
+  #main-content{
+    --bg:transparent; --bg-soft:var(--bg-card); --bg-card:var(--bg-glass);
+    --line:var(--border-color); --ink:var(--text-color);
+    --ink-dim:var(--text-muted); --ink-faint:var(--text-muted);
+    --flutter:#54c5f8; --flutter-deep:#0468d7; --dart:#01579b; --accent:#ffd33d;
+    --green:#3fb950; --red:#f85149; --purple:#bc8cff; --orange:#ff9e64; --pink:#f778ba;
+    --code-bg:#0a0e14; --code-bar:#11161f; --hero-h1:var(--text-color);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  /* 본문 타이포그래피는 콘텐츠 영역에만 적용(사이드바는 대시보드 Pretendard 유지) */
+  #main-content{
+    font-family:var(--kr);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── THEME TOGGLE BUTTON ── */
+  .theme-toggle{
+    position:fixed;top:20px;right:22px;z-index:50;
+    display:flex;align-items:center;gap:8px;
+    background:var(--bg-soft);border:1px solid var(--line);
+    color:var(--ink);border-radius:99px;padding:8px 16px;cursor:pointer;
+    font-family:var(--mono);font-size:.78rem;font-weight:500;
+    box-shadow:0 4px 18px rgba(0,0,0,.18);transition:.22s;
+  }
+  .theme-toggle:hover{border-color:var(--flutter);transform:translateY(-1px)}
+  .theme-toggle .ti{font-size:.95rem;line-height:1}
+  html[data-theme="light"] .theme-toggle{box-shadow:0 4px 18px rgba(60,80,120,.12)}
+
+  /* ---------- LAYOUT ---------- */
+  .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 24px}
+  .layout{display:grid;grid-template-columns:240px 1fr;gap:48px;align-items:start}
+
+  /* ---------- SIDEBAR NAV ---------- */
+  nav.toc{
+    position:sticky;top:24px;
+    background:var(--bg-soft);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:22px 18px;
+    max-height:calc(100vh - 48px);
+    overflow-y:auto;
+    font-size:.86rem;
+  }
+  nav.toc::-webkit-scrollbar{width:6px}
+  nav.toc::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px}
+  nav.toc .nav-title{
+    font-family:var(--display);font-weight:700;font-size:.72rem;letter-spacing:.12em;
+    text-transform:uppercase;color:var(--ink-faint);margin:18px 0 8px;
+  }
+  nav.toc .nav-title:first-child{margin-top:0}
+  nav.toc a{
+    display:block;color:var(--ink-dim);text-decoration:none;padding:5px 10px;
+    border-radius:7px;border-left:2px solid transparent;transition:.18s;
+  }
+  nav.toc a:hover{background:var(--bg-card);color:var(--ink)}
+  nav.toc a.active{color:var(--flutter);border-left-color:var(--flutter);background:rgba(84,197,248,.07)}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    padding:80px 0 56px;text-align:left;
+  }
+  .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:rgba(84,197,248,.1);border:1px solid rgba(84,197,248,.3);
+    color:var(--flutter);font-family:var(--mono);font-size:.74rem;font-weight:500;
+    padding:6px 14px;border-radius:99px;letter-spacing:.05em;margin-bottom:22px;
+  }
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--flutter);box-shadow:0 0 10px var(--flutter)}
+  header.hero h1{
+    font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,6vw,4rem);
+    line-height:1.05;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:18px;
+  }
+  header.hero h1 .accent{
+    background:linear-gradient(120deg,var(--flutter),var(--purple));
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  header.hero p.sub{
+    font-size:1.08rem;color:var(--ink-dim);max-width:640px;font-family:'Gowun Dodum',sans-serif;
+  }
+  .hero-meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px}
+  .hero-meta .m{display:flex;flex-direction:column;gap:2px}
+  .hero-meta .m b{font-family:var(--display);font-size:1.5rem;color:var(--hero-h1)}
+  .hero-meta .m span{font-size:.78rem;color:var(--ink-faint);letter-spacing:.04em}
+
+  /* ---------- SECTION ---------- */
+  section{padding:30px 0;scroll-margin-top:24px}
+  .sec-head{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .sec-num{
+    font-family:var(--mono);font-size:.82rem;font-weight:700;color:var(--bg);
+    background:var(--flutter);width:30px;height:30px;border-radius:8px;
+    display:grid;place-items:center;flex-shrink:0;
+  }
+  .sec-head h2{font-family:var(--display);font-weight:700;font-size:1.9rem;color:var(--hero-h1);letter-spacing:-.01em}
+  .sec-tag{
+    font-size:.72rem;color:var(--ink-faint);font-family:var(--mono);
+    margin-left:auto;border:1px solid var(--line);padding:3px 10px;border-radius:99px;
+  }
+  .lede{color:var(--ink-dim);margin:6px 0 22px 44px;font-family:'Gowun Dodum',sans-serif;font-size:1.02rem}
+  @media(max-width:760px){.lede{margin-left:0}}
+
+  h3{font-family:var(--kr);font-weight:700;font-size:1.18rem;color:var(--hero-h1);margin:30px 0 12px;display:flex;align-items:center;gap:9px}
+  h3 .ic{font-size:1.1rem}
+  h4{font-weight:600;font-size:1rem;color:var(--flutter);margin:20px 0 8px}
+  p{margin-bottom:14px;color:var(--ink)}
+  p.dim{color:var(--ink-dim)}
+  strong{color:var(--hero-h1);font-weight:600}
+  code.inl{
+    font-family:var(--mono);font-size:.86em;background:var(--bg-soft);
+    border:1px solid var(--line);padding:1px 7px;border-radius:5px;color:var(--flutter);
+  }
+
+  /* ---------- CARD ---------- */
+  .card{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:22px 24px;margin:16px 0;
+  }
+  .card.flush{padding:0;overflow:hidden}
+
+  /* ---------- CODE BLOCK ---------- */
+  .code{
+    background:var(--code-bg);border:1px solid var(--line);border-radius:12px;
+    margin:16px 0;overflow:hidden;
+  }
+  .code .bar{
+    display:flex;align-items:center;gap:7px;padding:10px 14px;
+    background:var(--code-bar);border-bottom:1px solid var(--line);
+  }
+  .code .bar .d{width:11px;height:11px;border-radius:50%}
+  .code .bar .d.r{background:#ff5f56}.code .bar .d.y{background:#ffbd2e}.code .bar .d.g{background:#27c93f}
+  .code .bar .fn{font-family:var(--mono);font-size:.74rem;color:var(--ink-faint);margin-left:8px}
+  .code pre{padding:18px 20px;overflow-x:auto;font-family:var(--mono);font-size:.84rem;line-height:1.7;color:#e6edf3}
+  .code pre::-webkit-scrollbar{height:8px}
+  .code pre::-webkit-scrollbar-thumb{background:var(--line);border-radius:4px}
+  .tok-k{color:#ff7b72}    /* keyword */
+  .tok-c{color:#8b949e;font-style:italic} /* comment */
+  .tok-s{color:#a5d6ff}    /* string */
+  .tok-t{color:#79c0ff}    /* type/class */
+  .tok-f{color:#d2a8ff}    /* function */
+  .tok-n{color:#79c0ff}    /* number */
+  .tok-p{color:#ffa657}    /* property */
+  .tok-an{color:#7ee787}   /* annotation */
+
+  /* ---------- CALLOUTS ---------- */
+  .note{border-radius:12px;padding:16px 18px 16px 46px;margin:16px 0;position:relative;font-size:.95rem;line-height:1.7}
+  .note::before{position:absolute;left:16px;top:15px;font-size:1.1rem}
+  .note.tip{background:rgba(63,185,80,.08);border:1px solid rgba(63,185,80,.3)}
+  .note.tip::before{content:"💡"}
+  .note.warn{background:rgba(248,81,73,.08);border:1px solid rgba(248,81,73,.3)}
+  .note.warn::before{content:"⚠️"}
+  .note.react{background:rgba(188,140,255,.08);border:1px solid rgba(188,140,255,.3)}
+  .note.react::before{content:"⚛️"}
+  .note.q{background:rgba(255,211,61,.07);border:1px solid rgba(255,211,61,.28)}
+  .note.q::before{content:"🎤"}
+  .note b{color:var(--hero-h1)}
+
+  /* ---------- TABLE ---------- */
+  table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.9rem;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+  th{background:var(--bg-soft);color:var(--flutter);font-weight:600;text-align:left;padding:11px 14px;font-size:.82rem;letter-spacing:.03em}
+  td{padding:11px 14px;border-top:1px solid var(--line);color:var(--ink);vertical-align:top}
+  tr:nth-child(even) td{background:rgba(255,255,255,.012)}
+  td code,th code{font-family:var(--mono);font-size:.84em;color:var(--orange)}
+
+  /* ---------- SVG FIGURE ---------- */
+  figure.diagram{
+    background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:26px 20px 18px;margin:22px 0;text-align:center;
+  }
+  figure.diagram svg{max-width:100%;height:auto;display:block;margin:0 auto}
+  figure.diagram figcaption{
+    margin-top:14px;font-size:.84rem;color:var(--ink-faint);font-family:'Gowun Dodum',sans-serif;
+  }
+  .svg-label{font-family:var(--kr);font-weight:600;fill:var(--ink)}
+  .svg-sub{font-family:var(--mono);fill:var(--ink-faint)}
+  .svg-mono{font-family:var(--mono);fill:var(--ink-dim)}
+  /* light mode: 어두운 노드 배경(#1c232e/#11161f/#0a0e14)을 밝게 치환 */
+  html[data-theme="light"] figure.diagram svg rect[fill="#1c232e"]{fill:#eef3fa}
+  html[data-theme="light"] figure.diagram svg rect[fill="#11161f"]{fill:#e3e9f2}
+  html[data-theme="light"] figure.diagram svg rect[fill="#0a0e14"]{fill:#e3e9f2}
+  html[data-theme="light"] figure.diagram svg text[fill="#e6edf3"]{fill:#1a2331}
+  /* 회색 캡션 텍스트 — 밝은 배경에서 더 진하게 */
+  html[data-theme="light"] figure.diagram svg text[fill="#9da7b3"]{fill:#5a6677}
+  html[data-theme="light"] figure.diagram svg text[fill="#6e7781"]{fill:#6b7686}
+  /* 노란색은 밝은 배경에서 안 보이므로 진한 황갈색으로 */
+  html[data-theme="light"] figure.diagram svg text[fill="#ffd33d"]{fill:#b8860b}
+  html[data-theme="light"] figure.diagram svg [stroke="#ffd33d"]{stroke:#b8860b}
+
+  /* ---------- WIDGET CATALOG GRID ---------- */
+  .wgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin:16px 0}
+  .wcard{background:var(--bg-soft);border:1px solid var(--line);border-radius:11px;padding:15px 16px;transition:.18s}
+  .wcard:hover{border-color:var(--flutter);transform:translateY(-2px)}
+  .wcard .wname{font-family:var(--mono);font-weight:700;color:var(--flutter);font-size:.92rem;margin-bottom:5px}
+  .wcard .wdesc{font-size:.83rem;color:var(--ink-dim);line-height:1.55}
+
+  /* ---------- PILLS ---------- */
+  .pills{display:flex;flex-wrap:wrap;gap:7px;margin:14px 0}
+  .pill{font-family:var(--mono);font-size:.76rem;padding:4px 11px;border-radius:99px;background:var(--bg-soft);border:1px solid var(--line);color:var(--ink-dim)}
+  .pill.on{background:rgba(84,197,248,.12);border-color:var(--flutter);color:var(--flutter)}
+
+  /* ---------- SUMMARY CARD ---------- */
+  .summary{background:linear-gradient(160deg,rgba(84,197,248,.06),rgba(188,140,255,.05));border:1px solid var(--line);border-radius:var(--radius);padding:24px 26px;margin:20px 0}
+  .summary h4{color:var(--accent);margin-top:0;font-size:1.05rem}
+  .summary ul{list-style:none;margin-top:10px}
+  .summary li{padding:7px 0 7px 26px;position:relative;border-bottom:1px dashed var(--line);font-size:.94rem}
+  .summary li:last-child{border-bottom:none}
+  .summary li::before{content:"▸";position:absolute;left:4px;color:var(--flutter)}
+  .summary li b{color:var(--hero-h1)}
+
+  /* ---------- FOOTER ---------- */
+  footer{border-top:1px solid var(--line);margin-top:50px;padding:40px 0 60px;text-align:center;color:var(--ink-faint);font-size:.85rem}
+  footer .heart{color:var(--flutter)}
+
+  /* ---------- DIVIDER ---------- */
+  .div{height:1px;background:linear-gradient(90deg,transparent,var(--line),transparent);margin:38px 0}
+
+  @media(max-width:860px){
+    .layout{grid-template-columns:1fr;gap:0}
+    nav.toc{display:none}
+  }
+  ul.bullet{margin:8px 0 16px 4px;list-style:none}
+  ul.bullet li{position:relative;padding:5px 0 5px 22px;color:var(--ink)}
+  ul.bullet li::before{content:"–";position:absolute;left:4px;color:var(--flutter);font-weight:700}
+  ul.bullet li b{color:var(--hero-h1)}
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:680px){.two-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="false" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="true" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span class="btn-icon">☀️</span><span class="btn-label">Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span class="btn-icon">🔄</span><span class="btn-label">데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>모바일 코스 (Flutter)</span> &gt; <span>Flutter 마스터 가이드</span></div>
+    </div>
+
+    <header class="hero">
+      <div class="badge"><span class="dot"></span>FLUTTER · DART · 면접 대비 학습 가이드</div>
+      <h1>Flutter <span class="accent">완전 정복</span><br>기초 문법부터 심화 아키텍처까지</h1>
+      <p class="sub">위젯·상태관리·렌더링 파이프라인·비동기까지, 면접관의 "왜?"에 답할 수 있도록 개념의 뿌리를 짚는 학습 자료입니다. React 경험을 가진 분을 위한 매핑 포인트도 함께 담았습니다.</p>
+      <div class="hero-meta">
+        <div class="m"><b>10</b><span>핵심 챕터</span></div>
+        <div class="m"><b>3-Tree</b><span>렌더링 모델</span></div>
+        <div class="m"><b>Dart</b><span>언어 기초</span></div>
+        <div class="m"><b>Riverpod</b><span>상태관리</span></div>
+      </div>
+    </header>
+
+
+    <!-- 0 WHAT IS FLUTTER -->
+    <section id="what">
+      <div class="sec-head"><span class="sec-num">0</span><h2>Flutter란 무엇인가</h2><span class="sec-tag">overview</span></div>
+      <p class="lede">하나의 코드베이스로 iOS·Android·웹·데스크톱을 모두 그리는 UI 툴킷. 언어는 Dart.</p>
+
+      <p>Flutter의 가장 큰 특징은 <strong>네이티브 컴포넌트를 쓰지 않는다</strong>는 점입니다. React Native가 OS의 버튼을 빌려 쓰는 것과 달리, Flutter는 <strong>자체 렌더링 엔진</strong>으로 모든 픽셀을 직접 그립니다. 그래서 어떤 플랫폼에서도 디자인이 100% 동일하게 나옵니다. <span class="dim">(2026년 기준 신형 <b>Impeller</b>가 iOS·Android 기본 엔진이고, 구형 Skia는 레거시 폴백입니다.)</span></p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flutter 아키텍처 계층">
+          <!-- Framework layer -->
+          <rect x="60" y="20" width="600" height="64" rx="10" fill="#1c232e" stroke="#54c5f8" stroke-width="1.5"/>
+          <text x="360" y="46" text-anchor="middle" class="svg-label" font-size="15" fill="#54c5f8">Framework (Dart)</text>
+          <text x="360" y="68" text-anchor="middle" class="svg-mono" font-size="11">Material · Cupertino · Widgets · Rendering · Animation</text>
+
+          <!-- Engine layer -->
+          <rect x="60" y="104" width="600" height="64" rx="10" fill="#1c232e" stroke="#bc8cff" stroke-width="1.5"/>
+          <text x="360" y="130" text-anchor="middle" class="svg-label" font-size="15" fill="#bc8cff">Engine (C/C++)</text>
+          <text x="360" y="152" text-anchor="middle" class="svg-mono" font-size="11">Skia / Impeller 렌더링 · Dart Runtime · Text Layout</text>
+
+          <!-- Embedder layer -->
+          <rect x="60" y="188" width="600" height="64" rx="10" fill="#1c232e" stroke="#ff9e64" stroke-width="1.5"/>
+          <text x="360" y="214" text-anchor="middle" class="svg-label" font-size="15" fill="#ff9e64">Embedder (플랫폼별)</text>
+          <text x="360" y="236" text-anchor="middle" class="svg-mono" font-size="11">iOS · Android · Web · Windows · macOS · Linux</text>
+
+          <!-- arrows -->
+          <path d="M360 84 L360 102" stroke="#6e7781" stroke-width="1.5" marker-end="url(#ar)"/>
+          <path d="M360 168 L360 186" stroke="#6e7781" stroke-width="1.5" marker-end="url(#ar)"/>
+          <defs>
+            <marker id="ar" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+              <path d="M0 0 L8 4 L0 8 z" fill="#6e7781"/>
+            </marker>
+          </defs>
+        </svg>
+        <figcaption>Flutter 3계층 구조 — 우리가 짜는 코드는 최상위 Framework 계층에 해당</figcaption>
+      </figure>
+
+      <div class="note tip"><b>면접 한 줄:</b> "Flutter는 OS 위젯을 쓰지 않고 자체 엔진(Skia/Impeller)으로 직접 그리기 때문에, 모든 플랫폼에서 픽셀 단위로 동일한 UI를 보장합니다."</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ===================== PART 1 ===================== -->
+
+    <!-- 1 DART -->
+    <section id="dart">
+      <div class="sec-head"><span class="sec-num">1</span><h2>Dart 언어 기초</h2><span class="sec-tag">part 1 · 기초</span></div>
+      <p class="lede">Flutter를 쓰려면 Dart를 알아야 합니다. JS/Java를 안다면 70%는 이미 아는 셈.</p>
+
+      <h3><span class="ic">📦</span>변수와 타입</h3>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">variables.dart</span></div>
+        <pre><span class="tok-c">// 타입 명시</span>
+<span class="tok-t">int</span> age = <span class="tok-n">30</span>;
+<span class="tok-t">double</span> height = <span class="tok-n">175.5</span>;
+<span class="tok-t">String</span> name = <span class="tok-s">'창한'</span>;
+<span class="tok-t">bool</span> isDev = <span class="tok-k">true</span>;
+
+<span class="tok-c">// 타입 추론 (var) — Java 10+ var, JS let과 유사</span>
+<span class="tok-k">var</span> city = <span class="tok-s">'Seoul'</span>;   <span class="tok-c">// String으로 추론됨</span>
+
+<span class="tok-c">// 불변 — final(런타임 상수), const(컴파일타임 상수)</span>
+<span class="tok-k">final</span> now = DateTime.now();  <span class="tok-c">// 실행 시점에 한 번 정해짐</span>
+<span class="tok-k">const</span> pi = <span class="tok-n">3.14</span>;          <span class="tok-c">// 컴파일 시점에 박제됨</span></pre>
+      </div>
+      <div class="note warn"><b>final vs const 꼭 구분:</b> <code class="inl">final</code>은 "한 번만 할당"(값은 런타임에 결정 가능), <code class="inl">const</code>는 "컴파일 시점에 이미 값이 확정"되어야 합니다. Flutter에서 <code class="inl">const</code> 위젯은 성능 최적화의 핵심이라 면접에서 자주 물어봅니다.</div>
+
+      <h3><span class="ic">❓</span>Null Safety</h3>
+      <p>Dart는 <strong>기본적으로 null을 허용하지 않습니다.</strong> null이 될 수 있으면 타입 뒤에 <code class="inl">?</code>를 붙여야 해요. NPE(Null Pointer Exception)를 컴파일 단계에서 막는 장치입니다.</p>
+      <div class="note tip"><b>🥤 일상 비유 — "내용물 있음" 보장된 컵:</b> Dart에서 <code class="inl">String</code>은 "반드시 음료가 담긴 컵"입니다. 빈 컵(null)을 건네면 컴파일러가 거부해요. 빈 컵일 수도 있는 경우엔 <code class="inl">String?</code>로 "빈 컵일 수 있음" 라벨을 붙여야 합니다. 마시기 전(사용 전) 컵이 비었는지 확인하라고 강제하니, "빈 컵인 줄 모르고 들이켜다 사레들리는"(런타임 NPE) 사고를 컴파일 단계에서 막아줍니다.</div>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">null_safety.dart</span></div>
+        <pre><span class="tok-t">String</span> name = <span class="tok-k">null</span>;    <span class="tok-c">// ❌ 컴파일 에러! null 불가</span>
+<span class="tok-t">String</span>? nickname = <span class="tok-k">null</span>; <span class="tok-c">// ✅ ?를 붙이면 null 허용</span>
+
+<span class="tok-c">// ?. → null이면 건너뜀 (JS의 optional chaining과 동일)</span>
+<span class="tok-t">int</span>? len = nickname?.length;
+
+<span class="tok-c">// ?? → null이면 기본값 사용</span>
+<span class="tok-t">String</span> display = nickname ?? <span class="tok-s">'손님'</span>;
+
+<span class="tok-c">// ! → "절대 null 아님" 단언 (틀리면 런타임 에러, 신중히!)</span>
+<span class="tok-t">int</span> sure = nickname!.length;</pre>
+      </div>
+
+      <h3><span class="ic">🔧</span>함수 · 화살표 · 명명 파라미터</h3>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">functions.dart</span></div>
+        <pre><span class="tok-c">// 일반 함수</span>
+<span class="tok-t">int</span> <span class="tok-f">add</span>(<span class="tok-t">int</span> a, <span class="tok-t">int</span> b) {
+  <span class="tok-k">return</span> a + b;
+}
+
+<span class="tok-c">// 화살표 함수 (단일 표현식) — JS와 동일</span>
+<span class="tok-t">int</span> <span class="tok-f">square</span>(<span class="tok-t">int</span> x) => x * x;
+
+<span class="tok-c">// 명명 파라미터 {} + required → 위젯에서 매우 자주 씀</span>
+<span class="tok-t">void</span> <span class="tok-f">greet</span>({<span class="tok-k">required</span> <span class="tok-t">String</span> name, <span class="tok-t">int</span> age = <span class="tok-n">0</span>}) {
+  print(<span class="tok-s">'$name, $age살'</span>);
+}
+
+<span class="tok-c">// 호출 — 순서 무관, 이름으로 지정</span>
+<span class="tok-f">greet</span>(name: <span class="tok-s">'창한'</span>, age: <span class="tok-n">30</span>);</pre>
+      </div>
+      <div class="note react"><b>React 개발자라면:</b> 위젯 생성자의 <code class="inl">{required this.title}</code> 패턴은 컴포넌트에 props를 넘기는 것과 같습니다. 명명 파라미터 = props 객체라고 생각하면 됩니다.</div>
+
+      <h3><span class="ic">🏗️</span>클래스와 생성자</h3>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">class.dart</span></div>
+        <pre><span class="tok-k">class</span> <span class="tok-t">User</span> {
+  <span class="tok-k">final</span> <span class="tok-t">String</span> name;
+  <span class="tok-k">final</span> <span class="tok-t">int</span> age;
+
+  <span class="tok-c">// 간결 생성자 — this.x로 바로 필드 초기화</span>
+  <span class="tok-t">User</span>({<span class="tok-k">required</span> <span class="tok-k">this</span>.name, <span class="tok-k">required</span> <span class="tok-k">this</span>.age});
+
+  <span class="tok-c">// 명명 생성자 (factory 패턴 등)</span>
+  <span class="tok-t">User</span>.guest() : name = <span class="tok-s">'손님'</span>, age = <span class="tok-n">0</span>;
+
+  <span class="tok-t">String</span> <span class="tok-f">describe</span>() => <span class="tok-s">'$name ($age)'</span>;
+}
+
+<span class="tok-k">final</span> u = <span class="tok-t">User</span>(name: <span class="tok-s">'창한'</span>, age: <span class="tok-n">30</span>);
+<span class="tok-k">final</span> g = <span class="tok-t">User</span>.guest();</pre>
+      </div>
+
+      <h3><span class="ic">🆕</span>Dart 3 — 알아두면 좋은 최신 문법 (2023~)</h3>
+      <p>Dart 3부터 표준이 된 기능들. 면접에서 "최신 Dart 아세요?"에 대비해 핵심만 짚습니다.</p>
+      <div class="wgrid">
+        <div class="wcard"><div class="wname">records</div><div class="wdesc">여러 값을 한 번에 반환. <code class="inl">(int, String) f() =&gt; (1, 'a');</code></div></div>
+        <div class="wcard"><div class="wname">patterns · 구조분해</div><div class="wdesc"><code class="inl">final (id, name) = user;</code> · 리스트/맵 분해</div></div>
+        <div class="wcard"><div class="wname">switch 표현식</div><div class="wdesc">값을 돌려주는 switch + 패턴 매칭. if-else 체인 대체</div></div>
+        <div class="wcard"><div class="wname">sealed class</div><div class="wdesc">하위 타입 봉인 → switch 망라성을 컴파일이 보장(상태 모델링)</div></div>
+      </div>
+      <div class="note react"><b>React/TS 매핑:</b> records ≈ 튜플, 패턴 구조분해 ≈ JS destructuring, sealed class + switch ≈ 판별 유니온(discriminated union)의 exhaustive 처리.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 2 WIDGET -->
+    <section id="widget">
+      <div class="sec-head"><span class="sec-num">2</span><h2>모든 것은 위젯이다</h2><span class="sec-tag">part 1 · 기초</span></div>
+      <p class="lede">버튼도, 패딩도, 정렬도, 화면 전체도 — Flutter에서는 전부 Widget. "Everything is a Widget."</p>
+
+      <p>Flutter UI는 <strong>위젯을 중첩(nesting)</strong>해서 만듭니다. 텍스트를 가운데 두고 싶으면 <code class="inl">Text</code>를 <code class="inl">Center</code>로 감싸고, 여백을 주려면 <code class="inl">Padding</code>으로 또 감쌉니다. 이 중첩 구조가 곧 <strong>위젯 트리</strong>입니다.</p>
+
+      <div class="note tip"><b>🪆 일상 비유 — 러시아 인형(마트료시카):</b> 작은 인형을 조금 큰 인형 안에 넣고, 또 더 큰 인형 안에 넣는 것과 똑같습니다. <code class="inl">Text</code>(가장 안쪽 인형)를 <code class="inl">Padding</code>으로 감싸고, 그걸 <code class="inl">Center</code>로 감싸고… 이렇게 "감싸기"를 반복하면 화면이 완성됩니다. 선물 포장도 같은 원리예요 — 내용물을 상자에 넣고, 포장지로 싸고, 리본을 두르는 단계가 곧 위젯 중첩입니다.</div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="위젯 트리 구조">
+          <!-- nesting boxes -->
+          <rect x="40" y="20" width="620" height="280" rx="12" fill="none" stroke="#54c5f8" stroke-width="2"/>
+          <text x="56" y="42" class="svg-mono" font-size="12" fill="#54c5f8">Scaffold</text>
+
+          <rect x="70" y="56" width="560" height="220" rx="10" fill="none" stroke="#bc8cff" stroke-width="1.6"/>
+          <text x="86" y="78" class="svg-mono" font-size="12" fill="#bc8cff">Center</text>
+
+          <rect x="100" y="92" width="500" height="160" rx="10" fill="none" stroke="#ff9e64" stroke-width="1.6"/>
+          <text x="116" y="114" class="svg-mono" font-size="12" fill="#ff9e64">Padding (16px)</text>
+
+          <rect x="130" y="128" width="440" height="100" rx="10" fill="none" stroke="#3fb950" stroke-width="1.6"/>
+          <text x="146" y="150" class="svg-mono" font-size="12" fill="#3fb950">Column</text>
+
+          <rect x="160" y="164" width="380" height="34" rx="7" fill="#1c232e" stroke="#f778ba" stroke-width="1.4"/>
+          <text x="350" y="186" text-anchor="middle" class="svg-mono" font-size="12" fill="#f778ba">Text("Hello")</text>
+
+          <rect x="160" y="206" width="380" height="14" rx="4" fill="#11161f"/>
+          <text x="350" y="217" text-anchor="middle" class="svg-mono" font-size="9" fill="#6e7781">SizedBox(height: 8) · ElevatedButton ...</text>
+        </svg>
+        <figcaption>위젯은 "감싸고 감싸는" 중첩 구조 → 이 트리가 화면이 됩니다</figcaption>
+      </figure>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">widget_tree.dart</span></div>
+        <pre><span class="tok-t">Scaffold</span>(
+  body: <span class="tok-t">Center</span>(          <span class="tok-c">// 가운데 정렬</span>
+    child: <span class="tok-t">Padding</span>(       <span class="tok-c">// 안쪽 여백</span>
+      padding: <span class="tok-t">EdgeInsets</span>.all(<span class="tok-n">16</span>),
+      child: <span class="tok-t">Column</span>(       <span class="tok-c">// 세로 나열</span>
+        children: [
+          <span class="tok-t">Text</span>(<span class="tok-s">'Hello'</span>),
+          <span class="tok-t">SizedBox</span>(height: <span class="tok-n">8</span>),  <span class="tok-c">// 간격</span>
+          <span class="tok-t">ElevatedButton</span>(
+            onPressed: () {},
+            child: <span class="tok-t">Text</span>(<span class="tok-s">'눌러봐'</span>),
+          ),
+        ],
+      ),
+    ),
+  ),
+)</pre>
+      </div>
+
+      <h3><span class="ic">🧩</span>꼭 알아야 할 핵심 위젯</h3>
+      <div class="wgrid">
+        <div class="wcard"><div class="wname">Container</div><div class="wdesc">박스. 패딩·마진·배경·테두리·크기를 한 번에. CSS의 div + style</div></div>
+        <div class="wcard"><div class="wname">Row / Column</div><div class="wdesc">가로 / 세로 정렬. flexbox의 flex-direction</div></div>
+        <div class="wcard"><div class="wname">Stack</div><div class="wdesc">겹쳐 쌓기. position:absolute 레이어링</div></div>
+        <div class="wcard"><div class="wname">Text</div><div class="wdesc">글자. style로 폰트·색·크기 지정</div></div>
+        <div class="wcard"><div class="wname">Image</div><div class="wdesc">이미지. .network / .asset 소스 지원</div></div>
+        <div class="wcard"><div class="wname">Scaffold</div><div class="wdesc">화면 뼈대. AppBar·body·FAB·Drawer 슬롯 제공</div></div>
+        <div class="wcard"><div class="wname">ListView</div><div class="wdesc">스크롤 리스트. .builder로 무한/지연 렌더</div></div>
+        <div class="wcard"><div class="wname">SizedBox</div><div class="wdesc">고정 크기 박스 / 위젯 사이 간격용</div></div>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 3 LAYOUT -->
+    <section id="layout">
+      <div class="sec-head"><span class="sec-num">3</span><h2>레이아웃 — Row · Column · Flex</h2><span class="sec-tag">part 1 · 기초</span></div>
+      <p class="lede">Flutter 레이아웃의 90%는 Row와 Column. CSS Flexbox를 알면 직관적입니다.</p>
+
+      <h4>주축(main) vs 교차축(cross)</h4>
+      <p>Row는 <strong>가로가 주축</strong>, Column은 <strong>세로가 주축</strong>입니다. 정렬은 두 축으로 따로 지정해요.</p>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 700 260" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Row와 Column의 축">
+          <!-- ROW -->
+          <text x="30" y="30" class="svg-label" font-size="14" fill="#54c5f8">Row</text>
+          <rect x="30" y="44" width="300" height="80" rx="8" fill="#1c232e" stroke="#2d3643"/>
+          <rect x="46" y="66" width="36" height="36" rx="6" fill="#54c5f8"/>
+          <rect x="92" y="66" width="36" height="36" rx="6" fill="#54c5f8"/>
+          <rect x="138" y="66" width="36" height="36" rx="6" fill="#54c5f8"/>
+          <line x1="46" y1="134" x2="314" y2="134" stroke="#ffd33d" stroke-width="1.5" marker-end="url(#a2)"/>
+          <text x="180" y="152" text-anchor="middle" class="svg-mono" font-size="10" fill="#ffd33d">mainAxis (가로)</text>
+          <line x1="20" y1="44" x2="20" y2="124" stroke="#bc8cff" stroke-width="1.5" marker-end="url(#a3)"/>
+          <text x="14" y="170" class="svg-mono" font-size="10" fill="#bc8cff" transform="rotate(0)">crossAxis ↕</text>
+
+          <!-- COLUMN -->
+          <text x="430" y="30" class="svg-label" font-size="14" fill="#3fb950">Column</text>
+          <rect x="430" y="44" width="120" height="180" rx="8" fill="#1c232e" stroke="#2d3643"/>
+          <rect x="470" y="60" width="40" height="32" rx="6" fill="#3fb950"/>
+          <rect x="470" y="100" width="40" height="32" rx="6" fill="#3fb950"/>
+          <rect x="470" y="140" width="40" height="32" rx="6" fill="#3fb950"/>
+          <line x1="558" y1="56" x2="558" y2="216" stroke="#ffd33d" stroke-width="1.5" marker-end="url(#a4)"/>
+          <text x="600" y="140" text-anchor="middle" class="svg-mono" font-size="10" fill="#ffd33d">mainAxis</text>
+          <text x="600" y="155" text-anchor="middle" class="svg-mono" font-size="10" fill="#ffd33d">(세로)</text>
+          <defs>
+            <marker id="a2" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#ffd33d"/></marker>
+            <marker id="a3" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#bc8cff"/></marker>
+            <marker id="a4" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#ffd33d"/></marker>
+          </defs>
+        </svg>
+        <figcaption>Row=가로 주축 / Column=세로 주축 · 정렬은 main·cross 두 축으로 제어</figcaption>
+      </figure>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">layout.dart</span></div>
+        <pre><span class="tok-t">Row</span>(
+  <span class="tok-c">// 주축(가로) 정렬: 양끝+가운데 균등 배치</span>
+  mainAxisAlignment: <span class="tok-t">MainAxisAlignment</span>.spaceBetween,
+  <span class="tok-c">// 교차축(세로) 정렬: 가운데</span>
+  crossAxisAlignment: <span class="tok-t">CrossAxisAlignment</span>.center,
+  children: [
+    <span class="tok-t">Icon</span>(<span class="tok-t">Icons</span>.star),
+    <span class="tok-c">// Expanded → 남는 공간 다 차지 (flex:1)</span>
+    <span class="tok-t">Expanded</span>(child: <span class="tok-t">Text</span>(<span class="tok-s">'제목'</span>)),
+    <span class="tok-t">Icon</span>(<span class="tok-t">Icons</span>.more_vert),
+  ],
+)</pre>
+      </div>
+      <div class="note tip"><b>Expanded / Flexible:</b> 남는 공간을 비율대로 나눠 가질 때 씁니다. CSS의 <code class="inl">flex-grow</code>와 같아요. <code class="inl">Expanded</code>는 꽉 채우고, <code class="inl">Flexible</code>은 필요한 만큼만.</div>
+      <div class="note warn"><b>면접 빈출 — RenderFlex overflow:</b> Row 안에 긴 Text를 넣으면 화면 밖으로 넘쳐 노란/검정 줄무늬 에러가 납니다. 원인은 "무한 너비 경쟁". 해결은 넘치는 위젯을 <code class="inl">Expanded</code>나 <code class="inl">Flexible</code>로 감싸기. 실무 단골 이슈라 자주 물어봅니다.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 4 STATELESS/STATEFUL -->
+    <section id="state-basic">
+      <div class="sec-head"><span class="sec-num">4</span><h2>Stateless vs Stateful</h2><span class="sec-tag">part 1 · 기초</span></div>
+      <p class="lede">위젯의 가장 근본적인 분류. "스스로 변하는 상태를 가지느냐"가 기준입니다.</p>
+
+      <div class="note tip"><b>🖼️ 일상 비유 — 인쇄된 사진 vs 화이트보드:</b> <b>Stateless</b>는 <b>인쇄된 사진</b>입니다. 한 번 인화되면 내용이 바뀌지 않아요(이름표, 로고). <b>Stateful</b>은 <b>화이트보드</b>입니다. 지우고 다시 쓸 수 있죠(좋아요 수, 입력창, 타이머). 화이트보드 내용을 바꿨으면 "여기 새로 썼어요!" 하고 알려야 사람들이 다시 보는데, 그 외침이 바로 <code class="inl">setState</code>입니다.</div>
+
+      <div class="two-col">
+        <div class="card">
+          <h4 style="margin-top:0">StatelessWidget</h4>
+          <p class="dim" style="margin-bottom:8px">받은 값(props)만으로 그림. 한 번 그려지면 스스로 안 변함.</p>
+          <ul class="bullet">
+            <li>외부 데이터만 표시</li>
+            <li>아이콘, 라벨, 정적 카드</li>
+            <li>React의 <b>props-only 컴포넌트</b></li>
+          </ul>
+        </div>
+        <div class="card">
+          <h4 style="margin-top:0">StatefulWidget</h4>
+          <p class="dim" style="margin-bottom:8px">내부 상태를 갖고, 그 상태가 바뀌면 다시 그림.</p>
+          <ul class="bullet">
+            <li>카운터, 폼 입력, 토글</li>
+            <li>애니메이션, 체크박스</li>
+            <li>React의 <b>useState 가진 컴포넌트</b></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">counter.dart</span></div>
+        <pre><span class="tok-c">// ── Stateful: 내부 count가 바뀌면 화면 갱신 ──</span>
+<span class="tok-k">class</span> <span class="tok-t">Counter</span> <span class="tok-k">extends</span> <span class="tok-t">StatefulWidget</span> {
+  <span class="tok-k">const</span> <span class="tok-t">Counter</span>({<span class="tok-k">super</span>.key});
+  <span class="tok-an">@override</span>
+  <span class="tok-t">State</span>&lt;<span class="tok-t">Counter</span>&gt; <span class="tok-f">createState</span>() => _CounterState();
+}
+
+<span class="tok-k">class</span> _CounterState <span class="tok-k">extends</span> <span class="tok-t">State</span>&lt;<span class="tok-t">Counter</span>&gt; {
+  <span class="tok-t">int</span> count = <span class="tok-n">0</span>;          <span class="tok-c">// 👈 이게 "상태"</span>
+
+  <span class="tok-t">void</span> <span class="tok-f">increment</span>() {
+    <span class="tok-f">setState</span>(() {        <span class="tok-c">// 👈 핵심! "다시 그려라" 신호</span>
+      count++;
+    });
+  }
+
+  <span class="tok-an">@override</span>
+  <span class="tok-t">Widget</span> <span class="tok-f">build</span>(<span class="tok-t">BuildContext</span> context) {
+    <span class="tok-k">return</span> <span class="tok-t">Column</span>(children: [
+      <span class="tok-t">Text</span>(<span class="tok-s">'$count'</span>),
+      <span class="tok-t">ElevatedButton</span>(onPressed: increment, child: <span class="tok-t">Text</span>(<span class="tok-s">'+1'</span>)),
+    ]);
+  }
+}</pre>
+      </div>
+
+      <div class="note warn"><b>가장 흔한 실수:</b> <code class="inl">count++</code>만 하고 <code class="inl">setState</code>를 안 부르면 → <b>값은 바뀌지만 화면은 그대로</b>입니다. setState가 Flutter에게 "build를 다시 호출하라"고 알리는 신호이기 때문이죠. 면접에서 거의 100% 확인하는 포인트입니다.</div>
+      <div class="note react"><b>React 매핑:</b> <code class="inl">setState</code> = <code class="inl">useState</code>의 setter. 둘 다 "리렌더 트리거"입니다. 차이는 React가 가상 DOM diff를 하고, Flutter는 위젯 트리를 재구성한다는 점.</div>
+      <div class="note q"><b>예상 꼬리질문:</b> "setState 안에서 await(비동기) 해도 되나요?" → <b>안 됩니다.</b> setState 콜백은 동기로 짧게 유지하고, 비동기 작업은 밖에서 한 뒤 결과만 setState로 반영해야 합니다.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ===================== PART 2 ===================== -->
+
+    <!-- 5 THREE TREES -->
+    <section id="trees">
+      <div class="sec-head"><span class="sec-num">5</span><h2>3-트리 렌더링 모델 ⭐</h2><span class="sec-tag">part 2 · 핵심</span></div>
+      <p class="lede">"Flutter는 왜 빠른가?"의 정답. 면접에서 가장 깊이 파고드는 주제입니다.</p>
+
+      <p>Flutter는 화면을 <strong>3개의 평행한 트리</strong>로 관리합니다. 각 트리의 역할 분담이 성능의 비밀이에요.</p>
+
+      <div class="note tip"><b>🏗️ 일상 비유 — 건축 현장:</b> 집을 짓는 과정으로 생각하면 한 번에 이해됩니다.<br>
+      • <b>Widget = 설계도면</b> 📄 — 종이라서 다시 그려도 비용이 거의 없음. "방을 파란색으로" 같은 <i>요구사항</i>일 뿐.<br>
+      • <b>Element = 현장 감독</b> 👷 — 도면과 실제 건물을 대조하며 "이번엔 벽 색만 바뀌었네, 벽돌은 그대로 두고 페인트만 새로 칠하자"고 판단.<br>
+      • <b>RenderObject = 실제 벽돌·콘크리트</b> 🧱 — 진짜로 쌓고 칠하는 작업이라 가장 비쌈.<br>
+      도면(Widget)을 100번 새로 그려도, 감독(Element)이 "실제로 바뀐 부분"만 골라 인부에게 시키므로 건물 전체를 부수고 다시 짓지 않습니다. 이것이 Flutter가 빠른 이유예요.</div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Widget Element RenderObject 3-트리">
+          <!-- columns headers -->
+          <text x="120" y="28" text-anchor="middle" class="svg-label" font-size="15" fill="#54c5f8">Widget Tree</text>
+          <text x="120" y="46" text-anchor="middle" class="svg-mono" font-size="10" fill="#6e7781">설계도 · 불변 · 가벼움</text>
+          <text x="360" y="28" text-anchor="middle" class="svg-label" font-size="15" fill="#bc8cff">Element Tree</text>
+          <text x="360" y="46" text-anchor="middle" class="svg-mono" font-size="10" fill="#6e7781">인스턴스 · 상태보관 · 재사용</text>
+          <text x="600" y="28" text-anchor="middle" class="svg-label" font-size="15" fill="#ff9e64">RenderObject Tree</text>
+          <text x="600" y="46" text-anchor="middle" class="svg-mono" font-size="10" fill="#6e7781">레이아웃·그리기 · 무거움</text>
+
+          <!-- widget nodes -->
+          <g>
+            <rect x="80" y="70" width="80" height="34" rx="7" fill="#1c232e" stroke="#54c5f8"/><text x="120" y="92" text-anchor="middle" class="svg-mono" font-size="11" fill="#54c5f8">Padding</text>
+            <rect x="80" y="140" width="80" height="34" rx="7" fill="#1c232e" stroke="#54c5f8"/><text x="120" y="162" text-anchor="middle" class="svg-mono" font-size="11" fill="#54c5f8">Column</text>
+            <rect x="80" y="210" width="80" height="34" rx="7" fill="#1c232e" stroke="#54c5f8"/><text x="120" y="232" text-anchor="middle" class="svg-mono" font-size="11" fill="#54c5f8">Text</text>
+            <line x1="120" y1="104" x2="120" y2="140" stroke="#54c5f8" stroke-width="1.2"/>
+            <line x1="120" y1="174" x2="120" y2="210" stroke="#54c5f8" stroke-width="1.2"/>
+          </g>
+          <!-- element nodes -->
+          <g>
+            <rect x="320" y="70" width="80" height="34" rx="7" fill="#1c232e" stroke="#bc8cff"/><text x="360" y="92" text-anchor="middle" class="svg-mono" font-size="11" fill="#bc8cff">Elem</text>
+            <rect x="320" y="140" width="80" height="34" rx="7" fill="#1c232e" stroke="#bc8cff"/><text x="360" y="162" text-anchor="middle" class="svg-mono" font-size="11" fill="#bc8cff">Elem</text>
+            <rect x="320" y="210" width="80" height="34" rx="7" fill="#1c232e" stroke="#bc8cff"/><text x="360" y="232" text-anchor="middle" class="svg-mono" font-size="11" fill="#bc8cff">Elem</text>
+            <line x1="360" y1="104" x2="360" y2="140" stroke="#bc8cff" stroke-width="1.2"/>
+            <line x1="360" y1="174" x2="360" y2="210" stroke="#bc8cff" stroke-width="1.2"/>
+          </g>
+          <!-- render nodes -->
+          <g>
+            <rect x="560" y="70" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="92" text-anchor="middle" class="svg-mono" font-size="10" fill="#ff9e64">RenderPad</text>
+            <rect x="560" y="140" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="162" text-anchor="middle" class="svg-mono" font-size="10" fill="#ff9e64">RenderFlex</text>
+            <rect x="560" y="210" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="232" text-anchor="middle" class="svg-mono" font-size="10" fill="#ff9e64">RenderPar</text>
+            <line x1="600" y1="104" x2="600" y2="140" stroke="#ff9e64" stroke-width="1.2"/>
+            <line x1="600" y1="174" x2="600" y2="210" stroke="#ff9e64" stroke-width="1.2"/>
+          </g>
+          <!-- horizontal links -->
+          <line x1="160" y1="87" x2="320" y2="87" stroke="#3d4654" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="400" y1="87" x2="560" y2="87" stroke="#3d4654" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="160" y1="157" x2="320" y2="157" stroke="#3d4654" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="400" y1="157" x2="560" y2="157" stroke="#3d4654" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="160" y1="227" x2="320" y2="227" stroke="#3d4654" stroke-width="1" stroke-dasharray="4 3"/>
+          <line x1="400" y1="227" x2="560" y2="227" stroke="#3d4654" stroke-width="1" stroke-dasharray="4 3"/>
+
+          <!-- bottom note -->
+          <rect x="80" y="282" width="560" height="40" rx="8" fill="rgba(84,197,248,.06)" stroke="#2d3643"/>
+          <text x="360" y="307" text-anchor="middle" class="svg-mono" font-size="11" fill="#9da7b3">build() 재호출 → 새 Widget 생성(쌈) → Element가 비교 → 바뀐 RenderObject만 갱신(비쌈)</text>
+        </svg>
+        <figcaption>3개 트리가 평행하게 연결됨 · Element가 중간에서 상태를 들고 diff를 수행</figcaption>
+      </figure>
+
+      <table>
+        <tr><th>트리</th><th>역할</th><th>특징</th><th>비유</th></tr>
+        <tr><td><b style="color:#54c5f8">Widget</b></td><td>"이렇게 그려라" 설정·설계도</td><td>불변(immutable), 매 build마다 새로 생성, 가벼움</td><td>📄 설계도</td></tr>
+        <tr><td><b style="color:#bc8cff">Element</b></td><td>Widget↔Render 연결 + 상태 보관</td><td>재사용됨, diff 수행의 주체</td><td>👷 현장감독</td></tr>
+        <tr><td><b style="color:#ff9e64">RenderObject</b></td><td>실제 측정·배치·그리기</td><td>무거움, 최대한 재사용</td><td>🧱 실제 벽돌</td></tr>
+      </table>
+
+      <div class="note tip"><b>왜 빠른가 (면접 정답):</b> "Widget은 설계도일 뿐이라 매번 새로 만들어도 비용이 거의 없습니다. 비싼 작업(레이아웃·페인팅)을 담당하는 RenderObject는 Element가 diff를 통해 <b>실제로 바뀐 부분만</b> 골라 갱신합니다. 그래서 build를 자주 호출해도 성능에 문제가 없는 구조입니다."</div>
+      <div class="note q"><b>예상 꼬리질문:</b> "build가 자주 불리면 느리지 않나요?" → "아닙니다. Widget 생성은 싸고, 무거운 RenderObject는 재사용됩니다. 오히려 <code class="inl">const</code> 위젯을 쓰면 Element가 '동일함'을 즉시 판단해 재빌드를 통째로 건너뜁니다."</div>
+      <div class="note react"><b>React 매핑:</b> Widget 트리 = 가상 DOM, RenderObject 트리 = 실제 DOM. diff 후 바뀐 것만 반영하는 발상이 동일합니다. Element 트리는 React의 Fiber에 해당한다고 보면 정확합니다.</div>
+
+      <h3><span class="ic">🔑</span>Key — 위젯의 신원 확인 (면접 빈출)</h3>
+      <p>Element가 "이 위젯이 이전의 그 위젯과 같은가?"를 판단할 때, 보통은 <strong>타입과 위치</strong>로 비교합니다. 그런데 <strong>같은 타입의 위젯이 여러 개 있고 순서가 바뀌면</strong> Element가 헷갈려 상태가 엉킵니다. 이때 신원을 못박아주는 게 <code class="inl">Key</code>예요.</p>
+
+      <div class="note tip"><b>🎫 일상 비유 — 콘서트 좌석표 vs 이름표:</b> 관객을 좌석 위치로만 구분하면(키 없음), 사람들이 자리를 바꿔 앉는 순간 누가 누군지 알 수 없습니다. 각자 <b>이름표</b>(Key)를 달면, 자리를 옮겨도 "아, 창한님이 3번에서 1번으로 이동했구나" 하고 정확히 추적할 수 있죠. 리스트 항목을 재정렬·삭제할 때 Key가 바로 이 이름표 역할을 합니다.</div>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">key.dart</span></div>
+        <pre><span class="tok-c">// ❌ Key 없음: 항목 삭제 시 체크 상태가 엉뚱한 항목에 남음</span>
+items.map((item) => <span class="tok-t">TodoTile</span>(item)).toList();
+
+<span class="tok-c">// ✅ Key 부여: 각 위젯의 신원이 고정됨</span>
+items.map((item) => <span class="tok-t">TodoTile</span>(
+  key: <span class="tok-t">ValueKey</span>(item.id),  <span class="tok-c">// 고유 id로 신원 확인</span>
+  item,
+)).toList();</pre>
+      </div>
+      <div class="note q"><b>예상 꼬리질문:</b> "리스트에서 항목을 지웠는데 체크박스 상태가 이상하게 남습니다. 왜죠?" → "같은 타입 위젯들이라 Element가 위치로만 매칭해서 상태가 어긋난 겁니다. 각 항목에 <code class="inl">ValueKey(고유id)</code>를 주면 해결됩니다." (React의 <code class="inl">key</code> prop과 정확히 같은 개념)</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 5.5 NAVIGATION -->
+    <section id="nav">
+      <div class="sec-head"><span class="sec-num">+</span><h2>화면 전환 — Navigation</h2><span class="sec-tag">part 2 · 핵심</span></div>
+      <p class="lede">앱은 여러 화면으로 이뤄집니다. 화면을 쌓고 되돌아오는 방법, 면접에서 기본으로 묻습니다.</p>
+
+      <div class="note tip"><b>📚 일상 비유 — 책상 위 서류 쌓기(Stack):</b> 새 화면으로 가는 <code class="inl">push</code>는 책상에 서류를 <b>한 장 올려놓는 것</b>입니다. 뒤로 가는 <code class="inl">pop</code>은 <b>맨 위 서류를 치우는 것</b>이고요. 항상 맨 위 화면만 보이며, 치우면 바로 아래 화면이 다시 드러납니다. 이 "쌓기/치우기" 구조가 네비게이션 스택이에요.</div>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">navigation.dart</span></div>
+        <pre><span class="tok-c">// 새 화면 올리기 (push)</span>
+<span class="tok-t">Navigator</span>.push(
+  context,
+  <span class="tok-t">MaterialPageRoute</span>(builder: (_) => <span class="tok-t">DetailScreen</span>(id: <span class="tok-n">7</span>)),
+);
+
+<span class="tok-c">// 이전 화면으로 (pop)</span>
+<span class="tok-t">Navigator</span>.pop(context);
+
+<span class="tok-c">// 결과를 들고 돌아오기 (예: 선택 화면 → 값 반환)</span>
+<span class="tok-k">final</span> picked = <span class="tok-k">await</span> <span class="tok-t">Navigator</span>.push(context, route);
+<span class="tok-c">// 이전 화면에선 Navigator.pop(context, 선택값); 으로 반환</span></pre>
+      </div>
+      <div class="note tip"><b>실무 한마디 (가점):</b> "화면이 많아지면 <code class="inl">Navigator.push</code>를 직접 쓰기보다 <b>go_router</b> 같은 선언적 라우팅 패키지로 경로를 한곳에서 관리합니다. 딥링크·URL 동기화·웹 지원에 유리합니다." → 리드 포지션에 어울리는 답변.</div>
+      <div class="note react"><b>React 매핑:</b> <code class="inl">Navigator</code> 스택 = 브라우저 히스토리, go_router = React Router의 선언적 라우팅과 같은 발상입니다.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 6 LIFECYCLE -->
+    <section id="lifecycle">
+      <div class="sec-head"><span class="sec-num">6</span><h2>StatefulWidget 생명주기</h2><span class="sec-tag">part 2 · 핵심</span></div>
+      <p class="lede">위젯이 태어나고 → 갱신되고 → 사라지는 과정. 리소스 관리(구독 해제 등)의 핵심.</p>
+
+      <div class="note tip"><b>🏨 일상 비유 — 호텔 투숙:</b> <code class="inl">initState</code>는 <b>체크인</b>입니다(딱 한 번, 짐 풀고 와이파이 연결). <code class="inl">build</code>는 <b>방에서 지내는 동안</b> 계속 정돈하는 것(여러 번). <code class="inl">dispose</code>는 <b>체크아웃</b>이에요 — 켜둔 에어컨 끄고, 빌린 물건 반납하고 떠나야 합니다. 체크아웃하면서 정리를 안 하면(=dispose 누락) 다음 손님에게 요금이 계속 청구되는 셈이라, 이게 곧 <b>메모리 누수</b>입니다.</div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 700 250" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="생명주기 흐름">
+          <g font-size="11" class="svg-mono">
+            <rect x="20" y="50" width="110" height="44" rx="9" fill="#1c232e" stroke="#3fb950"/><text x="75" y="70" text-anchor="middle" fill="#3fb950">createState()</text><text x="75" y="85" text-anchor="middle" fill="#6e7781" font-size="9">생성</text>
+            <rect x="160" y="50" width="110" height="44" rx="9" fill="#1c232e" stroke="#3fb950"/><text x="215" y="70" text-anchor="middle" fill="#3fb950">initState()</text><text x="215" y="85" text-anchor="middle" fill="#6e7781" font-size="9">초기화 1회</text>
+            <rect x="300" y="50" width="110" height="44" rx="9" fill="#1c232e" stroke="#54c5f8"/><text x="355" y="70" text-anchor="middle" fill="#54c5f8">build()</text><text x="355" y="85" text-anchor="middle" fill="#6e7781" font-size="9">그리기(N회)</text>
+            <rect x="300" y="140" width="110" height="44" rx="9" fill="#1c232e" stroke="#ffd33d"/><text x="355" y="160" text-anchor="middle" fill="#ffd33d">setState()</text><text x="355" y="175" text-anchor="middle" fill="#6e7781" font-size="9">재빌드 유발</text>
+            <rect x="470" y="50" width="120" height="44" rx="9" fill="#1c232e" stroke="#f85149"/><text x="530" y="70" text-anchor="middle" fill="#f85149">dispose()</text><text x="530" y="85" text-anchor="middle" fill="#6e7781" font-size="9">정리·해제</text>
+          </g>
+          <defs><marker id="lf" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#6e7781"/></marker></defs>
+          <line x1="130" y1="72" x2="158" y2="72" stroke="#6e7781" stroke-width="1.4" marker-end="url(#lf)"/>
+          <line x1="270" y1="72" x2="298" y2="72" stroke="#6e7781" stroke-width="1.4" marker-end="url(#lf)"/>
+          <line x1="410" y1="72" x2="468" y2="72" stroke="#6e7781" stroke-width="1.4" marker-end="url(#lf)"/>
+          <!-- setState loop -->
+          <path d="M355 140 L355 96" stroke="#ffd33d" stroke-width="1.4" marker-end="url(#lf)"/>
+          <path d="M300 162 C240 162 240 72 298 72" fill="none" stroke="#ffd33d" stroke-width="1.2" stroke-dasharray="4 3"/>
+          <text x="225" y="125" class="svg-mono" font-size="9" fill="#ffd33d">반복</text>
+        </svg>
+        <figcaption>createState → initState(1회) → build(N회) ⇄ setState → dispose(소멸)</figcaption>
+      </figure>
+
+      <table>
+        <tr><th>메서드</th><th>호출 시점</th><th>용도</th></tr>
+        <tr><td><code>initState()</code></td><td>위젯 생성 직후 1회</td><td>구독 시작, 컨트롤러 초기화, API 첫 호출</td></tr>
+        <tr><td><code>build()</code></td><td>최초 + 상태 변경마다</td><td>UI 그리기 (여기선 부수효과 금지!)</td></tr>
+        <tr><td><code>didUpdateWidget()</code></td><td>부모가 새 설정 전달 시</td><td>부모 props 변화에 반응</td></tr>
+        <tr><td><code>dispose()</code></td><td>위젯 영구 제거 시</td><td>구독 해제, 컨트롤러 정리 (메모리 누수 방지)</td></tr>
+      </table>
+      <div class="note warn"><b>면접 빈출 — 메모리 누수:</b> <code class="inl">initState</code>에서 시작한 <code class="inl">StreamSubscription</code>, <code class="inl">AnimationController</code>, <code class="inl">TextEditingController</code>는 반드시 <code class="inl">dispose</code>에서 정리해야 합니다. 안 하면 위젯이 사라져도 리소스가 남아 누수가 발생합니다.</div>
+      <div class="note react"><b>React 매핑:</b> <code class="inl">initState</code> ≈ <code class="inl">useEffect(()=>{}, [])</code>의 마운트, <code class="inl">dispose</code> ≈ useEffect의 cleanup return, <code class="inl">didUpdateWidget</code> ≈ 의존성 배열이 바뀐 useEffect.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 7 BUILDCONTEXT -->
+    <section id="context">
+      <div class="sec-head"><span class="sec-num">7</span><h2>BuildContext 이해하기</h2><span class="sec-tag">part 2 · 핵심</span></div>
+      <p class="lede"><code class="inl">build(BuildContext context)</code> — 이 context의 정체는 "위젯 트리에서 나의 위치 정보".</p>
+
+      <p>BuildContext는 사실상 그 위젯의 <strong>Element를 가리키는 핸들</strong>입니다. "트리에서 내가 어디 있는지"를 알기 때문에, 이걸로 <strong>위쪽(조상) 위젯의 정보에 접근</strong>할 수 있어요.</p>
+
+      <div class="note tip"><b>🗺️ 일상 비유 — 쇼핑몰 안내도의 "현재 위치" 화살표:</b> 대형 쇼핑몰 안내판의 빨간 "YOU ARE HERE" 표시가 바로 BuildContext입니다. 내 현재 위치를 알기 때문에 "여기서 가장 가까운 화장실/엘리베이터는?"을 찾을 수 있죠. <code class="inl">Theme.of(context)</code>는 "내 위치에서 위층으로 올라가며 가장 가까운 테마 설정을 찾아줘"라는 뜻입니다. 위치를 모르면(잘못된 context) 엉뚱한 답을 얻거나 길을 잃습니다.</div>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">context.dart</span></div>
+        <pre><span class="tok-c">// "위로 올라가며 가장 가까운 Theme를 찾아라" — Material 3에선 colorScheme 사용</span>
+<span class="tok-k">final</span> color = <span class="tok-t">Theme</span>.of(context).colorScheme.primary;
+
+<span class="tok-c">// 화면 크기 — sizeOf는 '크기' 변경에만 반응(불필요 리빌드 방지, Flutter 3.10+)</span>
+<span class="tok-k">final</span> width = <span class="tok-t">MediaQuery</span>.sizeOf(context).width;
+
+<span class="tok-c">// 화면 이동 (네비게이션)</span>
+<span class="tok-t">Navigator</span>.of(context).push(...);</pre>
+      </div>
+
+      <div class="note warn"><b>면접 단골 — async 후 context 사용:</b> <code class="inl">await</code> 뒤에서 context를 다시 쓰면 그 사이 위젯이 사라졌을 수 있어 에러가 납니다. <code class="inl">if (context.mounted)</code>로 체크하세요. 이걸 알면 실무 경험자로 평가받습니다.</div>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">mounted_check.dart</span></div>
+        <pre><span class="tok-t">void</span> <span class="tok-f">save</span>() <span class="tok-k">async</span> {
+  <span class="tok-k">await</span> api.save();          <span class="tok-c">// 비동기 — 이 사이 화면이 닫힐 수도</span>
+  <span class="tok-k">if</span> (!context.mounted) <span class="tok-k">return</span>; <span class="tok-c">// ✅ 살아있는지 확인</span>
+  <span class="tok-t">Navigator</span>.of(context).pop();
+}</pre>
+      </div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 8 ASYNC -->
+    <section id="async">
+      <div class="sec-head"><span class="sec-num">8</span><h2>비동기 · Future · Stream</h2><span class="sec-tag">part 2 · 핵심</span></div>
+      <p class="lede">API 호출처럼 시간이 걸리는 작업과 UI를 잇는 방법. 백엔드 연동의 핵심.</p>
+
+      <div class="note tip"><b>📳 일상 비유 — 식당 진동벨:</b> 주문하면 음식이 <i>지금 당장</i> 나오지 않죠. 점원이 진동벨을 주고("음식이 미래에 도착할 거예요"), 그게 바로 <b>Future</b>입니다. 벨을 들고 자리에 앉아 다른 일을 할 수 있는 게 <code class="inl">async/await</code>(기다리는 동안 앱이 멈추지 않음)예요. 벨이 울리기 전엔 "조리 중" 표시, 울리면 음식 받기, 주방 사고가 나면 "품절" 안내 — 이 세 상태를 자동 처리하는 게 <b>FutureBuilder</b>입니다.</div>
+
+      <h4>Future = 미래에 도착할 단일 값</h4>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">future.dart</span></div>
+        <pre><span class="tok-c">// async 함수는 Future를 반환</span>
+<span class="tok-t">Future</span>&lt;<span class="tok-t">User</span>&gt; <span class="tok-f">fetchUser</span>() <span class="tok-k">async</span> {
+  <span class="tok-k">final</span> res = <span class="tok-k">await</span> http.get(url);  <span class="tok-c">// 결과 기다림</span>
+  <span class="tok-k">return</span> <span class="tok-t">User</span>.fromJson(res.body);
+}</pre>
+      </div>
+
+      <h4>FutureBuilder = Future 결과로 UI 자동 분기</h4>
+      <p>로딩 → 성공 → 에러 상태를 알아서 처리해주는 위젯입니다.</p>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">future_builder.dart</span></div>
+        <pre><span class="tok-t">FutureBuilder</span>&lt;<span class="tok-t">User</span>&gt;(
+  future: _userFuture,   <span class="tok-c">// ⚠️ State에 담아둔 것 (build에서 직접 호출 X)</span>
+  builder: (context, snapshot) {
+    <span class="tok-k">if</span> (snapshot.connectionState == <span class="tok-t">ConnectionState</span>.waiting) {
+      <span class="tok-k">return</span> <span class="tok-t">CircularProgressIndicator</span>();   <span class="tok-c">// 로딩</span>
+    } <span class="tok-k">else if</span> (snapshot.hasError) {
+      <span class="tok-k">return</span> <span class="tok-t">Text</span>(<span class="tok-s">'에러: ${snapshot.error}'</span>); <span class="tok-c">// 실패</span>
+    }
+    <span class="tok-k">return</span> <span class="tok-t">Text</span>(snapshot.data!.name);        <span class="tok-c">// 성공</span>
+  },
+)</pre>
+      </div>
+      <div class="note warn"><b>치명적 실수:</b> <code class="inl">future:</code>에 <code class="inl">fetchUser()</code>를 build 안에서 직접 호출하면, 위젯이 리빌드될 때마다 API가 재호출됩니다. → <code class="inl">initState</code>에서 한 번 호출해 State 변수에 담고, 그 변수를 참조하세요.</div>
+
+      <h4>Future vs Stream</h4>
+      <table>
+        <tr><th></th><th>Future</th><th>Stream</th></tr>
+        <tr><td>값의 개수</td><td>단 하나 (1회)</td><td>여러 개 (연속)</td></tr>
+        <tr><td>비유</td><td>📦 택배 1건</td><td>📡 실시간 방송</td></tr>
+        <tr><td>예시</td><td>API 응답, 파일 읽기</td><td>채팅 메시지, 센서값, 타이머</td></tr>
+        <tr><td>UI 위젯</td><td><code>FutureBuilder</code></td><td><code>StreamBuilder</code></td></tr>
+      </table>
+      <div class="note react"><b>React 매핑:</b> <code class="inl">FutureBuilder</code>는 데이터 페칭 + 로딩/에러 상태 처리를 한 위젯에 묶은 것 — React Query의 <code class="inl">isLoading / isError / data</code> 분기와 똑같은 발상입니다.</div>
+
+      <h4>에러 처리 — try/catch + 사용자 피드백</h4>
+      <p>네트워크는 언제든 실패합니다. 에러를 잡아 <strong>사용자에게 친절히 알리고 복구 경로를 주는 것</strong>까지가 프론트엔드의 책임이에요. 리드 면접에서 자주 확인합니다.</p>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">error_handling.dart</span></div>
+        <pre><span class="tok-t">Future</span>&lt;<span class="tok-t">void</span>&gt; <span class="tok-f">loadData</span>() <span class="tok-k">async</span> {
+  <span class="tok-k">try</span> {
+    <span class="tok-f">setState</span>(() => isLoading = <span class="tok-k">true</span>);
+    <span class="tok-k">final</span> data = <span class="tok-k">await</span> api.fetch();
+    <span class="tok-k">if</span> (!mounted) <span class="tok-k">return</span>;          <span class="tok-c">// 화면 살아있는지 확인</span>
+    <span class="tok-f">setState</span>(() => _data = data);
+  } <span class="tok-k">on</span> <span class="tok-t">SocketException</span> {        <span class="tok-c">// 네트워크 끊김 — 구체적 처리</span>
+    _showSnack(<span class="tok-s">'인터넷 연결을 확인해 주세요'</span>);
+  } <span class="tok-k">catch</span> (e) {                    <span class="tok-c">// 그 외 모든 에러</span>
+    _showSnack(<span class="tok-s">'잠시 후 다시 시도해 주세요'</span>);
+  } <span class="tok-k">finally</span> {
+    <span class="tok-k">if</span> (mounted) <span class="tok-f">setState</span>(() => isLoading = <span class="tok-k">false</span>); <span class="tok-c">// 항상 로딩 해제</span>
+  }
+}</pre>
+      </div>
+      <div class="note tip"><b>💬 일상 비유 — 식당의 매끄러운 응대:</b> 주문한 메뉴가 품절이어도 좋은 식당은 손님을 방치하지 않죠. "죄송합니다, 대신 이건 어떠세요?"라고 대안을 줍니다. 앱도 에러 화면에서 멈추지 말고 <b>"다시 시도" 버튼</b>이나 안내 메시지로 사용자를 다음 행동으로 이끌어야 합니다. <code class="inl">finally</code>는 성공·실패와 무관하게 "로딩 스피너는 반드시 끈다"를 보장하는 안전장치예요.</div>
+      <div class="note q"><b>예상 꼬리질문:</b> "API 호출이 실패하면 화면을 어떻게 처리하나요?" → "<code class="inl">try/catch</code>로 에러 유형을 구분해(네트워크 끊김 vs 서버 오류) 각기 다른 메시지를 보여주고, '다시 시도' 액션을 제공합니다. <code class="inl">finally</code>에서 로딩 상태를 정리해 스피너가 멈추지 않는 일을 방지합니다."</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- ===================== PART 3 ===================== -->
+
+    <!-- 9 STATE MGMT -->
+    <section id="statemgmt">
+      <div class="sec-head"><span class="sec-num">9</span><h2>상태관리 — Riverpod ⭐</h2><span class="sec-tag">part 3 · 심화</span></div>
+      <p class="lede">setState는 위젯 하나 안에서만 통합니다. 앱 전역 상태(로그인·스트릭 데이터)는 상태관리 도구가 필요해요.</p>
+
+      <div class="note tip"><b>📺 일상 비유 — 유튜브 구독:</b> <code class="inl">ref.watch</code>는 채널 <b>구독</b>입니다. 채널에 새 영상이 올라오면(상태 변경) 구독자에게 자동으로 알림이 가죠(위젯 자동 리빌드). <code class="inl">ref.read</code>는 <b>지금 한 번만 확인</b>하는 것 — 구독은 안 하고 "현재 구독자 수만 잠깐 볼게"처럼, 버튼을 누르는 순간에만 값을 읽습니다. 그리고 <b>Provider</b>는 그 영상이 올라가는 <b>채널(중앙 저장소)</b> 자체예요.</div>
+
+      <h4>왜 필요한가 — Prop Drilling 문제</h4>
+      <p>상위 위젯의 데이터를 깊은 하위 위젯까지 넘기려면, 중간 위젯들이 쓰지도 않는 값을 계속 전달해야 합니다(prop drilling). 상태관리 도구는 이 사슬을 끊고 <strong>어디서든 직접 접근</strong>하게 합니다.</p>
+
+      <div class="note tip"><b>🪣 일상 비유 — 양동이 릴레이 vs 수도관:</b> Prop drilling은 불을 끄려고 사람들이 일렬로 서서 양동이를 손에서 손으로 넘기는 것과 같습니다. 중간 사람들은 정작 물이 필요 없는데 계속 전달만 해야 하죠. 상태관리 도구는 <b>건물에 수도관을 설치</b>하는 것 — 물이 필요한 곳에서 수도꼭지만 열면 됩니다. 중간 사람들은 더 이상 양동이를 나를 필요가 없어요.</div>
+
+      <figure class="diagram">
+        <svg viewBox="0 0 700 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="prop drilling vs provider">
+          <!-- left: drilling -->
+          <text x="160" y="26" text-anchor="middle" class="svg-label" font-size="13" fill="#f85149">❌ Prop Drilling</text>
+          <rect x="120" y="40" width="80" height="28" rx="6" fill="#1c232e" stroke="#f85149"/><text x="160" y="59" text-anchor="middle" class="svg-mono" font-size="10" fill="#e6edf3">App (data)</text>
+          <rect x="120" y="90" width="80" height="28" rx="6" fill="#1c232e" stroke="#6e7781"/><text x="160" y="109" text-anchor="middle" class="svg-mono" font-size="9" fill="#9da7b3">A (전달만)</text>
+          <rect x="120" y="140" width="80" height="28" rx="6" fill="#1c232e" stroke="#6e7781"/><text x="160" y="159" text-anchor="middle" class="svg-mono" font-size="9" fill="#9da7b3">B (전달만)</text>
+          <rect x="120" y="190" width="80" height="22" rx="6" fill="#1c232e" stroke="#54c5f8"/><text x="160" y="206" text-anchor="middle" class="svg-mono" font-size="9" fill="#54c5f8">C (사용)</text>
+          <line x1="160" y1="68" x2="160" y2="90" stroke="#f85149" stroke-width="1.3"/>
+          <line x1="160" y1="118" x2="160" y2="140" stroke="#f85149" stroke-width="1.3"/>
+          <line x1="160" y1="168" x2="160" y2="190" stroke="#f85149" stroke-width="1.3"/>
+
+          <!-- right: provider -->
+          <text x="500" y="26" text-anchor="middle" class="svg-label" font-size="13" fill="#3fb950">✅ Provider</text>
+          <rect x="430" y="40" width="140" height="28" rx="6" fill="rgba(63,185,80,.1)" stroke="#3fb950"/><text x="500" y="59" text-anchor="middle" class="svg-mono" font-size="10" fill="#3fb950">Provider (data 보관)</text>
+          <rect x="460" y="90" width="80" height="28" rx="6" fill="#1c232e" stroke="#6e7781"/><text x="500" y="109" text-anchor="middle" class="svg-mono" font-size="9" fill="#9da7b3">A</text>
+          <rect x="460" y="140" width="80" height="28" rx="6" fill="#1c232e" stroke="#6e7781"/><text x="500" y="159" text-anchor="middle" class="svg-mono" font-size="9" fill="#9da7b3">B</text>
+          <rect x="460" y="190" width="80" height="22" rx="6" fill="#1c232e" stroke="#54c5f8"/><text x="500" y="206" text-anchor="middle" class="svg-mono" font-size="9" fill="#54c5f8">C (watch)</text>
+          <path d="M500 201 C620 180 620 60 572 56" fill="none" stroke="#3fb950" stroke-width="1.4" stroke-dasharray="5 3" marker-end="url(#pv)"/>
+          <text x="628" y="130" text-anchor="middle" class="svg-mono" font-size="9" fill="#3fb950">직접</text>
+          <defs><marker id="pv" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0 0 L8 4 L0 8 z" fill="#3fb950"/></marker></defs>
+        </svg>
+        <figcaption>중간 위젯을 거치지 않고, 필요한 위젯이 Provider에서 직접 상태를 구독</figcaption>
+      </figure>
+
+      <h4>Riverpod 3대 개념</h4>
+      <div class="wgrid">
+        <div class="wcard"><div class="wname">Provider</div><div class="wdesc">상태를 담는 통. 전역 어디서든 읽기 가능</div></div>
+        <div class="wcard"><div class="wname">ref.watch()</div><div class="wdesc">구독. 값이 바뀌면 이 위젯 자동 리빌드</div></div>
+        <div class="wcard"><div class="wname">ref.read()</div><div class="wdesc">1회성 읽기. 버튼 콜백 등 이벤트에서</div></div>
+      </div>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">riverpod.dart</span></div>
+        <pre><span class="tok-c">// 1) 전역 상태 정의 — Notifier + NotifierProvider (Riverpod 3 표준)</span>
+<span class="tok-k">class</span> <span class="tok-t">Counter</span> <span class="tok-k">extends</span> <span class="tok-t">Notifier</span>&lt;<span class="tok-t">int</span>&gt; {
+  <span class="tok-an">@override</span>
+  <span class="tok-t">int</span> <span class="tok-f">build</span>() => <span class="tok-n">0</span>;          <span class="tok-c">// 초기 상태</span>
+  <span class="tok-t">void</span> <span class="tok-f">increment</span>() => state++;   <span class="tok-c">// 변경 로직을 notifier에 캡슐화</span>
+}
+<span class="tok-k">final</span> counterProvider = <span class="tok-t">NotifierProvider</span>&lt;<span class="tok-t">Counter</span>, <span class="tok-t">int</span>&gt;(<span class="tok-t">Counter</span>.new);
+
+<span class="tok-c">// 2) 구독해서 사용 (ConsumerWidget)</span>
+<span class="tok-k">class</span> <span class="tok-t">CounterView</span> <span class="tok-k">extends</span> <span class="tok-t">ConsumerWidget</span> {
+  <span class="tok-an">@override</span>
+  <span class="tok-t">Widget</span> <span class="tok-f">build</span>(<span class="tok-t">BuildContext</span> ctx, <span class="tok-t">WidgetRef</span> ref) {
+    <span class="tok-k">final</span> count = ref.watch(counterProvider); <span class="tok-c">// 구독 → 자동 갱신</span>
+    <span class="tok-k">return</span> <span class="tok-t">Column</span>(children: [
+      <span class="tok-t">Text</span>(<span class="tok-s">'$count'</span>),
+      <span class="tok-t">ElevatedButton</span>(
+        <span class="tok-c">// 이벤트에선 read로 notifier의 메서드 호출</span>
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
+        child: <span class="tok-t">Text</span>(<span class="tok-s">'+1'</span>),
+      ),
+    ]);
+  }
+}</pre>
+      </div>
+
+      <h4>그 밑바탕 — InheritedWidget (꼬리질문 대비)</h4>
+      <p>Provider도 Riverpod도, 사실 Flutter 내장의 <code class="inl">InheritedWidget</code> 위에서 동작합니다. 이건 "트리 위쪽에 데이터를 매달아두면, 아래 위젯들이 <code class="inl">.of(context)</code>로 효율적으로 꺼내 쓰는" 기본 메커니즘이에요. <code class="inl">Theme.of(context)</code>, <code class="inl">MediaQuery.of(context)</code>가 바로 이 방식으로 동작합니다.</p>
+      <div class="note tip"><b>📡 일상 비유 — 천장에 단 공용 와이파이 공유기:</b> 집 천장(트리 상단)에 공유기를 하나 달아두면, 각 방(하위 위젯)이 선을 끌어올 필요 없이 어디서든 신호를 잡습니다. InheritedWidget이 그 공유기예요. 그리고 공유기 설정이 바뀌면(데이터 변경) 연결된 기기만 자동으로 갱신됩니다 — 이게 구독한 위젯만 리빌드되는 원리입니다.</div>
+      <div class="note q"><b>예상 꼬리질문:</b> "Provider는 내부적으로 어떻게 동작하나요?" → "Flutter 내장 <code class="inl">InheritedWidget</code>을 감싸 사용하기 쉽게 만든 것입니다. 트리 상단에 상태를 두고, 의존하는 위젯이 <code class="inl">.of(context)</code>로 구독하면 변경 시 그 위젯만 다시 빌드됩니다." → 원리까지 답하면 깊이 있는 지원자로 평가됩니다.</div>
+
+      <h4>주요 상태관리 도구 비교</h4>
+      <table>
+        <tr><th>도구</th><th>특징</th><th>러닝커브</th></tr>
+        <tr><td><b>setState</b></td><td>단일 위젯 로컬 상태. 내장</td><td>⭐ 쉬움</td></tr>
+        <tr><td><b>Provider</b></td><td>공식 추천 입문용. InheritedWidget 래핑</td><td>⭐⭐</td></tr>
+        <tr><td><b>Riverpod</b></td><td>Provider 개선판. 컴파일 안전·테스트 용이. <b>현재 표준</b></td><td>⭐⭐⭐</td></tr>
+        <tr><td><b>Bloc</b></td><td>이벤트→상태 단방향. 대규모·엄격한 팀</td><td>⭐⭐⭐⭐</td></tr>
+        <tr><td><b>GetX</b></td><td>올인원(상태+라우팅+DI). 간편하나 호불호</td><td>⭐⭐</td></tr>
+      </table>
+      <div class="note react"><b>React 매핑:</b> Provider = Context store, <code class="inl">ref.watch</code> = <code class="inl">useSelector</code>, 상태 변경 시 구독 위젯만 리빌드되는 것은 <code class="inl">React.memo</code>로 리렌더 최적화하던 것과 동일한 발상입니다.</div>
+      <div class="note warn"><b>2026 버전 주의:</b> <code class="inl">StateNotifier</code>·<code class="inl">StateProvider</code>·<code class="inl">ChangeNotifierProvider</code>는 <b>Riverpod 3.0에서 legacy</b>로 분리(<code class="inl">package:flutter_riverpod/legacy.dart</code> 별도 import 필요)되어 신규 코드엔 비권장입니다. 표준은 <code class="inl">Notifier</code>/<code class="inl">AsyncNotifier</code> + <code class="inl">NotifierProvider</code>(또는 <code class="inl">@riverpod</code> 코드젠).</div>
+      <div class="note q"><b>면접 답변 추천:</b> "소규모는 setState, 전역 상태는 Riverpod를 주로 씁니다. Riverpod는 컴파일 타임 안전성과 의존성 주입·테스트 용이성 때문에 Provider보다 선호합니다."</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- 10 PERF -->
+    <section id="perf">
+      <div class="sec-head"><span class="sec-num">10</span><h2>성능 최적화</h2><span class="sec-tag">part 3 · 심화</span></div>
+      <p class="lede">리드 포지션이라면 반드시 묻습니다. "불필요한 리빌드를 어떻게 줄이나요?"</p>
+
+      <h3><span class="ic">⚡</span>핵심 5원칙</h3>
+      <ul class="bullet">
+        <li><b>const 생성자 적극 사용</b> — 변하지 않는 위젯은 <code class="inl">const</code>로. Element가 즉시 동일 판정해 재빌드를 건너뜁니다.</li>
+        <li><b>setState 범위 최소화</b> — 거대한 위젯 전체가 아니라, 바뀌는 작은 부분만 별도 위젯으로 분리해 거기서만 setState.</li>
+        <li><b>ListView.builder 사용</b> — 긴 리스트는 화면에 보이는 항목만 지연 생성(lazy). 전체를 한 번에 만들지 않음.</li>
+        <li><b>build 안에서 무거운 연산 금지</b> — 정렬·필터·객체 생성은 build 밖(initState/메모이즈)에서.</li>
+        <li><b>RepaintBoundary</b> — 자주 다시 그려지는 영역(애니메이션)을 격리해 주변 페인팅 비용 차단.</li>
+      </ul>
+
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">list_perf.dart</span></div>
+        <pre><span class="tok-c">// ❌ 한 번에 1만 개 위젯 생성 → 메모리 폭발</span>
+<span class="tok-t">ListView</span>(children: items.map((e) => <span class="tok-t">Tile</span>(e)).toList());
+
+<span class="tok-c">// ✅ 보이는 것만 그때그때 생성 (지연 렌더)</span>
+<span class="tok-t">ListView</span>.builder(
+  itemCount: items.length,
+  itemBuilder: (ctx, i) => <span class="tok-t">Tile</span>(items[i]),
+);</pre>
+      </div>
+      <div class="note tip"><b>진단 도구 언급하면 가점:</b> "Flutter DevTools의 Performance Overlay로 프레임 드랍(jank)을 보고, 'Highlight repaints'로 불필요하게 다시 칠해지는 영역을 찾아 RepaintBoundary로 격리합니다."</div>
+
+      <h3><span class="ic">🎯</span>const가 성능에 미치는 영향</h3>
+      <p>이 한 글자가 면접에서 자주 나옵니다. <code class="inl">const Text('hi')</code>는 컴파일 시점에 단 하나의 인스턴스로 박제(canonicalize)됩니다. 부모가 리빌드되어도 Element는 "같은 const다"라고 즉시 판단해 <strong>해당 서브트리 전체의 재빌드를 생략</strong >합니다.</p>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- MAP -->
+    <section id="map">
+      <div class="sec-head"><span class="sec-num">★</span><h2>React ↔ Flutter 매핑표</h2><span class="sec-tag">정리</span></div>
+      <p class="lede">React 경험을 Flutter 언어로 번역하면, 면접에서 약점이 아니라 강점이 됩니다.</p>
+      <table>
+        <tr><th>React</th><th>Flutter</th><th>공통 개념</th></tr>
+        <tr><td><code>useState</code> / 리렌더</td><td><code>setState</code> / build 재호출</td><td>상태 변경 → UI 갱신</td></tr>
+        <tr><td><code>useMemo</code>, <code>useCallback</code></td><td><code>const</code> 생성자, 위젯 캐싱</td><td>불필요한 재생성 방지</td></tr>
+        <tr><td>Context API / Redux</td><td>Provider / Riverpod</td><td>전역 상태 공유</td></tr>
+        <tr><td>가상 DOM / 실제 DOM</td><td>Widget·Element / RenderObject</td><td>diff 후 변경분만 반영</td></tr>
+        <tr><td>Fiber</td><td>Element 트리</td><td>상태 보관 + 재조정 단위</td></tr>
+        <tr><td>props</td><td>명명 파라미터 (<code>required this.x</code>)</td><td>부모→자식 데이터 전달</td></tr>
+        <tr><td><code>useEffect([])</code></td><td><code>initState()</code></td><td>마운트 시 1회 부수효과</td></tr>
+        <tr><td>useEffect cleanup</td><td><code>dispose()</code></td><td>정리·구독 해제</td></tr>
+        <tr><td><code>key</code> prop</td><td><code>Key</code></td><td>위젯 식별·상태 보존</td></tr>
+        <tr><td>React Query</td><td><code>FutureBuilder</code></td><td>로딩/에러/데이터 분기</td></tr>
+        <tr><td><code>.map()</code> 렌더</td><td><code>ListView.builder</code></td><td>리스트 렌더링</td></tr>
+        <tr><td>CSS Flexbox</td><td>Row / Column / Expanded</td><td>플렉스 레이아웃</td></tr>
+      </table>
+      <div class="note tip"><b>면접 활용법:</b> "React에서 useState로 리렌더를 관리했던 경험이 Flutter의 setState와 동일합니다. 다만 React는 가상 DOM diff, Flutter는 위젯 트리 재구성이라는 메커니즘 차이가 있다는 점을 이해하고 있습니다." → 이렇게 말하면 전이 가능한 역량을 갖춘 지원자로 평가받습니다.</div>
+    </section>
+
+    <div class="div"></div>
+
+    <!-- CHEAT -->
+    <section id="cheat">
+      <div class="sec-head"><span class="sec-num">✓</span><h2>면접 직전 치트시트</h2><span class="sec-tag">암기 카드</span></div>
+      <div class="summary">
+        <h4>⚡ 한 줄 요약 모음</h4>
+        <ul>
+          <li><b>Flutter:</b> OS 위젯 안 쓰고 자체 엔진(Skia/Impeller)으로 직접 그림 → 플랫폼 무관 동일 UI</li>
+          <li><b>Everything is a Widget:</b> 패딩·정렬·화면까지 전부 위젯, 중첩이 곧 위젯 트리</li>
+          <li><b>Stateless vs Stateful:</b> 내부 상태 유무. <code>setState</code> = "다시 그려라" 신호 (= 리렌더 트리거)</li>
+          <li><b>3-트리:</b> Widget(설계도·쌈) → Element(상태보관·재사용·diff) → RenderObject(그리기·비쌈). 그래서 build 자주 해도 빠름</li>
+          <li><b>Key:</b> 위젯의 이름표. 같은 타입 위젯 재정렬·삭제 시 신원 유지 → <code>ValueKey(id)</code></li>
+          <li><b>Navigation:</b> 화면 스택에 push(올리기)/pop(치우기). 규모 커지면 go_router</li>
+          <li><b>생명주기:</b> initState(1회 초기화) → build(N회) → dispose(반드시 정리·누수 방지)</li>
+          <li><b>BuildContext:</b> 트리에서 내 위치(Element). <code>.of(context)</code>로 조상 접근. async 뒤엔 <code>mounted</code> 체크</li>
+          <li><b>Future:</b> 미래의 단일 값 + <code>FutureBuilder</code>(로딩/에러/성공 자동 분기). build에서 직접 호출 금지</li>
+          <li><b>Stream:</b> 연속 값 + <code>StreamBuilder</code> (채팅·실시간)</li>
+          <li><b>에러 처리:</b> try/catch로 유형 구분 → 사용자 메시지 + 재시도. finally에서 로딩 해제</li>
+          <li><b>Riverpod:</b> <code>watch</code>=구독, <code>read</code>=1회. 전역 상태, prop drilling 해결. 밑바탕은 InheritedWidget</li>
+          <li><b>성능:</b> const 적극 사용 · setState 범위 최소화 · ListView.builder · build 안 무거운 연산 금지</li>
+        </ul>
+      </div>
+      <div class="note q"><b>리드 포지션 어필 포인트:</b> "React로 프론트엔드 설계를 해왔고, 그 개념(상태·리렌더·컴포넌트 합성·전역 상태)이 Flutter에 그대로 매핑됩니다. 게다가 Spring 백엔드를 직접 구현해본 경험이 있어 API/데이터 설계까지 고려한 프론트 아키텍처를 이끌 수 있습니다." → 백엔드 강점을 프론트 리드십과 연결하세요.</div>
+    </section>
+
+    <footer class="flutter-foot">
+      <p>Flutter 마스터 가이드 · 기초부터 심화까지 · 면접 대비용 학습 자료</p>
+      <p style="margin-top:6px;font-size:.8rem">made with <span class="heart">♦</span> for 창한's 기술면접</p>
+    </footer>
+
+    </main>
+
+  <!-- 용어 사전 모달 -->
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+</body>
+</html>
