@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정보처리기사 실기 · 소프트웨어공학 약술</title>
+<style>
+  :root{
+    --bg:#0f1419;
+    --panel:#1a2029;
+    --panel-2:#222b36;
+    --line:#2d3744;
+    --line-soft:#232c37;
+    --ink:#e6edf3;
+    --ink-dim:#8b98a5;
+    --ink-faint:#5e6b78;
+    --amber:#f0a868;
+    --amber-soft:#3a2d1f;
+    --cyan:#56b6c2;
+    --green:#7fb069;
+    --red:#e06c75;
+    --violet:#c490d1;
+    --blue:#61afef;
+    --create-color:#7fb069;  /* 생성 = green */
+    --struct-color:#61afef;  /* 구조 = blue */
+    --behav-color:#c490d1;   /* 행위 = violet */
+    --mono:'SF Mono',ui-monospace,'Cascadia Code','Source Code Pro',Menlo,Consolas,monospace;
+    --sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+  ::selection{background:var(--amber);color:#0f1419}
+  code,kbd,.mono{font-family:var(--mono)}
+
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(15,20,25,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar-inner{max-width:880px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:14px}
+  .dots{display:flex;gap:7px;flex-shrink:0}
+  .dots i{width:12px;height:12px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#e06c75}
+  .dots i:nth-child(2){background:#e5c07b}
+  .dots i:nth-child(3){background:#7fb069}
+  .topbar-title{font-family:var(--mono);font-size:13px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .topbar-title b{color:var(--amber);font-weight:600}
+  .progress-mini{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--ink-faint);flex-shrink:0}
+  .progress-mini b{color:var(--green)}
+
+  .hero{max-width:880px;margin:0 auto;padding:46px 20px 30px}
+  .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.5px;color:var(--amber);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+  .kicker .blink{width:8px;height:15px;background:var(--amber);display:inline-block;animation:blink 1.1s steps(2) infinite}
+  @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+  .hero h1{font-size:clamp(28px,6vw,42px);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:14px}
+  .hero h1 .hl{color:var(--amber)}
+  .hero .lead{color:var(--ink-dim);font-size:15.5px;max-width:640px}
+  .hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .chip{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:99px;background:var(--panel);border:1px solid var(--line);color:var(--ink-dim)}
+  .chip b{color:var(--ink)}
+  .chip.hot{border-color:var(--amber-soft);color:var(--amber)}
+
+  .alert{max-width:880px;margin:0 auto;padding:0 20px}
+  .alert-box{background:#1a2a1f;border:1px solid #25422c;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:14px 17px;font-size:13.5px;color:var(--ink-dim)}
+  .alert-box b{color:var(--green)}
+  .alert-box .ttl{color:var(--amber);font-weight:700;font-family:var(--mono);font-size:12px;display:block;margin-bottom:5px}
+
+  .navtabs{position:sticky;top:48px;z-index:40;max-width:880px;margin:0 auto;padding:0 12px;display:flex;gap:4px;overflow-x:auto;background:rgba(15,20,25,.92);backdrop-filter:blur(12px);-ms-overflow-style:none;scrollbar-width:none}
+  .navtabs::-webkit-scrollbar{display:none}
+  .navtab{flex-shrink:0;font-family:var(--mono);font-size:13px;padding:12px 14px;color:var(--ink-faint);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:.18s;white-space:nowrap}
+  .navtab:hover{color:var(--ink-dim)}
+  .navtab.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+  section{padding:38px 0 10px;scroll-margin-top:96px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600}
+  .sec-head h2{font-size:23px;font-weight:700;letter-spacing:-.01em}
+  .sec-desc{color:var(--ink-dim);font-size:14.5px;margin-bottom:26px}
+
+  .concept{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px;overflow:hidden}
+  .concept-head{padding:15px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line-soft)}
+  .concept-head .tag{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--amber-soft);color:var(--amber);flex-shrink:0;letter-spacing:.3px}
+  .concept-head .tag.cyan{background:#1b3236;color:var(--cyan)}
+  .concept-head .tag.violet{background:#2e2336;color:var(--violet)}
+  .concept-head .tag.green{background:#1f2e1c;color:var(--green)}
+  .concept-head .tag.blue{background:#16263a;color:var(--blue)}
+  .concept-head h3{font-size:16.5px;font-weight:700}
+  .concept-head .freq{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex-shrink:0}
+  .star{color:var(--amber)}
+  .concept-body{padding:16px 18px}
+  .concept-body p{font-size:14.5px;color:var(--ink);margin-bottom:12px}
+  .concept-body p:last-child{margin-bottom:0}
+  .concept-body .muted{color:var(--ink-dim);font-size:13.5px}
+  .concept-body ul{list-style:none;margin:10px 0}
+  .concept-body li{font-size:14px;padding:5px 0 5px 20px;position:relative;color:var(--ink)}
+  .concept-body li::before{content:'▸';position:absolute;left:2px;color:var(--amber);font-size:12px;top:6px}
+  .concept-body li b{color:var(--cyan);font-weight:600}
+
+  .termtable{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+  .termrow{display:grid;grid-template-columns:118px 1fr;gap:12px;padding:10px 13px;background:#0c1116;border:1px solid var(--line-soft);border-radius:7px;align-items:start}
+  .termrow .tt{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600}
+  .termrow .td{font-size:13.5px;color:var(--ink-dim);line-height:1.5}
+  .termrow .td b{color:var(--cyan)}
+  @media(max-width:520px){.termrow{grid-template-columns:1fr;gap:4px}}
+
+  /* ordered scale (coupling/cohesion) */
+  .scale{display:flex;flex-direction:column;gap:0;margin:14px 0;position:relative}
+  .scale-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#0c1116;border:1px solid var(--line-soft);position:relative}
+  .scale-item:first-child{border-radius:7px 7px 0 0}
+  .scale-item:last-child{border-radius:0 0 7px 7px}
+  .scale-item:not(:last-child){border-bottom:none}
+  .scale-item .rank{font-family:var(--mono);font-size:11px;color:var(--ink-faint);min-width:18px}
+  .scale-item .sname{font-weight:700;font-size:14px;min-width:130px}
+  .scale-item .sdesc{font-size:12.5px;color:var(--ink-dim);line-height:1.4}
+  .scale-good .sname{color:var(--green)}
+  .scale-bad .sname{color:var(--red)}
+  .scale-label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin:6px 2px}
+  .scale-label .g{color:var(--green)}
+  .scale-label .b{color:var(--red)}
+
+  .callout{border-left:3px solid var(--amber);background:var(--amber-soft);padding:11px 15px;border-radius:0 7px 7px 0;margin:13px 0;font-size:13.5px}
+  .callout.warn{border-left-color:var(--red);background:#33211f}
+  .callout.warn b{color:var(--red)}
+  .callout b{color:var(--amber)}
+  .callout .ic{font-weight:700;margin-right:4px}
+  .callout.mnemonic{border-left-color:var(--green);background:#1a2a1f}
+  .callout.mnemonic b{color:var(--green)}
+
+  .code{background:#0c1116;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);font-size:13.5px;line-height:1.7;margin:12px 0;overflow:hidden}
+  .code-top{display:flex;align-items:center;gap:7px;padding:8px 13px;border-bottom:1px solid var(--line-soft);background:var(--panel-2)}
+  .code-top span{font-size:11px;color:var(--ink-faint)}
+  .code-top .lbl{margin-left:auto;color:var(--cyan)}
+  .code pre{padding:13px 15px;overflow-x:auto;white-space:pre}
+  .nm{color:var(--cyan)}
+  .out{color:var(--green)}
+  .kw{color:var(--amber);font-weight:600}
+
+  /* ===== PATTERN CLASSIFIER ===== */
+  .pat-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+  .pat-head{padding:14px 18px;border-bottom:1px solid var(--line-soft)}
+  .pat-head h3{font-size:15.5px;font-weight:700}
+  .pat-tabs{display:flex;gap:4px;padding:12px 14px 0;flex-wrap:wrap}
+  .pat-tab{font-family:var(--mono);font-size:12.5px;padding:8px 15px;border-radius:8px 8px 0 0;border:1px solid var(--line-soft);border-bottom:none;background:#0c1116;color:var(--ink-dim);cursor:pointer;transition:.15s}
+  .pat-tab.active.create{color:var(--create-color);border-color:var(--create-color);border-bottom:2px solid var(--create-color)}
+  .pat-tab.active.struct{color:var(--struct-color);border-color:var(--struct-color);border-bottom:2px solid var(--struct-color)}
+  .pat-tab.active.behav{color:var(--behav-color);border-color:var(--behav-color);border-bottom:2px solid var(--behav-color)}
+  .pat-body{padding:16px 18px}
+  .pat-intro{font-size:13.5px;color:var(--ink-dim);margin-bottom:14px;padding:10px 13px;background:#0c1116;border-radius:7px;border-left:3px solid var(--amber)}
+  .pat-intro b{color:var(--amber)}
+  .pat-list{display:flex;flex-direction:column;gap:8px}
+  .pat-item{padding:11px 14px;background:#0c1116;border:1px solid var(--line-soft);border-radius:7px}
+  .pat-item .pn{font-weight:700;font-size:14px;color:var(--amber);margin-bottom:3px}
+  .pat-item .pd{font-size:13px;color:var(--ink-dim);line-height:1.5}
+
+  /* flashcards */
+  .card-controls{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .card-counter{font-family:var(--mono);font-size:13px;color:var(--ink-dim)}
+  .card-counter b{color:var(--amber)}
+  .flashcard{perspective:1600px;height:240px;margin-bottom:14px;cursor:pointer}
+  .flashcard-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+  .flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;border:1px solid var(--line)}
+  .face-front{background:var(--panel);justify-content:center;align-items:center;text-align:center}
+  .face-front .q-tag{font-family:var(--mono);font-size:11px;color:var(--amber);margin-bottom:14px;letter-spacing:.5px}
+  .face-front .q-term{font-size:21px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;line-height:1.4}
+  .face-front .q-hint{font-size:13px;color:var(--ink-faint);font-family:var(--mono)}
+  .face-front .tap{position:absolute;bottom:14px;right:16px;font-size:11px;color:var(--ink-faint);font-family:var(--mono)}
+  .face-back{background:linear-gradient(145deg,#1c242e,#171e26);transform:rotateY(180deg);justify-content:center;border-color:var(--amber-soft)}
+  .face-back .a-label{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:10px;letter-spacing:.5px}
+  .face-back .a-text{font-size:14.5px;line-height:1.6}
+  .face-back .a-text b{color:var(--amber)}
+  .face-back .a-text code{background:#0c1116;padding:2px 6px;border-radius:4px;font-size:13px;color:var(--cyan)}
+  .face-back .a-key{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-dim)}
+  .face-back .a-key b{color:var(--cyan)}
+  .deck-nav{display:flex;gap:10px}
+  .btn{font-family:var(--mono);font-size:13px;padding:10px 18px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:.15s;flex:1}
+  .btn:hover{border-color:var(--amber);color:var(--amber)}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber)}
+  .btn-row{display:flex;gap:10px;margin-top:6px}
+
+  /* quiz */
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+  .quiz-meta{display:flex;align-items:center;gap:10px;margin-bottom:13px;flex-wrap:wrap}
+  .quiz-meta .qn{font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700}
+  .quiz-meta .qtype{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;background:var(--panel-2);color:var(--ink-dim)}
+  .quiz-meta .qtype.hot{color:var(--amber)}
+  .quiz-q{font-size:15px;font-weight:600;margin-bottom:6px;line-height:1.55}
+  .quiz-given{background:#0c1116;border:1px solid var(--line-soft);border-radius:7px;padding:12px 14px;margin:12px 0;font-size:13.5px;color:var(--ink-dim);line-height:1.6}
+  .quiz-given b{color:var(--cyan)}
+  .quiz-input{width:100%;background:#0c1116;border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--ink);font-family:var(--sans);font-size:14px;resize:vertical;min-height:60px;line-height:1.6}
+  .quiz-input:focus{outline:none;border-color:var(--amber)}
+  .quiz-input::placeholder{color:var(--ink-faint)}
+  .reveal-btn{margin-top:10px;font-family:var(--mono);font-size:13px;padding:9px 16px;border-radius:7px;background:var(--amber-soft);border:1px solid var(--amber-soft);color:var(--amber);cursor:pointer;transition:.15s}
+  .reveal-btn:hover{background:#4a3825}
+  .quiz-answer{display:none;margin-top:13px;padding:14px;border-radius:8px;background:#0c1116;border:1px solid var(--line-soft);border-left:3px solid var(--green)}
+  .quiz-answer.show{display:block;animation:slideIn .3s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .quiz-answer .ans-label{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;letter-spacing:.5px}
+  .quiz-answer .ans-code{font-size:15px;line-height:1.6;color:var(--amber);font-weight:700;margin-bottom:10px}
+  .quiz-answer .ans-note{padding-top:11px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-dim);line-height:1.6}
+  .quiz-answer .ans-note b{color:var(--amber)}
+  .quiz-answer .ans-note code{background:var(--panel-2);padding:1px 5px;border-radius:4px;color:var(--cyan);font-size:12.5px}
+
+  .foot{max-width:880px;margin:50px auto 0;padding:30px 20px;border-top:1px solid var(--line);text-align:center}
+  .foot p{font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.8}
+  .foot .big{color:var(--amber);font-size:14px;font-weight:600;margin-bottom:6px}
+
+  .tabpane{display:none}
+  .tabpane.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  @media(max-width:600px){
+    .hero{padding:34px 20px 24px}
+    .face-front .q-term{font-size:18px}
+    .sec-head h2{font-size:20px}
+    .scale-item .sname{min-width:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-dim);text-decoration:none;border:1px solid var(--line);padding:5px 10px;border-radius:7px;white-space:nowrap;flex-shrink:0;transition:.15s" onmouseover="this.style.color='var(--amber)';this.style.borderColor='var(--amber)'" onmouseout="this.style.color='var(--ink-dim)';this.style.borderColor='var(--line)'">← 대시보드</a>
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="topbar-title"><b>sw_eng</b> — 정보처리기사 실기 4주차</div>
+    <div class="progress-mini" id="progMini">D-<b>39</b></div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="kicker">~/study/week4/sw-engineering <span class="blink"></span></div>
+  <h1><span class="hl">순서와 분류</span>로<br>외우는 영역</h1>
+  <p class="lead">SW공학 약술은 "순서를 묻는 문제"(결합도·응집도 단계)와 "분류를 묻는 문제"(디자인패턴, 테스트, UML)가 핵심입니다. 두문자와 분류 체계만 잡으면 단답으로 확실히 가져갈 수 있습니다.</p>
+  <div class="meta">
+    <span class="chip hot">단답·약술 빈출 ★★★</span>
+    <span class="chip">디자인패턴 · 모듈화</span>
+    <span class="chip">핵심 용어 <b>35+</b></span>
+    <span class="chip">암기카드 <b>24</b></span>
+    <span class="chip">문제 <b>16</b></span>
+  </div>
+</div>
+
+<div class="alert">
+  <div class="alert-box">
+    <span class="ttl">✓ 이 영역의 공략법</span>
+    SW공학은 <b>순서 문제</b>(결합도 약→강, 응집도 강→약)와 <b>분류 문제</b>(패턴 3종, 테스트 2종)가 반복됩니다. 순서는 두문자로, 분류는 "어느 그룹에 속하는가"로 외우세요. <b>LOC 기반 개발기간 계산</b>도 공식만 알면 득점입니다.
+  </div>
+</div>
+
+<div class="navtabs" id="navtabs">
+  <button class="navtab active" data-tab="learn">📖 핵심개념</button>
+  <button class="navtab" data-tab="pattern">🎨 디자인패턴</button>
+  <button class="navtab" data-tab="cards">🃏 암기카드</button>
+  <button class="navtab" data-tab="quiz">✍️ 문제풀이</button>
+</div>
+
+<!-- ============ LEARN ============ -->
+<div class="tabpane active" id="tab-learn">
+<div class="wrap">
+
+<section id="s-module">
+  <div class="sec-head"><span class="sec-num">01</span><h2>모듈화 — 결합도 · 응집도</h2></div>
+  <p class="sec-desc">SW공학 최대 빈출. <b>"결합도는 약하게, 응집도는 강하게"</b>가 좋은 모듈화의 핵심 원칙입니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">CORE</span><h3>모듈 독립성의 원칙</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p>모듈의 독립성을 높이려면 <b>결합도(Coupling)는 낮게</b>, <b>응집도(Cohesion)는 높게</b> 만들어야 합니다.</p>
+      <ul>
+        <li><b>결합도</b> — 모듈과 모듈 <u>사이</u>의 상호 의존 정도 (낮을수록 좋음)</li>
+        <li><b>응집도</b> — 모듈 <u>내부</u> 구성요소의 기능적 집중 정도 (높을수록 좋음)</li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>단골 빈칸:</b> "모듈 독립성을 높이려면 ( )는 약하게, ( )는 강하게" → 답: <u>결합도, 응집도</u>. 순서 바꾸지 말 것.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">COUPLING</span><h3>결합도 6단계 (약 → 강)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="scale-label"><span class="g">◀ 약함 (좋은 품질)</span><span class="b">강함 (낮은 품질) ▶</span></div>
+      <div class="scale">
+        <div class="scale-item scale-good"><span class="rank">1</span><span class="sname">자료 결합도</span><span class="sdesc">파라미터로 데이터만 전달 (Data)</span></div>
+        <div class="scale-item"><span class="rank">2</span><span class="sname">스탬프 결합도</span><span class="sdesc">배열·구조체 등 자료구조 전달 (Stamp)</span></div>
+        <div class="scale-item"><span class="rank">3</span><span class="sname">제어 결합도</span><span class="sdesc">제어 신호(플래그)를 전달 (Control)</span></div>
+        <div class="scale-item"><span class="rank">4</span><span class="sname">외부 결합도</span><span class="sdesc">외부 전역 변수를 참조 (External)</span></div>
+        <div class="scale-item"><span class="rank">5</span><span class="sname">공통 결합도</span><span class="sdesc">전역 데이터를 공유 (Common)</span></div>
+        <div class="scale-item scale-bad"><span class="rank">6</span><span class="sname">내용 결합도</span><span class="sdesc">다른 모듈 내부를 직접 참조 (Content)</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>자·스·제·외·공·내</b> (자료→스탬프→제어→외부→공통→내용). 위로 갈수록 좋은 결합. 순서 묻는 문제 단골.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">COHESION</span><h3>응집도 7단계 (강 → 약)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="scale-label"><span class="g">◀ 강함 (좋은 품질)</span><span class="b">약함 (낮은 품질) ▶</span></div>
+      <div class="scale">
+        <div class="scale-item scale-good"><span class="rank">1</span><span class="sname">기능적</span><span class="sdesc">단일 기능 수행 (Functional)</span></div>
+        <div class="scale-item"><span class="rank">2</span><span class="sname">순차적</span><span class="sdesc">출력이 다음 입력으로 (Sequential)</span></div>
+        <div class="scale-item"><span class="rank">3</span><span class="sname">교환(통신)적</span><span class="sdesc">동일 입출력 데이터 사용 (Communication)</span></div>
+        <div class="scale-item"><span class="rank">4</span><span class="sname">절차적</span><span class="sdesc">순서대로 실행 (Procedural)</span></div>
+        <div class="scale-item"><span class="rank">5</span><span class="sname">시간적</span><span class="sdesc">특정 시점에 함께 실행 (Temporal)</span></div>
+        <div class="scale-item"><span class="rank">6</span><span class="sname">논리적</span><span class="sdesc">유사 성격끼리 묶음 (Logical)</span></div>
+        <div class="scale-item scale-bad"><span class="rank">7</span><span class="sname">우연적</span><span class="sdesc">서로 관련 없음 (Coincidental)</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>기·순·교·절·시·논·우</b> (기능적이 최고, 우연적이 최악). "관련 없는 요소들" = 우연적 응집도.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-cost">
+  <div class="sec-head"><span class="sec-num">02</span><h2>비용 산정 — LOC</h2></div>
+  <p class="sec-desc">계산 문제로 출제. 공식만 알면 확실한 득점원입니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag blue">CALC</span><h3>LOC 기반 개발 기간 산정</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">LOC(Line Of Code) 기법: 총 라인 수를 인력·생산성으로 나눠 기간을 구합니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">loc.calc</span></div>
+        <pre><span class="kw">개발 기간</span> = 총 LOC ÷ (투입 인원 × 1인당 월 생산성)
+
+<span class="cm"># 예: LOC 30000, 개발자 5명, 1인당 월 300라인</span>
+30000 ÷ (5 × 300) = 30000 ÷ 1500 = <span class="out">20개월</span>
+
+<span class="kw">노력(인월)</span> = 개발 기간 × 투입 인원
+<span class="kw">생산성</span> = 총 LOC ÷ 노력(인월)</pre>
+      </div>
+      <div class="callout"><span class="ic">🧮</span> <b>계산식을 반드시 쓰세요.</b> 답만 쓰면 감점될 수 있습니다. 단위(개월, 인월)도 정확히.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-test">
+  <div class="sec-head"><span class="sec-num">03</span><h2>테스트 — 화이트박스 vs 블랙박스</h2></div>
+  <p class="sec-desc">테스트 기법 분류가 핵심. <b>내부 구조를 보느냐(화이트)</b> 안 보느냐(블랙)로 구분.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">TEST</span><h3>화이트박스 vs 블랙박스</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">화이트박스</span><span class="td"><b>내부 구조·코드를 보고</b> 테스트 (구조 기반). 종류: 기초 경로, 조건/분기, 루프 검사</span></div>
+        <div class="termrow"><span class="tt">블랙박스</span><span class="td"><b>내부를 모르고 입출력</b>으로 테스트 (명세 기반). 종류: 동치 분할, 경계값 분석, 원인-결과</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>핵심:</b> 화이트박스="투명해서 안이 보임"(코드 기반), 블랙박스="검은 상자, 안 안 보임"(명세 기반). <u>경계값 분석</u>은 블랙박스 단골.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">LEVEL</span><h3>테스트 단계 (V-모델)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>단위 테스트</b> — 모듈 하나 단위 검증</li>
+        <li><b>통합 테스트</b> — 모듈 간 인터페이스 검증 (상향식/하향식)</li>
+        <li><b>시스템 테스트</b> — 전체 시스템 요구사항 검증</li>
+        <li><b>인수 테스트</b> — 사용자 관점 최종 검증 (알파/베타)</li>
+      </ul>
+      <div class="callout"><span class="ic">📊</span> <b>통합 방식:</b> 하향식(Top-down)은 스텁(Stub) 사용, 상향식(Bottom-up)은 드라이버(Driver) 사용.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-uml">
+  <div class="sec-head"><span class="sec-num">04</span><h2>UML 다이어그램</h2></div>
+  <p class="sec-desc">정적(구조적)/동적(행위적) 분류와 대표 다이어그램이 출제됩니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">UML</span><h3>구조적 vs 행위적 다이어그램</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">구조적(정적)</span><span class="td"><b>클래스</b>, 객체, 컴포넌트, 배치, 패키지 다이어그램</span></div>
+        <div class="termrow"><span class="tt">행위적(동적)</span><span class="td"><b>유스케이스</b>, <b>시퀀스</b>, 상태, 활동, 커뮤니케이션 다이어그램</span></div>
+      </div>
+      <p style="margin-top:12px"><b>접근 제어자 표기</b> (클래스 다이어그램)</p>
+      <ul>
+        <li><b>+</b> public (외부 접근 허용) / <b>-</b> private (내부만)</li>
+        <li><b>#</b> protected (파생 클래스) / <b>~</b> default (동일 패키지)</li>
+      </ul>
+      <div class="callout"><span class="ic">🔗</span> <b>관계:</b> 연관, 집합(약한 포함), 복합(강한 포함), 일반화(상속), 의존, 실체화(인터페이스 구현).</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-method">
+  <div class="sec-head"><span class="sec-num">05</span><h2>개발 방법론 · 프로세스</h2></div>
+  <p class="sec-desc">전통 모델과 애자일의 특징, 차이가 단답·약술로 출제됩니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">SDLC</span><h3>소프트웨어 개발 모델</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">폭포수</span><span class="td">단계를 <b>순차적</b>으로 진행 (Waterfall). 가장 고전적</span></div>
+        <div class="termrow"><span class="tt">프로토타입</span><span class="td"><b>시제품</b>을 만들어 요구사항 확인</span></div>
+        <div class="termrow"><span class="tt">나선형</span><span class="td"><b>위험 분석</b> 중심, 반복적 (Spiral). 대규모에 적합</span></div>
+        <div class="termrow"><span class="tt">애자일</span><span class="td"><b>반복·점진</b>적, 변화 수용. 스크럼, XP가 대표</span></div>
+      </div>
+      <div class="callout"><span class="ic">🏃</span> <b>애자일 기법:</b> <b>스크럼</b>(스프린트, 데일리 미팅) / <b>XP</b>(페어 프로그래밍, TDD). 애자일 선언 4가지 가치도 출제.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">PRINCIPLE</span><h3>객체지향 설계 원칙 (SOLID)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">SRP</span><span class="td">단일 책임 — 클래스는 하나의 책임만</span></div>
+        <div class="termrow"><span class="tt">OCP</span><span class="td">개방-폐쇄 — 확장엔 열림, 수정엔 닫힘</span></div>
+        <div class="termrow"><span class="tt">LSP</span><span class="td">리스코프 치환 — 자식이 부모를 대체 가능</span></div>
+        <div class="termrow"><span class="tt">ISP</span><span class="td">인터페이스 분리 — 필요한 것만 의존</span></div>
+        <div class="termrow"><span class="tt">DIP</span><span class="td">의존 역전 — 추상에 의존, 구체에 의존 X</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>S·O·L·I·D</b>. 특히 <b>OCP</b>(개방-폐쇄)가 단답으로 자주 나옵니다.</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<!-- ============ PATTERN ============ -->
+<div class="tabpane" id="tab-pattern">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">🎨</span><h2>GoF 디자인패턴 분류</h2></div>
+    <p class="sec-desc"><b>GoF(Gang of Four)</b>가 제안한 23개 패턴. 시험은 "어느 분류에 속하는가"를 묻습니다. 탭을 눌러 생성·구조·행위 패턴을 확인하세요.</p>
+
+    <div class="callout mnemonic" style="margin-bottom:18px"><span class="ic">🔑</span> <b>3대 분류:</b> <span style="color:var(--create-color)">생성(Creational)</span> = 객체 생성 / <span style="color:var(--struct-color)">구조(Structural)</span> = 객체 조합·구조 / <span style="color:var(--behav-color)">행위(Behavioral)</span> = 객체 간 책임·상호작용.</div>
+
+    <div class="pat-wrap">
+      <div class="pat-head"><h3>분류별 패턴 목록</h3></div>
+      <div class="pat-tabs" id="patTabs">
+        <button class="pat-tab create active" data-p="create">🟢 생성 (5)</button>
+        <button class="pat-tab struct" data-p="struct">🔵 구조 (7)</button>
+        <button class="pat-tab behav" data-p="behav">🟣 행위 (11)</button>
+      </div>
+      <div class="pat-body" id="patBody"></div>
+    </div>
+
+    <div class="callout warn"><span class="ic">⚠</span> <b>빈출 함정:</b> "다음 중 <u>행위</u> 패턴이 <u>아닌</u> 것은?" 형태로 분류를 헷갈리게 합니다. 대표 패턴 몇 개라도 분류를 정확히 외우세요. <b>Singleton=생성, Adapter=구조, Observer=행위</b>가 단골.</div>
+  </section>
+</div>
+</div>
+
+<!-- ============ CARDS ============ -->
+<div class="tabpane" id="tab-cards">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">★</span><h2>암기 카드</h2></div>
+    <p class="sec-desc">용어→정의, 분류→소속을 떠올린 뒤 확인하세요. 탭하면 뒤집힙니다.</p>
+    <div class="card-controls">
+      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">24</span></span>
+      <span class="card-counter" style="margin-left:auto" id="cardCat">모듈화</span>
+    </div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner" id="flashInner">
+        <div class="face face-front">
+          <div class="q-tag" id="cardTag">모듈화</div>
+          <div class="q-term" id="cardQ">로딩 중...</div>
+          <div class="q-hint" id="cardHint"></div>
+          <div class="tap">tap to flip ↻</div>
+        </div>
+        <div class="face face-back">
+          <div class="a-label">ANSWER</div>
+          <div class="a-text" id="cardA"></div>
+          <div class="a-key" id="cardKey"></div>
+        </div>
+      </div>
+    </div>
+    <div class="deck-nav">
+      <button class="btn" onclick="prevCard()">← 이전</button>
+      <button class="btn primary" onclick="nextCard()">다음 →</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="shuffleCards()">🔀 섞기</button>
+      <button class="btn" onclick="resetCards()">↺ 처음으로</button>
+    </div>
+  </section>
+</div>
+</div>
+
+<!-- ============ QUIZ ============ -->
+<div class="tabpane" id="tab-quiz">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">✍</span><h2>문제 풀이</h2></div>
+    <p class="sec-desc">단답·약술·계산 16문제. 먼저 직접 답을 써본 뒤 펼치세요. 순서 문제는 빠뜨리는 단계가 없는지 확인하세요.</p>
+    <div id="quizContainer"></div>
+    <div class="callout" style="margin-top:24px"><span class="ic">📌</span> <b>채점 팁:</b> 순서 나열은 <u>전부 맞아야</u> 점수인 경우가 많으니 빠짐없이. 계산 문제는 <u>계산식+답+단위</u>를 모두 쓰세요. 패턴 분류는 대표 패턴만이라도 확실히.</div>
+  </section>
+</div>
+</div>
+
+<div class="foot">
+  <p class="big">4주 완성을 축하합니다</p>
+  <p>SQL · 프로그래밍 · 보안/네트워크 · SW공학 — 핵심 영역을 모두 훑었습니다.<br>이제 기출 회차를 시간 재고 풀며 손에 익히는 일만 남았습니다.<br><br>$ next: 5주차 — 기출 실전 + 약점 복습</p>
+</div>
+
+<script>
+/* ============ TAB NAV ============ */
+const navtabs=document.querySelectorAll('.navtab');
+const panes={learn:document.getElementById('tab-learn'),pattern:document.getElementById('tab-pattern'),cards:document.getElementById('tab-cards'),quiz:document.getElementById('tab-quiz')};
+navtabs.forEach(t=>t.addEventListener('click',()=>{
+  navtabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  Object.values(panes).forEach(p=>p.classList.remove('active'));
+  panes[t.dataset.tab].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ============ PATTERN CLASSIFIER ============ */
+const patterns={
+  create:{
+    intro:'<b>생성 패턴</b> — 객체의 생성 과정을 캡슐화하여 유연성을 높입니다.',
+    list:[
+      {n:'Singleton (싱글톤)',d:'클래스의 인스턴스를 단 하나만 생성하도록 보장'},
+      {n:'Factory Method (팩토리 메서드)',d:'객체 생성을 서브클래스에 위임 (어떤 클래스를 만들지 서브클래스가 결정)'},
+      {n:'Abstract Factory (추상 팩토리)',d:'연관된 객체들의 집합을 인터페이스로 생성'},
+      {n:'Builder (빌더)',d:'복잡한 객체를 단계별로 조립하여 생성'},
+      {n:'Prototype (프로토타입)',d:'기존 객체를 복제(clone)하여 생성'}
+    ]
+  },
+  struct:{
+    intro:'<b>구조 패턴</b> — 클래스·객체를 조합해 더 큰 구조를 만듭니다.',
+    list:[
+      {n:'Adapter (어댑터)',d:'호환되지 않는 인터페이스를 변환해 연결'},
+      {n:'Bridge (브리지)',d:'추상과 구현을 분리해 독립적으로 확장'},
+      {n:'Composite (컴포지트)',d:'객체를 트리 구조로 구성해 부분-전체를 동일하게 취급'},
+      {n:'Decorator (데코레이터)',d:'객체에 기능을 동적으로 덧붙임'},
+      {n:'Facade (퍼사드)',d:'복잡한 서브시스템에 단순한 통합 인터페이스 제공'},
+      {n:'Flyweight (플라이웨이트)',d:'객체를 공유해 메모리 절약'},
+      {n:'Proxy (프록시)',d:'대상 객체에 대한 접근을 제어하는 대리자'}
+    ]
+  },
+  behav:{
+    intro:'<b>행위 패턴</b> — 객체 간 책임 분배와 상호작용을 정의합니다.',
+    list:[
+      {n:'Observer (옵서버)',d:'한 객체의 상태 변화를 의존 객체들에 자동 통지'},
+      {n:'Strategy (전략)',d:'알고리즘을 캡슐화해 실행 중 교체 가능'},
+      {n:'State (상태)',d:'객체의 상태에 따라 행위를 변경'},
+      {n:'Command (커맨드)',d:'요청을 객체로 캡슐화해 실행·취소 관리'},
+      {n:'Iterator (반복자)',d:'컬렉션 내부를 노출하지 않고 순차 접근'},
+      {n:'Template Method (템플릿 메서드)',d:'알고리즘 골격을 정의하고 일부를 서브클래스가 구현'},
+      {n:'Mediator (중재자)',d:'객체 간 상호작용을 중재자로 캡슐화'},
+      {n:'Chain of Responsibility (책임 연쇄)',d:'요청을 처리할 객체를 사슬로 연결'},
+      {n:'Memento (메멘토)',d:'객체 상태를 저장해 복원'},
+      {n:'Visitor (방문자)',d:'구조 변경 없이 새 연산 추가'},
+      {n:'Interpreter (인터프리터)',d:'언어의 문법을 클래스로 표현해 해석'}
+    ]
+  }
+};
+
+const patBody=document.getElementById('patBody');
+const patTabs=document.querySelectorAll('.pat-tab');
+function renderPat(key){
+  const p=patterns[key];
+  patBody.innerHTML=`
+    <div class="pat-intro">${p.intro}</div>
+    <div class="pat-list">
+      ${p.list.map(it=>`<div class="pat-item"><div class="pn">${it.n}</div><div class="pd">${it.d}</div></div>`).join('')}
+    </div>`;
+}
+patTabs.forEach(t=>t.addEventListener('click',()=>{
+  patTabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  renderPat(t.dataset.p);
+}));
+renderPat('create');
+
+/* ============ FLASHCARDS ============ */
+const cards=[
+  {tag:'모듈화 · 원칙',q:'모듈 독립성을 높이려면\n결합도와 응집도는?',hint:'약/강',a:'<b>결합도는 약하게(낮게)</b><br><b>응집도는 강하게(높게)</b>',key:'순서 바꾸면 오답 — 결합도 먼저',cat:'모듈화'},
+  {tag:'모듈화 · 결합도',q:'결합도 6단계 (약→강)',hint:'자스제외공내',a:'자료 → 스탬프 → 제어 → 외부 → 공통 → 내용',key:'자료가 가장 좋고, 내용이 가장 나쁨',cat:'모듈화'},
+  {tag:'모듈화 · 결합도',q:'다른 모듈 내부를 직접 참조하는\n가장 나쁜 결합도는?',hint:'최악',a:'<b>내용 결합도 (Content)</b>',key:'결합도 6단계 중 가장 강함(나쁨)',cat:'모듈화'},
+  {tag:'모듈화 · 결합도',q:'제어 신호(플래그)를 전달하는 결합도',hint:'제어',a:'<b>제어 결합도 (Control)</b>',key:'스탬프=자료구조, 제어=플래그',cat:'모듈화'},
+  {tag:'모듈화 · 응집도',q:'응집도 7단계 (강→약)',hint:'기순교절시논우',a:'기능적 → 순차적 → 교환적 → 절차적 → 시간적 → 논리적 → 우연적',key:'기능적이 최고, 우연적이 최악',cat:'모듈화'},
+  {tag:'모듈화 · 응집도',q:'구성요소가 서로 관련 없는\n가장 낮은 응집도는?',hint:'최악',a:'<b>우연적 응집도 (Coincidental)</b>',key:'기능적 응집도가 가장 높음(좋음)',cat:'모듈화'},
+  {tag:'모듈화 · 응집도',q:'출력이 다음 모듈의 입력이 되는 응집도',hint:'조립라인',a:'<b>순차적 응집도 (Sequential)</b>',key:'기능적 다음으로 좋은 응집도',cat:'모듈화'},
+  {tag:'비용산정 · LOC',q:'개발 기간 = ?\n(LOC 기준)',hint:'나눗셈',a:'총 LOC ÷ (인원 × 1인당 월생산성)',key:'LOC 30000÷(5×300)=20개월',cat:'비용'},
+  {tag:'테스트 · 분류',q:'내부 코드를 보고 하는 테스트',hint:'투명',a:'<b>화이트박스 테스트</b>',key:'기초경로, 조건/분기 검사',cat:'테스트'},
+  {tag:'테스트 · 분류',q:'입출력만 보고(내부 모름) 하는 테스트',hint:'검은상자',a:'<b>블랙박스 테스트</b>',key:'동치분할, 경계값 분석',cat:'테스트'},
+  {tag:'테스트 · 블랙박스',q:'경계값 분석은 어느 테스트?',hint:'명세 기반',a:'<b>블랙박스 테스트</b>',key:'경계값·동치분할=블랙박스',cat:'테스트'},
+  {tag:'테스트 · 통합',q:'하향식 통합에 쓰는 모듈은?',hint:'가짜 하위',a:'<b>스텁 (Stub)</b>',key:'상향식은 드라이버(Driver)',cat:'테스트'},
+  {tag:'테스트 · 단계',q:'사용자 관점의 최종 검증 테스트',hint:'알파/베타',a:'<b>인수 테스트</b>',key:'단위→통합→시스템→인수 순',cat:'테스트'},
+  {tag:'UML · 분류',q:'클래스 다이어그램은 정적? 동적?',hint:'구조',a:'<b>구조적(정적) 다이어그램</b>',key:'유스케이스·시퀀스는 동적(행위적)',cat:'UML'},
+  {tag:'UML · 분류',q:'시퀀스·유스케이스 다이어그램의 분류',hint:'행위',a:'<b>행위적(동적) 다이어그램</b>',key:'클래스·객체·컴포넌트는 정적',cat:'UML'},
+  {tag:'UML · 접근제어',q:'+ - # ~ 접근 제어자 의미',hint:'public...',a:'+ public / - private<br># protected / ~ default',key:'+는 외부 허용, -는 내부만',cat:'UML'},
+  {tag:'UML · 관계',q:'추상 클래스/인터페이스를 구현하는 관계',hint:'구현',a:'<b>실체화 관계 (Realization)</b>',key:'일반화=상속, 실체화=인터페이스 구현',cat:'UML'},
+  {tag:'방법론 · 모델',q:'위험 분석 중심의 반복적 개발 모델',hint:'나선',a:'<b>나선형 모델 (Spiral)</b>',key:'대규모·고위험 프로젝트에 적합',cat:'방법론'},
+  {tag:'방법론 · 애자일',q:'스프린트·데일리미팅 기반 애자일 기법',hint:'스크럼',a:'<b>스크럼 (Scrum)</b>',key:'XP는 페어 프로그래밍·TDD',cat:'방법론'},
+  {tag:'방법론 · SOLID',q:'"확장엔 열림, 수정엔 닫힘" 원칙',hint:'개방폐쇄',a:'<b>OCP (개방-폐쇄 원칙)</b>',key:'SOLID 중 단답 빈출',cat:'방법론'},
+  {tag:'패턴 · 분류',q:'Singleton은 어느 패턴 분류?',hint:'객체 생성',a:'<b>생성 패턴 (Creational)</b>',key:'인스턴스 1개만 생성',cat:'패턴'},
+  {tag:'패턴 · 분류',q:'Adapter는 어느 패턴 분류?',hint:'구조',a:'<b>구조 패턴 (Structural)</b>',key:'호환 안 되는 인터페이스 변환',cat:'패턴'},
+  {tag:'패턴 · 분류',q:'Observer는 어느 패턴 분류?',hint:'행위',a:'<b>행위 패턴 (Behavioral)</b>',key:'상태 변화를 의존 객체에 통지',cat:'패턴'},
+  {tag:'패턴 · GoF',q:'디자인패턴을 처음 제안한 그룹은?',hint:'4명',a:'<b>GoF (Gang of Four)</b>',key:'생성·구조·행위 23개 패턴',cat:'패턴'}
+];
+
+let order=cards.map((_,i)=>i);
+let pos=0,flipped=false;
+const elNum=document.getElementById('cardNum'),elTotal=document.getElementById('cardTotal'),
+      elCat=document.getElementById('cardCat'),elTag=document.getElementById('cardTag'),
+      elQ=document.getElementById('cardQ'),elHint=document.getElementById('cardHint'),
+      elA=document.getElementById('cardA'),elKey=document.getElementById('cardKey'),
+      fc=document.getElementById('flashcard');
+elTotal.textContent=cards.length;
+
+function renderCard(){
+  const c=cards[order[pos]];
+  flipped=false;fc.classList.remove('flipped');
+  setTimeout(()=>{
+    elNum.textContent=pos+1;elCat.textContent=c.cat;elTag.textContent=c.tag;
+    elQ.textContent=c.q;elHint.textContent=c.hint?'힌트: '+c.hint:'';
+    elA.innerHTML=c.a;elKey.innerHTML='<b>KEY</b> · '+c.key;
+  },60);
+}
+function flipCard(){flipped=!flipped;fc.classList.toggle('flipped',flipped)}
+function nextCard(){pos=(pos+1)%order.length;renderCard()}
+function prevCard(){pos=(pos-1+order.length)%order.length;renderCard()}
+function shuffleCards(){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}pos=0;renderCard()}
+function resetCards(){order=cards.map((_,i)=>i);pos=0;renderCard()}
+renderCard();
+
+/* ============ QUIZ ============ */
+const quizzes=[
+  {db:'모듈화',type:'빈칸',hot:true,q:'다음 빈칸을 채우시오: "모듈의 독립성을 높이기 위해서는 (①)는 약하게, (②)는 강하게 만들어야 한다."',
+   given:null,answer:'① 결합도(Coupling)  ② 응집도(Cohesion)',
+   note:'결합도↓ 응집도↑ = 좋은 모듈화. 순서 주의.'},
+  {db:'모듈화',type:'단답',hot:true,q:'결합도를 약한 것부터 강한 순서로 나열하시오.',
+   given:null,answer:'자료 → 스탬프 → 제어 → 외부 → 공통 → 내용',
+   note:'두문자 <b>자·스·제·외·공·내</b>. 순서 나열은 전부 맞아야 점수.'},
+  {db:'모듈화',type:'단답',hot:true,q:'모듈 내부의 각 구성요소가 서로 관련이 없을 때의 응집도는?',
+   given:null,answer:'우연적 응집도 (Coincidental Cohesion)',
+   note:'응집도 중 가장 낮음(나쁨). 가장 높은 것은 기능적 응집도.'},
+  {db:'비용',type:'계산',hot:true,q:'LOC가 30,000이고 개발자가 5명, 개발자 1명이 월평균 300라인을 개발한다. 개발 기간을 계산식과 함께 쓰시오.',
+   given:null,answer:'30,000 ÷ (5 × 300) = 20개월',
+   note:'개발기간 = 총LOC ÷ (인원 × 월생산성). <b>계산식과 단위(개월)를 반드시</b> 쓸 것.'},
+  {db:'테스트',type:'약술',hot:true,q:'화이트박스 테스트와 블랙박스 테스트의 차이를 설명하시오.',
+   given:null,answer:'화이트박스는 프로그램의 내부 구조·로직을 보고 테스트하는 구조 기반 기법이고, 블랙박스는 내부를 모른 채 입력과 출력(명세)만으로 테스트하는 명세 기반 기법이다',
+   note:'화이트=<b>내부 구조 기반</b>, 블랙=<b>입출력/명세 기반</b>. 경계값 분석은 블랙박스.'},
+  {db:'테스트',type:'단답',hot:false,q:'블랙박스 테스트 기법 중 입력 범위의 경계값을 테스트하는 기법은?',
+   given:null,answer:'경계값 분석 (Boundary Value Analysis)',
+   note:'동치 분할(Equivalence Partitioning)과 함께 블랙박스 대표 기법.'},
+  {db:'테스트',type:'단답',hot:false,q:'하향식 통합 테스트에서 아직 개발되지 않은 하위 모듈을 대신하는 가상 모듈의 이름은?',
+   given:null,answer:'스텁 (Stub)',
+   note:'상향식 통합에서는 상위 모듈 대신 드라이버(Driver)를 사용.'},
+  {db:'테스트',type:'단답',hot:false,q:'테스트 단계를 작은 단위부터 순서대로 4가지 쓰시오.',
+   given:null,answer:'단위 → 통합 → 시스템 → 인수 테스트',
+   note:'V-모델의 테스트 단계. 단위(모듈)부터 인수(사용자)까지.'},
+  {db:'UML',type:'단답',hot:true,q:'UML 다이어그램은 크게 두 가지로 분류된다. 무엇과 무엇인가?',
+   given:null,answer:'구조적(정적) 다이어그램, 행위적(동적) 다이어그램',
+   note:'구조적=클래스·객체 / 행위적=유스케이스·시퀀스.'},
+  {db:'UML',type:'단답',hot:false,q:'클래스 다이어그램에서 접근 제어자 "+", "-"가 의미하는 것을 각각 쓰시오.',
+   given:null,answer:'+ : public(외부 접근 허용), - : private(내부 접근만)',
+   note:'# protected(파생 클래스), ~ default(동일 패키지)도 함께 암기.'},
+  {db:'UML',type:'단답',hot:false,q:'추상 클래스나 인터페이스를 상속받아 자식이 추상 메서드를 구현하는 UML 관계는?',
+   given:null,answer:'실체화 관계 (Realization)',
+   note:'일반화(상속)와 구분. 실체화는 인터페이스 구현 관계.'},
+  {db:'방법론',type:'단답',hot:true,q:'위험 분석을 중심으로 반복적으로 개발하며 대규모 프로젝트에 적합한 SW 개발 모델은?',
+   given:null,answer:'나선형 모델 (Spiral Model)',
+   note:'폭포수(순차), 프로토타입(시제품), 나선형(위험분석 반복).'},
+  {db:'방법론',type:'단답',hot:false,q:'객체지향 설계 원칙(SOLID) 중 "확장에는 열려 있고 수정에는 닫혀 있어야 한다"는 원칙의 약어는?',
+   given:null,answer:'OCP (Open-Closed Principle, 개방-폐쇄 원칙)',
+   note:'SRP/OCP/LSP/ISP/DIP 중 OCP가 단답 빈출.'},
+  {db:'패턴',type:'단답',hot:true,q:'클래스의 인스턴스가 단 하나만 생성되도록 보장하는 디자인 패턴의 이름과, 그 분류(생성/구조/행위)를 쓰시오.',
+   given:null,answer:'싱글톤(Singleton), 생성 패턴',
+   note:'생성 패턴: Singleton, Factory Method, Abstract Factory, Builder, Prototype.'},
+  {db:'패턴',type:'단답',hot:true,q:'한 객체의 상태 변화를 의존하는 다른 객체들에게 자동으로 통지하는 패턴의 이름과 분류는?',
+   given:null,answer:'옵서버(Observer), 행위 패턴',
+   note:'행위 패턴 대표. Strategy, State, Command 등도 행위 패턴.'},
+  {db:'패턴',type:'단답',hot:false,q:'호환되지 않는 인터페이스를 변환하여 함께 동작하게 하는 구조 패턴의 이름은?',
+   given:null,answer:'어댑터 (Adapter)',
+   note:'구조 패턴: Adapter, Bridge, Composite, Decorator, Facade, Proxy 등.'}
+];
+
+const qc=document.getElementById('quizContainer');
+quizzes.forEach((quiz,i)=>{
+  const div=document.createElement('div');
+  div.className='quiz';
+  let givenHTML = quiz.given ? `<div class="quiz-given">${escapeHtml(quiz.given)}</div>` : '';
+  div.innerHTML=`
+    <div class="quiz-meta">
+      <span class="qn">Q${i+1}</span>
+      <span class="qtype ${quiz.hot?'hot':''}">${quiz.hot?'★ 빈출':quiz.type}</span>
+      ${quiz.hot?`<span class="qtype">${quiz.type}</span>`:''}
+    </div>
+    <div class="quiz-q">${quiz.q}</div>
+    ${givenHTML}
+    <textarea class="quiz-input" placeholder="직접 답을 써보세요" spellcheck="false"></textarea>
+    <button class="reveal-btn" onclick="toggleAns(${i})">정답 확인 ▾</button>
+    <div class="quiz-answer" id="ans${i}">
+      <div class="ans-label">MODEL ANSWER</div>
+      <div class="ans-code">${escapeHtml(quiz.answer)}</div>
+      <div class="ans-note">${quiz.note}</div>
+    </div>`;
+  qc.appendChild(div);
+});
+
+function toggleAns(i){
+  const a=document.getElementById('ans'+i);
+  const btn=a.previousElementSibling;
+  const open=a.classList.toggle('show');
+  btn.textContent=open?'정답 숨기기 ▴':'정답 확인 ▾';
+}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+document.addEventListener('keydown',e=>{
+  if(!panes.cards.classList.contains('active'))return;
+  if(e.key==='ArrowRight')nextCard();
+  else if(e.key==='ArrowLeft')prevCard();
+  else if(e.key===' '){e.preventDefault();flipCard()}
+});
+</script>
+</body>
+</html>

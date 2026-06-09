@@ -1,0 +1,686 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정보처리기사 실기 · 보안 & 네트워크 약술</title>
+<style>
+  :root{
+    --bg:#0f1419;
+    --panel:#1a2029;
+    --panel-2:#222b36;
+    --line:#2d3744;
+    --line-soft:#232c37;
+    --ink:#e6edf3;
+    --ink-dim:#8b98a5;
+    --ink-faint:#5e6b78;
+    --amber:#f0a868;
+    --amber-soft:#3a2d1f;
+    --cyan:#56b6c2;
+    --green:#7fb069;
+    --red:#e06c75;
+    --violet:#c490d1;
+    --blue:#61afef;
+    --sec-color:#e06c75;   /* security = red */
+    --net-color:#61afef;   /* network = blue */
+    --mono:'SF Mono',ui-monospace,'Cascadia Code','Source Code Pro',Menlo,Consolas,monospace;
+    --sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+  ::selection{background:var(--amber);color:#0f1419}
+  code,kbd,.mono{font-family:var(--mono)}
+
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(15,20,25,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar-inner{max-width:880px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:14px}
+  .dots{display:flex;gap:7px;flex-shrink:0}
+  .dots i{width:12px;height:12px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#e06c75}
+  .dots i:nth-child(2){background:#e5c07b}
+  .dots i:nth-child(3){background:#7fb069}
+  .topbar-title{font-family:var(--mono);font-size:13px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .topbar-title b{color:var(--amber);font-weight:600}
+  .progress-mini{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--ink-faint);flex-shrink:0}
+  .progress-mini b{color:var(--green)}
+
+  .hero{max-width:880px;margin:0 auto;padding:46px 20px 30px}
+  .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.5px;color:var(--amber);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+  .kicker .blink{width:8px;height:15px;background:var(--amber);display:inline-block;animation:blink 1.1s steps(2) infinite}
+  @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+  .hero h1{font-size:clamp(28px,6vw,42px);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:14px}
+  .hero h1 .hl{color:var(--amber)}
+  .hero .lead{color:var(--ink-dim);font-size:15.5px;max-width:640px}
+  .hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .chip{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:99px;background:var(--panel);border:1px solid var(--line);color:var(--ink-dim)}
+  .chip b{color:var(--ink)}
+  .chip.hot{border-color:var(--amber-soft);color:var(--amber)}
+
+  .alert{max-width:880px;margin:0 auto;padding:0 20px}
+  .alert-box{background:#1a2a1f;border:1px solid #25422c;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:14px 17px;font-size:13.5px;color:var(--ink-dim)}
+  .alert-box b{color:var(--green)}
+  .alert-box .ttl{color:var(--amber);font-weight:700;font-family:var(--mono);font-size:12px;display:block;margin-bottom:5px}
+
+  .navtabs{position:sticky;top:48px;z-index:40;max-width:880px;margin:0 auto;padding:0 12px;display:flex;gap:4px;overflow-x:auto;background:rgba(15,20,25,.92);backdrop-filter:blur(12px);-ms-overflow-style:none;scrollbar-width:none}
+  .navtabs::-webkit-scrollbar{display:none}
+  .navtab{flex-shrink:0;font-family:var(--mono);font-size:13px;padding:12px 14px;color:var(--ink-faint);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:.18s;white-space:nowrap}
+  .navtab:hover{color:var(--ink-dim)}
+  .navtab.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+  section{padding:38px 0 10px;scroll-margin-top:96px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600}
+  .sec-head h2{font-size:23px;font-weight:700;letter-spacing:-.01em}
+  .dom-badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px}
+  .dom-badge.sec{background:#2f1d20;color:var(--sec-color)}
+  .dom-badge.net{background:#16263a;color:var(--net-color)}
+  .sec-desc{color:var(--ink-dim);font-size:14.5px;margin-bottom:26px}
+
+  .concept{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px;overflow:hidden}
+  .concept-head{padding:15px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line-soft)}
+  .concept-head .tag{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--amber-soft);color:var(--amber);flex-shrink:0;letter-spacing:.3px}
+  .concept-head .tag.cyan{background:#1b3236;color:var(--cyan)}
+  .concept-head .tag.violet{background:#2e2336;color:var(--violet)}
+  .concept-head .tag.green{background:#1f2e1c;color:var(--green)}
+  .concept-head .tag.red{background:#2f1d20;color:var(--red)}
+  .concept-head h3{font-size:16.5px;font-weight:700}
+  .concept-head .freq{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex-shrink:0}
+  .star{color:var(--amber)}
+  .concept-body{padding:16px 18px}
+  .concept-body p{font-size:14.5px;color:var(--ink);margin-bottom:12px}
+  .concept-body p:last-child{margin-bottom:0}
+  .concept-body .muted{color:var(--ink-dim);font-size:13.5px}
+  .concept-body ul{list-style:none;margin:10px 0}
+  .concept-body li{font-size:14px;padding:5px 0 5px 20px;position:relative;color:var(--ink)}
+  .concept-body li::before{content:'▸';position:absolute;left:2px;color:var(--amber);font-size:12px;top:6px}
+  .concept-body li b{color:var(--cyan);font-weight:600}
+
+  /* term-definition table */
+  .termtable{display:flex;flex-direction:column;gap:8px;margin:12px 0}
+  .termrow{display:grid;grid-template-columns:110px 1fr;gap:12px;padding:10px 13px;background:#0c1116;border:1px solid var(--line-soft);border-radius:7px;align-items:start}
+  .termrow .tt{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600}
+  .termrow .td{font-size:13.5px;color:var(--ink-dim);line-height:1.5}
+  .termrow .td b{color:var(--cyan)}
+  @media(max-width:520px){.termrow{grid-template-columns:1fr;gap:4px}}
+
+  .callout{border-left:3px solid var(--amber);background:var(--amber-soft);padding:11px 15px;border-radius:0 7px 7px 0;margin:13px 0;font-size:13.5px}
+  .callout.warn{border-left-color:var(--red);background:#33211f}
+  .callout.warn b{color:var(--red)}
+  .callout b{color:var(--amber)}
+  .callout .ic{font-weight:700;margin-right:4px}
+  .callout.mnemonic{border-left-color:var(--green);background:#1a2a1f}
+  .callout.mnemonic b{color:var(--green)}
+
+  /* ===== OSI INTERACTIVE ===== */
+  .osi-wrap{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+  .osi-head{padding:14px 18px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+  .osi-head h3{font-size:15.5px;font-weight:700}
+  .osi-head .hint{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-faint)}
+  .osi-stack{display:flex;flex-direction:column;padding:14px;gap:5px}
+  .osi-layer{
+    display:flex;align-items:center;gap:12px;padding:13px 16px;border-radius:8px;cursor:pointer;
+    background:#0c1116;border:1px solid var(--line-soft);transition:.22s;position:relative;overflow:hidden;
+  }
+  .osi-layer:hover{border-color:var(--amber);transform:translateX(3px)}
+  .osi-layer.open{border-color:var(--amber);background:var(--amber-soft)}
+  .osi-layer .num{font-family:var(--mono);font-size:14px;font-weight:700;color:var(--amber);min-width:20px}
+  .osi-layer .lname{font-weight:700;font-size:14.5px;min-width:96px}
+  .osi-layer .lunit{font-family:var(--mono);font-size:11px;color:var(--cyan);margin-left:auto;flex-shrink:0}
+  .osi-detail{
+    max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s ease,margin .3s ease;
+    background:#0c1116;border-radius:8px;border:1px solid transparent;
+  }
+  .osi-detail.show{max-height:300px;padding:13px 16px;margin-top:-2px;margin-bottom:3px;border-color:var(--line-soft);border-top:none;border-radius:0 0 8px 8px}
+  .osi-detail p{font-size:13.5px;color:var(--ink-dim);margin-bottom:8px}
+  .osi-detail .proto{font-family:var(--mono);font-size:12px;color:var(--green)}
+  .osi-detail .proto b{color:var(--amber)}
+  .osi-group-label{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);letter-spacing:.5px;padding:4px 16px 0;text-transform:uppercase}
+
+  /* flashcards */
+  .card-controls{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .card-counter{font-family:var(--mono);font-size:13px;color:var(--ink-dim)}
+  .card-counter b{color:var(--amber)}
+  .filter-btns{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+  .fbtn{font-family:var(--mono);font-size:12px;padding:6px 13px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink-dim);cursor:pointer;transition:.15s}
+  .fbtn:hover{border-color:var(--amber);color:var(--amber)}
+  .fbtn.active{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber)}
+  .flashcard{perspective:1600px;height:240px;margin-bottom:14px;cursor:pointer}
+  .flashcard-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+  .flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);padding:24px;display:flex;flex-direction:column;border:1px solid var(--line)}
+  .face-front{background:var(--panel);justify-content:center;align-items:center;text-align:center}
+  .face-front .q-tag{font-family:var(--mono);font-size:11px;color:var(--amber);margin-bottom:14px;letter-spacing:.5px}
+  .face-front .q-term{font-size:22px;font-weight:800;letter-spacing:-.01em;margin-bottom:8px;line-height:1.35}
+  .face-front .q-hint{font-size:13px;color:var(--ink-faint);font-family:var(--mono)}
+  .face-front .tap{position:absolute;bottom:14px;right:16px;font-size:11px;color:var(--ink-faint);font-family:var(--mono)}
+  .face-back{background:linear-gradient(145deg,#1c242e,#171e26);transform:rotateY(180deg);justify-content:center;border-color:var(--amber-soft)}
+  .face-back .a-label{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:10px;letter-spacing:.5px}
+  .face-back .a-text{font-size:14.5px;line-height:1.6}
+  .face-back .a-text b{color:var(--amber)}
+  .face-back .a-text code{background:#0c1116;padding:2px 6px;border-radius:4px;font-size:13px;color:var(--cyan)}
+  .face-back .a-key{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-dim)}
+  .face-back .a-key b{color:var(--cyan)}
+  .deck-nav{display:flex;gap:10px}
+  .btn{font-family:var(--mono);font-size:13px;padding:10px 18px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:.15s;flex:1}
+  .btn:hover{border-color:var(--amber);color:var(--amber)}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber)}
+  .btn-row{display:flex;gap:10px;margin-top:6px}
+
+  /* quiz */
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+  .quiz-meta{display:flex;align-items:center;gap:10px;margin-bottom:13px;flex-wrap:wrap}
+  .quiz-meta .qn{font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700}
+  .quiz-meta .qtype{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;background:var(--panel-2);color:var(--ink-dim)}
+  .quiz-meta .qtype.hot{color:var(--amber)}
+  .quiz-meta .dom-badge{font-size:10px;padding:2px 7px}
+  .quiz-q{font-size:15px;font-weight:600;margin-bottom:6px;line-height:1.55}
+  .quiz-given{background:#0c1116;border:1px solid var(--line-soft);border-radius:7px;padding:12px 14px;margin:12px 0;font-size:13.5px;color:var(--ink-dim);line-height:1.6}
+  .quiz-given b{color:var(--cyan)}
+  .quiz-input{width:100%;background:#0c1116;border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--ink);font-family:var(--sans);font-size:14px;resize:vertical;min-height:60px;line-height:1.6}
+  .quiz-input:focus{outline:none;border-color:var(--amber)}
+  .quiz-input::placeholder{color:var(--ink-faint)}
+  .reveal-btn{margin-top:10px;font-family:var(--mono);font-size:13px;padding:9px 16px;border-radius:7px;background:var(--amber-soft);border:1px solid var(--amber-soft);color:var(--amber);cursor:pointer;transition:.15s}
+  .reveal-btn:hover{background:#4a3825}
+  .quiz-answer{display:none;margin-top:13px;padding:14px;border-radius:8px;background:#0c1116;border:1px solid var(--line-soft);border-left:3px solid var(--green)}
+  .quiz-answer.show{display:block;animation:slideIn .3s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .quiz-answer .ans-label{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;letter-spacing:.5px}
+  .quiz-answer .ans-code{font-size:15px;line-height:1.6;color:var(--amber);font-weight:700;margin-bottom:10px}
+  .quiz-answer .ans-note{padding-top:11px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-dim);line-height:1.6}
+  .quiz-answer .ans-note b{color:var(--amber)}
+  .quiz-answer .ans-note code{background:var(--panel-2);padding:1px 5px;border-radius:4px;color:var(--cyan);font-size:12.5px}
+
+  .foot{max-width:880px;margin:50px auto 0;padding:30px 20px;border-top:1px solid var(--line);text-align:center}
+  .foot p{font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.8}
+  .foot .big{color:var(--amber);font-size:14px;font-weight:600;margin-bottom:6px}
+
+  .tabpane{display:none}
+  .tabpane.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  @media(max-width:600px){
+    .hero{padding:34px 20px 24px}
+    .face-front .q-term{font-size:19px}
+    .sec-head h2{font-size:20px}
+    .osi-layer .lname{min-width:auto}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-dim);text-decoration:none;border:1px solid var(--line);padding:5px 10px;border-radius:7px;white-space:nowrap;flex-shrink:0;transition:.15s" onmouseover="this.style.color='var(--amber)';this.style.borderColor='var(--amber)'" onmouseout="this.style.color='var(--ink-dim)';this.style.borderColor='var(--line)'">← 대시보드</a>
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="topbar-title"><b>sec_net</b> — 정보처리기사 실기 3주차</div>
+    <div class="progress-mini" id="progMini">D-<b>39</b></div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="kicker">~/study/week3/security+network <span class="blink"></span></div>
+  <h1>비전공 영역이<br><span class="hl">당락을 가른다</span></h1>
+  <p class="lead">보안·네트워크 약술은 코드가 없고 정확한 키워드 암기가 전부입니다. 개발 경력으로 메우기 어려운 영역이라, 두문자와 용어 매칭으로 확실히 점수를 가져가야 합니다. 여기가 합격의 분기점입니다.</p>
+  <div class="meta">
+    <span class="chip hot">당락 분기 ★★★</span>
+    <span class="chip">보안 + 네트워크</span>
+    <span class="chip">핵심 용어 <b>40+</b></span>
+    <span class="chip">암기카드 <b>26</b></span>
+    <span class="chip">문제 <b>16</b></span>
+  </div>
+</div>
+
+<div class="alert">
+  <div class="alert-box">
+    <span class="ttl">✓ 이 영역의 공략법</span>
+    약술형은 <b>키워드 정확도</b>가 생명입니다. "SQL 인젝션"을 "SQL 삽입"으로 써도 보통 인정되지만, 핵심 동작 설명(입력값 조작 → 비정상 쿼리 실행)이 빠지면 감점. <b>두문자로 뼈대를 외우고, 정의는 핵심 동사 1개로</b> 기억하세요.
+  </div>
+</div>
+
+<div class="navtabs" id="navtabs">
+  <button class="navtab active" data-tab="learn">📖 핵심개념</button>
+  <button class="navtab" data-tab="osi">🌐 OSI 7계층</button>
+  <button class="navtab" data-tab="cards">🃏 암기카드</button>
+  <button class="navtab" data-tab="quiz">✍️ 문제풀이</button>
+</div>
+
+<!-- ============ LEARN ============ -->
+<div class="tabpane active" id="tab-learn">
+<div class="wrap">
+
+<section id="s-cia">
+  <div class="sec-head"><span class="sec-num">01</span><h2>정보보안 3요소</h2><span class="dom-badge sec">보안</span></div>
+  <p class="sec-desc">모든 보안의 출발점. 두문자 <b>기·무·가</b>로 외우고, 단답으로 자주 나옵니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">CIA</span><h3>기밀성 · 무결성 · 가용성</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">기밀성</span><span class="td">Confidentiality — <b>인가된 사용자만</b> 정보에 접근 가능 (노출 방지)</span></div>
+        <div class="termrow"><span class="tt">무결성</span><span class="td">Integrity — <b>인가된 사용자만</b> 정보를 수정 가능 (변조 방지)</span></div>
+        <div class="termrow"><span class="tt">가용성</span><span class="td">Availability — 인가된 사용자가 <b>필요할 때 언제든</b> 접근 가능</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>기·무·가</b> (기밀성·무결성·가용성). 추가로 부인방지(Non-repudiation), 인증(Authentication)도 함께 외우면 좋습니다.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-crypto">
+  <div class="sec-head"><span class="sec-num">02</span><h2>암호화 — 대칭 vs 비대칭</h2><span class="dom-badge sec">보안</span></div>
+  <p class="sec-desc">거의 매회 출제. <b>키 개수와 알고리즘 이름</b>을 짝지어 외우는 게 핵심입니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">CRYPTO</span><h3>대칭키 vs 비대칭키</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">대칭키</span><span class="td"><b>암호화·복호화에 같은 키</b> 사용. 빠르지만 키 분배 어려움. <br>예: <b>DES, AES, SEED, ARIA, RC4</b></span></div>
+        <div class="termrow"><span class="tt">비대칭키</span><span class="td"><b>공개키로 암호화, 개인키로 복호화</b> (키 2개). 느리지만 키 분배 쉬움.<br>예: <b>RSA, ECC, 디피-헬만</b></span></div>
+        <div class="termrow"><span class="tt">해시</span><span class="td"><b>단방향</b> 암호화 (복호화 불가). 무결성 검증용.<br>예: <b>SHA, MD5, HAS-160</b></span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>핵심 함정:</b> 비대칭키는 <u>공개키로 암호화 → 개인키로 복호화</u>가 기본(기밀성). 반대로 개인키로 서명 → 공개키로 검증은 전자서명(부인방지). 방향을 정확히.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> 대칭 = <b>다·에·시·아</b>(DES·AES·SEED·ARIA) / 비대칭 = <b>RSA·ECC</b> / 해시 = <b>SHA·MD5</b>.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-attack">
+  <div class="sec-head"><span class="sec-num">03</span><h2>공격기법 — 웹 취약점</h2><span class="dom-badge sec">보안</span></div>
+  <p class="sec-desc">약술 최대 빈출. 각 공격의 <b>핵심 동작 한 문장</b>을 정확히 쓸 수 있어야 합니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">ATTACK</span><h3>주요 웹 공격기법</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">SQL 인젝션</span><span class="td">입력값에 <b>악의적 SQL을 삽입</b>해 DB를 비정상 조회·조작하는 공격. (방어: Prepared Statement)</span></div>
+        <div class="termrow"><span class="tt">XSS</span><span class="td">웹 페이지에 <b>악성 스크립트를 삽입</b>해 쿠키·세션 등 개인정보를 탈취. (Cross-Site Scripting)</span></div>
+        <div class="termrow"><span class="tt">CSRF</span><span class="td">사용자가 <b>자신도 모르게</b> 공격자가 의도한 요청을 보내게 하는 공격. (Cross-Site Request Forgery)</span></div>
+        <div class="termrow"><span class="tt">명령어 삽입</span><span class="td">검증 안 된 입력값이 <b>OS 명령어로 실행</b>되도록 하는 공격 (Command Injection)</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>XSS vs CSRF 구분:</b> XSS는 <u>스크립트 실행으로 정보 탈취</u>, CSRF는 <u>위조된 요청으로 행위 유발</u>. 둘 다 빈출이니 차이를 명확히.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">DOS</span><h3>서비스 거부 · 네트워크 공격</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">DoS</span><span class="td">대량 트래픽으로 <b>시스템을 마비</b>시켜 정상 서비스를 방해</span></div>
+        <div class="termrow"><span class="tt">DDoS</span><span class="td">여러 좀비 PC를 동원한 <b>분산</b> 서비스 거부 공격</span></div>
+        <div class="termrow"><span class="tt">스니핑</span><span class="td">네트워크 패킷을 <b>몰래 가로채</b> 정보를 훔쳐봄 (수동적)</span></div>
+        <div class="termrow"><span class="tt">스푸핑</span><span class="td">IP·MAC 등을 <b>위조</b>해 신뢰된 대상으로 가장 (능동적)</span></div>
+      </div>
+      <div class="callout"><span class="ic">💡</span> <b>스니핑 vs 스푸핑:</b> 스니핑은 "엿보기"(가로채기), 스푸핑은 "위장"(속이기). 헷갈리기 쉬우니 동사로 구분.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-access">
+  <div class="sec-head"><span class="sec-num">04</span><h2>접근통제 · 인증</h2><span class="dom-badge sec">보안</span></div>
+  <p class="sec-desc">접근통제 모델 3종과 인증 방식이 단답으로 출제됩니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">AC</span><h3>접근통제 모델 (DAC/MAC/RBAC)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">DAC</span><span class="td">임의적 접근통제 — <b>자원 소유자</b>가 권한 부여 (Discretionary)</span></div>
+        <div class="termrow"><span class="tt">MAC</span><span class="td">강제적 접근통제 — <b>보안 등급</b>에 따라 시스템이 강제 (Mandatory)</span></div>
+        <div class="termrow"><span class="tt">RBAC</span><span class="td">역할 기반 접근통제 — <b>역할(직책)</b>에 따라 권한 부여 (Role-Based)</span></div>
+      </div>
+      <div class="callout"><span class="ic">🔐</span> <b>인증 방식:</b> <b>SSO</b>=한 번 인증으로 여러 시스템 접근 / <b>OTP</b>=일회용 비밀번호 / <b>커버로스(Kerberos)</b>=티켓 기반 인증.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-net-proto">
+  <div class="sec-head"><span class="sec-num">05</span><h2>네트워크 — 프로토콜</h2><span class="dom-badge net">네트워크</span></div>
+  <p class="sec-desc">계층별 프로토콜과 역할을 매칭하는 문제가 단골. 약어와 풀네임을 함께 외우세요.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">PROTO</span><h3>주요 프로토콜</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">TCP</span><span class="td"><b>연결형</b>, 신뢰성 보장, 순서 보장 (3-way handshake)</span></div>
+        <div class="termrow"><span class="tt">UDP</span><span class="td"><b>비연결형</b>, 빠르지만 신뢰성 없음 (실시간 스트리밍)</span></div>
+        <div class="termrow"><span class="tt">HTTP/HTTPS</span><span class="td">웹 통신 프로토콜 / HTTPS는 SSL·TLS로 암호화</span></div>
+        <div class="termrow"><span class="tt">FTP</span><span class="td">파일 전송 프로토콜</span></div>
+        <div class="termrow"><span class="tt">SMTP/POP3</span><span class="td">메일 전송(SMTP) / 메일 수신(POP3, IMAP)</span></div>
+        <div class="termrow"><span class="tt">ARP</span><span class="td">IP 주소 → MAC 주소 변환 (RARP는 반대)</span></div>
+        <div class="termrow"><span class="tt">ICMP</span><span class="td">오류·제어 메시지 전송 (ping이 사용)</span></div>
+        <div class="termrow"><span class="tt">SNMP</span><span class="td">네트워크 장비 관리·모니터링</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>TCP vs UDP:</b> TCP=신뢰성(연결형), UDP=속도(비연결형). 가장 자주 나오는 비교 문제입니다.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-net-addr">
+  <div class="sec-head"><span class="sec-num">06</span><h2>네트워크 — 주소 · 라우팅</h2><span class="dom-badge net">네트워크</span></div>
+  <p class="sec-desc">IPv4/IPv6 차이, 라우팅 프로토콜, 네트워크 장비가 출제 포인트.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">ADDR</span><h3>IP 주소와 라우팅</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">IPv4</span><span class="td"><b>32비트</b> 주소 (8비트씩 4개), 약 43억 개</span></div>
+        <div class="termrow"><span class="tt">IPv6</span><span class="td"><b>128비트</b> 주소, IPv4 주소 고갈 해결. 16진수 8그룹</span></div>
+        <div class="termrow"><span class="tt">라우팅</span><span class="td">목적지까지 <b>최적 경로</b>를 찾아 패킷 전달</span></div>
+        <div class="termrow"><span class="tt">RIP/OSPF</span><span class="td">RIP=거리벡터(홉 수) / OSPF=링크상태(최단경로)</span></div>
+      </div>
+      <div class="callout"><span class="ic">🌐</span> <b>네트워크 장비:</b> <b>라우터</b>(경로 결정, 3계층) / <b>스위치</b>(2계층) / <b>허브</b>(1계층) / <b>게이트웨이</b>(프로토콜 변환).</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<!-- ============ OSI ============ -->
+<div class="tabpane" id="tab-osi">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">🌐</span><h2>OSI 7계층 인터랙티브</h2></div>
+    <p class="sec-desc">필기·실기 단골입니다. 각 계층을 눌러 역할·데이터 단위·프로토콜을 확인하세요. <b>순서</b>와 <b>계층별 프로토콜</b>이 핵심.</p>
+
+    <div class="callout mnemonic" style="margin-bottom:18px"><span class="ic">🔑</span> <b>두문자 (아래→위):</b> 물·데·네·전·세·표·응 — <b>"물 데 네(가) 전세 표(를) 응(원)"</b> 같은 식으로 본인만의 문장을 만들어 외우세요.</div>
+
+    <div class="osi-wrap">
+      <div class="osi-head">
+        <h3>7계층 구조 (위 = 사용자, 아래 = 하드웨어)</h3>
+        <span class="hint">계층을 탭하세요 ↓</span>
+      </div>
+      <div class="osi-group-label">상위 — 사용자 지원 계층</div>
+      <div class="osi-stack" id="osiStack"></div>
+    </div>
+
+    <div class="callout"><span class="ic">📦</span> <b>데이터 단위 (캡슐화):</b> 응용~세션=메시지/데이터 → 전송=<b>세그먼트</b> → 네트워크=<b>패킷</b> → 데이터링크=<b>프레임</b> → 물리=<b>비트</b>. 위에서 아래로 헤더를 붙이며 내려갑니다.</div>
+  </section>
+</div>
+</div>
+
+<!-- ============ CARDS ============ -->
+<div class="tabpane" id="tab-cards">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">★</span><h2>암기 카드</h2></div>
+    <p class="sec-desc">용어를 보고 정의를, 또는 정의를 보고 용어를 떠올린 뒤 확인하세요. 탭하면 뒤집힙니다.</p>
+    <div class="filter-btns" id="filterBtns">
+      <button class="fbtn active" data-f="all">전체</button>
+      <button class="fbtn" data-f="보안">🔒 보안</button>
+      <button class="fbtn" data-f="네트워크">🌐 네트워크</button>
+    </div>
+    <div class="card-controls">
+      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">26</span></span>
+      <span class="card-counter" style="margin-left:auto" id="cardCat">보안</span>
+    </div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner" id="flashInner">
+        <div class="face face-front">
+          <div class="q-tag" id="cardTag">보안 · 3요소</div>
+          <div class="q-term" id="cardQ">로딩 중...</div>
+          <div class="q-hint" id="cardHint"></div>
+          <div class="tap">tap to flip ↻</div>
+        </div>
+        <div class="face face-back">
+          <div class="a-label">ANSWER</div>
+          <div class="a-text" id="cardA"></div>
+          <div class="a-key" id="cardKey"></div>
+        </div>
+      </div>
+    </div>
+    <div class="deck-nav">
+      <button class="btn" onclick="prevCard()">← 이전</button>
+      <button class="btn primary" onclick="nextCard()">다음 →</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="shuffleCards()">🔀 섞기</button>
+      <button class="btn" onclick="resetCards()">↺ 처음으로</button>
+    </div>
+  </section>
+</div>
+</div>
+
+<!-- ============ QUIZ ============ -->
+<div class="tabpane" id="tab-quiz">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">✍</span><h2>문제 풀이</h2></div>
+    <p class="sec-desc">단답·약술 16문제. 먼저 <b>키워드를 직접 써본 뒤</b> 정답을 펼치세요. 약술은 핵심 동사가 들어갔는지 확인하는 게 중요합니다.</p>
+    <div id="quizContainer"></div>
+    <div class="callout" style="margin-top:24px"><span class="ic">📌</span> <b>채점 팁:</b> 약술형은 <u>핵심 키워드와 동작</u>이 들어가면 부분점수를 받습니다. "SQL 인젝션" → "입력값 조작/삽입"과 "비정상 쿼리 실행/DB 조작"이 핵심. 영어 약어는 풀네임도 함께 외우세요.</div>
+  </section>
+</div>
+</div>
+
+<div class="foot">
+  <p class="big">여기가 합격의 분기점입니다</p>
+  <p>코드는 경력으로 풀어도, 보안·네트워크는 암기가 전부입니다.<br>두문자로 뼈대 잡고, 자투리 시간마다 카드 한 바퀴.<br><br>$ 3주 완성: SQL · 프로그래밍 · 보안/네트워크 ✓</p>
+</div>
+
+<script>
+/* ============ TAB NAV ============ */
+const navtabs=document.querySelectorAll('.navtab');
+const panes={learn:document.getElementById('tab-learn'),osi:document.getElementById('tab-osi'),cards:document.getElementById('tab-cards'),quiz:document.getElementById('tab-quiz')};
+navtabs.forEach(t=>t.addEventListener('click',()=>{
+  navtabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  Object.values(panes).forEach(p=>p.classList.remove('active'));
+  panes[t.dataset.tab].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ============ OSI INTERACTIVE ============ */
+const osiLayers=[
+  {n:7,name:'응용 계층',eng:'Application',role:'사용자와 직접 상호작용하는 응용 서비스 제공',proto:'HTTP, FTP, SMTP, POP3, DNS, Telnet',group:'top'},
+  {n:6,name:'표현 계층',eng:'Presentation',role:'데이터 형식 변환, 암호화·복호화, 압축',proto:'JPEG, MPEG, ASCII',group:'top'},
+  {n:5,name:'세션 계층',eng:'Session',role:'통신 세션 설정·유지·종료, 동기화',proto:'NetBIOS, RPC, SSH',group:'top'},
+  {n:4,name:'전송 계층',eng:'Transport',role:'종단 간 신뢰성 있는 데이터 전송, 흐름·오류 제어',proto:'TCP, UDP',unit:'세그먼트',group:'mid'},
+  {n:3,name:'네트워크 계층',eng:'Network',role:'경로 설정(라우팅), 논리 주소(IP) 지정',proto:'IP, ICMP, IGMP, ARP',unit:'패킷',group:'low'},
+  {n:2,name:'데이터링크 계층',eng:'Data Link',role:'인접 노드 간 전송, 오류·흐름 제어, 물리주소(MAC)',proto:'Ethernet, PPP, HDLC',unit:'프레임',group:'low'},
+  {n:1,name:'물리 계층',eng:'Physical',role:'0과 1의 비트를 전기 신호로 변환해 전송',proto:'RS-232, 케이블, 허브',unit:'비트',group:'low'}
+];
+
+const osiStack=document.getElementById('osiStack');
+osiLayers.forEach((l,i)=>{
+  const div=document.createElement('div');
+  div.innerHTML=`
+    <div class="osi-layer" onclick="toggleOsi(${i})" id="osilayer${i}">
+      <span class="num">${l.n}</span>
+      <span class="lname">${l.name}</span>
+      <span class="lunit">${l.unit?l.unit:''}</span>
+    </div>
+    <div class="osi-detail" id="osidetail${i}">
+      <p><b style="color:var(--cyan)">${l.eng}</b> · ${l.role}</p>
+      <p class="proto"><b>프로토콜:</b> ${l.proto}${l.unit?` &nbsp;|&nbsp; <b>단위:</b> ${l.unit}`:''}</p>
+    </div>`;
+  osiStack.appendChild(div);
+  // insert group labels
+  if(i===2){ // after session (before transport)
+    const lbl=document.createElement('div');
+    lbl.className='osi-group-label';lbl.textContent='전송 계층';lbl.style.padding='6px 2px 0';
+    osiStack.appendChild(lbl);
+  }
+  if(i===3){
+    const lbl=document.createElement('div');
+    lbl.className='osi-group-label';lbl.textContent='하위 — 네트워크 지원 계층';lbl.style.padding='6px 2px 0';
+    osiStack.appendChild(lbl);
+  }
+});
+
+function toggleOsi(i){
+  const layer=document.getElementById('osilayer'+i);
+  const detail=document.getElementById('osidetail'+i);
+  const isOpen=detail.classList.contains('show');
+  // close all
+  osiLayers.forEach((_,k)=>{
+    document.getElementById('osidetail'+k).classList.remove('show');
+    document.getElementById('osilayer'+k).classList.remove('open');
+  });
+  if(!isOpen){detail.classList.add('show');layer.classList.add('open')}
+}
+
+/* ============ FLASHCARDS ============ */
+const allCards=[
+  {tag:'보안 · 3요소',q:'기밀성 (Confidentiality)',hint:'노출 방지',a:'<b>인가된 사용자만</b> 정보에 접근 가능하도록 (정보 노출 방지)',key:'기·무·가 중 첫 번째',cat:'보안',dom:'보안'},
+  {tag:'보안 · 3요소',q:'무결성 (Integrity)',hint:'변조 방지',a:'<b>인가된 사용자만</b> 정보를 수정 가능 (변조·위조 방지)',key:'해시 함수로 무결성 검증',cat:'보안',dom:'보안'},
+  {tag:'보안 · 3요소',q:'가용성 (Availability)',hint:'언제든',a:'인가된 사용자가 <b>필요할 때 언제든</b> 자원에 접근 가능',key:'DoS 공격이 가용성을 위협',cat:'보안',dom:'보안'},
+  {tag:'보안 · 암호화',q:'대칭키 암호화의 특징과 예',hint:'키 1개',a:'암호화·복호화에 <b>같은 키</b> 사용. 빠름.<br>예: <b>DES, AES, SEED, ARIA</b>',key:'키 분배가 어려운 단점',cat:'보안',dom:'보안'},
+  {tag:'보안 · 암호화',q:'비대칭키 암호화의 키 사용 방식',hint:'키 2개',a:'<b>공개키로 암호화 → 개인키로 복호화</b><br>예: <b>RSA, ECC</b>',key:'느리지만 키 분배 쉬움',cat:'보안',dom:'보안'},
+  {tag:'보안 · 암호화',q:'복호화가 불가능한 단방향 암호화는?',hint:'무결성',a:'<b>해시 (Hash)</b><br>예: SHA, MD5',key:'무결성 검증·비밀번호 저장에 사용',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'입력값에 악성 SQL을 삽입하는 공격',hint:'DB',a:'<b>SQL 인젝션</b>',key:'방어: Prepared Statement, 입력값 검증',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'악성 스크립트로 쿠키·정보를 탈취하는 공격',hint:'스크립트',a:'<b>XSS</b> (Cross-Site Scripting)',key:'게시판 등에 스크립트 삽입',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'사용자도 모르게 위조된 요청을 보내는 공격',hint:'요청 위조',a:'<b>CSRF</b> (Cross-Site Request Forgery)',key:'XSS=정보탈취, CSRF=행위유발',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'스니핑 vs 스푸핑의 차이',hint:'엿보기/위장',a:'<b>스니핑</b>=패킷 가로채기(엿보기)<br><b>스푸핑</b>=IP·MAC 위조(위장)',key:'스니핑=수동적, 스푸핑=능동적',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'여러 좀비 PC로 시스템을 마비시키는 공격',hint:'분산',a:'<b>DDoS</b> (분산 서비스 거부)',key:'DoS=단일, DDoS=분산(여러 좀비)',cat:'보안',dom:'보안'},
+  {tag:'보안 · 접근통제',q:'자원 소유자가 권한을 부여하는 모델',hint:'임의적',a:'<b>DAC</b> (임의적 접근통제)',key:'Discretionary Access Control',cat:'보안',dom:'보안'},
+  {tag:'보안 · 접근통제',q:'보안 등급에 따라 시스템이 강제하는 모델',hint:'강제적',a:'<b>MAC</b> (강제적 접근통제)',key:'Mandatory Access Control',cat:'보안',dom:'보안'},
+  {tag:'보안 · 접근통제',q:'역할(직책)에 따라 권한을 주는 모델',hint:'역할',a:'<b>RBAC</b> (역할 기반 접근통제)',key:'Role-Based Access Control',cat:'보안',dom:'보안'},
+  {tag:'보안 · 인증',q:'한 번 인증으로 여러 시스템에 접근하는 통합인증',hint:'통합',a:'<b>SSO</b> (Single Sign-On)',key:'OTP=일회용 비번, 커버로스=티켓기반',cat:'보안',dom:'보안'},
+  {tag:'네트워크 · OSI',q:'OSI 7계층 순서 (아래→위)',hint:'물데네전세표응',a:'물리 → 데이터링크 → 네트워크 → 전송 → 세션 → 표현 → 응용',key:'물·데·네·전·세·표·응',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · OSI',q:'라우팅(경로 설정)을 담당하는 계층',hint:'3계층',a:'<b>네트워크 계층</b> (3계층)',key:'IP 주소 지정, 패킷 단위',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · OSI',q:'전송 계층의 데이터 단위는?',hint:'4계층',a:'<b>세그먼트 (Segment)</b>',key:'네트워크=패킷, 데이터링크=프레임, 물리=비트',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · OSI',q:'암호화·복호화, 데이터 형식 변환 계층',hint:'6계층',a:'<b>표현 계층</b> (Presentation)',key:'JPEG, MPEG, 압축',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 프로토콜',q:'TCP vs UDP의 핵심 차이',hint:'연결?',a:'<b>TCP</b>=연결형, 신뢰성 보장<br><b>UDP</b>=비연결형, 빠름(신뢰성 X)',key:'TCP=3-way handshake / UDP=실시간',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 프로토콜',q:'IP 주소를 MAC 주소로 변환하는 프로토콜',hint:'주소변환',a:'<b>ARP</b> (RARP는 반대)',key:'Address Resolution Protocol',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 프로토콜',q:'ping이 사용하는 오류·제어 메시지 프로토콜',hint:'제어',a:'<b>ICMP</b>',key:'Internet Control Message Protocol',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 프로토콜',q:'메일 전송(SMTP)과 수신 프로토콜',hint:'수신',a:'수신: <b>POP3, IMAP</b><br>전송: SMTP',key:'SMTP=보내기, POP3/IMAP=받기',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 주소',q:'IPv4와 IPv6의 비트 수',hint:'32/128',a:'<b>IPv4 = 32비트</b><br><b>IPv6 = 128비트</b>',key:'IPv6는 IPv4 주소 고갈 해결',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 장비',q:'경로를 결정하는 3계층 네트워크 장비',hint:'경로',a:'<b>라우터 (Router)</b>',key:'스위치=2계층, 허브=1계층',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 라우팅',q:'RIP vs OSPF의 방식',hint:'거리/링크',a:'<b>RIP</b>=거리벡터(홉 수)<br><b>OSPF</b>=링크상태(최단경로)',key:'RIP는 홉 수 제한(15), OSPF는 대규모',cat:'네트워크',dom:'네트워크'}
+];
+
+let filter='all';
+let order=[];
+let pos=0,flipped=false;
+const elNum=document.getElementById('cardNum'),elTotal=document.getElementById('cardTotal'),
+      elCat=document.getElementById('cardCat'),elTag=document.getElementById('cardTag'),
+      elQ=document.getElementById('cardQ'),elHint=document.getElementById('cardHint'),
+      elA=document.getElementById('cardA'),elKey=document.getElementById('cardKey'),
+      fc=document.getElementById('flashcard');
+
+function buildOrder(){
+  order=allCards.map((c,i)=>i).filter(i=>filter==='all'||allCards[i].dom===filter);
+  pos=0;
+  elTotal.textContent=order.length;
+}
+
+const filterBtns=document.querySelectorAll('.fbtn');
+filterBtns.forEach(b=>b.addEventListener('click',()=>{
+  filterBtns.forEach(x=>x.classList.remove('active'));
+  b.classList.add('active');
+  filter=b.dataset.f;
+  buildOrder();renderCard();
+}));
+
+function renderCard(){
+  if(order.length===0)return;
+  const c=allCards[order[pos]];
+  flipped=false;fc.classList.remove('flipped');
+  setTimeout(()=>{
+    elNum.textContent=pos+1;elCat.textContent=c.cat;elTag.textContent=c.tag;
+    elQ.textContent=c.q;elHint.textContent=c.hint?'힌트: '+c.hint:'';
+    elA.innerHTML=c.a;elKey.innerHTML='<b>KEY</b> · '+c.key;
+  },60);
+}
+function flipCard(){flipped=!flipped;fc.classList.toggle('flipped',flipped)}
+function nextCard(){pos=(pos+1)%order.length;renderCard()}
+function prevCard(){pos=(pos-1+order.length)%order.length;renderCard()}
+function shuffleCards(){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}pos=0;renderCard()}
+function resetCards(){buildOrder();renderCard()}
+buildOrder();renderCard();
+
+/* ============ QUIZ ============ */
+const quizzes=[
+  {dom:'보안',db:'보안',type:'단답',hot:true,q:'정보보안의 3대 요소를 모두 쓰시오.',
+   given:null,answer:'기밀성, 무결성, 가용성',
+   note:'영어: Confidentiality, Integrity, Availability (CIA). 두문자 <b>기·무·가</b>.'},
+  {dom:'보안',db:'보안',type:'약술',hot:true,q:'SQL 인젝션(SQL Injection) 공격이 무엇인지 약술하시오.',
+   given:null,answer:'입력값에 악의적인 SQL 구문을 삽입하여 DB를 비정상적으로 조회·조작하는 공격',
+   note:'핵심 키워드: <b>입력값 조작/삽입</b> + <b>비정상 쿼리 실행/DB 조작</b>. 방어는 Prepared Statement.'},
+  {dom:'보안',db:'보안',type:'단답',hot:true,q:'웹 페이지에 악성 스크립트를 삽입하여 사용자의 쿠키·세션 정보를 탈취하는 공격기법의 이름(약어)을 쓰시오.',
+   given:null,answer:'XSS (Cross-Site Scripting)',
+   note:'스크립트 실행으로 정보 탈취. <b>CSRF</b>(요청 위조)와 구분.'},
+  {dom:'보안',db:'보안',type:'단답',hot:true,q:'대칭키 암호화 알고리즘을 2가지 이상 쓰시오.',
+   given:null,answer:'DES, AES, SEED, ARIA 중 2개 이상',
+   note:'대칭키 = 같은 키. 비대칭키(RSA, ECC)와 헷갈리지 말 것.'},
+  {dom:'보안',db:'보안',type:'약술',hot:false,q:'비대칭키 암호화에서 기밀성을 보장하기 위한 키 사용 방식을 설명하시오.',
+   given:null,answer:'송신자가 수신자의 공개키로 암호화하고, 수신자가 자신의 개인키로 복호화한다',
+   note:'<b>공개키 암호화 → 개인키 복호화</b>. (전자서명은 반대: 개인키 서명 → 공개키 검증)'},
+  {dom:'보안',db:'보안',type:'단답',hot:false,q:'접근통제 모델 중 "역할(직책)에 따라 권한을 부여"하는 모델의 약어를 쓰시오.',
+   given:null,answer:'RBAC (Role-Based Access Control)',
+   note:'DAC=소유자 임의, MAC=보안등급 강제, RBAC=역할 기반.'},
+  {dom:'보안',db:'보안',type:'단답',hot:false,q:'한 번의 인증으로 여러 시스템에 접근할 수 있는 통합 인증 시스템의 약어는?',
+   given:null,answer:'SSO (Single Sign-On)',
+   note:'OTP=일회용 비밀번호, Kerberos=티켓 기반 인증.'},
+  {dom:'보안',db:'보안',type:'약술',hot:false,q:'스니핑(Sniffing)과 스푸핑(Spoofing)의 차이를 설명하시오.',
+   given:null,answer:'스니핑은 네트워크 패킷을 몰래 가로채 정보를 훔쳐보는 것(수동적), 스푸핑은 IP·MAC 등을 위조해 신뢰된 대상으로 위장하는 것(능동적)',
+   note:'스니핑=<b>엿보기</b>, 스푸핑=<b>위장</b>. 동사로 구분하면 쉬움.'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:true,q:'OSI 7계층을 1계층(물리)부터 순서대로 모두 쓰시오.',
+   given:null,answer:'물리 → 데이터링크 → 네트워크 → 전송 → 세션 → 표현 → 응용',
+   note:'두문자 <b>물·데·네·전·세·표·응</b>. 순서를 묻는 문제가 단골.'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:true,q:'OSI 7계층에서 라우팅(경로 설정)과 IP 주소 지정을 담당하는 계층은?',
+   given:null,answer:'네트워크 계층 (3계층)',
+   note:'데이터 단위는 <b>패킷</b>. 프로토콜은 IP, ICMP, ARP.'},
+  {dom:'네트워크',db:'네트워크',type:'약술',hot:true,q:'TCP와 UDP의 차이를 설명하시오.',
+   given:null,answer:'TCP는 연결형으로 신뢰성과 순서를 보장하고, UDP는 비연결형으로 신뢰성은 없으나 전송 속도가 빠르다',
+   note:'TCP=<b>신뢰성</b>(3-way handshake), UDP=<b>속도</b>(실시간 스트리밍). 가장 빈출.'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:false,q:'전송 계층(4계층)의 데이터 전송 단위는 무엇인가?',
+   given:null,answer:'세그먼트 (Segment)',
+   note:'네트워크=패킷, 데이터링크=프레임, 물리=비트. 단위 매칭 빈출.'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:false,q:'IP 주소를 물리적 주소(MAC)로 변환하는 프로토콜의 이름은?',
+   given:null,answer:'ARP (Address Resolution Protocol)',
+   note:'반대(MAC→IP)는 RARP.'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:false,q:'IPv4와 IPv6의 주소 비트 수를 각각 쓰시오.',
+   given:null,answer:'IPv4 = 32비트, IPv6 = 128비트',
+   note:'IPv6는 IPv4 주소 고갈 문제를 해결하기 위해 등장.'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:false,q:'서로 다른 네트워크를 연결하며 경로를 결정하는 3계층 장비는?',
+   given:null,answer:'라우터 (Router)',
+   note:'스위치=2계층, 허브=1계층, 게이트웨이=프로토콜 변환.'},
+  {dom:'네트워크',db:'네트워크',type:'약술',hot:false,q:'데이터 캡슐화 과정에서 각 계층의 데이터 단위가 어떻게 바뀌는지 순서대로 쓰시오. (전송→물리)',
+   given:null,answer:'세그먼트 → 패킷 → 프레임 → 비트',
+   note:'전송(세그먼트)→네트워크(패킷)→데이터링크(프레임)→물리(비트). 헤더를 붙이며 내려감.'}
+];
+
+const qc=document.getElementById('quizContainer');
+quizzes.forEach((quiz,i)=>{
+  const div=document.createElement('div');
+  div.className='quiz';
+  let givenHTML = quiz.given ? `<div class="quiz-given">${escapeHtml(quiz.given)}</div>` : '';
+  div.innerHTML=`
+    <div class="quiz-meta">
+      <span class="qn">Q${i+1}</span>
+      <span class="dom-badge ${quiz.dom==='보안'?'sec':'net'}">${quiz.dom}</span>
+      <span class="qtype ${quiz.hot?'hot':''}">${quiz.hot?'★ 빈출':quiz.type}</span>
+      ${quiz.hot?`<span class="qtype">${quiz.type}</span>`:''}
+    </div>
+    <div class="quiz-q">${quiz.q}</div>
+    ${givenHTML}
+    <textarea class="quiz-input" placeholder="키워드를 직접 써보세요" spellcheck="false"></textarea>
+    <button class="reveal-btn" onclick="toggleAns(${i})">정답 확인 ▾</button>
+    <div class="quiz-answer" id="ans${i}">
+      <div class="ans-label">MODEL ANSWER</div>
+      <div class="ans-code">${escapeHtml(quiz.answer)}</div>
+      <div class="ans-note">${quiz.note}</div>
+    </div>`;
+  qc.appendChild(div);
+});
+
+function toggleAns(i){
+  const a=document.getElementById('ans'+i);
+  const btn=a.previousElementSibling;
+  const open=a.classList.toggle('show');
+  btn.textContent=open?'정답 숨기기 ▴':'정답 확인 ▾';
+}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+document.addEventListener('keydown',e=>{
+  if(!panes.cards.classList.contains('active'))return;
+  if(e.key==='ArrowRight')nextCard();
+  else if(e.key==='ArrowLeft')prevCard();
+  else if(e.key===' '){e.preventDefault();flipCard()}
+});
+</script>
+</body>
+</html>
