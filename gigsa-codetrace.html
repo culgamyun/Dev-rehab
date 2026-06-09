@@ -255,8 +255,8 @@
     <span class="chip hot">매회 다수 출제 ★★★</span>
     <span class="chip">C · Java · Python</span>
     <span class="chip">추적 시뮬 <b>3</b></span>
-    <span class="chip">암기카드 <b>24</b></span>
-    <span class="chip">문제 <b>20</b></span>
+    <span class="chip">암기카드 <b>31</b></span>
+    <span class="chip">문제 <b>21</b></span>
   </div>
 </div>
 
@@ -367,6 +367,27 @@
       <div class="callout warn"><span class="ic">⚠</span> <b>주의:</b> 안쪽 블록에서 선언한 변수는 블록을 벗어나면 사라지고, 바깥 변수 값은 그대로 유지됩니다. "어느 블록의 변수인가"를 추적하세요.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">LOOP</span><h3>do-while · 중첩 루프와 break</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted"><code>do-while</code>은 본문을 먼저 실행하고 조건을 나중에 검사하므로, <b>조건이 처음부터 거짓이어도 본문이 최소 1회 실행</b>됩니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">loop.c</span></div>
+        <pre><span class="nm">int</span> i = <span class="nm">10</span>;
+<span class="kw">do</span> {
+  <span class="fn">printf</span>(<span class="st">"%d "</span>, i);  <span class="cm">// 조건이 거짓이어도 1회 실행 → 10</span>
+} <span class="kw">while</span>(i &lt; <span class="nm">5</span>);     <span class="cm">// 10&lt;5 거짓 → 종료</span>
+
+<span class="kw">for</span>(<span class="nm">int</span> a=<span class="nm">0</span>; a&lt;<span class="nm">2</span>; a++)
+  <span class="kw">for</span>(<span class="nm">int</span> b=<span class="nm">0</span>; b&lt;<span class="nm">3</span>; b++){
+    <span class="kw">if</span>(b == <span class="nm">1</span>) <span class="kw">break</span>;  <span class="cm">// 안쪽 루프만 탈출, 바깥은 계속</span>
+    <span class="fn">printf</span>(<span class="st">"%d%d "</span>, a, b);  <span class="cm">// 00 10</span>
+  }</pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>핵심:</b> 중첩 루프에서 <code>break</code>는 <u>자신이 속한 안쪽 루프만</u> 빠져나가고 바깥 루프는 계속 돕니다. while/for는 조건을 먼저 검사해 0회 실행이 가능하지만, <code>do-while</code>은 무조건 1회는 실행합니다.</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-c-struct">
@@ -443,6 +464,37 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
         <li><b>5 + 3 + "점"</b> → 왼→오: 8 + "점" = <span class="out">8점</span></li>
       </ul>
       <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 문자열과 + 연산은 <u>왼쪽부터 순서대로</u>. 문자열을 만난 뒤부터는 모두 이어붙이기(concatenation)가 됩니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">TYPE</span><h3>정수 나눗셈 · 형변환 (char 승격)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">정수끼리 나누면 소수점이 <b>버려지고</b>, 한쪽이 실수면 실수 연산이 됩니다. <code>char</code>는 산술 연산 시 <b>int로 승격</b>됩니다.</p>
+      <ul>
+        <li><b>7 / 2</b> → 정수끼리라 소수점 버림(정수 절단): <span class="out">3</span></li>
+        <li><b>7.0 / 2</b> → 한쪽이 실수라 실수 나눗셈: <span class="out">3.5</span></li>
+        <li><b>(char)('A' + 1)</b> → 66을 char로 캐스팅: <span class="out">B</span></li>
+        <li><b>'A' + 1</b> → char가 int로 승격되어: <span class="out">66</span></li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>'A'+1</code>은 그냥 출력하면 정수 <span class="out">66</span>이고, <code>(char)</code>로 다시 캐스팅해야 문자 <span class="out">B</span>가 됩니다. 정수 나눗셈은 <code>7/2=3</code>처럼 몫만 남습니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">STR</span><h3>String 비교 — == 와 equals()</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">2023년 2회 등 단골. <code>==</code>는 <b>참조(주소) 비교</b>, <code>equals()</code>는 <b>내용 비교</b>입니다. 리터럴 문자열은 <b>String 풀(pool)</b>을 공유하지만 <code>new String()</code>은 매번 별도 객체입니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">StringPool.java</span></div>
+        <pre><span class="nm">String</span> a = <span class="st">"P"</span>;
+<span class="nm">String</span> b = <span class="st">"P"</span>;             <span class="cm">// 리터럴 → 풀 공유</span>
+<span class="nm">String</span> c = <span class="kw">new</span> <span class="nm">String</span>(<span class="st">"P"</span>); <span class="cm">// new → 별도 객체</span>
+<span class="fn">print</span>(a == b);        <span class="cm">// true (같은 풀 객체)</span>
+<span class="fn">print</span>(a == c);        <span class="cm">// false (주소 다름)</span>
+<span class="fn">print</span>(a.<span class="fn">equals</span>(c));   <span class="cm">// true (내용은 같음)</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>최대 함정:</b> 문자열 내용 비교는 반드시 <code>equals()</code>를 쓰세요. <code>==</code>는 <u>주소가 같은지</u>만 보므로, <code>new String()</code>으로 만든 객체와는 항상 <span class="out">false</span>입니다.</div>
     </div>
   </div>
 
@@ -544,8 +596,11 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
         <li><b>s[:3]</b> → 처음부터 2번까지: <span class="out">PYT</span></li>
         <li><b>s[::-1]</b> → 역순(step=-1): <span class="out">NOHTYP</span></li>
         <li><b>s[::2]</b> → 2칸씩(0,2,4): <span class="out">PTO</span></li>
+        <li><b>s[4:1:-1]</b> → 4→2번 역방향(1 미포함): <span class="out">OHT</span></li>
+        <li><b>s[1:4:-1]</b> → 진행 방향과 어긋남: <span class="out">빈 문자열</span></li>
       </ul>
       <div class="callout warn"><span class="ic">⚠</span> <b>핵심 함정:</b> <code>end</code>는 <u>포함하지 않습니다</u>. <code>s[1:4]</code>는 1~3번까지(3개). <code>[::-1]</code>은 문자열 뒤집기 단골.</div>
+      <div class="callout"><span class="ic">💡</span> <b>음수 step 보조설명:</b> <code>step</code>이 음수면 진행 방향이 <u>오른쪽→왼쪽</u>이라 <code>start &gt; end</code>여야 결과가 나옵니다. <code>'PYTHON'[4:1:-1]</code>=<span class="out">OHT</span>(4→2), 반대로 <code>'PYTHON'[1:4:-1]</code>은 방향이 안 맞아 <span class="out">''</span>(빈 문자열)입니다.</div>
     </div>
   </div>
 
@@ -556,8 +611,10 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
         <li><b>a[1:3] = [20,30,40]</b> — 슬라이스 자리에 통째 교체 (길이 달라도 됨)</li>
         <li><b>리스트 메서드</b> — append(끝 추가), pop(꺼내기), len(개수)</li>
         <li><b>딕셔너리</b> — d['키']=값, d.values(), d.keys(), d.items()</li>
+        <li><b>리스트 컴프리헨션</b> — <code>[x*x for x in range(1,4)]</code> = <span class="out">[1, 4, 9]</span></li>
       </ul>
       <div class="callout"><span class="ic">💡</span> <code>"ab" * 3</code> = <span class="out">ababab</span> (문자열 반복), <code>[0]*3</code> = <span class="out">[0, 0, 0]</span> (리스트 반복).</div>
+      <div class="callout"><span class="ic">🎯</span> <b>리스트 컴프리헨션:</b> <code>[식 for 변수 in 반복대상]</code> 형태로 한 줄에 리스트를 생성합니다. <code>range(1,4)</code>는 1,2,3이므로 각각 제곱해 <span class="out">[1, 4, 9]</span>.</div>
     </div>
   </div>
 
@@ -597,7 +654,7 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
     <div class="sec-head"><span class="sec-num">★</span><h2>암기 카드</h2></div>
     <p class="sec-desc">코드 조각을 보고 출력값이나 개념을 떠올린 뒤 확인하세요. 탭하면 뒤집힙니다.</p>
     <div class="card-controls">
-      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">24</span></span>
+      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">31</span></span>
       <span class="card-counter" style="margin-left:auto" id="cardCat">C · 포인터</span>
     </div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -632,7 +689,7 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
 <div class="wrap">
   <section style="padding-top:30px">
     <div class="sec-head"><span class="sec-num">✍</span><h2>문제 풀이</h2></div>
-    <p class="sec-desc">출력값 맞히기 15문제. 모든 답은 <b>실제 컴파일·실행으로 검증</b>했습니다. 먼저 종이에 변수를 추적해 답을 적은 뒤 펼치세요.</p>
+    <p class="sec-desc">출력값 맞히기 21문제. 모든 답은 <b>실제 컴파일·실행으로 검증</b>했습니다. 먼저 종이에 변수를 추적해 답을 적은 뒤 펼치세요.</p>
     <div id="quizContainer"></div>
     <div class="callout" style="margin-top:24px"><span class="ic">📌</span> <b>채점 팁:</b> 출력값은 <u>공백·줄바꿈·대소문자까지</u> 정확해야 합니다. 특히 C의 <code>printf</code>에 공백이나 <code>\n</code>이 있는지, 출력 사이 띄어쓰기가 있는지 확인하세요.</div>
   </section>
@@ -832,7 +889,14 @@ const cards=[
   {tag:'Java · switch',q:'switch에서 break가\n없으면?',hint:'fall through',a:'일치한 case부터 <b>아래 case·default까지</b> 모두 실행',key:'break 누락 = fall through, 출제 단골 함정',cat:'Java'},
   {tag:'Java · 비트',q:'5 & 3, 5 | 3, 5 ^ 3\n각각?',hint:'101,011',a:'& → <b>1</b> (001)<br>| → <b>7</b> (111)<br>^ → <b>6</b> (110)',key:'XOR(^)=다르면1 / <<n=×2ⁿ, >>n=÷2ⁿ',cat:'Java'},
   {tag:'Java · 비트',q:'5 << 1 과 5 >> 1\n각각?',hint:'시프트',a:'<< → <b>10</b> (×2)<br>>> → <b>2</b> (÷2)',key:'왼쪽 시프트=곱하기, 오른쪽=나누기',cat:'Java'},
-  {tag:'Java · 생성자',q:'자식 객체 생성 시\n생성자 실행 순서는?',hint:'super',a:'<b>부모 생성자 먼저</b> → 자식 생성자',key:'부모 생성자 내 메서드는 오버라이딩된 자식 것 실행',cat:'Java'}
+  {tag:'Java · 생성자',q:'자식 객체 생성 시\n생성자 실행 순서는?',hint:'super',a:'<b>부모 생성자 먼저</b> → 자식 생성자',key:'부모 생성자 내 메서드는 오버라이딩된 자식 것 실행',cat:'Java'},
+  {tag:'Java · 연산',q:'int x = 7 / 2;\nx = ?\n그리고 7.0 / 2 = ?',hint:'정수 나눗셈',a:'<code>7 / 2</code> → <b>3</b> (소수점 버림)<br><code>7.0 / 2</code> → <b>3.5</b>',key:'정수끼리는 몫만, 한쪽이 실수면 실수 나눗셈',cat:'Java'},
+  {tag:'Java · 형변환',q:'(char)(\'A\' + 1) 와\n\'A\' + 1 의 출력?',hint:'char 승격',a:'<code>(char)(\'A\'+1)</code> → <b>B</b><br><code>\'A\'+1</code> → <b>66</b>',key:'char는 산술 시 int로 승격, (char) 캐스팅해야 문자',cat:'Java'},
+  {tag:'Java · 문자열',q:'String a="P", b="P",\nc=new String("P");\na==b, a==c, a.equals(c)?',hint:'== vs equals',a:'a==b → <b>true</b> (리터럴 풀 공유)<br>a==c → <b>false</b> (new=별도 객체)<br>a.equals(c) → <b>true</b> (내용 같음)',key:'==는 주소 비교, equals()는 내용 비교 (2023-2회 기출)',cat:'Java'},
+  {tag:'C · 반복문',q:'int i=10;\ndo { print(i); }\nwhile(i<5);\n출력은?',hint:'do-while',a:'<b>10</b> (조건 거짓이어도 1회 실행)',key:'do-while은 본문 먼저 실행 → 최소 1회 보장',cat:'C·반복문'},
+  {tag:'C · 반복문',q:'중첩 for 안에서\nbreak를 만나면?',hint:'어느 루프',a:'<b>안쪽 루프만</b> 탈출, 바깥 루프는 계속',key:'break는 자신이 속한 가장 안쪽 루프만 빠져나감',cat:'C·반복문'},
+  {tag:'Python · 컴프리헨션',q:'[x*x for x\n in range(1,4)]',hint:'1,2,3 제곱',a:'<b>[1, 4, 9]</b>',key:'[식 for 변수 in 반복대상] = 한 줄 리스트 생성',cat:'Python'},
+  {tag:'Python · 슬라이싱',q:'s="PYTHON"\ns[4:1:-1] = ?\ns[1:4:-1] = ?',hint:'음수 step',a:'s[4:1:-1] → <b>OHT</b> (4→2)<br>s[1:4:-1] → <b>빈 문자열</b>',key:'음수 step은 오른쪽→왼쪽, start>end여야 결과가 나옴',cat:'Python'}
 ];
 
 let order=cards.map((_,i)=>i);
@@ -941,7 +1005,11 @@ const quizzes=[
   {lang:'java',ll:'JAVA',type:'출력',hot:false,q:'생성자 호출 순서 코드의 출력값은?',
    given:'class A {\n  A(){ System.out.print("A"); func(); }\n  void func(){ System.out.print("B"); }\n}\nclass B extends A {\n  B(){ super(); System.out.print("D"); }\n  void func(){ System.out.print("E"); }\n}\nnew B();',
    answer:'AED',
-   note:'B()→super()로 A() 실행→"A"→func()는 오버라이딩된 E→A() 끝→"D". 결과 <b>AED</b>.'}
+   note:'B()→super()로 A() 실행→"A"→func()는 오버라이딩된 E→A() 끝→"D". 결과 <b>AED</b>.'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:true,q:'String 비교 코드의 출력값을 쓰시오. (2023-2회 유형)',
+   given:'String a = "P";\nString b = "P";\nString c = new String("P");\nSystem.out.print(a == b);\nSystem.out.print(a == c);\nSystem.out.print(a.equals(c));',
+   answer:'truefalsetrue',
+   note:'<code>a==b</code>=true(리터럴은 String 풀 공유), <code>a==c</code>=false(<code>new</code>는 별도 객체라 주소 다름), <code>a.equals(c)</code>=true(내용 비교). <code>==</code>는 주소, <code>equals()</code>는 내용. 출력 <b>truefalsetrue</b>.'}
 ];
 
 const qc=document.getElementById('quizContainer');

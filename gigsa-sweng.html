@@ -236,8 +236,8 @@
     <span class="chip hot">단답·약술 빈출 ★★★</span>
     <span class="chip">디자인패턴 · 모듈화</span>
     <span class="chip">핵심 용어 <b>35+</b></span>
-    <span class="chip">암기카드 <b>24</b></span>
-    <span class="chip">문제 <b>16</b></span>
+    <span class="chip">암기카드 <b>28</b></span>
+    <span class="chip">문제 <b>18</b></span>
   </div>
 </div>
 
@@ -283,8 +283,8 @@
         <div class="scale-item scale-good"><span class="rank">1</span><span class="sname">자료 결합도</span><span class="sdesc">파라미터로 데이터만 전달 (Data)</span></div>
         <div class="scale-item"><span class="rank">2</span><span class="sname">스탬프 결합도</span><span class="sdesc">배열·구조체 등 자료구조 전달 (Stamp)</span></div>
         <div class="scale-item"><span class="rank">3</span><span class="sname">제어 결합도</span><span class="sdesc">제어 신호(플래그)를 전달 (Control)</span></div>
-        <div class="scale-item"><span class="rank">4</span><span class="sname">외부 결합도</span><span class="sdesc">외부 전역 변수를 참조 (External)</span></div>
-        <div class="scale-item"><span class="rank">5</span><span class="sname">공통 결합도</span><span class="sdesc">전역 데이터를 공유 (Common)</span></div>
+        <div class="scale-item"><span class="rank">4</span><span class="sname">외부 결합도</span><span class="sdesc">외부에 선언된 데이터를 다른 모듈이 참조 (External)</span></div>
+        <div class="scale-item"><span class="rank">5</span><span class="sname">공통 결합도</span><span class="sdesc">여러 모듈이 공통(전역) 데이터 영역을 공유 (Common)</span></div>
         <div class="scale-item scale-bad"><span class="rank">6</span><span class="sname">내용 결합도</span><span class="sdesc">다른 모듈 내부를 직접 참조 (Content)</span></div>
       </div>
       <div class="callout mnemonic"><span class="ic">🔑</span> <b>자·스·제·외·공·내</b> (자료→스탬프→제어→외부→공통→내용). 위로 갈수록 좋은 결합. 순서 묻는 문제 단골.</div>
@@ -341,7 +341,7 @@
     <div class="concept-body">
       <div class="termtable">
         <div class="termrow"><span class="tt">화이트박스</span><span class="td"><b>내부 구조·코드를 보고</b> 테스트 (구조 기반). 종류: 기초 경로, 조건/분기, 루프 검사</span></div>
-        <div class="termrow"><span class="tt">블랙박스</span><span class="td"><b>내부를 모르고 입출력</b>으로 테스트 (명세 기반). 종류: 동치 분할, 경계값 분석, 원인-결과</span></div>
+        <div class="termrow"><span class="tt">블랙박스</span><span class="td"><b>내부를 모르고 입출력</b>으로 테스트 (명세 기반). 종류: 동치 분할, 경계값 분석, 원인-결과, 결정 테이블, 상태 전이</span></div>
       </div>
       <div class="callout warn"><span class="ic">⚠</span> <b>핵심:</b> 화이트박스="투명해서 안이 보임"(코드 기반), 블랙박스="검은 상자, 안 안 보임"(명세 기반). <u>경계값 분석</u>은 블랙박스 단골.</div>
     </div>
@@ -356,7 +356,7 @@
         <li><b>시스템 테스트</b> — 전체 시스템 요구사항 검증</li>
         <li><b>인수 테스트</b> — 사용자 관점 최종 검증 (알파/베타)</li>
       </ul>
-      <div class="callout"><span class="ic">📊</span> <b>통합 방식:</b> 하향식(Top-down)은 스텁(Stub) 사용, 상향식(Bottom-up)은 드라이버(Driver) 사용.</div>
+      <div class="callout"><span class="ic">📊</span> <b>통합 방식:</b> 하향식(Top-down)은 스텁(Stub) 사용, 상향식(Bottom-up)은 드라이버(Driver) 사용.<br><b>분류:</b> 비점진적=빅뱅(Big-Bang), 점진적=하향식·상향식·혼합식(샌드위치).</div>
     </div>
   </div>
 </section>
@@ -375,7 +375,7 @@
       <p style="margin-top:12px"><b>접근 제어자 표기</b> (클래스 다이어그램)</p>
       <ul>
         <li><b>+</b> public (외부 접근 허용) / <b>-</b> private (내부만)</li>
-        <li><b>#</b> protected (파생 클래스) / <b>~</b> default (동일 패키지)</li>
+        <li><b>#</b> protected (파생 클래스) / <b>~</b> package (동일 패키지, 자바 default)</li>
       </ul>
       <div class="callout"><span class="ic">🔗</span> <b>관계:</b> 연관, 집합(약한 포함), 복합(강한 포함), 일반화(상속), 의존, 실체화(인터페이스 구현).</div>
     </div>
@@ -395,7 +395,8 @@
         <div class="termrow"><span class="tt">나선형</span><span class="td"><b>위험 분석</b> 중심, 반복적 (Spiral). 대규모에 적합</span></div>
         <div class="termrow"><span class="tt">애자일</span><span class="td"><b>반복·점진</b>적, 변화 수용. 스크럼, XP가 대표</span></div>
       </div>
-      <div class="callout"><span class="ic">🏃</span> <b>애자일 기법:</b> <b>스크럼</b>(스프린트, 데일리 미팅) / <b>XP</b>(페어 프로그래밍, TDD). 애자일 선언 4가지 가치도 출제.</div>
+      <div class="callout"><span class="ic">🏃</span> <b>애자일 기법:</b> <b>스크럼</b>(스프린트, 데일리 미팅) / <b>XP</b>(페어 프로그래밍, TDD).</div>
+      <div class="callout mnemonic"><span class="ic">📜</span> <b>애자일 선언 4대 가치</b> (오른쪽을 더 중시): ① 공정·도구보다 <b>개인과 상호작용</b> ② 포괄적 문서보다 <b>작동하는 소프트웨어</b> ③ 계약 협상보다 <b>고객과의 협력</b> ④ 계획을 따르기보다 <b>변화에 대응</b>.</div>
     </div>
   </div>
 
@@ -448,7 +449,7 @@
     <div class="sec-head"><span class="sec-num">★</span><h2>암기 카드</h2></div>
     <p class="sec-desc">용어→정의, 분류→소속을 떠올린 뒤 확인하세요. 탭하면 뒤집힙니다.</p>
     <div class="card-controls">
-      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">24</span></span>
+      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">28</span></span>
       <span class="card-counter" style="margin-left:auto" id="cardCat">모듈화</span>
     </div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -483,7 +484,7 @@
 <div class="wrap">
   <section style="padding-top:30px">
     <div class="sec-head"><span class="sec-num">✍</span><h2>문제 풀이</h2></div>
-    <p class="sec-desc">단답·약술·계산 16문제. 먼저 직접 답을 써본 뒤 펼치세요. 순서 문제는 빠뜨리는 단계가 없는지 확인하세요.</p>
+    <p class="sec-desc">단답·약술·계산 18문제. 먼저 직접 답을 써본 뒤 펼치세요. 순서 문제는 빠뜨리는 단계가 없는지 확인하세요.</p>
     <div id="quizContainer"></div>
     <div class="callout" style="margin-top:24px"><span class="ic">📌</span> <b>채점 팁:</b> 순서 나열은 <u>전부 맞아야</u> 점수인 경우가 많으니 빠짐없이. 계산 문제는 <u>계산식+답+단위</u>를 모두 쓰세요. 패턴 분류는 대표 패턴만이라도 확실히.</div>
   </section>
@@ -591,7 +592,11 @@ const cards=[
   {tag:'패턴 · 분류',q:'Singleton은 어느 패턴 분류?',hint:'객체 생성',a:'<b>생성 패턴 (Creational)</b>',key:'인스턴스 1개만 생성',cat:'패턴'},
   {tag:'패턴 · 분류',q:'Adapter는 어느 패턴 분류?',hint:'구조',a:'<b>구조 패턴 (Structural)</b>',key:'호환 안 되는 인터페이스 변환',cat:'패턴'},
   {tag:'패턴 · 분류',q:'Observer는 어느 패턴 분류?',hint:'행위',a:'<b>행위 패턴 (Behavioral)</b>',key:'상태 변화를 의존 객체에 통지',cat:'패턴'},
-  {tag:'패턴 · GoF',q:'디자인패턴을 처음 제안한 그룹은?',hint:'4명',a:'<b>GoF (Gang of Four)</b>',key:'생성·구조·행위 23개 패턴',cat:'패턴'}
+  {tag:'패턴 · GoF',q:'디자인패턴을 처음 제안한 그룹은?',hint:'4명',a:'<b>GoF (Gang of Four)</b>',key:'생성·구조·행위 23개 패턴',cat:'패턴'},
+  {tag:'테스트 · 통합',q:'모듈을 한꺼번에 결합해\n통합하는 비점진적 방식은?',hint:'한방에',a:'<b>빅뱅 (Big-Bang) 통합</b>',key:'점진적=하향식·상향식·혼합식(샌드위치)',cat:'테스트'},
+  {tag:'테스트 · 통합',q:'하향식과 상향식을 절충한\n혼합식 통합 방식의 별칭은?',hint:'양쪽에서',a:'<b>샌드위치 (Sandwich) / 혼합식</b>',key:'하향식·상향식을 동시에 진행',cat:'테스트'},
+  {tag:'방법론 · 애자일',q:'애자일 선언 4대 가치\n(오른쪽을 더 중시)',hint:'개인·SW·협력·대응',a:'① 개인과 상호작용 ② 작동하는 SW<br>③ 고객과의 협력 ④ 변화 대응',key:'좌:공정·문서·계약·계획보다 우측을 중시',cat:'방법론'},
+  {tag:'테스트 · 블랙박스',q:'조건의 조합을 표로 정리해\n테스트하는 블랙박스 기법은?',hint:'표',a:'<b>결정 테이블 (Decision Table)</b>',key:'상태 전이(State Transition)도 블랙박스 기법',cat:'테스트'}
 ];
 
 let order=cards.map((_,i)=>i);
@@ -650,7 +655,7 @@ const quizzes=[
    note:'구조적=클래스·객체 / 행위적=유스케이스·시퀀스.'},
   {db:'UML',type:'단답',hot:false,q:'클래스 다이어그램에서 접근 제어자 "+", "-"가 의미하는 것을 각각 쓰시오.',
    given:null,answer:'+ : public(외부 접근 허용), - : private(내부 접근만)',
-   note:'# protected(파생 클래스), ~ default(동일 패키지)도 함께 암기.'},
+   note:'# protected(파생 클래스), ~ package(동일 패키지, 자바 default)도 함께 암기.'},
   {db:'UML',type:'단답',hot:false,q:'추상 클래스나 인터페이스를 상속받아 자식이 추상 메서드를 구현하는 UML 관계는?',
    given:null,answer:'실체화 관계 (Realization)',
    note:'일반화(상속)와 구분. 실체화는 인터페이스 구현 관계.'},
@@ -668,7 +673,13 @@ const quizzes=[
    note:'행위 패턴 대표. Strategy, State, Command 등도 행위 패턴.'},
   {db:'패턴',type:'단답',hot:false,q:'호환되지 않는 인터페이스를 변환하여 함께 동작하게 하는 구조 패턴의 이름은?',
    given:null,answer:'어댑터 (Adapter)',
-   note:'구조 패턴: Adapter, Bridge, Composite, Decorator, Facade, Proxy 등.'}
+   note:'구조 패턴: Adapter, Bridge, Composite, Decorator, Facade, Proxy 등.'},
+  {db:'테스트',type:'단답',hot:true,q:'통합 테스트 방식은 크게 비점진적 방식과 점진적 방식으로 나뉜다. 각각의 대표 방식을 모두 쓰시오.',
+   given:null,answer:'비점진적: 빅뱅(Big-Bang) / 점진적: 하향식, 상향식, 혼합식(샌드위치)',
+   note:'빅뱅은 한꺼번에 결합. 점진적은 모듈을 차례로 통합 — <b>하향식(스텁), 상향식(드라이버), 혼합식(샌드위치)</b>.'},
+  {db:'방법론',type:'약술',hot:true,q:'애자일 선언(Agile Manifesto)의 4대 핵심 가치를 쓰시오.',
+   given:null,answer:'① 공정과 도구보다 개인과 상호작용 ② 포괄적인 문서보다 작동하는 소프트웨어 ③ 계약 협상보다 고객과의 협력 ④ 계획을 따르기보다 변화에 대응',
+   note:'왼쪽 항목도 가치가 있으나 <b>오른쪽 항목에 더 높은 가치</b>를 둔다는 것이 핵심.'}
 ];
 
 const qc=document.getElementById('quizContainer');

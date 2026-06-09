@@ -203,13 +203,14 @@
   <p class="lead">실제 시험과 동일한 구성입니다. 20문항, 100점 만점, 60점이면 합격. 타이머를 켜고 한 번에 끝까지 푼 뒤 채점하세요. 약점 영역까지 분석해 드립니다.</p>
 
   <div class="set-select">
-    <div class="set-select-label">세트 선택 — 5세트 모두 중복 없는 문제</div>
+    <div class="set-select-label">세트 선택 — 6세트 모두 중복 없는 문제</div>
     <div class="set-btns" id="setBtns">
       <button class="set-btn active" data-set="0" onclick="selectSet(0)">SET 1</button>
       <button class="set-btn" data-set="1" onclick="selectSet(1)">SET 2</button>
       <button class="set-btn" data-set="2" onclick="selectSet(2)">SET 3</button>
       <button class="set-btn" data-set="3" onclick="selectSet(3)">SET 4</button>
       <button class="set-btn" data-set="4" onclick="selectSet(4)">SET 5</button>
+      <button class="set-btn" data-set="5" onclick="selectSet(5)">SET 6</button>
     </div>
   </div>
 
@@ -230,7 +231,7 @@
       <li>코드 문제는 <b>변수를 직접 추적</b>해 출력값을 구하세요.</li>
       <li>채점은 <b>모범답안과 본인 비교</b> 방식입니다. 약술형은 핵심 키워드가 들어갔으면 정답 처리하세요.</li>
       <li>시간이 다 되면 <b>자동 제출</b>됩니다. 막히는 문제는 넘기고 끝까지.</li>
-      <li><b>5세트 모두 문제가 다릅니다.</b> 채점 후 세트 버튼에 점수가 표시되며, 한 세트를 끝내면 다음 세트로 넘어갈 수 있습니다.</li>
+      <li><b>6세트 모두 문제가 다릅니다.</b> 채점 후 세트 버튼에 점수가 표시되며, 한 세트를 끝내면 다음 세트로 넘어갈 수 있습니다.</li>
     </ul>
   </div>
 </div>
@@ -334,13 +335,13 @@ const questionSets=[
   {dom:'보안/네트워크',q:'웹 페이지에 악성 스크립트를 삽입하여 사용자의 쿠키나 세션 정보를 탈취하는 공격기법의 이름(약어)을 쓰시오.',code:null,answer:"XSS (Cross-Site Scripting)",mode:'or',accept:['xss','크로스 사이트 스크립팅','크로스사이트'],note:'스크립트 실행으로 정보 탈취. CSRF(요청 위조)와 구분.'},
   {dom:'보안/네트워크',q:'TCP와 UDP 중, 연결형이며 데이터의 신뢰성과 순서를 보장하는 프로토콜은 무엇인가?',code:null,answer:"TCP",mode:'or',accept:['tcp'],note:'TCP=연결형·신뢰성(3-way handshake), UDP=비연결형·고속.'},
   {dom:'보안/네트워크',q:'대칭키 암호화 알고리즘을 2가지 이상 쓰시오.',code:null,answer:"DES, AES, SEED, ARIA 중 2개 이상",mode:'or',accept:['des','aes','seed','aria'],note:'대칭키 = 같은 키 사용. 비대칭키(RSA, ECC)와 구분.'},
-  {dom:'SW공학',q:'모듈 내부의 각 구성요소가 서로 관련이 없을 때의 응집도(가장 낮은 응집도)는 무엇인가?',code:null,answer:"우연적 응집도 (Coincidental Cohesion)",mode:'or',accept:['우연적'],note:'응집도 중 최악. 가장 높은(좋은) 것은 기능적 응집도.'},
+  {dom:'SW공학',q:'모듈 내부의 각 구성요소가 서로 관련이 없을 때의 응집도(가장 낮은 응집도)는 무엇인가?',code:null,answer:"우연적 응집도 (Coincidental Cohesion)",mode:'or',accept:['우연적','coincidental'],note:'응집도 중 최악. 가장 높은(좋은) 것은 기능적 응집도.'},
   {dom:'SW공학',q:'프로그램의 내부 구조와 로직을 보고 테스트하는 기법(구조 기반)의 이름을 쓰시오.',code:null,answer:"화이트박스 테스트 (White Box Test)",mode:'or',accept:['화이트박스','white box','화이트 박스'],note:'내부 구조 기반. 블랙박스는 입출력(명세) 기반.'},
   {dom:'SW공학',q:'한 객체의 상태 변화를 의존하는 다른 객체들에게 자동으로 통지하는 디자인 패턴의 이름과 분류를 쓰시오.',code:null,answer:"옵서버(Observer), 행위 패턴",mode:'and',accept:['옵서버','observer','행위'].slice(0,99) ,note:'행위 패턴 대표. 상태 변화 → 의존 객체에 통지.'}
 ],
 /* ============================== SET 3 ============================== */
 [
-  {dom:'SQL',q:'아래 <직원> 테이블에 사번 "E001", 이름 "홍길동"인 튜플을 삽입하는 SQL을 작성하시오.',code:"[직원]\n사번(CHAR(4))  이름(VARCHAR(20))  부서(VARCHAR(20))",answer:"INSERT INTO 직원(사번, 이름) VALUES('E001', '홍길동');",mode:'and',accept:['insert','직원','values','e001','홍길동'],note:'<b>INSERT INTO 테이블(컬럼) VALUES(값)</b>. 문자열은 작은따옴표.'},
+  {dom:'SQL',q:'아래 <직원> 테이블에 사번 "E001", 이름 "홍길동"인 튜플을 삽입하는 SQL을 작성하시오.',code:"[직원]\n사번(CHAR(4))  이름(VARCHAR(20))  부서(VARCHAR(20))",answer:"INSERT INTO 직원(사번, 이름) VALUES('E001', '홍길동');",mode:'and',accept:['insert','직원','values','e001','홍길동'],note:'<b>INSERT INTO 테이블(컬럼) VALUES(값)</b>. 문자열은 작은따옴표.<br>생략된 컬럼은 NULL 허용/DEFAULT면 자동 처리, NOT NULL이고 DEFAULT 없으면 값 필수.'},
   {dom:'SQL',q:'아래 <사원> 테이블에서 사번이 "E001"인 사원의 부서를 "영업부"로 변경하는 SQL을 작성하시오.',code:"[사원]\n사번(CHAR(4))  이름(VARCHAR(20))  부서(VARCHAR(20))",answer:"UPDATE 사원 SET 부서 = '영업부' WHERE 사번 = 'E001';",mode:'and',accept:['update','사원','set','부서','where','e001'],note:'<b>UPDATE … SET … WHERE</b>. WHERE 누락 시 전체 변경.'},
   {dom:'SQL',q:'두 테이블을 연결할 때, 양쪽 모두 조인 조건이 일치하는 행만 가져오는 조인의 이름(키워드)을 쓰시오.',code:null,answer:"INNER JOIN (내부 조인)",mode:'or',accept:['inner join','내부 조인','inner','내부조인'],note:'양쪽 일치만=INNER. 한쪽 전부 보존은 OUTER JOIN.'},
   {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (for 곱셈)',code:"int p = 1;\nfor(int i=1; i<=4; i++)\n  p *= i;\nprintf(\"%d\", p);",answer:"24",mode:'or',accept:['24'],note:'1×2×3×4 = <b>24</b> (팩토리얼).'},
@@ -356,7 +357,7 @@ const questionSets=[
   {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (문자열 메서드)',code:"s = \"hello world\"\nprint(s.upper().replace('O','0'))",answer:"HELL0 W0RLD",mode:'or',accept:['hell0 w0rld'],note:'upper()로 대문자화 후 O→0 치환. <b>HELL0 W0RLD</b>.'},
   {dom:'보안/네트워크',q:'사용자가 자신도 모르게 공격자가 의도한 요청을 서버에 보내도록 하는 공격기법의 이름(약어)을 쓰시오.',code:null,answer:"CSRF (Cross-Site Request Forgery)",mode:'or',accept:['csrf','크로스 사이트 요청 위조','요청 위조'],note:'요청 위조로 행위 유발. XSS(정보 탈취)와 구분.'},
   {dom:'보안/네트워크',q:'OSI 7계층을 1계층(물리)부터 순서대로 모두 쓰시오.',code:null,answer:"물리 → 데이터링크 → 네트워크 → 전송 → 세션 → 표현 → 응용",mode:'and',accept:['물리','데이터링크','네트워크','전송','세션','표현','응용'],note:'두문자 <b>물·데·네·전·세·표·응</b>. 빠짐없이.'},
-  {dom:'보안/네트워크',q:'공개키로 암호화하고 개인키로 복호화하며, RSA가 대표적인 암호화 방식의 이름을 쓰시오.',code:null,answer:"비대칭키 암호화 (공개키 암호화)",mode:'or',accept:['비대칭','공개키'],note:'키 2개 사용. 대칭키(DES, AES)와 구분. RSA, ECC가 대표.'},
+  {dom:'보안/네트워크',q:'공개키로 암호화하고 개인키로 복호화하며, RSA가 대표적인 암호화 방식의 이름을 쓰시오.',code:null,answer:"비대칭키 암호화 (공개키 암호화)",mode:'or',accept:['비대칭','공개키'],note:'키 2개 사용. 대칭키(DES, AES)와 구분. RSA, ECC가 대표.<br>비대칭키 용도 2가지 — <b>암호화(기밀성)</b>: 공개키 암호화·개인키 복호화 / <b>전자서명(인증·부인방지)</b>: 개인키 서명·공개키 검증.'},
   {dom:'SW공학',q:'결합도 중 다른 모듈의 내부를 직접 참조하는 가장 강한(나쁜) 결합도는 무엇인가?',code:null,answer:"내용 결합도 (Content Coupling)",mode:'or',accept:['내용'],note:'결합도 6단계 중 최악. 가장 좋은 것은 자료 결합도.'},
   {dom:'SW공학',q:'UML 다이어그램은 크게 두 가지로 분류된다. 무엇과 무엇인가?',code:null,answer:"구조적(정적) 다이어그램, 행위적(동적) 다이어그램",mode:'and',accept:['구조','행위'],note:'구조적=클래스·객체 / 행위적=유스케이스·시퀀스.'},
   {dom:'SW공학',q:'호환되지 않는 인터페이스를 변환하여 함께 동작하게 하는 디자인 패턴의 이름과 분류를 쓰시오.',code:null,answer:"어댑터(Adapter), 구조 패턴",mode:'and',accept:['어댑터','구조'],note:'구조 패턴 대표. 인터페이스 변환. (어댑터=Adapter)'}
@@ -406,6 +407,29 @@ const questionSets=[
   {dom:'SW공학',q:'모듈의 독립성을 높이기 위해 결합도와 응집도를 각각 어떻게 만들어야 하는지 쓰시오.',code:null,answer:"결합도는 약하게(낮게), 응집도는 강하게(높게)",mode:'and',accept:['결합도','응집도'],note:'결합도↓ 응집도↑ = 좋은 모듈화.'},
   {dom:'SW공학',q:'블랙박스 테스트 기법 중 입력 범위의 경계값을 집중 테스트하는 기법의 이름을 쓰시오.',code:null,answer:"경계값 분석 (Boundary Value Analysis)",mode:'or',accept:['경계값','boundary'],note:'동치 분할과 함께 블랙박스 대표 기법.'},
   {dom:'SW공학',q:'디자인 패턴을 처음 제안하여 23개로 정리한 4명의 그룹을 무엇이라 부르는가? (약어)',code:null,answer:"GoF (Gang of Four)",mode:'or',accept:['gof','gang of four'],note:'생성·구조·행위 3분류, 총 23개 패턴.'}
+],
+/* ============================== SET 6 ============================== */
+[
+  {dom:'SQL',q:'트랜잭션이 가져야 할 4가지 특성(ACID)을 모두 쓰시오.',code:null,answer:"원자성, 일관성, 고립성(격리성), 지속성(영속성)",mode:'and',accept:['원자성','일관성','고립','지속'],note:'<b>ACID</b> = Atomicity(원자성)·Consistency(일관성)·Isolation(고립성)·Durability(지속성). 고립성은 격리성, 지속성은 영속성으로도 씀.'},
+  {dom:'SQL',q:'트랜잭션의 ACID 특성 중 "트랜잭션의 연산은 모두 반영되거나 전혀 반영되지 않아야 한다(All or Nothing)"는 특성의 이름을 쓰시오.',code:null,answer:"원자성 (Atomicity)",mode:'or',accept:['원자성','atomicity'],note:'완전히 수행되거나(COMMIT) 전혀 수행되지 않음(ROLLBACK). All or Nothing.'},
+  {dom:'SQL',q:'트랜잭션을 제어하는 명령어(TCL)를 3가지 쓰시오. (확정·취소·저장점)',code:null,answer:"COMMIT, ROLLBACK, SAVEPOINT",mode:'and',accept:['commit','rollback','savepoint'],note:'<b>TCL</b>: COMMIT(확정)·ROLLBACK(취소)·SAVEPOINT(저장점 설정). DCL은 GRANT·REVOKE.'},
+  {dom:'SQL',q:'정규화 과정에서 "부분 함수 종속을 제거"하여 도달하는 정규형의 이름을 쓰시오.',code:null,answer:"제2정규형 (2NF)",mode:'or',accept:['2nf','제2정규형','2정규형','이정규형'],note:'1NF(원자값)→<b>2NF(부분함수종속 제거)</b>→3NF(이행함수종속 제거)→BCNF(결정자=후보키).'},
+  {dom:'SQL',q:'정규화에서 "이행 함수 종속(A→B, B→C)을 제거"하여 도달하는 정규형의 이름을 쓰시오.',code:null,answer:"제3정규형 (3NF)",mode:'or',accept:['3nf','제3정규형','3정규형','삼정규형'],note:'A→B, B→C일 때 A→C인 이행종속 제거. 다음 단계 BCNF는 모든 결정자가 후보키.'},
+  {dom:'SQL',q:'정규화가 잘 되지 않은 릴레이션에서 발생하는 이상(Anomaly) 현상 3가지를 쓰시오.',code:null,answer:"삽입 이상, 삭제 이상, 갱신 이상",mode:'and',accept:['삽입','삭제','갱신'],note:'<b>삽입·삭제·갱신 이상</b>. 정규화는 이 이상현상을 제거하기 위해 릴레이션을 분해하는 과정.'},
+  {dom:'SW공학',q:'통합 테스트에서 하향식(Top-down) 방식은 아직 개발되지 않은 하위 모듈을 대신할 모듈이 필요하다. 이 모듈의 이름을 쓰시오.',code:null,answer:"스텁 (Stub)",mode:'or',accept:['스텁','stub'],note:'<b>하향식=스텁(Stub)</b>(하위 모듈 대역), <b>상향식=드라이버(Driver)</b>(상위 모듈 대역). 헷갈리지 말 것.'},
+  {dom:'SW공학',q:'V-모델에서 개발(코딩)을 기준으로 테스트 단계를 낮은 수준부터 순서대로 4가지 쓰시오.',code:null,answer:"단위 → 통합 → 시스템 → 인수 테스트",mode:'and',accept:['단위','통합','시스템','인수'],note:'<b>단위→통합→시스템→인수</b>. 단위=모듈 1개, 인수=사용자 요구 충족 확인(알파·베타).'},
+  {dom:'SW공학',q:'객체 생성 로직을 캡슐화하여 서로 관련 있는 객체들의 집합(제품군)을 생성하는 디자인 패턴의 이름과 분류를 쓰시오.',code:null,answer:"추상 팩토리(Abstract Factory), 생성 패턴",mode:'and',accept:['추상 팩토리','생성'],note:'<b>생성 패턴</b> 대표. 연관 객체군을 인터페이스로 생성. 팩토리 메서드도 생성 패턴.'},
+  {dom:'SW공학',q:'동일 계열의 알고리즘을 캡슐화하여 실행 중에 교체할 수 있게 하는 디자인 패턴의 이름과 분류를 쓰시오.',code:null,answer:"전략(Strategy) 패턴, 행위 패턴",mode:'and',accept:['전략','행위'],note:'<b>행위 패턴</b> 대표. 알고리즘을 캡슐화해 런타임에 교체. (Strategy)'},
+  {dom:'SW공학',q:'기존 객체에 새로운 기능을 동적으로 추가(장식)하는 디자인 패턴의 이름과 분류를 쓰시오.',code:null,answer:"데코레이터(Decorator), 구조 패턴",mode:'and',accept:['데코레이터','구조'],note:'<b>구조 패턴</b> 대표. 상속 대신 위임으로 기능을 동적으로 덧붙임. (Decorator)'},
+  {dom:'보안/네트워크',q:'IP 주소 192.168.10.0/26 으로 서브넷팅할 때, 서브넷 마스크를 점10진수로 쓰시오.',code:null,answer:"255.255.255.192",mode:'or',accept:['255.255.255.192'],note:'/26 = 1비트 26개. 마지막 옥텟 11000000 = <b>192</b> → 255.255.255.192.'},
+  {dom:'보안/네트워크',q:'IP 주소 192.168.10.0/26 서브넷에서 실제로 호스트에 할당 가능한 IP 개수를 쓰시오. (계산식 포함)',code:null,answer:"2^(32-26) - 2 = 64 - 2 = 62개",mode:'or',accept:['62'],note:'호스트 비트 6개 → 2⁶=64. 네트워크 주소·브로드캐스트 주소 2개 제외 → <b>62개</b>.'},
+  {dom:'보안/네트워크',q:'동적 라우팅 프로토콜 중 링크 상태(Link State) 알고리즘을 사용하며 대규모 네트워크에 적합한 프로토콜의 약어를 쓰시오.',code:null,answer:"OSPF (Open Shortest Path First)",mode:'or',accept:['ospf'],note:'<b>OSPF=링크상태</b>(다익스트라 최단경로). <b>RIP=거리벡터</b>(홉 수 기반, 최대 15홉).'},
+  {dom:'SQL',q:'데이터베이스 3계층 스키마를 모두 쓰시오. (사용자·전체·물리 관점)',code:null,answer:"외부 스키마, 개념 스키마, 내부 스키마",mode:'and',accept:['외부','개념','내부'],note:'<b>외부</b>(사용자/뷰)·<b>개념</b>(전체 통합)·<b>내부</b>(물리적 저장). ANSI/SPARC 3계층.'},
+  {dom:'SQL',q:'릴레이션에서 후보키가 두 개 이상일 때, 그중 기본키로 선택되지 않은 나머지 후보키를 무엇이라 하는가?',code:null,answer:"대체키 (Alternate Key)",mode:'or',accept:['대체키','alternate'],note:'후보키 = 기본키 + 대체키. 슈퍼키 중 최소성을 만족하면 후보키.'},
+  {dom:'보안/네트워크',q:'OSI 7계층 중 송수신 호스트 간 신뢰성 있는 데이터 전송과 흐름 제어를 담당하며, TCP/UDP가 동작하는 계층의 이름을 쓰시오.',code:null,answer:"전송 계층 (4계층, Transport Layer)",mode:'or',accept:['전송','4계층'],note:'데이터 단위는 세그먼트. 포트 번호로 종단 간(End-to-End) 통신 담당.'},
+  {dom:'보안/네트워크',q:'송신자가 메시지를 해시한 값에 자신의 개인키로 서명하여 무결성·인증·부인방지를 보장하는 기술의 이름을 쓰시오.',code:null,answer:"전자서명 (Digital Signature)",mode:'or',accept:['전자서명','digital signature','디지털 서명'],note:'<b>개인키로 서명, 공개키로 검증</b>. 무결성·인증·부인방지 제공(기밀성은 아님).'},
+  {dom:'SW공학',q:'요구사항이 명확하지 않을 때 시제품을 미리 만들어 사용자 평가를 거쳐 요구사항을 구체화하는 SW 개발 모델은?',code:null,answer:"프로토타입 모델 (Prototype Model)",mode:'or',accept:['프로토타입','prototype'],note:'폭포수(순차)·프로토타입(시제품)·나선형(위험분석 반복) 비교. 사용자 평가로 요구 명확화.'},
+  {dom:'SW공학',q:'결합도 중 두 모듈이 동일한 전역 변수(공유 데이터 영역)를 함께 사용할 때 발생하는 결합도의 이름을 쓰시오.',code:null,answer:"공통 결합도 (Common Coupling)",mode:'or',accept:['공통'],note:'전역(공유) 데이터 참조 → 공통 결합도. 자·스·제·외·<b>공</b>·내 중 두 번째로 강함.'}
 ]
 ];
 

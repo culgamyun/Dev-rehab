@@ -227,9 +227,9 @@
   <div class="meta">
     <span class="chip hot">당락 분기 ★★★</span>
     <span class="chip">보안 + 네트워크</span>
-    <span class="chip">핵심 용어 <b>40+</b></span>
-    <span class="chip">암기카드 <b>26</b></span>
-    <span class="chip">문제 <b>16</b></span>
+    <span class="chip">핵심 용어 <b>60+</b></span>
+    <span class="chip">암기카드 <b>36</b></span>
+    <span class="chip">문제 <b>21</b></span>
   </div>
 </div>
 
@@ -276,8 +276,8 @@
     <div class="concept-head"><span class="tag red">CRYPTO</span><h3>대칭키 vs 비대칭키</h3><span class="freq star">★★★</span></div>
     <div class="concept-body">
       <div class="termtable">
-        <div class="termrow"><span class="tt">대칭키</span><span class="td"><b>암호화·복호화에 같은 키</b> 사용. 빠르지만 키 분배 어려움. <br>예: <b>DES, AES, SEED, ARIA, RC4</b></span></div>
-        <div class="termrow"><span class="tt">비대칭키</span><span class="td"><b>공개키로 암호화, 개인키로 복호화</b> (키 2개). 느리지만 키 분배 쉬움.<br>예: <b>RSA, ECC, 디피-헬만</b></span></div>
+        <div class="termrow"><span class="tt">대칭키</span><span class="td"><b>암호화·복호화에 같은 키</b> 사용. 빠르지만 키 분배 어려움. <br>예: <b>DES, AES</b>(키 128/192/256비트), <b>SEED·ARIA</b>(국산 블록암호, 기본 128비트), <b>RC4</b>(스트림)</span></div>
+        <div class="termrow"><span class="tt">비대칭키</span><span class="td"><b>공개키로 암호화, 개인키로 복호화</b> (키 2개). 느리지만 키 분배 쉬움.<br>암·복호화 예: <b>RSA, ECC</b> &nbsp;|&nbsp; 키 교환(키 분배): <b>디피-헬만(Diffie-Hellman)</b> — 공개키 기반 키 교환 알고리즘(암·복호화 알고리즘이 아님)</span></div>
         <div class="termrow"><span class="tt">해시</span><span class="td"><b>단방향</b> 암호화 (복호화 불가). 무결성 검증용.<br>예: <b>SHA, MD5, HAS-160</b></span></div>
       </div>
       <div class="callout warn"><span class="ic">⚠</span> <b>핵심 함정:</b> 비대칭키는 <u>공개키로 암호화 → 개인키로 복호화</u>가 기본(기밀성). 반대로 개인키로 서명 → 공개키로 검증은 전자서명(부인방지). 방향을 정확히.</div>
@@ -332,10 +332,72 @@
       <div class="callout"><span class="ic">🔐</span> <b>인증 방식:</b> <b>SSO</b>=한 번 인증으로 여러 시스템 접근 / <b>OTP</b>=일회용 비밀번호 / <b>커버로스(Kerberos)</b>=티켓 기반 인증.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">SIGN</span><h3>전자서명 · PKI</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">전자서명</span><span class="td"><b>개인키로 서명 → 공개키로 검증</b>. <b>인증·무결성·부인방지</b>를 보장 (기밀성은 보장하지 않음).</span></div>
+        <div class="termrow"><span class="tt">PKI</span><span class="td">공개키 기반구조(Public Key Infrastructure). 공개키·인증서를 신뢰성 있게 관리하는 체계.</span></div>
+        <div class="termrow"><span class="tt">CA</span><span class="td">인증기관(Certificate Authority). 공개키의 소유자를 보증하는 <b>인증서를 발급·관리</b>.</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 전자서명은 <u>기밀성을 제공하지 않습니다</u>. 기밀성(암호화)은 수신자의 공개키로 별도 암호화해야 보장됩니다.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-solution">
+  <div class="sec-head"><span class="sec-num">05</span><h2>보안 솔루션</h2><span class="dom-badge sec">보안</span></div>
+  <p class="sec-desc">방화벽·IDS·IPS·VPN은 약어와 핵심 역할을 정확히 매칭해야 합니다. 특히 <b>IDS vs IPS</b>, <b>AH vs ESP</b>가 빈출.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">FW/IDS</span><h3>방화벽 · IDS · IPS</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">방화벽</span><span class="td">내·외부 네트워크 사이에서 <b>정책에 따라 패킷을 허용/차단</b>. 발전 순서: <b>패킷 필터링 → 스테이트풀(상태 추적) → 애플리케이션 게이트웨이(프록시)</b></span></div>
+        <div class="termrow"><span class="tt">IDS</span><span class="td">침입 탐지 시스템(Intrusion Detection System). 비정상 행위를 <b>탐지·경고</b>만 함 (오용 탐지 / 이상 탐지)</span></div>
+        <div class="termrow"><span class="tt">IPS</span><span class="td">침입 방지 시스템(Intrusion Prevention System). <b>탐지 + 능동적 차단</b>까지 수행</span></div>
+      </div>
+      <div class="callout"><span class="ic">💡</span> <b>IDS vs IPS:</b> IDS=<u>탐지만</u>(수동), IPS=<u>탐지+차단</u>(능동). 방화벽은 정책 기반 허용/차단이 핵심.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">VPN</span><h3>VPN · IPSec</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">VPN</span><span class="td">가상사설망(Virtual Private Network). 공중망에 <b>암호화된 터널</b>을 만들어 사설망처럼 안전하게 통신</span></div>
+        <div class="termrow"><span class="tt">AH</span><span class="td">IPSec의 인증 헤더(Authentication Header). <b>무결성·인증</b> 제공 (기밀성 X)</span></div>
+        <div class="termrow"><span class="tt">ESP</span><span class="td">IPSec의 보안 페이로드(Encapsulating Security Payload). <b>기밀성 + 무결성·인증</b> 제공</span></div>
+        <div class="termrow"><span class="tt">동작 모드</span><span class="td"><b>전송 모드</b>=페이로드만 보호(종단 간) / <b>터널 모드</b>=IP 헤더 포함 전체 보호(게이트웨이 간)</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>AH vs ESP:</b> AH는 <u>기밀성을 제공하지 않습니다</u>(암호화 X). 기밀성이 필요하면 <b>ESP</b>를 사용.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-attack2">
+  <div class="sec-head"><span class="sec-num">06</span><h2>추가 공격기법</h2><span class="dom-badge sec">보안</span></div>
+  <p class="sec-desc">최근 빈출 공격기법. 단답·약술로 자주 나오니 <b>핵심 동작 한 문장</b>으로 기억하세요.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">ATTACK+</span><h3>지능형·사회공학 공격</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">APT</span><span class="td">지능형 지속 위협(Advanced Persistent Threat). 특정 대상을 <b>장기간 은밀히</b> 공격</span></div>
+        <div class="termrow"><span class="tt">랜섬웨어</span><span class="td">파일을 <b>암호화</b>한 뒤 복호화 대가로 <b>금전을 요구</b>하는 악성코드 (Ransomware)</span></div>
+        <div class="termrow"><span class="tt">피싱/스미싱</span><span class="td">피싱=가짜 사이트·메일로 정보 탈취 / 스미싱=<b>문자(SMS)</b>로 악성 링크 유도</span></div>
+        <div class="termrow"><span class="tt">제로데이</span><span class="td">제로데이(0-day) — 보안 패치가 <b>나오기 전</b> 취약점을 악용하는 공격</span></div>
+        <div class="termrow"><span class="tt">무차별 대입</span><span class="td">Brute Force — <b>모든 경우의 수</b>를 대입해 비밀번호를 알아냄. <b>사전 공격</b>은 사전 단어를 대입</span></div>
+        <div class="termrow"><span class="tt">사회공학</span><span class="td">Social Engineering — <b>사람의 심리·신뢰</b>를 이용해 정보를 빼냄 (기술적 취약점 X)</span></div>
+      </div>
+      <div class="callout"><span class="ic">💡</span> <b>구분:</b> 무차별 대입=모든 조합, 사전 공격=사전 단어 목록. 스미싱의 "S"는 <u>SMS(문자)</u>를 의미.</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-net-proto">
-  <div class="sec-head"><span class="sec-num">05</span><h2>네트워크 — 프로토콜</h2><span class="dom-badge net">네트워크</span></div>
+  <div class="sec-head"><span class="sec-num">07</span><h2>네트워크 — 프로토콜</h2><span class="dom-badge net">네트워크</span></div>
   <p class="sec-desc">계층별 프로토콜과 역할을 매칭하는 문제가 단골. 약어와 풀네임을 함께 외우세요.</p>
 
   <div class="concept">
@@ -354,10 +416,35 @@
       <div class="callout warn"><span class="ic">⚠</span> <b>TCP vs UDP:</b> TCP=신뢰성(연결형), UDP=속도(비연결형). 가장 자주 나오는 비교 문제입니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">PORT</span><h3>well-known 포트 · TCP 연결</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">주요 포트</span><span class="td"><b>HTTP 80 · HTTPS 443 · FTP 20(데이터)/21(제어) · SMTP 25 · POP3 110 · DNS 53</b></span></div>
+        <div class="termrow"><span class="tt">3-way</span><span class="td">TCP 연결 설정: <b>SYN → SYN/ACK → ACK</b> (3단계 핸드셰이크)</span></div>
+        <div class="termrow"><span class="tt">4-way</span><span class="td">TCP 연결 해제: <b>FIN → ACK → FIN → ACK</b> (4단계 핸드셰이크)</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> 연결=<b>3-way(SYN·SYN/ACK·ACK)</b>, 해제=<b>4-way(FIN·ACK·FIN·ACK)</b>. 포트는 숫자와 서비스를 짝지어 암기.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">TCP/IP</span><h3>TCP/IP 4계층 ↔ OSI 7계층 대응</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="termtable">
+        <div class="termrow"><span class="tt">응용</span><span class="td">Application — OSI <b>5~7계층</b>(세션·표현·응용) 대응. HTTP, FTP, SMTP, DNS</span></div>
+        <div class="termrow"><span class="tt">전송</span><span class="td">Transport — OSI <b>4계층</b> 대응. <b>TCP, UDP</b></span></div>
+        <div class="termrow"><span class="tt">인터넷</span><span class="td">Internet — OSI <b>3계층</b> 대응. <b>IP, ICMP, ARP, IGMP</b></span></div>
+        <div class="termrow"><span class="tt">네트워크<br>액세스</span><span class="td">Network Access — OSI <b>1~2계층</b>(물리·데이터링크) 대응. Ethernet</span></div>
+      </div>
+      <div class="callout"><span class="ic">🌐</span> <b>TCP/IP 4계층:</b> 응용 / 전송 / 인터넷 / 네트워크액세스. 실제 인터넷의 표준 모델로, OSI 7계층을 통합한 형태입니다.</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-net-addr">
-  <div class="sec-head"><span class="sec-num">06</span><h2>네트워크 — 주소 · 라우팅</h2><span class="dom-badge net">네트워크</span></div>
+  <div class="sec-head"><span class="sec-num">08</span><h2>네트워크 — 주소 · 라우팅</h2><span class="dom-badge net">네트워크</span></div>
   <p class="sec-desc">IPv4/IPv6 차이, 라우팅 프로토콜, 네트워크 장비가 출제 포인트.</p>
 
   <div class="concept">
@@ -365,7 +452,7 @@
     <div class="concept-body">
       <div class="termtable">
         <div class="termrow"><span class="tt">IPv4</span><span class="td"><b>32비트</b> 주소 (8비트씩 4개), 약 43억 개</span></div>
-        <div class="termrow"><span class="tt">IPv6</span><span class="td"><b>128비트</b> 주소, IPv4 주소 고갈 해결. 16진수 8그룹</span></div>
+        <div class="termrow"><span class="tt">IPv6</span><span class="td"><b>128비트</b> 주소 (16비트씩 8그룹, 콜론(:)으로 구분, 각 그룹 16진수 4자리), IPv4 주소 고갈 해결</span></div>
         <div class="termrow"><span class="tt">라우팅</span><span class="td">목적지까지 <b>최적 경로</b>를 찾아 패킷 전달</span></div>
         <div class="termrow"><span class="tt">RIP/OSPF</span><span class="td">RIP=거리벡터(홉 수) / OSPF=링크상태(최단경로)</span></div>
       </div>
@@ -412,7 +499,7 @@
       <button class="fbtn" data-f="네트워크">🌐 네트워크</button>
     </div>
     <div class="card-controls">
-      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">26</span></span>
+      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">36</span></span>
       <span class="card-counter" style="margin-left:auto" id="cardCat">보안</span>
     </div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -447,7 +534,7 @@
 <div class="wrap">
   <section style="padding-top:30px">
     <div class="sec-head"><span class="sec-num">✍</span><h2>문제 풀이</h2></div>
-    <p class="sec-desc">단답·약술 16문제. 먼저 <b>키워드를 직접 써본 뒤</b> 정답을 펼치세요. 약술은 핵심 동사가 들어갔는지 확인하는 게 중요합니다.</p>
+    <p class="sec-desc">단답·약술 21문제. 먼저 <b>키워드를 직접 써본 뒤</b> 정답을 펼치세요. 약술은 핵심 동사가 들어갔는지 확인하는 게 중요합니다.</p>
     <div id="quizContainer"></div>
     <div class="callout" style="margin-top:24px"><span class="ic">📌</span> <b>채점 팁:</b> 약술형은 <u>핵심 키워드와 동작</u>이 들어가면 부분점수를 받습니다. "SQL 인젝션" → "입력값 조작/삽입"과 "비정상 쿼리 실행/DB 조작"이 핵심. 영어 약어는 풀네임도 함께 외우세요.</div>
   </section>
@@ -473,13 +560,13 @@ navtabs.forEach(t=>t.addEventListener('click',()=>{
 
 /* ============ OSI INTERACTIVE ============ */
 const osiLayers=[
-  {n:7,name:'응용 계층',eng:'Application',role:'사용자와 직접 상호작용하는 응용 서비스 제공',proto:'HTTP, FTP, SMTP, POP3, DNS, Telnet',group:'top'},
-  {n:6,name:'표현 계층',eng:'Presentation',role:'데이터 형식 변환, 암호화·복호화, 압축',proto:'JPEG, MPEG, ASCII',group:'top'},
-  {n:5,name:'세션 계층',eng:'Session',role:'통신 세션 설정·유지·종료, 동기화',proto:'NetBIOS, RPC, SSH',group:'top'},
+  {n:7,name:'응용 계층',eng:'Application',role:'사용자와 직접 상호작용하는 응용 서비스 제공',proto:'HTTP, FTP, SMTP, POP3, DNS, Telnet, SSH',group:'top'},
+  {n:6,name:'표현 계층',eng:'Presentation',role:'데이터 형식 변환, 암호화·복호화, 압축',proto:'JPEG·MPEG(데이터 형식/표준), ASCII',group:'top'},
+  {n:5,name:'세션 계층',eng:'Session',role:'통신 세션 설정·유지·종료, 동기화',proto:'NetBIOS, RPC',group:'top'},
   {n:4,name:'전송 계층',eng:'Transport',role:'종단 간 신뢰성 있는 데이터 전송, 흐름·오류 제어',proto:'TCP, UDP',unit:'세그먼트',group:'mid'},
   {n:3,name:'네트워크 계층',eng:'Network',role:'경로 설정(라우팅), 논리 주소(IP) 지정',proto:'IP, ICMP, IGMP, ARP',unit:'패킷',group:'low'},
   {n:2,name:'데이터링크 계층',eng:'Data Link',role:'인접 노드 간 전송, 오류·흐름 제어, 물리주소(MAC)',proto:'Ethernet, PPP, HDLC',unit:'프레임',group:'low'},
-  {n:1,name:'물리 계층',eng:'Physical',role:'0과 1의 비트를 전기 신호로 변환해 전송',proto:'RS-232, 케이블, 허브',unit:'비트',group:'low'}
+  {n:1,name:'물리 계층',eng:'Physical',role:'0과 1의 비트를 전기 신호로 변환해 전송',proto:'RS-232(규격), 동축·광케이블(매체), 허브·리피터(장비)',unit:'비트',group:'low'}
 ];
 
 const osiStack=document.getElementById('osiStack');
@@ -527,7 +614,7 @@ const allCards=[
   {tag:'보안 · 3요소',q:'무결성 (Integrity)',hint:'변조 방지',a:'<b>인가된 사용자만</b> 정보를 수정 가능 (변조·위조 방지)',key:'해시 함수로 무결성 검증',cat:'보안',dom:'보안'},
   {tag:'보안 · 3요소',q:'가용성 (Availability)',hint:'언제든',a:'인가된 사용자가 <b>필요할 때 언제든</b> 자원에 접근 가능',key:'DoS 공격이 가용성을 위협',cat:'보안',dom:'보안'},
   {tag:'보안 · 암호화',q:'대칭키 암호화의 특징과 예',hint:'키 1개',a:'암호화·복호화에 <b>같은 키</b> 사용. 빠름.<br>예: <b>DES, AES, SEED, ARIA</b>',key:'키 분배가 어려운 단점',cat:'보안',dom:'보안'},
-  {tag:'보안 · 암호화',q:'비대칭키 암호화의 키 사용 방식',hint:'키 2개',a:'<b>공개키로 암호화 → 개인키로 복호화</b><br>예: <b>RSA, ECC</b>',key:'느리지만 키 분배 쉬움',cat:'보안',dom:'보안'},
+  {tag:'보안 · 암호화',q:'비대칭키 암호화의 키 사용 방식',hint:'키 2개',a:'<b>공개키로 암호화 → 개인키로 복호화</b><br>암·복호화 예: <b>RSA, ECC</b>',key:'느리지만 키 분배 쉬움 · 디피-헬만은 키 교환(키 분배) 알고리즘으로 별도 분류',cat:'보안',dom:'보안'},
   {tag:'보안 · 암호화',q:'복호화가 불가능한 단방향 암호화는?',hint:'무결성',a:'<b>해시 (Hash)</b><br>예: SHA, MD5',key:'무결성 검증·비밀번호 저장에 사용',cat:'보안',dom:'보안'},
   {tag:'보안 · 공격',q:'입력값에 악성 SQL을 삽입하는 공격',hint:'DB',a:'<b>SQL 인젝션</b>',key:'방어: Prepared Statement, 입력값 검증',cat:'보안',dom:'보안'},
   {tag:'보안 · 공격',q:'악성 스크립트로 쿠키·정보를 탈취하는 공격',hint:'스크립트',a:'<b>XSS</b> (Cross-Site Scripting)',key:'게시판 등에 스크립트 삽입',cat:'보안',dom:'보안'},
@@ -541,14 +628,24 @@ const allCards=[
   {tag:'네트워크 · OSI',q:'OSI 7계층 순서 (아래→위)',hint:'물데네전세표응',a:'물리 → 데이터링크 → 네트워크 → 전송 → 세션 → 표현 → 응용',key:'물·데·네·전·세·표·응',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · OSI',q:'라우팅(경로 설정)을 담당하는 계층',hint:'3계층',a:'<b>네트워크 계층</b> (3계층)',key:'IP 주소 지정, 패킷 단위',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · OSI',q:'전송 계층의 데이터 단위는?',hint:'4계층',a:'<b>세그먼트 (Segment)</b>',key:'네트워크=패킷, 데이터링크=프레임, 물리=비트',cat:'네트워크',dom:'네트워크'},
-  {tag:'네트워크 · OSI',q:'암호화·복호화, 데이터 형식 변환 계층',hint:'6계층',a:'<b>표현 계층</b> (Presentation)',key:'JPEG, MPEG, 압축',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · OSI',q:'암호화·복호화, 데이터 형식 변환 계층',hint:'6계층',a:'<b>표현 계층</b> (Presentation)',key:'JPEG·MPEG(데이터 형식/표준), 압축',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · 프로토콜',q:'TCP vs UDP의 핵심 차이',hint:'연결?',a:'<b>TCP</b>=연결형, 신뢰성 보장<br><b>UDP</b>=비연결형, 빠름(신뢰성 X)',key:'TCP=3-way handshake / UDP=실시간',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · 프로토콜',q:'IP 주소를 MAC 주소로 변환하는 프로토콜',hint:'주소변환',a:'<b>ARP</b> (RARP는 반대)',key:'Address Resolution Protocol',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · 프로토콜',q:'ping이 사용하는 오류·제어 메시지 프로토콜',hint:'제어',a:'<b>ICMP</b>',key:'Internet Control Message Protocol',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · 프로토콜',q:'메일 전송(SMTP)과 수신 프로토콜',hint:'수신',a:'수신: <b>POP3, IMAP</b><br>전송: SMTP',key:'SMTP=보내기, POP3/IMAP=받기',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · 주소',q:'IPv4와 IPv6의 비트 수',hint:'32/128',a:'<b>IPv4 = 32비트</b><br><b>IPv6 = 128비트</b>',key:'IPv6는 IPv4 주소 고갈 해결',cat:'네트워크',dom:'네트워크'},
   {tag:'네트워크 · 장비',q:'경로를 결정하는 3계층 네트워크 장비',hint:'경로',a:'<b>라우터 (Router)</b>',key:'스위치=2계층, 허브=1계층',cat:'네트워크',dom:'네트워크'},
-  {tag:'네트워크 · 라우팅',q:'RIP vs OSPF의 방식',hint:'거리/링크',a:'<b>RIP</b>=거리벡터(홉 수)<br><b>OSPF</b>=링크상태(최단경로)',key:'RIP는 홉 수 제한(15), OSPF는 대규모',cat:'네트워크',dom:'네트워크'}
+  {tag:'네트워크 · 라우팅',q:'RIP vs OSPF의 방식',hint:'거리/링크',a:'<b>RIP</b>=거리벡터(홉 수)<br><b>OSPF</b>=링크상태(최단경로)',key:'RIP는 홉 수 제한(15), OSPF는 대규모',cat:'네트워크',dom:'네트워크'},
+  {tag:'보안 · 솔루션',q:'IDS와 IPS의 차이',hint:'탐지/차단',a:'<b>IDS</b>=침입 탐지(경고만)<br><b>IPS</b>=침입 탐지 + 능동적 <b>차단</b>',key:'IDS=수동(탐지), IPS=능동(탐지+차단)',cat:'보안',dom:'보안'},
+  {tag:'보안 · 솔루션',q:'방화벽 기술의 발전 순서',hint:'필터링→프록시',a:'<b>패킷 필터링 → 스테이트풀(상태 추적) → 애플리케이션 게이트웨이(프록시)</b>',key:'정책에 따라 패킷 허용/차단',cat:'보안',dom:'보안'},
+  {tag:'보안 · 솔루션',q:'IPSec의 AH와 ESP가 보장하는 것',hint:'무결성/기밀성',a:'<b>AH</b>=무결성·인증 (기밀성 X)<br><b>ESP</b>=기밀성 + 무결성·인증',key:'기밀성이 필요하면 ESP. 모드: 전송/터널',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'특정 대상을 장기간 은밀히 공격하는 지능형 위협',hint:'지속',a:'<b>APT</b> (Advanced Persistent Threat)',key:'지능형 지속 위협',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'파일을 암호화하고 금전을 요구하는 악성코드',hint:'몸값',a:'<b>랜섬웨어 (Ransomware)</b>',key:'복호화 대가로 금전 요구',cat:'보안',dom:'보안'},
+  {tag:'보안 · 공격',q:'보안 패치가 나오기 전 취약점을 노리는 공격',hint:'0-day',a:'<b>제로데이 (Zero-day) 공격</b>',key:'패치 공개 전 취약점 악용',cat:'보안',dom:'보안'},
+  {tag:'보안 · 서명',q:'전자서명이 보장하는 3가지',hint:'기밀성 X',a:'<b>인증 · 무결성 · 부인방지</b> (기밀성은 보장 X)',key:'개인키 서명 → 공개키 검증',cat:'보안',dom:'보안'},
+  {tag:'네트워크 · 연결',q:'TCP 연결 설정 3-way handshake 순서',hint:'SYN',a:'<b>SYN → SYN/ACK → ACK</b>',key:'연결 해제는 4-way(FIN·ACK·FIN·ACK)',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 포트',q:'HTTP·HTTPS·DNS의 well-known 포트',hint:'80/443/53',a:'<b>HTTP 80 · HTTPS 443 · DNS 53</b>',key:'FTP 20/21, SMTP 25, POP3 110',cat:'네트워크',dom:'네트워크'},
+  {tag:'네트워크 · 모델',q:'TCP/IP 4계층의 구성',hint:'4계층',a:'<b>응용 → 전송 → 인터넷 → 네트워크액세스</b>',key:'전송=TCP/UDP, 인터넷=IP/ICMP/ARP',cat:'네트워크',dom:'네트워크'}
 ];
 
 let filter='all';
@@ -640,7 +737,22 @@ const quizzes=[
    note:'스위치=2계층, 허브=1계층, 게이트웨이=프로토콜 변환.'},
   {dom:'네트워크',db:'네트워크',type:'약술',hot:false,q:'데이터 캡슐화 과정에서 각 계층의 데이터 단위가 어떻게 바뀌는지 순서대로 쓰시오. (전송→물리)',
    given:null,answer:'세그먼트 → 패킷 → 프레임 → 비트',
-   note:'전송(세그먼트)→네트워크(패킷)→데이터링크(프레임)→물리(비트). 헤더를 붙이며 내려감.'}
+   note:'전송(세그먼트)→네트워크(패킷)→데이터링크(프레임)→물리(비트). 헤더를 붙이며 내려감.'},
+  {dom:'보안',db:'보안',type:'약술',hot:true,q:'IDS와 IPS의 차이를 설명하시오.',
+   given:null,answer:'IDS는 침입을 탐지하여 경고만 하고(수동적), IPS는 침입을 탐지함과 동시에 능동적으로 차단까지 수행한다',
+   note:'IDS=<b>탐지만</b>, IPS=<b>탐지+차단</b>. 방화벽은 정책 기반 허용/차단.'},
+  {dom:'보안',db:'보안',type:'단답',hot:false,q:'IPSec에서 기밀성·무결성·인증을 모두 제공하는 프로토콜의 약어를 쓰시오.',
+   given:'AH는 무결성·인증만 제공하고 기밀성은 제공하지 않는다.',answer:'ESP (Encapsulating Security Payload)',
+   note:'AH=무결성·인증(기밀성 X), <b>ESP=기밀성+무결성·인증</b>. 모드: 전송/터널.'},
+  {dom:'보안',db:'보안',type:'약술',hot:false,q:'전자서명이 보장하는 보안 요소를 모두 쓰시오. (보장하지 않는 것도 명시)',
+   given:null,answer:'인증, 무결성, 부인방지를 보장하며, 기밀성은 보장하지 않는다',
+   note:'<b>개인키로 서명 → 공개키로 검증</b>. 기밀성(암호화)은 별도로 수신자 공개키 암호화가 필요.'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:false,q:'TCP 연결 설정(3-way handshake)의 패킷 교환 순서를 쓰시오.',
+   given:null,answer:'SYN → SYN/ACK → ACK',
+   note:'연결 해제는 <b>4-way</b>(FIN → ACK → FIN → ACK).'},
+  {dom:'네트워크',db:'네트워크',type:'단답',hot:false,q:'HTTP, HTTPS, DNS의 well-known 포트 번호를 각각 쓰시오.',
+   given:null,answer:'HTTP 80, HTTPS 443, DNS 53',
+   note:'FTP 20(데이터)/21(제어), SMTP 25, POP3 110도 함께 암기.'}
 ];
 
 const qc=document.getElementById('quizContainer');
