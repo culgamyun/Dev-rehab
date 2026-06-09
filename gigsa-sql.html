@@ -285,8 +285,8 @@
   <div class="meta">
     <span class="chip hot">매회 출제 ★★★</span>
     <span class="chip">개념 <b>11</b></span>
-    <span class="chip">암기카드 <b>27</b></span>
-    <span class="chip">문제 <b>19</b></span>
+    <span class="chip">암기카드 <b>32</b></span>
+    <span class="chip">문제 <b>20</b></span>
     <span class="chip">예상 소요 <b>3~4h</b></span>
   </div>
 </div>
@@ -359,6 +359,23 @@
       <div class="callout"><span class="ic">🎯</span> <b>WHERE vs HAVING:</b> 그룹으로 묶기 <u>전</u> 개별 행 조건은 <b>WHERE</b>, 묶은 <u>후</u> 그룹 조건(집계함수 포함)은 <b>HAVING</b>. 집계함수는 WHERE에 못 씁니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">NULL</span><h3>NULL 처리와 치환 함수</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>NULL 연산</b> — <b>NULL + 값 = NULL</b> (NULL이 섞인 산술 결과는 NULL)</li>
+        <li><b>집계와 NULL</b> — <b>SUM·AVG는 NULL을 제외</b>하고 계산 (AVG는 NULL 행을 분모에서도 뺌)</li>
+        <li><b>NULL 비교</b> — <code>= NULL</code> 불가, 반드시 <code>IS NULL</code> / <code>IS NOT NULL</code></li>
+      </ul>
+      <div class="callout"><span class="ic">🔁</span> <b>NULL 치환 함수 (DBMS별 같은 기능):</b> <b>NVL</b>(오라클) = <b>COALESCE</b>(표준 SQL) = <b>ISNULL</b>(SQL Server) = <b>IFNULL</b>(MySQL). 예: <code>NVL(점수, 0)</code> → 점수가 NULL이면 0으로 대체.</div>
+      <ul>
+        <li><b>NVL2(식, A, B)</b> — 식이 NULL이 아니면 A, NULL이면 B 반환</li>
+        <li><b>NULLIF(A, B)</b> — A=B이면 NULL, 다르면 A 반환</li>
+        <li><b>COALESCE(a, b, c…)</b> — 인자 중 처음으로 NULL이 아닌 값 반환</li>
+      </ul>
+    </div>
+  </div>
 </section>
 
 <section id="s-join">
@@ -379,11 +396,12 @@
 <span class="kw">FROM</span>   학생 <span class="kw">INNER JOIN</span> 학과
 <span class="kw">ON</span>     학생.학과코드 = 학과.학과코드;
 
-<span class="cm">-- 동등 조인 (옛 문법, 아직 출제됨)</span>
+<span class="cm">-- 묵시적(암시적) 조인 = 옛 방식(WHERE 절 조인), 아직 출제됨</span>
 <span class="kw">SELECT</span> 이름, 학과명
 <span class="kw">FROM</span>   학생, 학과
 <span class="kw">WHERE</span>  학생.학과코드 = 학과.학과코드;</pre>
       </div>
+      <div class="callout"><span class="ic">📝</span> <b>명칭 정리:</b> 콤마+WHERE 방식은 <b>묵시적(암시적) 조인</b>(옛 방식). 한편 <b>동등조인(equi-join)</b>은 조인 조건을 <u>등호(=)로 잇는</u> 것을 가리키는 별개 분류로, <code>INNER JOIN ... ON a=b</code> 도 동등조인입니다. 즉 "옛 방식이냐(문법 분류)"와 "등호로 잇느냐(조건 분류)"는 다른 축입니다.</div>
     </div>
   </div>
 </section>
@@ -414,6 +432,7 @@
         <li><b>CHECK</b> — 값 범위/조건 제한</li>
         <li><b>DEFAULT</b> — 기본값 지정</li>
       </ul>
+      <div class="callout"><span class="ic">🔗</span> <b>FK 참조 동작 (ON DELETE / ON UPDATE):</b> 부모 행이 삭제·변경될 때 자식 행을 어떻게 처리할지 지정. <b>CASCADE</b>=연쇄 삭제·변경, <b>SET NULL</b>=자식의 외래키를 NULL로, <b>SET DEFAULT</b>=기본값으로, <b>RESTRICT</b>·<b>NO ACTION</b>=참조 중이면 거부. 예: <code>FOREIGN KEY(학과코드) REFERENCES 학과(학과코드) ON DELETE CASCADE</code></div>
       <div class="callout"><span class="ic">📝</span> <b>ALTER 빈출:</b> 컬럼 추가 <code>ALTER TABLE 학생 ADD 전화 VARCHAR(15);</code> / 수정 <code>MODIFY</code> / 삭제 <code>DROP COLUMN</code></div>
     </div>
   </div>
@@ -438,6 +457,52 @@
 <span class="kw">DELETE FROM</span> 학생 <span class="kw">WHERE</span> 학번 = <span class="st">'20240001'</span>;</pre>
       </div>
       <div class="callout warn"><span class="ic">⚠</span> <b>WHERE 누락 사고:</b> UPDATE/DELETE에 WHERE를 빼면 전체 행이 대상이 됩니다. 시험에선 "특정 조건만" 명시되어 있으니 WHERE를 꼭 붙이세요.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">COMPARE</span><h3>DELETE vs TRUNCATE vs DROP</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">"행만 지우기"와 "테이블 자체 없애기"를 구분하는 단골 비교. 어느 분류(DML/DDL)인지, 롤백이 되는지가 핵심입니다.</p>
+      <div style="overflow-x:auto;margin:12px 0">
+        <table style="width:100%;border-collapse:collapse;font-size:13.5px;min-width:520px">
+          <thead>
+            <tr style="border-bottom:1px solid var(--line)">
+              <th style="text-align:left;padding:9px 10px;color:var(--cyan);font-family:var(--mono);font-size:12px;font-weight:700">구분</th>
+              <th style="text-align:left;padding:9px 10px;color:var(--cyan);font-family:var(--mono);font-size:12px;font-weight:700">DELETE</th>
+              <th style="text-align:left;padding:9px 10px;color:var(--cyan);font-family:var(--mono);font-size:12px;font-weight:700">TRUNCATE</th>
+              <th style="text-align:left;padding:9px 10px;color:var(--cyan);font-family:var(--mono);font-size:12px;font-weight:700">DROP</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom:1px solid var(--line-soft)">
+              <td style="padding:8px 10px;color:var(--ink-dim)">분류</td>
+              <td style="padding:8px 10px">DML</td>
+              <td style="padding:8px 10px">DDL</td>
+              <td style="padding:8px 10px">DDL</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--line-soft)">
+              <td style="padding:8px 10px;color:var(--ink-dim)">삭제 대상</td>
+              <td style="padding:8px 10px">조건(WHERE)에 맞는 행 선택 삭제</td>
+              <td style="padding:8px 10px">전체 행 삭제</td>
+              <td style="padding:8px 10px">테이블 구조까지 제거</td>
+            </tr>
+            <tr style="border-bottom:1px solid var(--line-soft)">
+              <td style="padding:8px 10px;color:var(--ink-dim)">테이블 구조</td>
+              <td style="padding:8px 10px">유지</td>
+              <td style="padding:8px 10px">유지</td>
+              <td style="padding:8px 10px">함께 삭제</td>
+            </tr>
+            <tr>
+              <td style="padding:8px 10px;color:var(--ink-dim)">롤백(ROLLBACK)</td>
+              <td style="padding:8px 10px;color:var(--green)">가능</td>
+              <td style="padding:8px 10px;color:var(--red)">불가</td>
+              <td style="padding:8px 10px;color:var(--red)">불가</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>한 줄 정리:</b> <b>DELETE</b>=행 선택 삭제·롤백 가능(DML) / <b>TRUNCATE</b>=전체 행 삭제·구조는 유지·롤백 불가(DDL) / <b>DROP</b>=테이블 구조까지 제거(DDL).</div>
     </div>
   </div>
 </section>
@@ -529,7 +594,8 @@
       <ul>
         <li>가상 테이블 — 실제 데이터 저장 X, 정의만 저장</li>
         <li>독립성·보안성 향상 (필요한 컬럼만 노출)</li>
-        <li>수정·삭제는 가능하나 <b>인덱스 생성 불가</b>, 정의 변경 불가(DROP 후 재생성)</li>
+        <li>데이터 수정·삭제는 <b>갱신 가능 뷰일 때만</b> 가능 (단일 테이블 기반 + 기본키 포함, 집계함수·DISTINCT·GROUP BY 등이 없을 것)</li>
+        <li><b>인덱스 생성 불가</b>, 정의 변경 불가(DROP 후 재생성)</li>
       </ul>
       <div class="callout"><span class="ic">🔍</span> <b>부속질의(서브쿼리):</b> <code>WHERE 점수 > (SELECT AVG(점수) FROM 성적)</code> — 평균 이상 조회 같은 문제로 출제.</div>
     </div>
@@ -651,6 +717,25 @@
   </div>
 
   <div class="concept">
+    <div class="concept-head"><span class="tag cyan">KEY</span><h3>관계대수 — 순수 관계 연산자</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">관계대수 연산자는 <b>순수 관계 연산자</b> 4종과 <b>일반 집합 연산자</b> 4종으로 나뉩니다. SQL과 대응시키는 문제가 단골입니다.</p>
+      <p><b>순수 관계 연산자 (4종)</b></p>
+      <ul>
+        <li><b>SELECT (σ, 시그마)</b> — 조건에 맞는 <u>행(튜플)</u> 선택 → SQL <b>WHERE</b></li>
+        <li><b>PROJECT (π, 파이)</b> — 원하는 <u>속성(열)</u>만 추출 → SQL <b>SELECT 컬럼</b></li>
+        <li><b>JOIN (⋈)</b> — 공통 속성으로 두 릴레이션 결합 → SQL <b>JOIN</b></li>
+        <li><b>DIVISION (÷)</b> — "모두 포함"하는 튜플을 골라내는 나누기 연산</li>
+      </ul>
+      <p style="margin-top:14px"><b>일반 집합 연산자 (4종)</b></p>
+      <ul>
+        <li><b>합집합(UNION, ∪) · 교집합(INTERSECTION, ∩) · 차집합(DIFFERENCE, −) · 교차곱(CARTESIAN PRODUCT, ×)</b></li>
+      </ul>
+      <div class="callout"><span class="ic">🔑</span> <b>기호 암기:</b> σ↔행 선택(WHERE), π↔열 선택(SELECT), ⋈↔JOIN, ÷↔나누기. 순수 관계 연산자는 관계대수에만 있는 연산이고, 합·교·차·교차곱은 일반 집합 연산자입니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
     <div class="concept-head"><span class="tag violet">KEY</span><h3>트랜잭션 — 회복 · 병행제어</h3><span class="freq star">★★☆</span></div>
     <div class="concept-body">
       <p><b>회복 기법</b></p>
@@ -665,7 +750,7 @@
         <li><b>타임스탬프</b> — 시간 순서로 트랜잭션 실행 순서 결정</li>
         <li><b>낙관적 검증</b> — 일단 수행 후 종료 시점에 검증</li>
       </ul>
-      <div class="callout"><span class="ic">🔒</span> <b>로킹 단위:</b> 작을수록 → 공유도↑ 오버헤드↑ / 클수록 → 공유도↓ 오버헤드↓. 반비례 관계로 출제.</div>
+      <div class="callout"><span class="ic">🔒</span> <b>로킹 단위:</b> 단위가 <b>작아지면</b> 병행성(공유도)도, 관리 오버헤드도 <b>함께 증가</b>(단위↓ ⇒ 둘 다 ↑). 단위가 커지면 둘 다 감소(단위↑ ⇒ 둘 다 ↓). 공유도와 오버헤드가 같은 방향으로 움직인다는 점을 묻습니다.</div>
     </div>
   </div>
 </section>
@@ -680,7 +765,7 @@
     <div class="sec-head"><span class="sec-num">★</span><h2>암기 카드</h2></div>
     <p class="sec-desc">탭하면 뒤집힙니다. 키워드를 보고 답을 떠올린 뒤 확인하세요. 시험에 쓰는 <b>정확한 표현</b>으로 외우는 게 핵심.</p>
     <div class="card-controls">
-      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">27</span></span>
+      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">32</span></span>
       <span class="card-counter" style="margin-left:auto" id="cardCat">SELECT</span>
     </div>
     <div class="flashcard" id="flashcard" onclick="flipCard()">
@@ -715,7 +800,7 @@
 <div class="wrap">
   <section style="padding-top:30px">
     <div class="sec-head"><span class="sec-num">✍</span><h2>문제 풀이</h2></div>
-    <p class="sec-desc">빈출·심화 14문제. <b>먼저 손으로(또는 입력칸에) 직접 작성</b>한 뒤 정답을 펼치세요. 머릿속으로만 풀면 시험장에서 안 나옵니다.</p>
+    <p class="sec-desc">빈출·심화 20문제. <b>먼저 손으로(또는 입력칸에) 직접 작성</b>한 뒤 정답을 펼치세요. 머릿속으로만 풀면 시험장에서 안 나옵니다.</p>
     <div id="quizContainer"></div>
     <div class="callout" style="margin-top:24px"><span class="ic">📌</span> <b>채점 팁:</b> 키워드 철자, 세미콜론, 대소문자보다 <u>구조와 핵심 키워드</u>가 정확한지를 보세요. 실기는 부분점수가 박하니 빠진 절(clause)이 없는지 꼭 확인.</div>
   </section>
@@ -747,11 +832,15 @@ const cards=[
   {tag:'WHERE · 범위',q:'BETWEEN a AND b 의 포함 범위',hint:'양끝?',a:'a <b>이상</b> b <b>이하</b> — 양쪽 끝값 모두 포함',key:'BETWEEN 10 AND 20 → 10과 20 포함',cat:'SELECT'},
   {tag:'집계 · COUNT',q:'COUNT(*) 와 COUNT(컬럼)의 차이',hint:'NULL?',a:'<code>COUNT(*)</code> = NULL 포함 전체 행<br><code>COUNT(컬럼)</code> = 해당 컬럼 NULL 제외',key:'NULL 개수 차이를 묻는 문제 주의',cat:'집계'},
   {tag:'집계 · 위치',q:'WHERE vs HAVING — 집계함수는 어디에?',hint:'그룹 전/후',a:'개별 행 조건은 <b>WHERE</b>,<br>그룹(집계) 조건은 <b>HAVING</b>',key:'집계함수(AVG,SUM…)는 WHERE에 쓸 수 없음',cat:'집계'},
+  {tag:'NULL · 연산',q:'NULL + 값 = ? / SUM·AVG는 NULL을?',hint:'전파/제외',a:'<b>NULL + 값 = NULL</b> (NULL이 섞이면 결과도 NULL)<br><b>SUM·AVG는 NULL을 제외</b>하고 계산',key:'AVG는 NULL 행을 분모에서도 제외 / COUNT(*)만 NULL 포함',cat:'NULL'},
+  {tag:'NULL · 치환',q:'NULL을 다른 값으로 바꾸는 함수 (DBMS별)',hint:'NVL=?=?=?',a:'<b>NVL</b>(오라클) = <b>COALESCE</b>(표준) = <b>ISNULL</b>(SQL Server) = <b>IFNULL</b>(MySQL)',key:'NVL2(식,A,B)=NULL아니면A·NULL이면B / NULLIF(A,B)=같으면 NULL',cat:'NULL'},
   {tag:'JOIN · 종류',q:'LEFT OUTER JOIN 의 결과',hint:'어느쪽 전부?',a:'<b>왼쪽 테이블 전부</b> + 오른쪽 일치분<br>(일치 없으면 오른쪽은 NULL)',key:'INNER=양쪽 일치만 / OUTER=한쪽 전부 보존',cat:'JOIN'},
   {tag:'DDL · 제약',q:'PRIMARY KEY 의 두 가지 제약',hint:'NULL? 중복?',a:'<b>NULL 불가</b> + <b>중복 불가</b><br>(= NOT NULL + UNIQUE)',key:'UNIQUE는 NULL 허용 / PK는 NULL 불허 — 차이 주의',cat:'DDL'},
   {tag:'DDL · 제약',q:'외래키를 지정하는 키워드',hint:'참조',a:'<code>FOREIGN KEY(컬럼) REFERENCES 부모테이블(컬럼)</code>',key:'참조 무결성 보장 / FK는 부모의 PK·UNIQUE를 참조',cat:'DDL'},
   {tag:'DDL · 제약',q:'값의 범위·조건을 제한하는 제약조건',hint:'예: 나이>=18',a:'<code>CHECK</code><br>예: <code>CHECK(나이 >= 18)</code>',key:'DEFAULT=기본값 / CHECK=조건제한 구분',cat:'DDL'},
   {tag:'DDL · ALTER',q:'테이블에 컬럼을 추가하는 문법',hint:'ADD',a:'<code>ALTER TABLE 테이블 ADD 컬럼 자료형;</code>',key:'수정=MODIFY, 삭제=DROP COLUMN',cat:'DDL'},
+  {tag:'삭제 · 비교',q:'DELETE vs TRUNCATE vs DROP',hint:'분류/롤백/구조',a:'<b>DELETE</b>=행 선택 삭제·롤백 O(DML)<br><b>TRUNCATE</b>=전체 행 삭제·구조 유지·롤백 X(DDL)<br><b>DROP</b>=테이블 구조까지 제거(DDL)',key:'롤백 가능한 건 DELETE뿐 / TRUNCATE는 구조 유지·DROP은 구조까지 삭제',cat:'DDL'},
+  {tag:'DDL · FK 동작',q:'외래키 ON DELETE / ON UPDATE 옵션',hint:'연쇄/NULL/거부',a:'<b>CASCADE</b>=연쇄 삭제·변경<br><b>SET NULL / SET DEFAULT</b>=NULL·기본값으로<br><b>RESTRICT / NO ACTION</b>=참조 중이면 거부',key:'부모 행 삭제·변경 시 자식 행 처리 방식 지정',cat:'DDL'},
   {tag:'DCL · 권한',q:'권한 부여 / 회수 명령어',hint:'주기/뺏기',a:'부여 <code>GRANT</code> · 회수 <code>REVOKE</code>',key:'GRANT 권한 ON 객체 TO 사용자 / REVOKE … FROM …',cat:'DCL'},
   {tag:'DCL · 옵션',q:'WITH GRANT OPTION 의 의미',hint:'재부여',a:'부여받은 권한을 <b>다른 사용자에게 또 줄 수 있는</b> 권한',key:'CASCADE = 물려준 권한까지 연쇄 회수',cat:'DCL'},
   {tag:'TCL · ACID',q:'트랜잭션 ACID 4특성',hint:'원일격영',a:'<b>원자성</b>(Atomicity) · <b>일관성</b>(Consistency) · <b>격리성</b>(Isolation) · <b>영속성</b>(Durability)',key:'원자성 = All or Nothing (전부 또는 전무)',cat:'TCL'},
@@ -765,9 +854,10 @@ const cards=[
   {tag:'이상현상',q:'이상현상(Anomaly) 3종',hint:'삽갱삭',a:'<b>삽입 이상 · 갱신 이상 · 삭제 이상</b>',key:'정규화로 이 3가지 이상현상을 제거',cat:'이상현상'},
   {tag:'키 · 구분',q:'유일성만 있고 최소성은 없는 키',hint:'슈퍼?후보?',a:'<b>슈퍼키</b><br>(후보키 = 유일성 + 최소성 둘 다)',key:'대체키 = 기본키로 안 뽑힌 후보키',cat:'키'},
   {tag:'용어 · 릴레이션',q:'카디널리티 vs 차수(Degree)',hint:'행?열?',a:'<b>카디널리티</b> = 튜플(행)의 개수<br><b>차수</b> = 속성(열)의 개수',key:'바꿔 쓰면 오답 — 행 vs 열 정확히',cat:'용어'},
+  {tag:'관계대수 · 순수',q:'순수 관계 연산자 4종과 SQL 대응',hint:'σ π ⋈ ÷',a:'<b>SELECT(σ)</b>↔WHERE(행) · <b>PROJECT(π)</b>↔SELECT(열) · <b>JOIN(⋈)</b>↔JOIN · <b>DIVISION(÷)</b>',key:'순수 관계 연산자 4종 / 합·교·차·교차곱은 일반 집합 연산자',cat:'관계대수'},
   {tag:'스키마 · 3계층',q:'전체 논리적 구조를 나타내는 스키마',hint:'외부/개념/내부',a:'<b>개념 스키마</b><br>(외부=사용자뷰, 내부=물리적 저장)',key:'개념=기관 전체 관점의 통합 뷰',cat:'스키마'},
   {tag:'트랜잭션 · 회복',q:'완료 전까지 DB에 반영 안 하는 회복기법',hint:'지연?즉각?',a:'<b>지연 갱신 기법</b>',key:'즉각 갱신=수행 중 바로 반영(로그 필요)',cat:'회복'},
-  {tag:'병행제어 · 로킹',q:'로킹 단위가 작아지면?',hint:'공유도/오버헤드',a:'공유도 <b>증가</b>, 오버헤드 <b>증가</b>',key:'단위 ↔ 공유도/오버헤드는 반비례 아닌 동반 변화',cat:'병행제어'}
+  {tag:'병행제어 · 로킹',q:'로킹 단위가 작아지면?',hint:'공유도/오버헤드',a:'병행성(공유도) <b>증가</b>, 관리 오버헤드 <b>증가</b><br>(단위↓ ⇒ 둘 다 ↑)',key:'공유도와 오버헤드는 같은 방향(동반)으로 변함 — 단위↓⇒둘 다↑, 단위↑⇒둘 다↓',cat:'병행제어'}
 ];
 
 let order=cards.map((_,i)=>i);
@@ -811,9 +901,13 @@ const quizzes=[
    given:"SELECT * FROM 회원\nWHERE 전화번호 (___);",
    answer:"IS NULL",
    note:'<code>= NULL</code> 은 동작하지 않음. 반드시 <b>IS NULL</b>.'},
+  {type:'빈칸',hot:true,q:'점수가 NULL이면 0으로 대체하여 조회하려 한다. 빈칸에 들어갈 NULL 치환 함수(오라클 기준)를 쓰시오.',
+   given:"SELECT 이름, (____)(점수, 0) AS 점수\nFROM 성적;",
+   answer:"NVL",
+   note:'오라클 <b>NVL(식, 대체값)</b> = 표준 <b>COALESCE</b> = SQL Server <b>ISNULL</b> = MySQL <b>IFNULL</b>. NULL+값=NULL이고 SUM·AVG는 NULL을 제외한다는 점도 함께 기억.'},
   {type:'작성형',hot:false,q:'아래 두 테이블을 조인하여 학생의 이름과 학과명을 조회하시오.',given:"[학생]  학번  이름  학과코드\n[학과]  학과코드  학과명",
    answer:"SELECT 학생.이름, 학과.학과명\nFROM 학생 INNER JOIN 학과\nON 학생.학과코드 = 학과.학과코드;",
-   note:'동등조인 <code>FROM 학생, 학과 WHERE 학생.학과코드=학과.학과코드</code> 도 정답.'},
+   note:'<b>묵시적(암시적) 조인</b>(옛 방식): <code>FROM 학생, 학과 WHERE 학생.학과코드=학과.학과코드</code> 도 정답. 참고로 <code>ON a=b</code>처럼 <u>등호로 잇는</u> 조인은 모두 <b>동등조인(equi-join)</b>이라, INNER JOIN ON 도 동등조인입니다.'},
   {type:'빈칸',hot:true,q:'학생 테이블의 기본키를 학번으로 지정하는 CREATE 문이다. 빈칸의 제약조건을 쓰시오.',
    given:"CREATE TABLE 학생 (\n  학번 CHAR(8) (_______),\n  이름 VARCHAR(20)\n);",
    answer:"PRIMARY KEY",
