@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter R2 - 센서와 신호</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -23,6 +23,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -60,6 +61,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -253,20 +257,20 @@ print("거리:", distance_from_tof(0.01), "m")   # 1.715 m</code></pre>
 
         <div class="analogy-box">
           <h4>💡 비유로 이해하기: 선풍기 날개가 거꾸로 도는 영상</h4>
-          <p>빠르게 도는 선풍기를 카메라(느린 샘플링)로 찍으면 날개가 멈추거나 거꾸로 도는 것처럼 보입니다 — 가짜 신호죠. 이게 <strong>에일리어싱(aliasing)</strong>입니다. <strong>나이퀴스트-섀넌 정리</strong>는 "신호의 가장 빠른 진동(최고 주파수)의 <strong>2배보다 빠르게</strong> 샘플링해야 원래 신호를 잃지 않는다"고 말합니다.</p>
+          <p>빠르게 도는 선풍기를 카메라(느린 샘플링)로 찍으면 날개가 멈추거나 거꾸로 도는 것처럼 보입니다 — 가짜 신호죠. 이게 <strong>에일리어싱(aliasing)</strong>입니다. <strong>나이퀴스트-섀넌 정리</strong>는 대역 제한된 신호의 최고 주파수를 <code>f_max</code>라 할 때, 이론적으로 <strong>샘플링 주파수 <code>f_s ≥ 2·f_max</code></strong>가 복원의 경계라고 말합니다.</p>
         </div>
 
         <figure class="learning-visual">
           <img src="assets/learning-visuals/chapter-r2-sampling.png" alt="5Hz 신호를 6Hz로 표본화하여 가짜 1Hz가 생기는 에일리어싱 그래프" loading="lazy">
-          <figcaption>실제 5 Hz 신호(파랑)를 6 Hz로(나이퀴스트 10 Hz 미만) 표본화하면, 점들이 엉뚱한 <strong>1 Hz 가짜 신호</strong>(주황)처럼 보입니다 — 에일리어싱. 5 Hz를 담으려면 최소 10 Hz로 샘플링해야 합니다.</figcaption>
+          <figcaption>실제 5 Hz 신호(파랑)를 6 Hz로(나이퀴스트 10 Hz 미만) 표본화하면, 점들이 엉뚱한 <strong>1 Hz 가짜 신호</strong>(주황)처럼 보입니다 — 에일리어싱. 이상적인 대역 제한 신호라면 5 Hz를 담는 이론적 경계는 10 Hz입니다.</figcaption>
         </figure>
-        <p style="color:var(--text-muted); font-size:13px;">실무 규칙: "관심 있는 가장 빠른 변화의 2배 이상으로 샘플링하라." 더 안전하게는 5~10배를 씁니다.</p>
+        <p style="color:var(--text-muted); font-size:13px;">실무 규칙: 관심 있는 가장 빠른 변화의 2배는 <strong>최소 경계</strong>로 보고, 실제 시스템에서는 안티에일리어싱 저역통과 필터와 충분한 여유(예: 5~10배)를 둡니다.</p>
       </section>
 
       <!-- 6. 노이즈 -->
       <section id="noise">
         <h2>6. 노이즈 — 완벽한 센서는 없다</h2>
-        <p>같은 것을 재도 측정값은 매번 조금씩 다릅니다. 이 <strong>노이즈</strong>는 대부분 <strong>정규분포(가우시안)</strong>를 따릅니다(R0 14절). 그래서 "측정값 = 참값 + 가우시안 노이즈"로 모델링합니다.</p>
+        <p>같은 것을 재도 측정값은 매번 조금씩 다릅니다. 입문 단계에서는 이 <strong>노이즈</strong>를 <strong>정규분포(가우시안)</strong>로 근사해 "측정값 = 참값 + 가우시안 노이즈"로 모델링합니다(R0 14절). 실제 센서는 바이어스, 드리프트, 이상치, 양자화 오차가 함께 나타날 수 있어 데이터로 가정을 확인해야 합니다.</p>
 
         <div class="code-block-header">
           <span class="code-title">노이즈 섞인 센서 데이터 시뮬레이션</span>
@@ -385,12 +389,12 @@ print("계단 후 추정(9~10s):", round(est[t &gt;= 9].mean(), 3))             
             <tr><td>엔코더</td><td>회전을 카운트 → 거리</td><td>CPR = PPR×4, 거리 = 2πr·회전수</td></tr>
             <tr><td>거리 센서</td><td>비행시간(ToF)</td><td>거리 = 속도 × 왕복시간 ÷ 2</td></tr>
             <tr><td>샘플링</td><td>띄엄띄엄 읽기, 에일리어싱 주의</td><td>나이퀴스트: 최고주파수 × 2 이상</td></tr>
-            <tr><td>노이즈</td><td>측정 = 참값 + 가우시안</td><td>평균·표준편차로 요약(R0)</td></tr>
+            <tr><td>노이즈</td><td>가우시안 근사 + 실제 오차 요인 확인</td><td>평균·표준편차, 바이어스·드리프트·이상치</td></tr>
             <tr><td>이동평균</td><td>최근 N개 평균, 매끈하나 지연</td><td>창 ↑ → 평활 ↑·반응 ↓</td></tr>
             <tr><td>1D 칼만</td><td>예측+측정 가중평균</td><td>K = P/(P+R)</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:14px;">이제 로봇은 깨끗한 센서값을 얻었습니다. 다음 <a href="chapter-r1.html">R1</a>의 좌표 변환과 합치면 "어디서 무엇을 보고 있는지"를 알 수 있고, R4(키네매틱스)·R9(SLAM)로 이어집니다. 💪</p>
+        <p style="margin-top:14px;">이제 로봇은 깨끗한 센서값을 얻었습니다. 앞서 배운 <a href="chapter-r1.html">R1</a>의 좌표 변환과 합치면 "어디서 무엇을 보고 있는지"를 알 수 있고, R4(키네매틱스)·R9(SLAM)로 이어집니다. 💪</p>
       </section>
 
       <!-- Quiz -->
@@ -438,7 +442,7 @@ print("계단 후 추정(9~10s):", round(est[t &gt;= 9].mean(), 3))             
         question: "최고 주파수가 10Hz인 신호를 손실 없이 디지털로 담으려면 최소 샘플링 주파수는? (나이퀴스트-섀넌 정리)",
         options: ["5Hz", "10Hz", "20Hz", "100Hz"],
         correct: 2,
-        explanation: "나이퀴스트-섀넌 표본화 정리에 따라 신호의 최고 주파수의 2배보다 빠르게 샘플링해야 합니다. 10Hz 신호라면 최소 20Hz. 그보다 느리면 에일리어싱으로 가짜 신호가 생깁니다(실무에선 더 안전하게 5~10배)."
+        explanation: "나이퀴스트-섀넌 표본화 정리에 따라 대역 제한된 신호의 최고 주파수의 2배가 이론적 경계입니다. 10Hz 신호라면 경계는 20Hz입니다. 그보다 느리면 에일리어싱으로 가짜 신호가 생기며, 실무에선 안티에일리어싱 필터와 5~10배 정도의 여유를 둡니다."
       },
       {
         type: "mcq",

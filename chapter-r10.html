@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter R10 - 매니퓰레이션 & 학습기반 제어</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -23,6 +23,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -60,6 +61,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -96,6 +100,7 @@
           <img src="assets/learning-visuals/chapter-r10-manipulation-clutter-photo.webp" alt="로봇팔 그리퍼가 여러 물체 사이에서 목표 물체를 집으려는 매니퓰레이션 실험 장면" loading="lazy">
           <figcaption>매니퓰레이션은 목표 자세만 맞추는 문제가 아니라, 주변 물체와 충돌하지 않는 관절 경로와 안정적인 집기를 함께 찾는 문제입니다.</figcaption>
         </figure>
+        <p>MoveIt 관점에서 흐름을 나누면 더 명확합니다. <strong>Planning scene</strong>은 로봇 모델·장애물·부착 물체를 담은 세계 모델이고, <strong>collision checking</strong>은 후보 자세와 경로가 그 세계와 부딪히는지 검사합니다. <strong>motion planning</strong>은 충돌 없는 관절 경로를 찾고, <strong>trajectory execution</strong>은 그 경로에 시간·속도·가속도 제한을 붙여 실제 컨트롤러에 보냅니다. 즉 "경로(path)"와 "시간이 붙은 궤적(trajectory)"을 구분해야 합니다.</p>
         <p><strong>그리핑(grasping)</strong>은 그 끝에서 실제로 "잡는" 문제입니다 — 어떤 <strong>자세(grasp pose)</strong>로 다가가, 평행/흡착 그리퍼로 쥐고, 미끄러지지 않게 드는 것. 물체 모양·마찰·불확실성 때문에 여전히 어려운 연구 주제입니다.</p>
       </section>
 
@@ -194,7 +199,7 @@ print("목표 도달?", path[-1] == goal, "| 구덩이 회피?", all(p not in ho
             <tr><td><strong>R10</strong> 학습·조작</td><td>MoveIt·RL·sim-to-real</td><td>🎯 도착!</td></tr>
           </tbody>
         </table>
-        <p style="margin-top:14px;">이제 막막함은 사라졌을 겁니다. 다음 단계는 <strong>직접 만들어 보기</strong> — 라즈베리파이 + 모터로 작은 차동구동 로봇을 만들거나(R3·R4), TurtleBot 시뮬(R6·R7)로 Nav2를 돌리거나(R9), Gym 환경에서 RL을 학습(R10)해 보세요. 준비될 <strong>부록 R-A(Python 치트시트)·R-B(면접)·R-C(수학 복습)</strong>가 실전을 도울 겁니다. 수고하셨습니다! 💪🤖</p>
+        <p style="margin-top:14px;">이제 막막함은 사라졌을 겁니다. 다음 단계는 <strong>직접 만들어 보기</strong> — 라즈베리파이 + 모터로 작은 차동구동 로봇을 만들거나(R3·R4), TurtleBot 시뮬(R6·R7)로 Nav2를 돌리거나(R9), Gym 환경에서 RL을 학습(R10)해 보세요. <strong>부록 R-A(Python 치트시트)·R-B(면접)·R-C(수학 복습)</strong>가 실전을 도울 겁니다. 수고하셨습니다! 💪🤖</p>
       </section>
 
       <!-- Quiz -->

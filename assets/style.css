@@ -356,9 +356,21 @@ html[data-track="robotics"] .track-tab[data-track-tab="robotics"] {
   color: #fff;
   box-shadow: 0 2px 10px hsla(205, 85%, 56%, 0.35);
 }
-/* Track visibility — hide the inactive course's nav items & home cards. */
-html[data-track="fullstack"] [data-track="robotics"] { display: none !important; }
-html[data-track="robotics"]  [data-track="fullstack"] { display: none !important; }
+html[data-track="flutter"] .track-tab[data-track-tab="flutter"] {
+  background: var(--frontend);
+  color: #fff;
+  box-shadow: 0 2px 10px hsla(190, 85%, 48%, 0.35);
+}
+/* 3개 트랙이 한 줄에 들어가도록 탭 글자/여백을 살짝 축소 */
+.track-tab { font-size: 10.5px; padding: 8px 3px; }
+.track-tab .track-emoji + .track-label { margin-left: 4px; }
+/* Track visibility — 활성 코스의 nav 항목·홈 카드만 노출(나머지 전부 숨김). */
+html[data-track="fullstack"] [data-track="robotics"],
+html[data-track="fullstack"] [data-track="flutter"],
+html[data-track="robotics"]  [data-track="fullstack"],
+html[data-track="robotics"]  [data-track="flutter"],
+html[data-track="flutter"]   [data-track="fullstack"],
+html[data-track="flutter"]   [data-track="robotics"] { display: none !important; }
 /* Robotics roadmap teaser cards (not yet published → not clickable). */
 .robotics-locked { cursor: default; }
 .robotics-locked:hover { transform: none; box-shadow: none; }

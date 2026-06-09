@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>부록 R-B - 로보틱스 면접 CS</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -25,6 +25,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -62,6 +63,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -75,7 +79,7 @@
     <div class="chapter-header">
       <div class="breadcrumb"><span>로보틱스 코스</span> &gt; <span>부록 R-B</span></div>
       <h1 style="color: var(--robotics);">부록 R-B: 로보틱스 면접 CS 단골 Q&amp;A</h1>
-      <p style="font-size: 14px; color: var(--text-muted);">로봇·자율주행 직무 면접에서 가장 자주 나오는 질문을 <strong>좌표변환 · 상태추정 · 제어(PID) · 기구학 · ROS 2 · SLAM/내비 · 인식/학습</strong> 7개 카테고리, 총 24문항으로 정리했습니다. 각 답변은 R0~R10 본편에서 직접 실행·검증한 내용을 기반으로 하며, "왜 그런가"와 <em>면접 꼬리 질문</em>까지 함께 담았습니다.</p>
+      <p style="font-size: 14px; color: var(--text-muted);">로봇·자율주행 직무 면접에서 가장 자주 나오는 질문을 <strong>좌표변환 · 상태추정 · 제어(PID) · 기구학 · ROS 2 · SLAM/내비 · 인식/학습</strong> 7개 카테고리, 총 24문항으로 정리했습니다. 각 답변은 R0~R10 본편의 실습과 개념 검증을 기반으로 하며, "왜 그런가"와 <em>면접 꼬리 질문</em>까지 함께 담았습니다.</p>
     </div>
 
     <div class="concept-section">
@@ -176,8 +180,8 @@ P = (1 - K) * P          # 1.0 → 0.0909 (확신이 커짐 = 분산 감소)</co
 
       <section id="q-nyquist">
         <h2>Q7. 나이퀴스트 정리와 샘플링 주파수를 설명하세요</h2>
-        <p><strong>나이퀴스트-섀넌 정리</strong>: 신호에 들어 있는 최고 주파수를 <code>f_max</code>라 하면, 그 신호를 손실 없이 복원하려면 <strong>샘플링 주파수가 2·f_max보다 커야</strong> 합니다. 이를 어기면 <strong>에일리어싱</strong>(aliasing) — 빠른 신호가 느린 가짜 신호로 둔갑하는 현상 — 이 생깁니다(바퀴가 거꾸로 도는 것처럼 보이는 영상이 대표 예시).</p>
-        <p>로봇에선 제어 루프 주파수, 엔코더 샘플링, 카메라 fps를 정할 때 직접 영향을 줍니다. 대책은 ① 샘플링을 충분히 빠르게 ② 샘플링 전에 <strong>안티에일리어싱 저역통과 필터</strong>로 고주파를 미리 잘라내기.</p>
+        <p><strong>나이퀴스트-섀넌 정리</strong>: 대역 제한된 신호에 들어 있는 최고 주파수를 <code>f_max</code>라 하면, 그 신호를 이론적으로 복원하려면 <strong>샘플링 주파수 <code>f_s ≥ 2·f_max</code></strong>가 경계입니다. 이를 어기면 <strong>에일리어싱</strong>(aliasing) — 빠른 신호가 느린 가짜 신호로 둔갑하는 현상 — 이 생깁니다(바퀴가 거꾸로 도는 것처럼 보이는 영상이 대표 예시).</p>
+        <p>로봇에선 제어 루프 주파수, 엔코더 샘플링, 카메라 fps를 정할 때 직접 영향을 줍니다. 대책은 ① 샘플링을 이론 경계보다 충분히 빠르게 ② 샘플링 전에 <strong>안티에일리어싱 저역통과 필터</strong>로 고주파를 미리 잘라내기.</p>
         <p><strong>💡 면접 꼬리 질문:</strong> <em>"이동평균(moving average) 필터의 단점은?"</em> → 구현이 쉽고 노이즈를 잘 줄이지만, 창(window) 크기만큼 <strong>지연(latency)</strong>이 생기고 급격한 변화를 뭉갭니다. 제어 루프에 넣으면 이 지연이 위상 마진을 깎아 불안정을 유발할 수 있어, 지연이 중요한 곳엔 칼만이나 IIR 필터를 고려합니다.</p>
       </section>
 
@@ -200,7 +204,11 @@ P = (1 - K) * P          # 1.0 → 0.0909 (확신이 커짐 = 분산 감소)</co
         <h2>Q9. 적분 와인드업(Integral Windup)이란? 어떻게 방지하나요?</h2>
         <p>액추에이터에는 <strong>물리적 한계(포화, saturation)</strong>가 있습니다(모터 최대 출력 등). 오차가 오래 지속되면 적분항 <code>∫e dt</code>가 계속 커지는데, 출력은 이미 최대치에 막혀 있으면 <strong>적분값만 과도하게 부풀어</strong> 오릅니다. 그러면 목표에 도달한 뒤에도 부푼 적분이 다 빠질 때까지 제어기가 반대로 밀어 <strong>큰 오버슈트와 느린 회복</strong>을 만듭니다 — 이것이 와인드업입니다.</p>
         <p>방지법: ① <strong>적분 클램핑</strong>(적분값에 상·하한) ② <strong>back-calculation</strong>(출력이 포화된 만큼 적분을 되돌림) ③ 포화 중에는 <strong>적분 중지</strong>(conditional integration).</p>
-        <pre class="language-python"><code class="language-python">integral += e * dt
+        <pre class="language-python"><code class="language-python">e, prev_e, dt = 0.4, 0.5, 0.01
+Kp, Ki, Kd = 2.0, 0.8, 0.1
+integral, I_MAX, U_MAX = 0.0, 1.0, 5.0
+
+integral += e * dt
 integral = max(min(integral, I_MAX), -I_MAX)   # ① 적분 클램핑
 u = Kp*e + Ki*integral + Kd*(e - prev_e)/dt
 u = max(min(u, U_MAX), -U_MAX)                  # 출력 포화</code></pre>
@@ -210,8 +218,12 @@ u = max(min(u, U_MAX), -U_MAX)                  # 출력 포화</code></pre>
       <section id="q-derivative-kick">
         <h2>Q10. 미분 킥(Derivative Kick)이란 무엇인가요?</h2>
         <p>목표값(setpoint)을 <strong>계단처럼 갑자기 바꾸면</strong> 오차 <code>e = target − measured</code>가 순간적으로 점프하고, 미분항 <code>Kd·de/dt</code>가 그 순간 <strong>거대한 스파이크</strong>를 출력합니다 — 이것이 미분 킥입니다. 액추에이터에 충격을 주고 진동을 유발합니다.</p>
-        <p>해법은 오차가 아니라 <strong>측정값의 미분</strong>을 쓰는 "derivative-on-measurement": <code>Kd·d(measured)/dt</code>. 목표값은 계단이어도 측정값은 연속적으로 변하므로 스파이크가 사라집니다. (본편 R5에서 실제로 <code>prev_e = target − p</code>로 초기화해 이 킥을 막았습니다.)</p>
-        <pre class="language-python"><code class="language-python"># 나쁨: 오차 미분 → setpoint 점프 시 스파이크
+        <p>해법은 오차가 아니라 <strong>측정값의 미분</strong>을 쓰는 "derivative-on-measurement": <code>-Kd·d(measured)/dt</code>. 목표값은 계단이어도 측정값은 연속적으로 변하므로 스파이크가 사라집니다. (오차를 <code>target − measured</code>로 정의하면 측정값 미분 앞의 부호는 음수입니다.)</p>
+        <pre class="language-python"><code class="language-python">Kd, dt = 0.1, 0.01
+e, prev_e = 1.0, 0.0
+meas, prev_meas = 0.2, 0.18
+
+# 나쁨: 오차 미분 → setpoint 점프 시 스파이크
 D = Kd * (e - prev_e) / dt
 # 좋음: 측정값 미분 → 미분 킥 없음 (부호 주의: -)
 D = -Kd * (meas - prev_meas) / dt</code></pre>
@@ -232,14 +244,18 @@ D = -Kd * (meas - prev_meas) / dt</code></pre>
       <section id="q-jacobian">
         <h2>Q12. 자코비안과 특이점(Singularity)을 설명하세요</h2>
         <p><strong>자코비안 J</strong>는 <strong>관절 속도</strong>와 <strong>손끝 속도</strong>를 잇는 행렬입니다: <code>ẋ = J·q̇</code>. 즉 "관절을 이렇게 빠르게 돌리면 손끝이 어느 방향으로 얼마나 빠르게 움직이는가"의 선형 사상입니다. 힘 영역에서는 <code>τ = Jᵀ·F</code>로 손끝 힘 ↔ 관절 토크도 연결합니다.</p>
-        <p><strong>특이점</strong>은 자코비안이 <strong>랭크를 잃는(det J = 0)</strong> 자세입니다. 대표적으로 팔이 <strong>완전히 펴진 자세</strong> — 그 방향으로는 손끝을 더 못 움직이고, 그 방향 속도를 내려면 관절 속도가 <strong>무한대</strong>로 폭발합니다(IK 수치해가 발산). 그래서 특이점 근처를 회피하거나 damped least-squares로 완화합니다.</p>
-        <p><strong>💡 면접 꼬리 질문:</strong> <em>"특이점 근처인지 어떻게 감지하나요?"</em> → 자코비안의 <strong>행렬식 det(J)</strong>이나 최소 특이값(SVD)이 0에 가까워지는지를 봅니다. <code>manipulability = sqrt(det(J·Jᵀ))</code> 지표가 작아지면 특이점이 가깝다는 신호입니다.</p>
+        <p><strong>특이점</strong>은 자코비안이 <strong>랭크를 잃는</strong> 자세입니다. 대표적으로 팔이 <strong>완전히 펴진 자세</strong> — 그 방향으로는 손끝을 더 못 움직이고, 그 방향 속도를 내려면 관절 속도가 <strong>무한대</strong>로 폭발합니다(IK 수치해가 발산). 그래서 특이점 근처를 회피하거나 damped least-squares로 완화합니다. 정방 자코비안에서는 <code>det(J)=0</code>으로도 확인할 수 있지만, 일반 로봇팔에서는 랭크와 특이값을 보는 설명이 더 정확합니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"특이점 근처인지 어떻게 감지하나요?"</em> → 자코비안의 <strong>최소 특이값(SVD)</strong>이 0에 가까워지는지를 봅니다. 정방 자코비안이면 <code>det(J)</code>도 참고할 수 있고, <code>manipulability = sqrt(det(J·Jᵀ))</code> 지표가 작아지면 특이점이 가깝다는 신호입니다.</p>
       </section>
 
       <section id="q-diff-drive">
         <h2>Q13. 차동구동(Differential Drive) 로봇의 운동학은?</h2>
         <p>좌우 두 바퀴의 속도 <code>v_L, v_R</code>로 움직이는 로봇(룸바, 대부분의 교육용 로봇)입니다. 바퀴 간격을 <code>L</code>이라 하면 로봇의 <strong>선속도와 각속도</strong>는:</p>
-        <pre class="language-python"><code class="language-python">v = (v_R + v_L) / 2        # 선속도 (전진)
+        <pre class="language-python"><code class="language-python">from math import cos, sin
+
+v_L, v_R, L = 0.4, 0.6, 0.5
+x, y, theta, dt = 0.0, 0.0, 0.0, 0.01
+v = (v_R + v_L) / 2        # 선속도 (전진)
 w = (v_R - v_L) / L        # 각속도 (회전)
 # 예: v_L=0.4, v_R=0.6, L=0.5  →  v=0.50 m/s,  w=0.40 rad/s
 # 자세 적분(오도메트리)
@@ -306,7 +322,7 @@ def heuristic(a, b):           # 4방향 격자 → 맨해튼(과대평가 안 �
     return abs(a[0]-b[0]) + abs(a[1]-b[1])
 # 예: (0,0)→(3,4)  맨해튼 7, 유클리드 5.0
 #  4방향에서 실제 최소 이동도 7이므로 7은 admissible(&lt;=실제)</code></pre>
-        <p><strong>💡 면접 꼬리 질문:</strong> <em>"글로벌 플래너와 로컬 플래너(Nav2)의 차이는?"</em> → <strong>글로벌 플래너</strong>(A*/Dijkstra)는 전체 지도에서 출발→목표의 큰 경로를 한 번 계산합니다. <strong>로컬 플래너</strong>(DWB/TEB)는 그 경로를 따라가며 <strong>실시간 장애물 회피와 속도 명령</strong>을 만듭니다. 갑자기 나타난 사람은 로컬이 피하고, 길이 완전히 막히면 글로벌이 재계획합니다.</p>
+        <p><strong>💡 면접 꼬리 질문:</strong> <em>"글로벌 플래너와 로컬 플래너/컨트롤러(Nav2)의 차이는?"</em> → <strong>글로벌 플래너</strong>(A*/Dijkstra 계열)는 전체 지도에서 출발→목표의 큰 경로를 계산합니다. <strong>로컬 플래너/컨트롤러</strong>(DWB, Regulated Pure Pursuit, MPPI 등)는 그 경로를 따라가며 <strong>실시간 장애물 회피와 속도 명령</strong>을 만듭니다. 갑자기 나타난 사람은 로컬이 피하고, 길이 완전히 막히면 글로벌이 재계획합니다.</p>
       </section>
 
       <section id="q-occupancy">
@@ -333,10 +349,16 @@ def heuristic(a, b):           # 4방향 격자 → 맨해튼(과대평가 안 �
         <h2>Q22. 강화학습(RL)이 지도학습과 다른 점은?</h2>
         <p><strong>지도학습</strong>은 "입력→정답 라벨" 쌍으로 배웁니다. <strong>강화학습</strong>은 정답 라벨이 없고, 에이전트가 환경에서 <strong>행동(action)</strong>하고 <strong>보상(reward)</strong>을 받으며 <strong>시행착오</strong>로 "장기 누적 보상을 최대화하는 정책(policy)"을 학습합니다. 로봇 제어처럼 "매 순간의 정답은 모르지만 결과의 좋고 나쁨은 아는" 문제에 맞습니다.</p>
         <p>본편 R10에서 4×4 격자의 Q-러닝을 실제 실행했습니다. 핵심 갱신식:</p>
-        <pre class="language-python"><code class="language-python"># Q-러닝 업데이트: 받은 보상 + 다음 상태 최선값으로 현재 Q를 보정
-Q[s, a] += alpha * (r + gamma * max(Q[s2]) - Q[s, a])
+        <pre class="language-python"><code class="language-python">import numpy as np
+
+Q = np.zeros((4, 4, 4))      # 4x4 격자, 행동 4개
+s, a, s2 = (0, 0), 1, (1, 0)
+r, alpha, gamma = -0.04, 0.5, 0.95
+
+# Q-러닝 업데이트: 받은 보상 + 다음 상태 최선값으로 현재 Q를 보정
+Q[s[0], s[1], a] += alpha * (r + gamma*np.max(Q[s2[0], s2[1]]) - Q[s[0], s[1], a])
 #          학습률   (보상 + 할인된 미래가치 - 현재추정) = TD 오차
-action = argmax(Q[s])   # 학습된 정책: 그 상태에서 Q가 가장 큰 행동</code></pre>
+action = int(np.argmax(Q[s[0], s[1]]))   # 학습된 정책: 그 상태에서 Q가 가장 큰 행동</code></pre>
         <p><strong>💡 면접 꼬리 질문:</strong> <em>"탐험(exploration)과 활용(exploitation)의 트레이드오프는?"</em> → 아는 최선만 반복(활용)하면 더 좋은 길을 못 찾고, 무작정 새 행동만 하면(탐험) 학습이 안 됩니다. <strong>ε-greedy</strong>처럼 대부분은 최선을 쓰되 가끔 무작위로 탐험하고, 학습이 진행될수록 ε를 줄여 균형을 맞춥니다.</p>
       </section>
 

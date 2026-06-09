@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Chapter R0 - 수학 리부트 (로보틱스 선수지식)</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack');document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -24,6 +24,7 @@
     <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -61,6 +62,9 @@
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
       <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -533,7 +537,7 @@ print("표준편차:", round(data.std(), 4))  # ≈0.129 m 만큼 퍼져 있음<
       <!-- 14. 정규분포 -->
       <section id="gaussian">
         <h2>14. 정규분포 — 센서 노이즈의 모양</h2>
-        <p>대부분의 센서 노이즈는 <strong>정규분포(가우시안, 종 모양)</strong>를 따릅니다 — 평균 근처가 가장 흔하고 멀어질수록 드뭅니다. 이 종 모양은 <strong>평균(중심)</strong>과 <strong>표준편차(폭)</strong> 두 숫자로 완전히 정해집니다.</p>
+        <p>많은 센서 노이즈는 첫 근사로 <strong>정규분포(가우시안, 종 모양)</strong>를 따른다고 모델링합니다 — 평균 근처가 가장 흔하고 멀어질수록 드문 형태입니다. 이 종 모양은 <strong>평균(중심)</strong>과 <strong>표준편차(폭)</strong> 두 숫자로 완전히 정해집니다. 다만 실제 센서에는 바이어스·드리프트·이상치·양자화 오차도 섞이므로, "항상 가우시안"이라고 외우면 안 됩니다.</p>
 
         <figure class="learning-visual">
           <img src="assets/learning-visuals/chapter-r0-gaussian.png" alt="정규분포 곡선과 68-95-99.7 규칙을 보여주는 블루프린트 그래프" loading="lazy">
@@ -562,7 +566,7 @@ print("±1σ 구간 확률:", round(float(prob), 4))    # ≈ 0.6827 (68%)</code
           <pre style="font-size:12.5px; color:var(--text-muted); font-family:var(--font-mono); margin:0; white-space:pre-wrap;">중심(평균)에서 가장 높다: 0.3989
 ±1σ 구간 확률: 0.6827</pre>
         </div>
-        <p>정규분포는 R2(센서 노이즈 모델), R9(칼만·파티클 필터)의 심장입니다. "노이즈는 종 모양, 평균·표준편차로 요약된다"만 확실히 잡고 가면 됩니다.</p>
+        <p>정규분포는 R2(센서 노이즈 모델), R9(칼만·파티클 필터)의 기본 가정으로 자주 등장합니다. "가우시안으로 근사할 수 있으면 평균·표준편차로 요약한다. 실제 센서는 가정이 맞는지 확인한다"까지 잡고 가면 됩니다.</p>
       </section>
 
       <!-- 15. 요약 -->
