@@ -39,17 +39,7 @@
   }
 
   /* ── THEME TOGGLE BUTTON ── */
-  .theme-toggle{
-    position:fixed;top:20px;right:22px;z-index:50;
-    display:flex;align-items:center;gap:8px;
-    background:var(--bg-soft);border:1px solid var(--line);
-    color:var(--ink);border-radius:99px;padding:8px 16px;cursor:pointer;
-    font-family:var(--mono);font-size:.78rem;font-weight:500;
-    box-shadow:0 4px 18px rgba(0,0,0,.18);transition:.22s;
-  }
-  .theme-toggle:hover{border-color:var(--flutter);transform:translateY(-1px)}
-  .theme-toggle .ti{font-size:.95rem;line-height:1}
-  html[data-theme="light"] .theme-toggle{box-shadow:0 4px 18px rgba(60,80,120,.12)}
+  /* (자체 우상단 theme-toggle 제거 — 대시보드 사이드바 footer의 Mode 버튼 사용) */
 
   /* ---------- LAYOUT ---------- */
   .wrap{position:relative;z-index:1;max-width:1180px;margin:0 auto;padding:0 24px}
@@ -81,8 +71,8 @@
   nav.toc a.active{color:var(--flutter);border-left-color:var(--flutter);background:rgba(84,197,248,.07)}
 
   /* ---------- HERO ---------- */
-  header.hero{
-    padding:80px 0 56px;text-align:left;
+  .hero{
+    padding:48px 0 40px;text-align:left;max-width:880px;
   }
   .badge{
     display:inline-flex;align-items:center;gap:8px;
@@ -91,15 +81,16 @@
     padding:6px 14px;border-radius:99px;letter-spacing:.05em;margin-bottom:22px;
   }
   .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--flutter);box-shadow:0 0 10px var(--flutter)}
-  header.hero h1{
-    font-family:var(--display);font-weight:700;font-size:clamp(2.4rem,6vw,4rem);
-    line-height:1.05;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:18px;
+  .hero h1{
+    font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,3.6vw,3rem);
+    line-height:1.14;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:18px;
+    word-break:keep-all;
   }
-  header.hero h1 .accent{
+  .hero h1 .accent{
     background:linear-gradient(120deg,var(--flutter),var(--purple));
     -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   }
-  header.hero p.sub{
+  .hero p.sub{
     font-size:1.08rem;color:var(--ink-dim);max-width:640px;font-family:'Gowun Dodum',sans-serif;
   }
   .hero-meta{display:flex;gap:26px;flex-wrap:wrap;margin-top:34px}
@@ -312,7 +303,7 @@
       <div class="breadcrumb"><span>모바일 코스 (Flutter)</span> &gt; <span>Flutter 마스터 가이드</span></div>
     </div>
 
-    <header class="hero">
+    <div class="hero">
       <div class="badge"><span class="dot"></span>FLUTTER · DART · 면접 대비 학습 가이드</div>
       <h1>Flutter <span class="accent">완전 정복</span><br>기초 문법부터 심화 아키텍처까지</h1>
       <p class="sub">위젯·상태관리·렌더링 파이프라인·비동기까지, 면접관의 "왜?"에 답할 수 있도록 개념의 뿌리를 짚는 학습 자료입니다. React 경험을 가진 분을 위한 매핑 포인트도 함께 담았습니다.</p>
@@ -322,7 +313,7 @@
         <div class="m"><b>Dart</b><span>언어 기초</span></div>
         <div class="m"><b>Riverpod</b><span>상태관리</span></div>
       </div>
-    </header>
+    </div>
 
 
     <!-- 0 WHAT IS FLUTTER -->
@@ -450,15 +441,101 @@
 <span class="tok-k">final</span> g = <span class="tok-t">User</span>.guest();</pre>
       </div>
 
-      <h3><span class="ic">🆕</span>Dart 3 — 알아두면 좋은 최신 문법 (2023~)</h3>
-      <p>Dart 3부터 표준이 된 기능들. 면접에서 "최신 Dart 아세요?"에 대비해 핵심만 짚습니다.</p>
-      <div class="wgrid">
-        <div class="wcard"><div class="wname">records</div><div class="wdesc">여러 값을 한 번에 반환. <code class="inl">(int, String) f() =&gt; (1, 'a');</code></div></div>
-        <div class="wcard"><div class="wname">patterns · 구조분해</div><div class="wdesc"><code class="inl">final (id, name) = user;</code> · 리스트/맵 분해</div></div>
-        <div class="wcard"><div class="wname">switch 표현식</div><div class="wdesc">값을 돌려주는 switch + 패턴 매칭. if-else 체인 대체</div></div>
-        <div class="wcard"><div class="wname">sealed class</div><div class="wdesc">하위 타입 봉인 → switch 망라성을 컴파일이 보장(상태 모델링)</div></div>
+      <h3><span class="ic">📚</span>컬렉션 &amp; Flutter에서 매일 쓰는 연산자</h3>
+      <p>위젯 트리를 조립할 때 가장 자주 등장하는 문법입니다. 이 네 가지가 손에 익으면 실전 코드가 훨씬 편해져요.</p>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">collections.dart</span></div>
+        <pre><span class="tok-c">// List / Map / Set 리터럴</span>
+<span class="tok-k">final</span> nums = &lt;<span class="tok-t">int</span>&gt;[<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>];
+<span class="tok-k">final</span> user = &lt;<span class="tok-t">String</span>, <span class="tok-t">dynamic</span>&gt;{<span class="tok-s">'name'</span>: <span class="tok-s">'창한'</span>, <span class="tok-s">'age'</span>: <span class="tok-n">30</span>};
+
+<span class="tok-c">// ① spread(...) — 리스트를 펼쳐 합치기</span>
+<span class="tok-k">final</span> all = [<span class="tok-n">0</span>, ...nums, <span class="tok-n">4</span>];          <span class="tok-c">// [0, 1, 2, 3, 4]</span>
+
+<span class="tok-c">// ② collection-if / for — children 리스트 안에서 바로 분기·반복</span>
+<span class="tok-k">final</span> widgets = [
+  <span class="tok-k">const</span> <span class="tok-t">Header</span>(),
+  <span class="tok-k">if</span> (isLoggedIn) <span class="tok-k">const</span> <span class="tok-t">Profile</span>(),   <span class="tok-c">// 조건부 포함</span>
+  <span class="tok-k">for</span> (<span class="tok-k">final</span> n <span class="tok-k">in</span> nums) <span class="tok-t">Item</span>(n),     <span class="tok-c">// 반복 생성</span>
+];
+
+<span class="tok-c">// ③ cascade(..) — 같은 객체에 연속 설정(반환값 무시)</span>
+<span class="tok-k">final</span> paint = <span class="tok-t">Paint</span>()
+  ..color = <span class="tok-t">Colors</span>.red
+  ..strokeWidth = <span class="tok-n">4</span>;
+
+<span class="tok-c">// ④ late — 나중에(단, 사용 전엔 반드시) 초기화</span>
+<span class="tok-k">late</span> <span class="tok-k">final</span> <span class="tok-t">AnimationController</span> controller;  <span class="tok-c">// initState에서 할당</span></pre>
       </div>
-      <div class="note react"><b>React/TS 매핑:</b> records ≈ 튜플, 패턴 구조분해 ≈ JS destructuring, sealed class + switch ≈ 판별 유니온(discriminated union)의 exhaustive 처리.</div>
+      <div class="note tip"><b>왜 중요한가:</b> <code class="inl">if</code>·<code class="inl">for</code>를 위젯 <code class="inl">children: [ ... ]</code> 안에 바로 쓸 수 있는 게 Flutter 가독성의 핵심입니다. 삼항·<code class="inl">.map().toList()</code> 떡칠 없이 선언적으로 UI를 조립하죠. <code class="inl">late</code>는 StatefulWidget의 컨트롤러 초기화에 단골로 등장합니다.</div>
+      <div class="note react"><b>React 매핑:</b> spread = JS <code class="inl">...</code>, collection-if/for = JSX의 <code class="inl">{cond &amp;&amp; &lt;X/&gt;}</code> / <code class="inl">{arr.map(...)}</code>를 언어 차원에서 더 깔끔하게 제공하는 셈입니다.</div>
+
+      <h3><span class="ic">🆕</span>Dart 3 — 알아두면 좋은 최신 문법 (2023~)</h3>
+      <p>Dart 3부터 표준이 된 기능들. 보일러플레이트를 줄이고 상태를 안전하게 모델링합니다. 면접에서 "최신 Dart 아세요?"에 예시로 답할 수 있게 정리했습니다.</p>
+
+      <h4>① records — 여러 값을 가볍게 묶어 반환</h4>
+      <p>클래스를 따로 만들지 않고도 여러 값을 하나로 묶어 반환합니다. "이 함수만을 위한 일회용 묶음"에 딱이에요.</p>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">records.dart</span></div>
+        <pre><span class="tok-c">// 위치 기반 — .$1, .$2로 접근</span>
+(<span class="tok-t">double</span>, <span class="tok-t">double</span>) <span class="tok-f">center</span>() => (<span class="tok-n">12.5</span>, <span class="tok-n">8.0</span>);
+<span class="tok-k">final</span> c = <span class="tok-f">center</span>();
+print(<span class="tok-s">'${c.$1}, ${c.$2}'</span>);
+
+<span class="tok-c">// 이름 기반 — 가독성↑ (필드에 이름 부여)</span>
+({<span class="tok-t">int</span> code, <span class="tok-t">String</span> msg}) <span class="tok-f">status</span>() => (code: <span class="tok-n">200</span>, msg: <span class="tok-s">'OK'</span>);
+<span class="tok-k">final</span> s = <span class="tok-f">status</span>();
+print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">// 200 OK</span></pre>
+      </div>
+      <div class="note tip"><b>실전:</b> "두 값을 돌려줘야 하는데 클래스 만들긴 번거로운" 경우 — 위젯 크기 <code class="inl">(w, h)</code>, 페이징 결과 <code class="inl">(items, hasMore)</code> 등에 유용합니다.</div>
+
+      <h4>② 패턴 매칭 · 구조분해 (destructuring)</h4>
+      <p>레코드·리스트·맵·객체를 한 줄로 분해해 변수에 꽂습니다. JS의 구조분해와 같은 발상이에요.</p>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">patterns.dart</span></div>
+        <pre><span class="tok-c">// 레코드·리스트 구조분해</span>
+<span class="tok-k">final</span> (id, name) = (<span class="tok-n">1</span>, <span class="tok-s">'창한'</span>);
+<span class="tok-k">final</span> [first, _, third] = [<span class="tok-n">10</span>, <span class="tok-n">20</span>, <span class="tok-n">30</span>];   <span class="tok-c">// _ 는 건너뜀</span>
+
+<span class="tok-c">// 맵 패턴 + switch — JSON 모양 그대로 분기</span>
+<span class="tok-k">final</span> json = {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-n">4</span>};
+<span class="tok-k">final</span> area = <span class="tok-k">switch</span> (json) {
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-k">final</span> r} => <span class="tok-n">3.14</span> * r * r,
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'square'</span>, <span class="tok-s">'a'</span>: <span class="tok-k">final</span> a} => a * a,
+  _ => <span class="tok-n">0</span>,
+};</pre>
+      </div>
+
+      <h4>③ switch 표현식 — 값을 돌려주는 switch</h4>
+      <p>장황한 if-else 체인을 표현식 하나로. <code class="inl">break</code> 없이 모든 가지가 값을 반환합니다. 상태에 따라 위젯을 고를 때 특히 깔끔해요.</p>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">switch_expr.dart</span></div>
+        <pre><span class="tok-c">// 상태 → 위젯 (삼항 중첩보다 훨씬 읽기 쉬움)</span>
+<span class="tok-t">Widget</span> <span class="tok-f">buildIcon</span>(<span class="tok-t">Status</span> s) => <span class="tok-k">switch</span> (s) {
+  <span class="tok-t">Status</span>.loading => <span class="tok-k">const</span> <span class="tok-t">CircularProgressIndicator</span>(),
+  <span class="tok-t">Status</span>.success => <span class="tok-k">const</span> <span class="tok-t">Icon</span>(<span class="tok-t">Icons</span>.check),
+  <span class="tok-t">Status</span>.error   => <span class="tok-k">const</span> <span class="tok-t">Icon</span>(<span class="tok-t">Icons</span>.error),
+};</pre>
+      </div>
+
+      <h4>④ sealed class — 망라성을 컴파일이 보장</h4>
+      <p>하위 타입을 "봉인"하면, switch에서 모든 경우를 다루지 않을 때 <strong>컴파일 에러</strong>가 납니다. 상태(로딩/성공/에러)를 타입으로 모델링해 누락을 원천 차단해요.</p>
+      <div class="code">
+        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">sealed.dart</span></div>
+        <pre><span class="tok-k">sealed</span> <span class="tok-k">class</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Loading</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Success</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> { <span class="tok-k">final</span> <span class="tok-t">String</span> data; <span class="tok-t">Success</span>(<span class="tok-k">this</span>.data); }
+<span class="tok-k">class</span> <span class="tok-t">Failure</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> { <span class="tok-k">final</span> <span class="tok-t">String</span> err; <span class="tok-t">Failure</span>(<span class="tok-k">this</span>.err); }
+
+<span class="tok-c">// 한 경우라도 빠뜨리면 컴파일 에러 → 처리 누락 차단</span>
+<span class="tok-t">String</span> <span class="tok-f">render</span>(<span class="tok-t">Result</span> r) => <span class="tok-k">switch</span> (r) {
+  <span class="tok-t">Loading</span>()             => <span class="tok-s">'불러오는 중…'</span>,
+  <span class="tok-t">Success</span>(:<span class="tok-k">final</span> data) => data,            <span class="tok-c">// 필드까지 구조분해</span>
+  <span class="tok-t">Failure</span>(:<span class="tok-k">final</span> err)  => <span class="tok-s">'에러: $err'</span>,
+};</pre>
+      </div>
+      <div class="note q"><b>예상 꼬리질문:</b> "상태 관리에서 sealed class가 왜 좋나요?" → "로딩·성공·에러를 sealed로 모델링하면 switch 망라성을 컴파일러가 강제해, 새 상태를 추가했을 때 처리 누락을 컴파일 단계에서 잡아줍니다. Riverpod의 <code class="inl">AsyncValue</code>(data/loading/error)도 같은 발상입니다."</div>
+      <div class="note react"><b>React/TS 매핑:</b> records ≈ 튜플/익명 객체, 패턴 구조분해 ≈ JS destructuring, switch 표현식 ≈ 즉시 평가되는 매핑, sealed class + switch ≈ 판별 유니온(discriminated union)의 exhaustive 처리(TS <code class="inl">never</code> 체크).</div>
     </section>
 
     <div class="div"></div>

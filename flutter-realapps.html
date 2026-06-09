@@ -32,18 +32,16 @@
   /* 본문 타이포그래피는 콘텐츠 영역에만 적용(사이드바는 대시보드 Pretendard 유지) */
   #main-content{font-family:var(--kr);line-height:1.7;-webkit-font-smoothing:antialiased}
 
-  .theme-toggle{position:fixed;top:20px;right:22px;z-index:50;display:flex;align-items:center;gap:8px;background:var(--bg-soft);border:1px solid var(--line);color:var(--ink);border-radius:99px;padding:8px 16px;cursor:pointer;font-family:var(--mono);font-size:.78rem;font-weight:500;box-shadow:0 4px 18px rgba(0,0,0,.18);transition:.22s}
-  .theme-toggle:hover{border-color:var(--flutter);transform:translateY(-1px)}
-  .theme-toggle .ti{font-size:.95rem;line-height:1}
+  /* (자체 우상단 theme-toggle 제거 — 대시보드 사이드바 footer의 Mode 버튼 사용) */
 
   .wrap{position:relative;z-index:1;max-width:1080px;margin:0 auto;padding:0 24px}
 
-  header.hero{padding:78px 0 46px}
+  .hero{padding:44px 0 36px;max-width:840px}
   .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(84,197,248,.1);border:1px solid rgba(84,197,248,.3);color:var(--flutter);font-family:var(--mono);font-size:.74rem;font-weight:500;padding:6px 14px;border-radius:99px;letter-spacing:.05em;margin-bottom:22px}
   .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--flutter);box-shadow:0 0 10px var(--flutter)}
-  header.hero h1{font-family:var(--display);font-weight:700;font-size:clamp(2.2rem,5.5vw,3.5rem);line-height:1.06;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:16px}
-  header.hero h1 .accent{background:linear-gradient(120deg,var(--flutter),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
-  header.hero p.sub{font-size:1.06rem;color:var(--ink-dim);max-width:640px;font-family:'Gowun Dodum',sans-serif}
+  .hero h1{font-family:var(--display);font-weight:700;font-size:clamp(1.9rem,3.4vw,2.9rem);line-height:1.14;letter-spacing:-.02em;color:var(--hero-h1);margin-bottom:16px;word-break:keep-all}
+  .hero h1 .accent{background:linear-gradient(120deg,var(--flutter),var(--purple));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+  .hero p.sub{font-size:1.06rem;color:var(--ink-dim);max-width:640px;font-family:'Gowun Dodum',sans-serif}
 
   .intro-note{background:var(--bg-card);border:1px solid var(--line);border-radius:var(--radius);padding:18px 22px;margin:24px 0 8px;font-size:.92rem;color:var(--ink-dim)}
   .intro-note b{color:var(--ink)}
@@ -152,6 +150,8 @@
   .bmw-btn{flex:1;background:#0066b1;border:none;color:#fff;border-radius:11px;padding:11px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:var(--kr);transition:.2s}
   .bmw-btn:hover{background:#0077cc}
   .bmw-btn.ghost{background:rgba(255,255,255,.08)}
+  .bmw-btn.on{background:#1a7f37}
+  .bmw-btn.ghost.on{background:#2563c9}
   .bmw-charge-bar{height:5px;background:rgba(255,255,255,.12);border-radius:99px;overflow:hidden;margin-top:6px}
   .bmw-charge-fill{height:100%;background:linear-gradient(90deg,#34d399,#10b981);border-radius:99px;width:0;transition:width 1.2s ease}
 
@@ -190,12 +190,12 @@
   .ob-dots{display:flex;gap:6px;justify-content:center;margin:14px 0 4px}
   .ob-dots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.4);transition:.3s}
   .ob-dots span.on{background:#fff;width:20px;border-radius:4px}
-  .obscreen{height:100%;display:flex;flex-direction:column;padding:26px 20px 20px;color:#fff;position:relative;transition:opacity .4s}
+  .obscreen{height:100%;display:flex;flex-direction:column;padding:18px 20px 18px;color:#fff;position:relative;transition:opacity .4s;overflow-y:auto}
   .ob1{background:linear-gradient(165deg,#58cc02,#3a9a02)}
   .ob2{background:linear-gradient(165deg,#1cb0f6,#0a82c4)}
   .ob3{background:linear-gradient(165deg,#ce82ff,#9b4dca)}
   .ob4{background:linear-gradient(165deg,#ff9600,#e07b00)}
-  .ob-hero{font-size:3.6rem;text-align:center;margin:30px 0 18px}
+  .ob-hero{font-size:2.5rem;text-align:center;margin:10px 0 10px}
   .ob-h{font-size:1.32rem;font-weight:700;text-align:center;line-height:1.3;margin-bottom:10px}
   .ob-p{font-size:.83rem;opacity:.9;text-align:center;line-height:1.5;padding:0 6px}
   .ob-opts{display:flex;flex-direction:column;gap:9px;margin-top:18px}
@@ -317,14 +317,14 @@
       <div class="breadcrumb"><span>모바일 코스 (Flutter)</span> &gt; <span>실전 Flutter · 앱 재현 &amp; 면접</span></div>
     </div>
 
-  <header class="hero">
+  <div class="hero">
     <div class="badge"><span class="dot"></span>REAL-WORLD FLUTTER · 화면 재현 + 코드 매핑</div>
     <h1>유명 앱은 Flutter를<br><span class="accent">이렇게</span> 씁니다</h1>
     <p class="sub">실제 Flutter로 만들어진 앱들의 핵심 화면을 재현하고, 어떤 위젯·개념이 쓰였는지 코드와 함께 짚습니다. 면접에서 "이런 화면을 이렇게 구현한다"고 구체적으로 말할 수 있게 됩니다.</p>
     <div class="intro-note">
       <b>읽는 법:</b> 왼쪽은 실제 앱 화면의 재현(클릭·호버 가능), 오른쪽은 그걸 만드는 Flutter 코드와 사용된 개념입니다. 화면 속 요소를 직접 만져보면서 코드와 연결해 보세요. 아래 다섯 앱은 모두 실제로 Flutter(또는 Flutter 기반 모듈)로 제작·운영된 사례입니다.
     </div>
-  </header>
+  </div>
 
   <!-- ============ 1. REFLECTLY ============ -->
   <div class="case">
@@ -557,8 +557,8 @@
                 </div>
               </div>
               <div class="bmw-act">
-                <button class="bmw-btn" onclick="this.textContent='🔓 잠금 해제됨'">🔒 도어 잠금</button>
-                <button class="bmw-btn ghost" onclick="this.textContent='❄️ 작동 중'">공조 켜기</button>
+                <button class="bmw-btn" onclick="this.classList.toggle('on');this.textContent=this.classList.contains('on')?'🔓 잠금 해제됨':'🔒 도어 잠금'">🔒 도어 잠금</button>
+                <button class="bmw-btn ghost" onclick="this.classList.toggle('on');this.textContent=this.classList.contains('on')?'❄️ 공조 작동 중':'공조 켜기'">공조 켜기</button>
               </div>
             </div>
           </div>
@@ -1072,11 +1072,8 @@ function animateGoogleAds(){
   const ups=[['gaImp',12840,''],['gaClk',1043,''],['gaCost',847200,'₩']];
   ups.forEach(([id,end,pre])=>{
     const el=document.getElementById(id); if(!el||el.dataset.done)return; el.dataset.done=1;
-    let s=null,dur=1000;
-    function step(t){if(!s)s=t;const p=Math.min((t-s)/dur,1);
-      const v=Math.floor(p*end); el.textContent=pre+v.toLocaleString();
-      if(p<1)requestAnimationFrame(step);}
-    requestAnimationFrame(step);
+    let cur=0; const steps=40, inc=end/steps;
+    const iv=setInterval(()=>{ cur+=inc; if(cur>=end){cur=end;clearInterval(iv);} el.textContent=pre+Math.floor(cur).toLocaleString(); },25);
   });
   // chart bars
   const chart=document.getElementById('gaChart');
@@ -1199,20 +1196,27 @@ function buildFunnel(){
   },120+steps.length*130+200);
 }
 
-// fire animations when each case scrolls into view
-const io=new IntersectionObserver((ents)=>{
-  ents.forEach(en=>{ if(!en.isIntersecting)return;
-    const id=en.target.dataset.anim;
-    if(id==='ga')animateGoogleAds();
-    if(id==='bmw')animateBmw();
-    if(id==='xy')buildXianyu();
-    if(id==='fn')buildFunnel();
-  });
-},{threshold:.3});
-document.querySelectorAll('.ga').forEach(el=>{el.closest('.case').dataset.anim='ga';io.observe(el.closest('.case'));});
-document.querySelectorAll('.bmw').forEach(el=>{el.closest('.case').dataset.anim='bmw';io.observe(el.closest('.case'));});
-document.querySelectorAll('.xy').forEach(el=>{el.closest('.case').dataset.anim='xy';io.observe(el.closest('.case'));});
-document.querySelectorAll('.fn').forEach(el=>{el.closest('.case').dataset.anim='fn';io.observe(el.closest('.case'));});
+// fire each앱 데모를 해당 카드가 화면에 들어올 때 1회 실행 (스크롤·로드·리사이즈 모두 대응 — 견고)
+const animCases=[];
+const reg=(sel,id)=>document.querySelectorAll(sel).forEach(el=>{const c=el.closest('.case'); if(c)animCases.push([c,id]);});
+reg('.ga','ga'); reg('.bmw','bmw'); reg('.xy','xy'); reg('.fn-body','fn');
+function fireVisibleCases(){
+  const vh=window.innerHeight||document.documentElement.clientHeight;
+  for(const [c,id] of animCases){
+    if(c.dataset.fired)continue;
+    const r=c.getBoundingClientRect();
+    if(r.top < vh*0.85 && r.bottom > 0){
+      c.dataset.fired='1';
+      if(id==='ga')animateGoogleAds();
+      else if(id==='bmw')animateBmw();
+      else if(id==='xy')buildXianyu();
+      else if(id==='fn')buildFunnel();
+    }
+  }
+}
+window.addEventListener('scroll',fireVisibleCases,{passive:true});
+window.addEventListener('resize',fireVisibleCases);
+fireVisibleCases();
 </script>
 </body>
 </html>
