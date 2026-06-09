@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정보처리기사 실기 · 실전 모의고사</title>
+<style>
+  :root{
+    --bg:#0f1419;
+    --panel:#1a2029;
+    --panel-2:#222b36;
+    --line:#2d3744;
+    --line-soft:#232c37;
+    --ink:#e6edf3;
+    --ink-dim:#8b98a5;
+    --ink-faint:#5e6b78;
+    --amber:#f0a868;
+    --amber-soft:#3a2d1f;
+    --cyan:#56b6c2;
+    --green:#7fb069;
+    --red:#e06c75;
+    --violet:#c490d1;
+    --blue:#61afef;
+    --mono:'SF Mono',ui-monospace,'Cascadia Code','Source Code Pro',Menlo,Consolas,monospace;
+    --sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+  ::selection{background:var(--amber);color:#0f1419}
+  code,kbd,.mono{font-family:var(--mono)}
+
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(15,20,25,.95);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar-inner{max-width:820px;margin:0 auto;padding:12px 20px;display:flex;align-items:center;gap:14px}
+  .dots{display:flex;gap:7px;flex-shrink:0}
+  .dots i{width:12px;height:12px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#e06c75}.dots i:nth-child(2){background:#e5c07b}.dots i:nth-child(3){background:#7fb069}
+  .topbar-title{font-family:var(--mono);font-size:13px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .topbar-title b{color:var(--amber);font-weight:600}
+  /* timer */
+  .timer{margin-left:auto;font-family:var(--mono);font-size:14px;font-weight:700;color:var(--green);flex-shrink:0;display:flex;align-items:center;gap:6px;padding:5px 12px;background:#0c1116;border:1px solid var(--line);border-radius:8px}
+  .timer.warn{color:var(--amber);border-color:var(--amber-soft)}
+  .timer.danger{color:var(--red);border-color:#4a2520;animation:pulse 1s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.6}}
+  .timer .dot{width:7px;height:7px;border-radius:50%;background:currentColor;animation:blink 1.1s steps(2) infinite}
+  @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+
+  /* ===== START SCREEN ===== */
+  .start{max-width:680px;margin:0 auto;padding:60px 20px;text-align:center}
+  .start .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.5px;color:var(--amber);margin-bottom:20px}
+  .start h1{font-size:clamp(30px,7vw,46px);font-weight:800;line-height:1.12;letter-spacing:-.02em;margin-bottom:16px}
+  .start h1 .hl{color:var(--amber)}
+  .start .lead{color:var(--ink-dim);font-size:15.5px;margin-bottom:32px;max-width:520px;margin-left:auto;margin-right:auto}
+  .exam-info{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:32px;text-align:left}
+  @media(min-width:560px){.exam-info{grid-template-columns:repeat(4,1fr)}}
+  /* set selector */
+  .set-select{margin-bottom:28px}
+  .set-select-label{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-bottom:12px;letter-spacing:.3px}
+  .set-btns{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .set-btn{font-family:var(--mono);font-size:14px;font-weight:700;padding:11px 22px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink-dim);cursor:pointer;transition:.15s}
+  .set-btn:hover{border-color:var(--amber);color:var(--amber)}
+  .set-btn.active{background:var(--amber-soft);border-color:var(--amber);color:var(--amber)}
+  .set-btn .done-mark{color:var(--green);margin-left:5px}
+  .info-card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px 14px}
+  .info-card .ic-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-bottom:6px}
+  .info-card .ic-val{font-size:22px;font-weight:800;color:var(--amber)}
+  .info-card .ic-val small{font-size:13px;color:var(--ink-dim);font-weight:500}
+  .start-btn{font-family:var(--mono);font-size:15px;font-weight:700;padding:16px 40px;border-radius:10px;border:none;background:var(--amber);color:#0f1419;cursor:pointer;transition:.15s;letter-spacing:.3px}
+  .start-btn:hover{background:#f5b878;transform:translateY(-1px)}
+  .start-btn:active{transform:translateY(0)}
+  .start-rules{margin-top:28px;text-align:left;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:18px 20px}
+  .start-rules h4{font-family:var(--mono);font-size:12px;color:var(--amber);margin-bottom:12px;letter-spacing:.5px}
+  .start-rules ul{list-style:none}
+  .start-rules li{font-size:13.5px;color:var(--ink-dim);padding:4px 0 4px 20px;position:relative;line-height:1.5}
+  .start-rules li::before{content:'▸';position:absolute;left:2px;color:var(--amber);top:4px}
+  .start-rules li b{color:var(--cyan)}
+
+  /* ===== EXAM SCREEN ===== */
+  .exam{max-width:820px;margin:0 auto;padding:0 20px;display:none}
+  .exam.active{display:block}
+  .progress-bar{position:sticky;top:49px;z-index:30;background:var(--bg);padding:14px 0 10px}
+  .pbar-track{height:6px;background:var(--panel-2);border-radius:99px;overflow:hidden}
+  .pbar-fill{height:100%;background:linear-gradient(90deg,var(--amber),var(--green));transition:width .3s;border-radius:99px}
+  .pbar-meta{display:flex;justify-content:space-between;margin-top:8px;font-family:var(--mono);font-size:12px;color:var(--ink-dim)}
+  .pbar-meta b{color:var(--amber)}
+  .answered-dots{display:flex;gap:4px;flex-wrap:wrap;margin-top:10px}
+  .adot{width:22px;height:22px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);font-family:var(--mono);font-size:10px;display:flex;align-items:center;justify-content:center;color:var(--ink-faint);cursor:pointer;transition:.15s}
+  .adot:hover{border-color:var(--amber)}
+  .adot.answered{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber)}
+  .adot.current{border-color:var(--amber);color:var(--amber);box-shadow:0 0 0 2px var(--amber-soft)}
+
+  .q-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:24px;margin:16px 0 20px}
+  .q-top{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .q-num{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--amber)}
+  .q-dom{font-family:var(--mono);font-size:11px;padding:3px 9px;border-radius:5px;background:var(--panel-2);color:var(--cyan)}
+  .q-points{font-family:var(--mono);font-size:11px;color:var(--ink-faint);margin-left:auto}
+  .q-text{font-size:16px;font-weight:600;line-height:1.6;margin-bottom:14px}
+  .q-code{background:#0c1116;border:1px solid var(--line-soft);border-radius:8px;font-family:var(--mono);font-size:13.5px;line-height:1.7;padding:14px 16px;margin:14px 0;overflow-x:auto;white-space:pre}
+  .q-code .nm{color:var(--cyan)}.q-code .kw{color:var(--amber)}.q-code .cm{color:var(--ink-faint);font-style:italic}.q-code .st{color:var(--green)}
+  .q-input{width:100%;background:#0c1116;border:1px solid var(--line);border-radius:8px;padding:13px 15px;color:var(--ink);font-family:var(--mono);font-size:14px;resize:vertical;min-height:54px;line-height:1.6;transition:.15s}
+  .q-input:focus{outline:none;border-color:var(--amber)}
+  .q-input::placeholder{color:var(--ink-faint);font-family:var(--sans)}
+  .q-nav{display:flex;gap:10px;margin-top:18px}
+  .nav-btn{font-family:var(--mono);font-size:14px;padding:12px 20px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);transition:.15s}
+  .nav-btn:hover{border-color:var(--amber);color:var(--amber)}
+  .nav-btn:disabled{opacity:.35;cursor:not-allowed}
+  .nav-btn.primary{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber);flex:1}
+  .submit-btn{font-family:var(--mono);font-size:14px;font-weight:700;padding:12px 20px;border-radius:8px;cursor:pointer;border:none;background:var(--green);color:#0f1419;flex:1;transition:.15s}
+  .submit-btn:hover{background:#8fc079}
+
+  /* ===== RESULT SCREEN ===== */
+  .result{max-width:820px;margin:0 auto;padding:0 20px;display:none}
+  .result.active{display:block}
+  .score-hero{text-align:center;padding:40px 20px 30px}
+  .score-ring{width:180px;height:180px;margin:0 auto 20px;position:relative}
+  .score-ring svg{transform:rotate(-90deg)}
+  .score-ring .score-text{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+  .score-ring .sval{font-size:46px;font-weight:800;line-height:1}
+  .score-ring .smax{font-family:var(--mono);font-size:13px;color:var(--ink-dim);margin-top:4px}
+  .verdict{font-size:26px;font-weight:800;margin-bottom:8px}
+  .verdict.pass{color:var(--green)}
+  .verdict.fail{color:var(--red)}
+  .verdict-sub{color:var(--ink-dim);font-size:14.5px;font-family:var(--mono)}
+
+  .breakdown{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin:20px 0}
+  .breakdown h3{font-size:15px;font-weight:700;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+  .dom-stat{margin-bottom:14px}
+  .dom-stat:last-child{margin-bottom:0}
+  .dom-stat-top{display:flex;justify-content:space-between;margin-bottom:6px;font-size:13.5px}
+  .dom-stat-top .dn{font-weight:600}
+  .dom-stat-top .dscore{font-family:var(--mono);color:var(--ink-dim)}
+  .dom-stat-top .dscore b{color:var(--amber)}
+  .dom-track{height:8px;background:var(--panel-2);border-radius:99px;overflow:hidden}
+  .dom-fill{height:100%;border-radius:99px;transition:width .6s}
+  .dom-fill.high{background:var(--green)}
+  .dom-fill.mid{background:var(--amber)}
+  .dom-fill.low{background:var(--red)}
+
+  .advice{background:#1a2a1f;border:1px solid #25422c;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:14px 17px;margin:20px 0;font-size:13.5px;color:var(--ink-dim);line-height:1.6}
+  .advice.warn{background:#2a1d1a;border-color:#4a2c20;border-left-color:var(--red)}
+  .advice b{color:var(--amber)}
+  .advice .ttl{display:block;font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700;margin-bottom:6px}
+
+  /* review */
+  .review-head{font-size:18px;font-weight:700;margin:30px 0 16px;display:flex;align-items:center;gap:10px}
+  .review-head .rfilter{margin-left:auto;display:flex;gap:6px}
+  .rfbtn{font-family:var(--mono);font-size:11px;padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:var(--panel);color:var(--ink-dim);cursor:pointer;transition:.15s}
+  .rfbtn:hover{border-color:var(--amber);color:var(--amber)}
+  .rfbtn.active{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber)}
+
+  .rev-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:14px;border-left:3px solid var(--line)}
+  .rev-card.correct{border-left-color:var(--green)}
+  .rev-card.wrong{border-left-color:var(--red)}
+  .rev-card.skip{border-left-color:var(--ink-faint)}
+  .rev-top{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .rev-num{font-family:var(--mono);font-size:12px;font-weight:700;color:var(--amber)}
+  .rev-dom{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;background:var(--panel-2);color:var(--cyan)}
+  .rev-status{margin-left:auto;font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 10px;border-radius:99px}
+  .rev-status.correct{background:#1f2e1c;color:var(--green)}
+  .rev-status.wrong{background:#2f1d20;color:var(--red)}
+  .rev-status.skip{background:var(--panel-2);color:var(--ink-faint)}
+  .rev-q{font-size:14.5px;font-weight:600;margin-bottom:8px;line-height:1.55}
+  .rev-code{background:#0c1116;border:1px solid var(--line-soft);border-radius:7px;font-family:var(--mono);font-size:12.5px;line-height:1.6;padding:11px 13px;margin:10px 0;overflow-x:auto;white-space:pre;color:var(--ink-dim)}
+  .rev-yours{font-size:13px;margin:8px 0;padding:8px 12px;background:#0c1116;border-radius:6px;border:1px solid var(--line-soft)}
+  .rev-yours .yl{font-family:var(--mono);font-size:10.5px;color:var(--ink-faint);margin-right:8px}
+  .rev-yours .yv{font-family:var(--mono);color:var(--ink)}
+  .rev-yours .yv.empty{color:var(--ink-faint);font-style:italic}
+  .rev-answer{font-size:13.5px;margin-top:8px;padding:11px 13px;background:#0c1116;border-radius:7px;border-left:2px solid var(--green)}
+  .rev-answer .al{font-family:var(--mono);font-size:10.5px;color:var(--green);margin-bottom:5px;letter-spacing:.5px}
+  .rev-answer .av{color:var(--amber);font-weight:700;font-family:var(--mono);font-size:14px;margin-bottom:8px;white-space:pre-wrap}
+  .rev-answer .anote{color:var(--ink-dim);line-height:1.55;font-size:13px}
+  .rev-answer .anote b{color:var(--amber)}
+  .rev-answer .anote code{background:var(--panel-2);padding:1px 5px;border-radius:4px;color:var(--cyan);font-size:12px}
+  .rev-selfcheck{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line-soft);align-items:center}
+  .rev-selfcheck .sc-label{font-size:12px;color:var(--ink-dim);font-family:var(--mono)}
+  .sc-btn{font-family:var(--mono);font-size:12px;padding:6px 14px;border-radius:7px;border:1px solid var(--line);background:var(--panel-2);color:var(--ink-dim);cursor:pointer;transition:.15s}
+  .sc-btn.correct:hover,.sc-btn.correct.on{background:#1f2e1c;border-color:var(--green);color:var(--green)}
+  .sc-btn.wrong:hover,.sc-btn.wrong.on{background:#2f1d20;border-color:var(--red);color:var(--red)}
+
+  .retry-btn{font-family:var(--mono);font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink);cursor:pointer;transition:.15s;display:block;margin:30px auto 10px}
+  .retry-btn:hover{border-color:var(--amber);color:var(--amber)}
+
+  .selfcheck-banner{background:var(--amber-soft);border:1px solid var(--amber-soft);border-radius:10px;padding:14px 17px;margin:16px 0;font-size:13.5px;color:var(--ink-dim);line-height:1.55}
+  .selfcheck-banner b{color:var(--amber)}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-dim);text-decoration:none;border:1px solid var(--line);padding:5px 10px;border-radius:7px;white-space:nowrap;flex-shrink:0;transition:.15s" onmouseover="this.style.color='var(--amber)';this.style.borderColor='var(--amber)'" onmouseout="this.style.color='var(--ink-dim)';this.style.borderColor='var(--line)'">← 대시보드</a>
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="topbar-title"><b>mock_exam</b> — <span id="topbarSet">정보처리기사 실기 모의고사</span></div>
+    <div class="timer" id="timer" style="display:none"><span class="dot"></span><span id="timerText">60:00</span></div>
+  </div>
+</div>
+
+<!-- ===== START ===== -->
+<div class="start" id="startScreen">
+  <div class="kicker">~/study/week5/mock-exam</div>
+  <h1>실전처럼<br><span class="hl">시간 재고</span> 풀어보세요</h1>
+  <p class="lead">실제 시험과 동일한 구성입니다. 20문항, 100점 만점, 60점이면 합격. 타이머를 켜고 한 번에 끝까지 푼 뒤 채점하세요. 약점 영역까지 분석해 드립니다.</p>
+
+  <div class="set-select">
+    <div class="set-select-label">세트 선택 — 5세트 모두 중복 없는 문제</div>
+    <div class="set-btns" id="setBtns">
+      <button class="set-btn active" data-set="0" onclick="selectSet(0)">SET 1</button>
+      <button class="set-btn" data-set="1" onclick="selectSet(1)">SET 2</button>
+      <button class="set-btn" data-set="2" onclick="selectSet(2)">SET 3</button>
+      <button class="set-btn" data-set="3" onclick="selectSet(3)">SET 4</button>
+      <button class="set-btn" data-set="4" onclick="selectSet(4)">SET 5</button>
+    </div>
+  </div>
+
+  <div class="exam-info">
+    <div class="info-card"><div class="ic-label">문항 수</div><div class="ic-val">20<small>문항</small></div></div>
+    <div class="info-card"><div class="ic-label">배점</div><div class="ic-val">100<small>점</small></div></div>
+    <div class="info-card"><div class="ic-label">합격선</div><div class="ic-val">60<small>점</small></div></div>
+    <div class="info-card"><div class="ic-label">제한시간</div><div class="ic-val">60<small>분</small></div></div>
+  </div>
+
+  <button class="start-btn" onclick="startExam()">시험 시작 ▶</button>
+
+  <div class="start-rules">
+    <h4>📋 응시 안내</h4>
+    <ul>
+      <li>문항당 <b>5점</b>, 12문항(60점) 이상이면 합격입니다.</li>
+      <li>실제 시험은 손글씨 답안입니다. <b>가능하면 종이에 먼저</b> 풀고 입력하세요.</li>
+      <li>코드 문제는 <b>변수를 직접 추적</b>해 출력값을 구하세요.</li>
+      <li>채점은 <b>모범답안과 본인 비교</b> 방식입니다. 약술형은 핵심 키워드가 들어갔으면 정답 처리하세요.</li>
+      <li>시간이 다 되면 <b>자동 제출</b>됩니다. 막히는 문제는 넘기고 끝까지.</li>
+      <li><b>5세트 모두 문제가 다릅니다.</b> 채점 후 세트 버튼에 점수가 표시되며, 한 세트를 끝내면 다음 세트로 넘어갈 수 있습니다.</li>
+    </ul>
+  </div>
+</div>
+
+<!-- ===== EXAM ===== -->
+<div class="exam" id="examScreen">
+  <div class="progress-bar">
+    <div class="pbar-track"><div class="pbar-fill" id="pbarFill" style="width:5%"></div></div>
+    <div class="pbar-meta">
+      <span>문항 <b id="curNum">1</b> / 20</span>
+      <span><b id="answeredCount">0</b>개 작성됨</span>
+    </div>
+    <div class="answered-dots" id="answeredDots"></div>
+  </div>
+  <div id="qContainer"></div>
+</div>
+
+<!-- ===== RESULT ===== -->
+<div class="result" id="resultScreen">
+  <div class="score-hero">
+    <div class="score-ring">
+      <svg width="180" height="180">
+        <circle cx="90" cy="90" r="78" fill="none" stroke="#222b36" stroke-width="14"/>
+        <circle id="scoreCircle" cx="90" cy="90" r="78" fill="none" stroke="#7fb069" stroke-width="14" stroke-linecap="round" stroke-dasharray="490" stroke-dashoffset="490"/>
+      </svg>
+      <div class="score-text">
+        <div class="sval" id="scoreVal">0</div>
+        <div class="smax">/ 100점</div>
+      </div>
+    </div>
+    <div class="verdict" id="verdict">채점 중...</div>
+    <div class="verdict-sub" id="verdictSub"></div>
+  </div>
+
+  <div class="selfcheck-banner">
+    <b>📝 채점 방식 안내</b> — 단답·코드는 자동 채점했습니다. 다만 표현이 조금 달라도 맞은 경우가 있으니, 아래 복습에서 <b>각 문항의 ✓/✗를 직접 조정</b>할 수 있습니다. 약술형은 핵심 키워드가 들어갔으면 정답으로 체크하세요. 조정하면 점수가 다시 계산됩니다.
+  </div>
+
+  <div class="breakdown">
+    <h3>📊 영역별 성취도</h3>
+    <div id="domStats"></div>
+  </div>
+
+  <div id="adviceBox"></div>
+
+  <div class="review-head">
+    📖 문항별 복습
+    <div class="rfilter">
+      <button class="rfbtn active" data-rf="all" onclick="filterReview('all')">전체</button>
+      <button class="rfbtn" data-rf="wrong" onclick="filterReview('wrong')">✗ 틀림</button>
+      <button class="rfbtn" data-rf="skip" onclick="filterReview('skip')">○ 미작성</button>
+    </div>
+  </div>
+  <div id="reviewContainer"></div>
+
+  <button class="retry-btn" onclick="resetExam()">↺ 세트 선택으로 (다른 세트 풀기)</button>
+</div>
+
+<script>
+/* ============ EXAM DATA (20 questions, verified) ============ */
+const questionSets=[
+/* ============================== SET 1 ============================== */
+[
+  {dom:'SQL',q:'아래 <학생> 테이블에서 학과코드가 "CS"이고 학년이 4인 학생의 이름을 조회하는 SQL을 작성하시오. (속성명 아래 괄호는 자료형, 인용부호는 단일 따옴표 사용)',code:"[학생]\n학번(CHAR(8))  이름(VARCHAR(20))  학과코드(CHAR(2))  학년(INT)",answer:"SELECT 이름 FROM 학생\nWHERE 학과코드 = 'CS' AND 학년 = 4;",mode:'and',accept:['select','이름','학생','where','cs','4'],note:'두 조건은 <b>AND</b>로 연결. 문자열은 작은따옴표, 숫자는 그대로.'},
+  {dom:'SQL',q:'아래 <성적> 테이블에서 과목별 평균점수가 70점 이상인 과목명과 평균을 구하려 한다. 빈칸을 채우시오.\n\nSELECT 과목명, AVG(점수) FROM 성적\nGROUP BY 과목명 (____) AVG(점수) >= 70;',code:"[성적]\n학번(CHAR(8))  과목명(VARCHAR(20))  점수(INT)",answer:"HAVING",mode:'or',accept:['having'],note:'그룹(집계) 조건은 <b>HAVING</b>. WHERE에는 집계함수를 쓸 수 없음.'},
+  {dom:'SQL',q:'관리자가 사용자 "kim"에게 <학생> 테이블에 대한 SELECT 권한을 부여하는 SQL을 작성하시오.',code:"[학생]\n학번(CHAR(8))  이름(VARCHAR(20))  학과코드(CHAR(2))  학년(INT)",answer:"GRANT SELECT ON 학생 TO kim;",mode:'and',accept:['grant','select','학생','kim'],note:'권한 부여 = <b>GRANT … ON … TO …</b>. 회수는 REVOKE … FROM.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오.',code:"int a[5] = {1,2,3,4,5};\nint *p = a;\nint sum = 0;\nfor(int i=0; i<5; i++)\n  sum += *(p+i);\nprintf(\"%d\", sum);",answer:"15",mode:'or',accept:['15'],note:'<code>*(p+i)</code> = a[i]. 1+2+3+4+5 = <b>15</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오.',code:"char *s = \"KOREA\";\nprintf(\"%c\", *(s+2));\nprintf(\"%c\", *s+2);",answer:"RM",mode:'or',accept:['rm'],note:'<code>*(s+2)</code>=3번째 문자 R / <code>*s+2</code>=K(75)+2=77=M. 합쳐서 <b>RM</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (포인터 교환)',code:"int x=10, y=20;\nint *p=&x, *q=&y;\nint *t=p; p=q; q=t;\nprintf(\"%d %d\", *p, *q);",answer:"20 10",mode:'or',accept:['20 10','2010'],note:'포인터 자체를 교환 → <code>*p</code>=20, <code>*q</code>=10. (원본 x,y는 안 바뀜)'},
+  {dom:'C',q:'다음 재귀함수 C 코드에서 f(4)의 출력값을 쓰시오.',code:"int f(int n){\n  if(n<=1) return 1;\n  return n * f(n-1);\n}\nprintf(\"%d\", f(4));",answer:"24",mode:'or',accept:['24'],note:'팩토리얼: 4×3×2×1 = <b>24</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (오버라이딩)',code:"class A { String f(){ return \"A\"; } }\nclass B extends A { String f(){ return \"B\"; } }\nA obj = new B();\nSystem.out.print(obj.f());",answer:"B",mode:'or',accept:['b'],note:'실제 객체가 B → <b>B</b>의 f() 실행 (동적 바인딩).'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (문자열 연결)',code:"int a=2, b=3;\nSystem.out.print(a + b + \"=\" + a + b);",answer:"5=23",mode:'or',accept:['5=23'],note:'왼→오: 2+3=5, +"="="5=", +2="5=2", +3="5=23". 답 <b>5=23</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (static 변수 공유)',code:"class C { static int v=0; }\nC a = new C();\nC b = new C();\na.v = 10;\nb.v = 20;\nSystem.out.print(C.v);",answer:"20",mode:'or',accept:['20'],note:'<b>static 변수는 모든 인스턴스가 공유</b>. 마지막 값 20.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (배열, 짝수 인덱스)',code:"int[] a = {1,2,3,4,5};\nint sum=0;\nfor(int i=0;i<a.length;i++)\n  if(i%2==0) sum += a[i];\nSystem.out.print(sum);",answer:"9",mode:'or',accept:['9'],note:'짝수 인덱스(0,2,4)의 값: a[0]+a[2]+a[4]=1+3+5=<b>9</b>.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (슬라이싱)',code:"s = \"PROGRAM\"\nprint(s[1:4])",answer:"ROG",mode:'or',accept:['rog'],note:'인덱스 1,2,3 (4 미포함) = <b>ROG</b>.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오.',code:"a = [3,1,4,1,5,9,2,6]\na.sort()\nprint(a[:3])",answer:"[1, 1, 2]",mode:'or',accept:['[1, 1, 2]','[1,1,2]'],note:'정렬 후 앞 3개. sort()는 오름차순 → [1,1,2,3,4,5,6,9]의 앞 3개.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (역순)',code:"s = \"PYTHON\"\nprint(s[::-1])",answer:"NOHTYP",mode:'or',accept:['nohtyp'],note:'<code>[::-1]</code> = 문자열 뒤집기 = <b>NOHTYP</b>.'},
+  {dom:'보안/네트워크',q:'입력값에 악의적인 SQL 구문을 삽입하여 데이터베이스를 비정상적으로 조작하는 공격기법의 이름을 쓰시오.',code:null,answer:"SQL 인젝션 (SQL Injection)",mode:'or',accept:['sql 인젝션','sql injection','sql인젝션','인젝션'],note:'핵심: 입력값 조작/삽입 → 비정상 DB 조작. 방어는 Prepared Statement.'},
+  {dom:'보안/네트워크',q:'OSI 7계층 중 라우팅(경로 설정)과 IP 주소 지정을 담당하는 계층의 이름을 쓰시오.',code:null,answer:"네트워크 계층 (3계층)",mode:'or',accept:['네트워크','3계층'],note:'데이터 단위는 패킷. 물·데·네·전·세·표·응 중 3번째.'},
+  {dom:'보안/네트워크',q:'정보보안의 3대 요소를 모두 쓰시오.',code:null,answer:"기밀성, 무결성, 가용성",mode:'and',accept:['기밀성','무결성','가용성'],note:'두문자 <b>기·무·가</b> (Confidentiality, Integrity, Availability).'},
+  {dom:'SW공학',q:'결합도를 약한 것(좋은 품질)부터 강한 것 순으로 나열하시오.',code:null,answer:"자료 → 스탬프 → 제어 → 외부 → 공통 → 내용",mode:'and',accept:['자료','스탬프','제어','외부','공통','내용'],note:'두문자 <b>자·스·제·외·공·내</b>. 순서 나열은 빠짐없이.'},
+  {dom:'SW공학',q:'LOC가 50,000이고 개발자 5명이 각각 월평균 500라인을 개발할 때, 개발 기간을 계산식과 함께 쓰시오.',code:null,answer:"50,000 ÷ (5 × 500) = 20개월",mode:'or',accept:['20개월','20 개월','20'],note:'개발기간 = 총LOC ÷ (인원 × 월생산성) = 50000÷2500 = <b>20개월</b>.'},
+  {dom:'SW공학',q:'클래스의 인스턴스가 오직 하나만 생성되도록 보장하는 디자인 패턴의 이름과 분류(생성/구조/행위)를 쓰시오.',code:null,answer:"싱글톤(Singleton), 생성 패턴",mode:'and',accept:['싱글','생성'],note:'생성 패턴 대표. 인스턴스 1개만 생성하도록 보장. (싱글톤 = Singleton)'}
+],
+/* ============================== SET 2 ============================== */
+[
+  {dom:'SQL',q:'아래 <회원> 테이블에서 이름이 "김"으로 시작하는 회원을 모두 조회하는 SQL을 작성하시오. (LIKE 연산자 사용, 인용부호는 단일 따옴표)',code:"[회원]\n회원번호(INT)  이름(VARCHAR(20))  가입일(DATE)",answer:"SELECT * FROM 회원 WHERE 이름 LIKE '김%';",mode:'and',accept:['select','회원','like','김%'],note:'부분 일치는 <b>LIKE</b>, <code>%</code>는 0글자 이상. "김%"는 김으로 시작.'},
+  {dom:'SQL',q:'아래 <사원> 테이블을 급여 내림차순으로 정렬하여 조회하려 한다. 빈칸을 채우시오.\n\nSELECT * FROM 사원 ORDER BY 급여 (____);',code:"[사원]\n사번(CHAR(5))  이름(VARCHAR(20))  급여(INT)",answer:"DESC",mode:'or',accept:['desc'],note:'내림차순 = <b>DESC</b>, 오름차순 = ASC(기본값).'},
+  {dom:'SQL',q:'아래 <학생> 테이블에서 학번이 "20240001"인 튜플을 삭제하는 SQL을 작성하시오.',code:"[학생]\n학번(CHAR(8))  이름(VARCHAR(20))  학과(VARCHAR(20))",answer:"DELETE FROM 학생 WHERE 학번 = '20240001';",mode:'and',accept:['delete','학생','where','20240001'],note:'<b>DELETE FROM … WHERE</b>. WHERE 없으면 전체 삭제되니 주의.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (2차원 배열)',code:"int a[2][3] = {{1,2,3},{4,5,6}};\nprintf(\"%d\", a[1][1] + a[0][2]);",answer:"8",mode:'or',accept:['8'],note:'a[1][1]=5, a[0][2]=3. 5+3=<b>8</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (구조체 포인터)',code:"struct P { int x, y; };\nstruct P p = {5, 8};\nstruct P *pp = &p;\npp->x += 3;\nprintf(\"%d %d\", p.x, pp->y);",answer:"8 8",mode:'or',accept:['8 8','88'],note:'<code>pp->x</code>=5+3=8 (원본 p.x도 변경). pp->y=8. 출력 <b>8 8</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (while 반복)',code:"int i=1, sum=0;\nwhile(i<=4){\n  sum += i;\n  i++;\n}\nprintf(\"%d\", sum);",answer:"10",mode:'or',accept:['10'],note:'1+2+3+4 = <b>10</b>. i가 5가 되면 반복 종료.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (비트 연산)',code:"int a=12, b=10;\nprintf(\"%d \", a&b);\nprintf(\"%d\", a|b);",answer:"8 14",mode:'or',accept:['8 14','814'],note:'12=1100, 10=1010. AND=1000=8, OR=1110=14. 출력 <b>8 14</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (생성자 호출 순서)',code:"class A { A(){ System.out.print(\"X\"); } }\nclass B extends A { B(){ System.out.print(\"Y\"); } }\nnew B();",answer:"XY",mode:'or',accept:['xy'],note:'자식 객체 생성 시 <b>부모 생성자가 먼저</b> 실행. A→B 순서로 <b>XY</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (boolean 기본값)',code:"boolean[] b = new boolean[3];\nSystem.out.print(b[0]);",answer:"false",mode:'or',accept:['false'],note:'boolean 배열 기본값은 <b>false</b>. (int는 0, 객체는 null)'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (문자열 메서드)',code:"String s = \"Hello World\";\nSystem.out.print(s.length());\nSystem.out.print(\" \");\nSystem.out.print(s.substring(0,5));",answer:"11 Hello",mode:'or',accept:['11 hello'],note:'length()=11(공백 포함), substring(0,5)=0~4번 문자="Hello". 출력 <b>11 Hello</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (조건 반복)',code:"int sum=0;\nfor(int i=1;i<=10;i++){\n  if(i%3==0) sum+=i;\n}\nSystem.out.print(sum);",answer:"18",mode:'or',accept:['18'],note:'3의 배수: 3+6+9 = <b>18</b>.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (step 슬라이싱)',code:"s = \"PROGRAMMING\"\nprint(s[2:8:2])",answer:"ORM",mode:'or',accept:['orm'],note:'인덱스 2,4,6 (8 미포함, 2칸씩): O,R,M = <b>ORM</b>.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (리스트 조작)',code:"a = [1,2,3]\na.append(4)\na.insert(0,0)\nprint(a)",answer:"[0, 1, 2, 3, 4]",mode:'or',accept:['[0, 1, 2, 3, 4]','[0,1,2,3,4]'],note:'append(4)=끝에 추가, insert(0,0)=0번 위치에 0 삽입.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (딕셔너리)',code:"d = {'a':10, 'b':20, 'c':30}\nprint(d['b'] + d['c'])",answer:"50",mode:'or',accept:['50'],note:"d['b']=20, d['c']=30. 합 <b>50</b>."},
+  {dom:'보안/네트워크',q:'웹 페이지에 악성 스크립트를 삽입하여 사용자의 쿠키나 세션 정보를 탈취하는 공격기법의 이름(약어)을 쓰시오.',code:null,answer:"XSS (Cross-Site Scripting)",mode:'or',accept:['xss','크로스 사이트 스크립팅','크로스사이트'],note:'스크립트 실행으로 정보 탈취. CSRF(요청 위조)와 구분.'},
+  {dom:'보안/네트워크',q:'TCP와 UDP 중, 연결형이며 데이터의 신뢰성과 순서를 보장하는 프로토콜은 무엇인가?',code:null,answer:"TCP",mode:'or',accept:['tcp'],note:'TCP=연결형·신뢰성(3-way handshake), UDP=비연결형·고속.'},
+  {dom:'보안/네트워크',q:'대칭키 암호화 알고리즘을 2가지 이상 쓰시오.',code:null,answer:"DES, AES, SEED, ARIA 중 2개 이상",mode:'or',accept:['des','aes','seed','aria'],note:'대칭키 = 같은 키 사용. 비대칭키(RSA, ECC)와 구분.'},
+  {dom:'SW공학',q:'모듈 내부의 각 구성요소가 서로 관련이 없을 때의 응집도(가장 낮은 응집도)는 무엇인가?',code:null,answer:"우연적 응집도 (Coincidental Cohesion)",mode:'or',accept:['우연적'],note:'응집도 중 최악. 가장 높은(좋은) 것은 기능적 응집도.'},
+  {dom:'SW공학',q:'프로그램의 내부 구조와 로직을 보고 테스트하는 기법(구조 기반)의 이름을 쓰시오.',code:null,answer:"화이트박스 테스트 (White Box Test)",mode:'or',accept:['화이트박스','white box','화이트 박스'],note:'내부 구조 기반. 블랙박스는 입출력(명세) 기반.'},
+  {dom:'SW공학',q:'한 객체의 상태 변화를 의존하는 다른 객체들에게 자동으로 통지하는 디자인 패턴의 이름과 분류를 쓰시오.',code:null,answer:"옵서버(Observer), 행위 패턴",mode:'and',accept:['옵서버','observer','행위'].slice(0,99) ,note:'행위 패턴 대표. 상태 변화 → 의존 객체에 통지.'}
+],
+/* ============================== SET 3 ============================== */
+[
+  {dom:'SQL',q:'아래 <직원> 테이블에 사번 "E001", 이름 "홍길동"인 튜플을 삽입하는 SQL을 작성하시오.',code:"[직원]\n사번(CHAR(4))  이름(VARCHAR(20))  부서(VARCHAR(20))",answer:"INSERT INTO 직원(사번, 이름) VALUES('E001', '홍길동');",mode:'and',accept:['insert','직원','values','e001','홍길동'],note:'<b>INSERT INTO 테이블(컬럼) VALUES(값)</b>. 문자열은 작은따옴표.'},
+  {dom:'SQL',q:'아래 <사원> 테이블에서 사번이 "E001"인 사원의 부서를 "영업부"로 변경하는 SQL을 작성하시오.',code:"[사원]\n사번(CHAR(4))  이름(VARCHAR(20))  부서(VARCHAR(20))",answer:"UPDATE 사원 SET 부서 = '영업부' WHERE 사번 = 'E001';",mode:'and',accept:['update','사원','set','부서','where','e001'],note:'<b>UPDATE … SET … WHERE</b>. WHERE 누락 시 전체 변경.'},
+  {dom:'SQL',q:'두 테이블을 연결할 때, 양쪽 모두 조인 조건이 일치하는 행만 가져오는 조인의 이름(키워드)을 쓰시오.',code:null,answer:"INNER JOIN (내부 조인)",mode:'or',accept:['inner join','내부 조인','inner','내부조인'],note:'양쪽 일치만=INNER. 한쪽 전부 보존은 OUTER JOIN.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (for 곱셈)',code:"int p = 1;\nfor(int i=1; i<=4; i++)\n  p *= i;\nprintf(\"%d\", p);",answer:"24",mode:'or',accept:['24'],note:'1×2×3×4 = <b>24</b> (팩토리얼).'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (문자 연산)',code:"char c = 65;\nprintf(\"%c%c%c\", c, c+1, c+2);",answer:"ABC",mode:'or',accept:['abc'],note:'아스키 65=A, 66=B, 67=C. 출력 <b>ABC</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (포인터 산술)',code:"int a[] = {10,20,30,40};\nint *p = a;\nprintf(\"%d\", *(p+2) - *p);",answer:"20",mode:'or',accept:['20'],note:'<code>*(p+2)</code>=a[2]=30, <code>*p</code>=a[0]=10. 30-10=<b>20</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (삼항 연산자)',code:"int a=5, b=3;\nint m = (a>b) ? a : b;\nprintf(\"%d\", m);",answer:"5",mode:'or',accept:['5'],note:'a>b가 참이므로 a=5. (조건 ? 참값 : 거짓값)'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (삼항)',code:"int x = 7;\nString r = (x%2==0) ? \"even\" : \"odd\";\nSystem.out.print(r);",answer:"odd",mode:'or',accept:['odd'],note:'7%2=1≠0이므로 거짓 → "odd".'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (개수 세기)',code:"int c=0;\nfor(int i=1;i<=20;i++)\n  if(i%4==0) c++;\nSystem.out.print(c);",answer:"5",mode:'or',accept:['5'],note:'4의 배수: 4,8,12,16,20 → <b>5</b>개.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (2차원 배열)',code:"int[][] m = {{1,2},{3,4}};\nint s=0;\nfor(int i=0;i<2;i++)\n  for(int j=0;j<2;j++)\n    s += m[i][j];\nSystem.out.print(s);",answer:"10",mode:'or',accept:['10'],note:'1+2+3+4 = <b>10</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (ArrayList)',code:"ArrayList<Integer> list = new ArrayList<>();\nlist.add(1);\nlist.add(2);\nlist.add(3);\nSystem.out.print(list.size());",answer:"3",mode:'or',accept:['3'],note:'요소 3개 추가 → size()=<b>3</b>. (List는 size(), 배열은 length)'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (map+lambda)',code:"print(list(map(lambda x: x+10, [1,2,3])))",answer:"[11, 12, 13]",mode:'or',accept:['[11, 12, 13]','[11,12,13]'],note:'각 원소에 +10 적용. <code>map</code>은 list()로 감싸야 출력.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (컴프리헨션)',code:"print([x*x for x in range(1,5)])",answer:"[1, 4, 9, 16]",mode:'or',accept:['[1, 4, 9, 16]','[1,4,9,16]'],note:'range(1,5)=1,2,3,4의 제곱. (5 미포함)'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (문자열 메서드)',code:"s = \"hello world\"\nprint(s.upper().replace('O','0'))",answer:"HELL0 W0RLD",mode:'or',accept:['hell0 w0rld'],note:'upper()로 대문자화 후 O→0 치환. <b>HELL0 W0RLD</b>.'},
+  {dom:'보안/네트워크',q:'사용자가 자신도 모르게 공격자가 의도한 요청을 서버에 보내도록 하는 공격기법의 이름(약어)을 쓰시오.',code:null,answer:"CSRF (Cross-Site Request Forgery)",mode:'or',accept:['csrf','크로스 사이트 요청 위조','요청 위조'],note:'요청 위조로 행위 유발. XSS(정보 탈취)와 구분.'},
+  {dom:'보안/네트워크',q:'OSI 7계층을 1계층(물리)부터 순서대로 모두 쓰시오.',code:null,answer:"물리 → 데이터링크 → 네트워크 → 전송 → 세션 → 표현 → 응용",mode:'and',accept:['물리','데이터링크','네트워크','전송','세션','표현','응용'],note:'두문자 <b>물·데·네·전·세·표·응</b>. 빠짐없이.'},
+  {dom:'보안/네트워크',q:'공개키로 암호화하고 개인키로 복호화하며, RSA가 대표적인 암호화 방식의 이름을 쓰시오.',code:null,answer:"비대칭키 암호화 (공개키 암호화)",mode:'or',accept:['비대칭','공개키'],note:'키 2개 사용. 대칭키(DES, AES)와 구분. RSA, ECC가 대표.'},
+  {dom:'SW공학',q:'결합도 중 다른 모듈의 내부를 직접 참조하는 가장 강한(나쁜) 결합도는 무엇인가?',code:null,answer:"내용 결합도 (Content Coupling)",mode:'or',accept:['내용'],note:'결합도 6단계 중 최악. 가장 좋은 것은 자료 결합도.'},
+  {dom:'SW공학',q:'UML 다이어그램은 크게 두 가지로 분류된다. 무엇과 무엇인가?',code:null,answer:"구조적(정적) 다이어그램, 행위적(동적) 다이어그램",mode:'and',accept:['구조','행위'],note:'구조적=클래스·객체 / 행위적=유스케이스·시퀀스.'},
+  {dom:'SW공학',q:'호환되지 않는 인터페이스를 변환하여 함께 동작하게 하는 디자인 패턴의 이름과 분류를 쓰시오.',code:null,answer:"어댑터(Adapter), 구조 패턴",mode:'and',accept:['어댑터','구조'],note:'구조 패턴 대표. 인터페이스 변환. (어댑터=Adapter)'}
+],
+/* ============================== SET 4 ============================== */
+[
+  {dom:'SQL',q:'아래 <사원> 테이블에서 부서코드별 사원 수를 구하려 한다. 부서코드와 인원수("인원수"로 별칭)를 조회하는 SQL을 작성하시오. (GROUP BY 사용, 집계함수 적용)',code:"[사원]\n사번(CHAR(5))  이름(VARCHAR(20))  부서코드(CHAR(3))",answer:"SELECT 부서코드, COUNT(*) AS 인원수 FROM 사원 GROUP BY 부서코드;",mode:'and',accept:['select','부서코드','count','사원','group by'],note:'개수는 <b>COUNT(*)</b>, 그룹별 집계는 <b>GROUP BY</b>. 별칭은 AS.'},
+  {dom:'SQL',q:'아래 <학생> 테이블에서 중복을 제거하고 학과코드만 조회하려 한다. 빈칸을 채우시오.\n\nSELECT (______) 학과코드 FROM 학생;',code:"[학생]\n학번(CHAR(8))  이름(VARCHAR(20))  학과코드(CHAR(2))",answer:"DISTINCT",mode:'or',accept:['distinct'],note:'중복 제거 = <b>DISTINCT</b>.'},
+  {dom:'SQL',q:'아래 <학생> 테이블 생성문에서 학번을 기본키로 지정하려 한다. 빈칸에 들어갈 제약조건을 쓰시오.\n\nCREATE TABLE 학생 (\n  학번 CHAR(8) (__________),\n  이름 VARCHAR(20) );',code:null,answer:"PRIMARY KEY",mode:'and',accept:['primary','key'],note:'기본키 = <b>PRIMARY KEY</b> (NOT NULL + UNIQUE 효과).'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (중첩 반복)',code:"int s=0;\nfor(int i=1;i<=3;i++)\n  for(int j=1;j<=3;j++)\n    if(i==j) s+=i;\nprintf(\"%d\", s);",answer:"6",mode:'or',accept:['6'],note:'i==j일 때만 더함: i=j=1,2,3 → 1+2+3=<b>6</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (포인터 증가)',code:"int a[5] = {2,4,6,8,10};\nint *p = a;\np++;\np++;\nprintf(\"%d\", *p);",answer:"6",mode:'or',accept:['6'],note:'p를 2번 증가 → a[2]를 가리킴 → <b>6</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (나눗셈/나머지)',code:"int n = 17;\nprintf(\"%d %d\", n/5, n%5);",answer:"3 2",mode:'or',accept:['3 2','32'],note:'17÷5: 몫 3, 나머지 2. 출력 <b>3 2</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (switch fall-through)',code:"int x=2, r=0;\nswitch(x){\n  case 1: r+=1;\n  case 2: r+=2;\n  case 3: r+=3; break;\n  default: r+=10;\n}\nprintf(\"%d\", r);",answer:"5",mode:'or',accept:['5'],note:'case2 진입: r+=2=2 → r+=3=5 → break. <b>5</b>. (case3에 break 있음)'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (switch fall-through)',code:"int i=2, k=0;\nswitch(i){\n  case 1: k+=1;\n  case 2: k+=2;\n  case 3: k+=3;\n  default: k+=4;\n}\nSystem.out.print(k);",answer:"9",mode:'or',accept:['9'],note:'break 없음! case2부터: k+=2 → +3 → +4 = <b>9</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (비트 XOR)',code:"int x=6, y=4;\nSystem.out.print(x^y);",answer:"2",mode:'or',accept:['2'],note:'6=110, 4=100. XOR=010=<b>2</b> (다르면 1, 같으면 0).'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (전위/후위 증감)',code:"int i=5;\nSystem.out.print(++i);\nSystem.out.print(i++);\nSystem.out.print(i);",answer:"667",mode:'or',accept:['667'],note:'++i=6(증가후 출력) → i++=6(출력후 증가) → i=7. 합쳐서 <b>667</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (중첩 반복)',code:"int s=0;\nfor(int i=0;i<3;i++)\n  for(int j=0;j<2;j++)\n    s++;\nSystem.out.print(s);",answer:"6",mode:'or',accept:['6'],note:'3×2 = <b>6</b>회 실행.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (음수 인덱스)',code:"a = [10,20,30,40,50]\nprint(a[-2])",answer:"40",mode:'or',accept:['40'],note:'음수 인덱스는 뒤에서부터. -1=50, -2=<b>40</b>.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (슬라이스 대입)',code:"a = [1,2,3,4,5]\na[1:4] = [9]\nprint(a)",answer:"[1, 9, 5]",mode:'or',accept:['[1, 9, 5]','[1,9,5]'],note:'인덱스 1~3(값 2,3,4)을 [9]로 통째 교체. 길이 줄어듦.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (range 합)',code:"print(sum(range(1,6)))",answer:"15",mode:'or',accept:['15'],note:'range(1,6)=1,2,3,4,5 (6 미포함). 합=<b>15</b>.'},
+  {dom:'보안/네트워크',q:'여러 대의 좀비 PC를 동원하여 대량의 트래픽으로 시스템을 마비시키는 분산 서비스 거부 공격의 약어를 쓰시오.',code:null,answer:"DDoS (분산 서비스 거부)",mode:'or',accept:['ddos','분산 서비스 거부'],note:'DoS=단일, DDoS=분산(여러 좀비 PC 동원).'},
+  {dom:'보안/네트워크',q:'IP 주소를 물리적 주소(MAC)로 변환하는 프로토콜의 이름(약어)을 쓰시오.',code:null,answer:"ARP (Address Resolution Protocol)",mode:'or',accept:['arp'],note:'반대(MAC→IP)는 RARP.'},
+  {dom:'보안/네트워크',q:'접근통제 모델 중 "역할(직책)에 따라 권한을 부여"하는 모델의 약어를 쓰시오.',code:null,answer:"RBAC (Role-Based Access Control)",mode:'or',accept:['rbac'],note:'DAC=소유자 임의, MAC=보안등급 강제, RBAC=역할 기반.'},
+  {dom:'SW공학',q:'응집도를 강한 것(좋은 품질)부터 약한 것 순으로, 처음 3가지만 쓰시오.',code:null,answer:"기능적 → 순차적 → 교환적(통신적)",mode:'and',accept:['기능적','순차적'],note:'전체: 기·순·교·절·시·논·우. 기능적이 최고.'},
+  {dom:'SW공학',q:'위험 분석을 중심으로 반복적으로 개발하며 대규모 프로젝트에 적합한 SW 개발 모델은?',code:null,answer:"나선형 모델 (Spiral Model)",mode:'or',accept:['나선형','spiral','나선'],note:'폭포수(순차), 프로토타입(시제품), 나선형(위험분석 반복).'},
+  {dom:'SW공학',q:'객체지향 설계 원칙(SOLID) 중 "확장에는 열려 있고 수정에는 닫혀 있어야 한다"는 원칙의 약어는?',code:null,answer:"OCP (Open-Closed Principle)",mode:'or',accept:['ocp','개방-폐쇄','개방 폐쇄','개방폐쇄'],note:'SRP/OCP/LSP/ISP/DIP 중 OCP가 단답 빈출.'}
+],
+/* ============================== SET 5 ============================== */
+[
+  {dom:'SQL',q:'아래 <성적> 테이블에서 점수가 전체 평균보다 높은 학생의 학번을 조회하는 SQL을 작성하시오. (서브쿼리 사용)',code:"[성적]\n학번(CHAR(8))  과목명(VARCHAR(20))  점수(INT)",answer:"SELECT 학번 FROM 성적\nWHERE 점수 > (SELECT AVG(점수) FROM 성적);",mode:'and',accept:['select','학번','성적','where','점수','avg'],note:'부속질의(서브쿼리). 평균은 괄호 안에서 먼저 계산.'},
+  {dom:'SQL',q:'두 SELECT 결과를 합치되 중복된 행을 제거하는 집합 연산자의 이름을 쓰시오. (중복을 남기려면 뒤에 ALL을 붙임)',code:null,answer:"UNION",mode:'or',accept:['union'],note:'중복 제거=UNION, 중복 유지=UNION ALL.'},
+  {dom:'SQL',q:'관리자가 사용자 "kim"으로부터 <학생> 테이블의 SELECT 권한을 회수하는 SQL을 작성하시오.',code:"[학생]\n학번(CHAR(8))  이름(VARCHAR(20))  학과(VARCHAR(20))",answer:"REVOKE SELECT ON 학생 FROM kim;",mode:'and',accept:['revoke','select','학생','from','kim'],note:'권한 회수 = <b>REVOKE … ON … FROM …</b>. 부여는 GRANT … TO.'},
+  {dom:'C',q:'다음 재귀함수 C 코드에서 f(6)의 출력값을 쓰시오. (피보나치)',code:"int f(int n){\n  if(n<=2) return 1;\n  return f(n-1) + f(n-2);\n}\nprintf(\"%d\", f(6));",answer:"8",mode:'or',accept:['8'],note:'피보나치: 1,1,2,3,5,8. f(6)=<b>8</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (문자열 길이)',code:"char s[] = \"HELLO\";\nprintf(\"%d\", strlen(s));",answer:"5",mode:'or',accept:['5'],note:'strlen은 널문자(\\0) 제외한 문자 수 = <b>5</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (구조체 배열)',code:"struct S { int a, b; };\nstruct S arr[3] = {{1,2},{3,4},{5,6}};\nstruct S *p = arr;\nprintf(\"%d\", (p+1)->a + (p+2)->b);",answer:"9",mode:'or',accept:['9'],note:'(p+1)->a=arr[1].a=3, (p+2)->b=arr[2].b=6. 3+6=<b>9</b>.'},
+  {dom:'C',q:'다음 C 코드의 출력값을 쓰시오. (비트 시프트)',code:"int a = 3;\nprintf(\"%d %d\", a<<2, a>>1);",answer:"12 1",mode:'or',accept:['12 1','121'],note:'3<<2=3×4=12, 3>>1=3÷2=1. 출력 <b>12 1</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (static 메서드)',code:"static int square(int n){ return n*n; }\n// main에서:\nSystem.out.print(square(5) + square(3));",answer:"34",mode:'or',accept:['34'],note:'square(5)=25, square(3)=9. 25+9=<b>34</b>.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (추상클래스 오버라이딩)',code:"abstract class Shape { abstract double area(); }\nclass Circle extends Shape {\n  double r;\n  Circle(double r){ this.r=r; }\n  double area(){ return 3*r*r; }\n}\nShape s = new Circle(2);\nSystem.out.print((int)s.area());",answer:"12",mode:'or',accept:['12'],note:'area()=3×2×2=12. 추상 메서드를 자식이 구현.'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (최댓값 찾기)',code:"int[] arr = {5,3,8,1};\nint max = arr[0];\nfor(int x : arr)\n  if(x > max) max = x;\nSystem.out.print(max);",answer:"8",mode:'or',accept:['8'],note:'배열 중 최댓값 = <b>8</b>. 향상된 for문(for-each).'},
+  {dom:'Java',q:'다음 Java 코드의 출력값을 쓰시오. (거듭제곱 누적)',code:"int r=1;\nfor(int i=0;i<3;i++)\n  r *= 2;\nSystem.out.print(r);",answer:"8",mode:'or',accept:['8'],note:'2를 3번 곱함 = 2³ = <b>8</b>.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (튜플)',code:"t = (1,2,3)\nprint(t[0] + t[2])",answer:"4",mode:'or',accept:['4'],note:'t[0]=1, t[2]=3. 1+3=<b>4</b>. 튜플은 인덱싱 가능.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (zip)',code:"print(list(zip([1,2,3], ['a','b','c'])))",answer:"[(1, 'a'), (2, 'b'), (3, 'c')]",mode:'or',accept:["[(1, 'a'), (2, 'b'), (3, 'c')]","[(1,'a'),(2,'b'),(3,'c')]"],note:'zip은 여러 리스트를 튜플 쌍으로 묶음.'},
+  {dom:'Python',q:'다음 Python 코드의 출력값을 쓰시오. (중첩 리스트)',code:"m = [[1,2,3],[4,5,6]]\nprint(m[1][2])",answer:"6",mode:'or',accept:['6'],note:'m[1]=[4,5,6], 그 중 [2]=<b>6</b>.'},
+  {dom:'보안/네트워크',q:'네트워크 패킷을 몰래 가로채 정보를 훔쳐보는 수동적 공격기법의 이름을 쓰시오.',code:null,answer:"스니핑 (Sniffing)",mode:'or',accept:['스니핑','sniffing'],note:'스니핑=엿보기(수동적). 스푸핑=위장(능동적).'},
+  {dom:'보안/네트워크',q:'IPv4와 IPv6의 주소 비트 수를 각각 쓰시오.',code:null,answer:"IPv4 = 32비트, IPv6 = 128비트",mode:'and',accept:['32','128'],note:'IPv6는 IPv4 주소 고갈 문제를 해결하기 위해 등장.'},
+  {dom:'보안/네트워크',q:'한 번의 인증으로 여러 시스템에 접근할 수 있는 통합 인증 시스템의 약어를 쓰시오.',code:null,answer:"SSO (Single Sign-On)",mode:'or',accept:['sso'],note:'OTP=일회용 비밀번호, 커버로스=티켓 기반 인증.'},
+  {dom:'SW공학',q:'모듈의 독립성을 높이기 위해 결합도와 응집도를 각각 어떻게 만들어야 하는지 쓰시오.',code:null,answer:"결합도는 약하게(낮게), 응집도는 강하게(높게)",mode:'and',accept:['결합도','응집도'],note:'결합도↓ 응집도↑ = 좋은 모듈화.'},
+  {dom:'SW공학',q:'블랙박스 테스트 기법 중 입력 범위의 경계값을 집중 테스트하는 기법의 이름을 쓰시오.',code:null,answer:"경계값 분석 (Boundary Value Analysis)",mode:'or',accept:['경계값','boundary'],note:'동치 분할과 함께 블랙박스 대표 기법.'},
+  {dom:'SW공학',q:'디자인 패턴을 처음 제안하여 23개로 정리한 4명의 그룹을 무엇이라 부르는가? (약어)',code:null,answer:"GoF (Gang of Four)",mode:'or',accept:['gof','gang of four'],note:'생성·구조·행위 3분류, 총 23개 패턴.'}
+]
+];
+
+// 현재 선택된 세트 (기본 0)
+let currentSet = 0;
+let questions = questionSets[currentSet];
+const SET_COUNT = questionSets.length;
+let TOTAL=questions.length;
+const POINTS_EACH=5;
+const PASS_SCORE=60;
+const EXAM_SECONDS=60*60;
+
+let answers=new Array(TOTAL).fill('');
+let current=0;
+let timerInterval=null;
+let secondsLeft=EXAM_SECONDS;
+let graded=[]; // bool per question
+let manualOverride={}; // index -> bool
+
+const startScreen=document.getElementById('startScreen');
+const examScreen=document.getElementById('examScreen');
+const resultScreen=document.getElementById('resultScreen');
+const timerEl=document.getElementById('timer');
+const timerText=document.getElementById('timerText');
+
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* ===== SET SELECTION ===== */
+const completedSets={}; // setIndex -> score
+function selectSet(idx){
+  currentSet=idx;
+  document.querySelectorAll('.set-btn').forEach(b=>b.classList.toggle('active',+b.dataset.set===idx));
+}
+function refreshSetButtons(){
+  document.querySelectorAll('.set-btn').forEach(b=>{
+    const idx=+b.dataset.set;
+    const base='SET '+(idx+1);
+    if(completedSets.hasOwnProperty(idx)){
+      b.innerHTML=base+' <span class="done-mark">'+completedSets[idx]+'점</span>';
+    }else{
+      b.innerHTML=base;
+    }
+    b.classList.toggle('active',idx===currentSet);
+  });
+}
+
+/* ===== START ===== */
+function startExam(){
+  questions=questionSets[currentSet];
+  TOTAL=questions.length;
+  answers=new Array(TOTAL).fill('');
+  document.getElementById('topbarSet').textContent='SET '+(currentSet+1)+' / '+SET_COUNT;
+  startScreen.style.display='none';
+  examScreen.classList.add('active');
+  timerEl.style.display='flex';
+  current=0;
+  renderQuestion();
+  renderDots();
+  startTimer();
+  window.scrollTo(0,0);
+}
+
+function startTimer(){
+  secondsLeft=EXAM_SECONDS;
+  updateTimer();
+  timerInterval=setInterval(()=>{
+    secondsLeft--;
+    updateTimer();
+    if(secondsLeft<=0){clearInterval(timerInterval);submitExam(true)}
+  },1000);
+}
+function updateTimer(){
+  const m=Math.floor(secondsLeft/60),s=secondsLeft%60;
+  timerText.textContent=`${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  timerEl.classList.toggle('warn',secondsLeft<=600&&secondsLeft>120);
+  timerEl.classList.toggle('danger',secondsLeft<=120);
+}
+
+/* ===== QUESTION RENDER ===== */
+function renderQuestion(){
+  const q=questions[current];
+  const codeHTML=q.code?`<div class="q-code">${escapeHtml(q.code)}</div>`:'';
+  const isLast=current===TOTAL-1;
+  document.getElementById('qContainer').innerHTML=`
+    <div class="q-card">
+      <div class="q-top">
+        <span class="q-num">문항 ${current+1}</span>
+        <span class="q-dom">${q.dom}</span>
+        <span class="q-points">5점</span>
+      </div>
+      <div class="q-text">${q.q}</div>
+      ${codeHTML}
+      <textarea class="q-input" id="qInput" placeholder="답을 입력하세요" spellcheck="false">${escapeHtml(answers[current])}</textarea>
+      <div class="q-nav">
+        <button class="nav-btn" onclick="prevQ()" ${current===0?'disabled':''}>← 이전</button>
+        ${isLast
+          ? `<button class="submit-btn" onclick="confirmSubmit()">제출하고 채점 ✓</button>`
+          : `<button class="nav-btn primary" onclick="nextQ()">다음 →</button>`}
+      </div>
+    </div>`;
+  const input=document.getElementById('qInput');
+  input.addEventListener('input',()=>{
+    answers[current]=input.value;
+    updateProgress();
+    renderDots();
+  });
+  input.focus();
+  document.getElementById('curNum').textContent=current+1;
+  document.getElementById('pbarFill').style.width=((current+1)/TOTAL*100)+'%';
+  updateProgress();
+}
+function updateProgress(){
+  const cnt=answers.filter(a=>a.trim()!=='').length;
+  document.getElementById('answeredCount').textContent=cnt;
+}
+function renderDots(){
+  const dotsEl=document.getElementById('answeredDots');
+  dotsEl.innerHTML=questions.map((_,i)=>{
+    const cls=['adot'];
+    if(answers[i].trim()!=='')cls.push('answered');
+    if(i===current)cls.push('current');
+    return `<div class="${cls.join(' ')}" onclick="jumpTo(${i})">${i+1}</div>`;
+  }).join('');
+}
+function jumpTo(i){answers[current]=document.getElementById('qInput').value;current=i;renderQuestion();renderDots();window.scrollTo(0,0)}
+function nextQ(){answers[current]=document.getElementById('qInput').value;if(current<TOTAL-1){current++;renderQuestion();renderDots();window.scrollTo(0,0)}}
+function prevQ(){answers[current]=document.getElementById('qInput').value;if(current>0){current--;renderQuestion();renderDots();window.scrollTo(0,0)}}
+
+function confirmSubmit(){
+  answers[current]=document.getElementById('qInput').value;
+  const unanswered=answers.filter(a=>a.trim()==='').length;
+  let msg='제출하고 채점할까요?';
+  if(unanswered>0)msg=`아직 ${unanswered}개 문항이 비어 있습니다.\n그래도 제출하고 채점할까요?`;
+  if(confirm(msg))submitExam(false);
+}
+
+/* ===== GRADING ===== */
+function gradeAnswer(q,ans){
+  if(!ans||ans.trim()==='')return false;
+  const a=ans.toLowerCase().replace(/\s+/g,' ').trim();
+  if(q.mode==='or'){
+    // 대체 표기 중 하나라도 포함되면 정답
+    return q.accept.some(k=>a.includes(k.toLowerCase()));
+  }
+  // mode === 'and': 모든 키워드가 포함되어야 정답
+  return q.accept.every(k=>a.includes(k.toLowerCase()));
+}
+
+function submitExam(auto){
+  clearInterval(timerInterval);
+  if(auto)answers[current]=document.getElementById('qInput')?document.getElementById('qInput').value:answers[current];
+  graded=questions.map((q,i)=>gradeAnswer(q,answers[i]));
+  manualOverride={};
+  examScreen.classList.remove('active');
+  resultScreen.classList.add('active');
+  timerEl.style.display='none';
+  renderResult();
+  window.scrollTo(0,0);
+}
+
+function getScore(){
+  let correct=0;
+  questions.forEach((q,i)=>{
+    const isC=manualOverride.hasOwnProperty(i)?manualOverride[i]:graded[i];
+    if(isC)correct++;
+  });
+  return {correct,score:correct*POINTS_EACH};
+}
+
+function renderResult(){
+  const {correct,score}=getScore();
+  completedSets[currentSet]=score;
+  // ring
+  const circ=document.getElementById('scoreCircle');
+  const dash=490;
+  const offset=dash-(dash*score/100);
+  document.getElementById('scoreVal').textContent=score;
+  const pass=score>=PASS_SCORE;
+  circ.style.stroke=pass?'#7fb069':'#e06c75';
+  setTimeout(()=>{circ.style.transition='stroke-dashoffset 1s ease';circ.style.strokeDashoffset=offset},100);
+
+  const verdict=document.getElementById('verdict');
+  const verdictSub=document.getElementById('verdictSub');
+  verdict.textContent=pass?'합격 가능 ✓':'합격선 미달';
+  verdict.className='verdict '+(pass?'pass':'fail');
+  verdictSub.textContent=`SET ${currentSet+1} · ${correct} / 20 문항 정답 · 합격선 ${PASS_SCORE}점 (12문항)`;
+
+  renderDomStats();
+  renderAdvice(score,pass);
+  renderReview('all');
+}
+
+function renderDomStats(){
+  const doms={};
+  questions.forEach((q,i)=>{
+    if(!doms[q.dom])doms[q.dom]={total:0,correct:0};
+    doms[q.dom].total++;
+    const isC=manualOverride.hasOwnProperty(i)?manualOverride[i]:graded[i];
+    if(isC)doms[q.dom].correct++;
+  });
+  const order=['SQL','C','Java','Python','보안/네트워크','SW공학'];
+  document.getElementById('domStats').innerHTML=order.filter(d=>doms[d]).map(d=>{
+    const s=doms[d];
+    const pct=Math.round(s.correct/s.total*100);
+    const lvl=pct>=70?'high':pct>=40?'mid':'low';
+    return `<div class="dom-stat">
+      <div class="dom-stat-top"><span class="dn">${d}</span><span class="dscore"><b>${s.correct}</b>/${s.total} (${pct}%)</span></div>
+      <div class="dom-track"><div class="dom-fill ${lvl}" style="width:0%" data-w="${pct}"></div></div>
+    </div>`;
+  }).join('');
+  setTimeout(()=>{document.querySelectorAll('.dom-fill').forEach(el=>{el.style.width=el.dataset.w+'%'})},150);
+}
+
+function renderAdvice(score,pass){
+  const doms={};
+  questions.forEach((q,i)=>{
+    if(!doms[q.dom])doms[q.dom]={total:0,correct:0};
+    doms[q.dom].total++;
+    const isC=manualOverride.hasOwnProperty(i)?manualOverride[i]:graded[i];
+    if(isC)doms[q.dom].correct++;
+  });
+  const weak=Object.entries(doms).filter(([d,s])=>s.correct/s.total<0.5).map(([d])=>d);
+  let html='';
+  if(pass){
+    html=`<div class="advice"><span class="ttl">✓ 합격선을 넘었습니다</span>현재 페이스를 유지하세요. ${weak.length>0?`다만 <b>${weak.join(', ')}</b> 영역이 약하니 그 부분만 더 보완하면 안정권입니다.`:'전 영역이 고르게 나왔습니다. 실수만 줄이면 충분합니다.'} 실제 시험은 손글씨이니 키워드 철자를 정확히 쓰는 연습을 권합니다.</div>`;
+  }else{
+    html=`<div class="advice warn"><span class="ttl">⚠ 합격선까지 ${PASS_SCORE-score}점 부족</span>${weak.length>0?`특히 <b>${weak.join(', ')}</b> 영역을 집중 복습하세요.`:''} 코딩이 어렵다면 단답·SQL·이론에서 확실히 점수를 확보하는 전략이 효과적입니다. 아래 틀린 문항의 해설을 꼭 확인하고, 며칠 뒤 다시 풀어보세요.</div>`;
+  }
+  document.getElementById('adviceBox').innerHTML=html;
+}
+
+let reviewFilter='all';
+function filterReview(f){
+  reviewFilter=f;
+  document.querySelectorAll('.rfbtn').forEach(b=>b.classList.toggle('active',b.dataset.rf===f));
+  renderReview(f);
+}
+function renderReview(f){
+  const cont=document.getElementById('reviewContainer');
+  let html='';
+  questions.forEach((q,i)=>{
+    const isC=manualOverride.hasOwnProperty(i)?manualOverride[i]:graded[i];
+    const empty=!answers[i]||answers[i].trim()==='';
+    let status=empty?'skip':(isC?'correct':'wrong');
+    if(f==='wrong'&&status!=='wrong')return;
+    if(f==='skip'&&status!=='skip')return;
+    const statusLabel=status==='correct'?'정답':status==='wrong'?'오답':'미작성';
+    const codeHTML=q.code?`<div class="rev-code">${escapeHtml(q.code)}</div>`:'';
+    html+=`<div class="rev-card ${status}">
+      <div class="rev-top">
+        <span class="rev-num">문항 ${i+1}</span>
+        <span class="rev-dom">${q.dom}</span>
+        <span class="rev-status ${status}">${statusLabel}</span>
+      </div>
+      <div class="rev-q">${q.q}</div>
+      ${codeHTML}
+      <div class="rev-yours"><span class="yl">내 답</span><span class="yv ${empty?'empty':''}">${empty?'(작성 안 함)':escapeHtml(answers[i])}</span></div>
+      <div class="rev-answer">
+        <div class="al">모범답안</div>
+        <div class="av">${escapeHtml(q.answer)}</div>
+        <div class="anote">${q.note}</div>
+      </div>
+      <div class="rev-selfcheck">
+        <span class="sc-label">채점 조정:</span>
+        <button class="sc-btn correct ${isC?'on':''}" onclick="override(${i},true)">✓ 맞음</button>
+        <button class="sc-btn wrong ${!isC?'on':''}" onclick="override(${i},false)">✗ 틀림</button>
+      </div>
+    </div>`;
+  });
+  if(html==='')html='<div style="text-align:center;color:var(--ink-faint);font-family:var(--mono);font-size:13px;padding:30px">해당하는 문항이 없습니다 👍</div>';
+  cont.innerHTML=html;
+}
+
+function override(i,val){
+  manualOverride[i]=val;
+  renderResult();
+  // keep current filter
+  filterReview(reviewFilter);
+}
+
+function resetExam(){
+  answers=new Array(TOTAL).fill('');
+  current=0;graded=[];manualOverride={};secondsLeft=EXAM_SECONDS;
+  resultScreen.classList.remove('active');
+  startScreen.style.display='block';
+  const circ=document.getElementById('scoreCircle');
+  circ.style.transition='none';circ.style.strokeDashoffset=490;
+  // 다음 미완료 세트로 자동 이동 (없으면 현재 유지)
+  for(let i=0;i<SET_COUNT;i++){
+    if(!completedSets.hasOwnProperty(i)){currentSet=i;break;}
+  }
+  refreshSetButtons();
+  window.scrollTo(0,0);
+}
+</script>
+</body>
+</html>

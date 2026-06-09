@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>정보처리기사 실기 · 코드 추적 (C·Java·Python)</title>
+<style>
+  :root{
+    --bg:#0f1419;
+    --panel:#1a2029;
+    --panel-2:#222b36;
+    --line:#2d3744;
+    --line-soft:#232c37;
+    --ink:#e6edf3;
+    --ink-dim:#8b98a5;
+    --ink-faint:#5e6b78;
+    --amber:#f0a868;
+    --amber-soft:#3a2d1f;
+    --cyan:#56b6c2;
+    --green:#7fb069;
+    --red:#e06c75;
+    --violet:#c490d1;
+    --blue:#61afef;
+    --c-color:#61afef;     /* C = blue */
+    --java-color:#e0935c;  /* Java = orange */
+    --py-color:#7fb069;    /* Python = green */
+    --mono:'SF Mono',ui-monospace,'Cascadia Code','Source Code Pro',Menlo,Consolas,monospace;
+    --sans:'Pretendard',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);line-height:1.65;-webkit-font-smoothing:antialiased;padding-bottom:80px}
+  ::selection{background:var(--amber);color:#0f1419}
+  code,kbd,.mono{font-family:var(--mono)}
+
+  .topbar{position:sticky;top:0;z-index:50;background:rgba(15,20,25,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+  .topbar-inner{max-width:880px;margin:0 auto;padding:13px 20px;display:flex;align-items:center;gap:14px}
+  .dots{display:flex;gap:7px;flex-shrink:0}
+  .dots i{width:12px;height:12px;border-radius:50%;display:block}
+  .dots i:nth-child(1){background:#e06c75}
+  .dots i:nth-child(2){background:#e5c07b}
+  .dots i:nth-child(3){background:#7fb069}
+  .topbar-title{font-family:var(--mono);font-size:13px;color:var(--ink-dim);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .topbar-title b{color:var(--amber);font-weight:600}
+  .progress-mini{margin-left:auto;font-family:var(--mono);font-size:12px;color:var(--ink-faint);flex-shrink:0}
+  .progress-mini b{color:var(--green)}
+
+  .hero{max-width:880px;margin:0 auto;padding:46px 20px 30px}
+  .kicker{font-family:var(--mono);font-size:12.5px;letter-spacing:.5px;color:var(--amber);margin-bottom:18px;display:flex;align-items:center;gap:8px}
+  .kicker .blink{width:8px;height:15px;background:var(--amber);display:inline-block;animation:blink 1.1s steps(2) infinite}
+  @keyframes blink{0%,50%{opacity:1}51%,100%{opacity:0}}
+  .hero h1{font-size:clamp(28px,6vw,42px);font-weight:800;line-height:1.15;letter-spacing:-.02em;margin-bottom:14px}
+  .hero h1 .hl{color:var(--amber)}
+  .hero .lead{color:var(--ink-dim);font-size:15.5px;max-width:640px}
+  .hero .meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:24px}
+  .chip{font-family:var(--mono);font-size:12px;padding:6px 12px;border-radius:99px;background:var(--panel);border:1px solid var(--line);color:var(--ink-dim)}
+  .chip b{color:var(--ink)}
+  .chip.hot{border-color:var(--amber-soft);color:var(--amber)}
+  .chip.warn{border-color:#4a2520;color:var(--red)}
+
+  .alert{
+    max-width:880px;margin:0 auto;padding:0 20px;
+  }
+  .alert-box{
+    background:#2a1d1a;border:1px solid #4a2c20;border-left:3px solid var(--red);
+    border-radius:0 8px 8px 0;padding:14px 17px;font-size:13.5px;color:var(--ink-dim);
+  }
+  .alert-box b{color:var(--red)}
+  .alert-box .ttl{color:var(--amber);font-weight:700;font-family:var(--mono);font-size:12px;display:block;margin-bottom:5px}
+
+  .navtabs{position:sticky;top:48px;z-index:40;max-width:880px;margin:0 auto;padding:0 12px;display:flex;gap:4px;overflow-x:auto;background:rgba(15,20,25,.92);backdrop-filter:blur(12px);-ms-overflow-style:none;scrollbar-width:none}
+  .navtabs::-webkit-scrollbar{display:none}
+  .navtab{flex-shrink:0;font-family:var(--mono);font-size:13px;padding:12px 14px;color:var(--ink-faint);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:.18s;white-space:nowrap}
+  .navtab:hover{color:var(--ink-dim)}
+  .navtab.active{color:var(--amber);border-bottom-color:var(--amber)}
+
+  .wrap{max-width:880px;margin:0 auto;padding:0 20px}
+  section{padding:38px 0 10px;scroll-margin-top:96px}
+  .sec-head{display:flex;align-items:baseline;gap:12px;margin-bottom:6px;flex-wrap:wrap}
+  .sec-num{font-family:var(--mono);font-size:13px;color:var(--amber);font-weight:600}
+  .sec-head h2{font-size:23px;font-weight:700;letter-spacing:-.01em}
+  .lang-badge{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 9px;border-radius:5px;letter-spacing:.3px}
+  .lang-badge.c{background:#16263a;color:var(--c-color)}
+  .lang-badge.java{background:#33271c;color:var(--java-color)}
+  .lang-badge.py{background:#1f2e1c;color:var(--py-color)}
+  .sec-desc{color:var(--ink-dim);font-size:14.5px;margin-bottom:26px}
+
+  .concept{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);margin-bottom:18px;overflow:hidden}
+  .concept-head{padding:15px 18px;display:flex;align-items:center;gap:11px;border-bottom:1px solid var(--line-soft)}
+  .concept-head .tag{font-family:var(--mono);font-size:11px;font-weight:700;padding:3px 8px;border-radius:5px;background:var(--amber-soft);color:var(--amber);flex-shrink:0;letter-spacing:.3px}
+  .concept-head .tag.cyan{background:#1b3236;color:var(--cyan)}
+  .concept-head .tag.violet{background:#2e2336;color:var(--violet)}
+  .concept-head .tag.green{background:#1f2e1c;color:var(--green)}
+  .concept-head h3{font-size:16.5px;font-weight:700}
+  .concept-head .freq{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--ink-faint);flex-shrink:0}
+  .star{color:var(--amber)}
+  .concept-body{padding:16px 18px}
+  .concept-body p{font-size:14.5px;color:var(--ink);margin-bottom:12px}
+  .concept-body p:last-child{margin-bottom:0}
+  .concept-body .muted{color:var(--ink-dim);font-size:13.5px}
+  .concept-body ul{list-style:none;margin:10px 0}
+  .concept-body li{font-size:14px;padding:5px 0 5px 20px;position:relative;color:var(--ink)}
+  .concept-body li::before{content:'▸';position:absolute;left:2px;color:var(--amber);font-size:12px;top:6px}
+  .concept-body li b{color:var(--cyan);font-weight:600}
+
+  .code{background:#0c1116;border:1px solid var(--line);border-radius:8px;font-family:var(--mono);font-size:13.5px;line-height:1.7;margin:12px 0;overflow:hidden}
+  .code-top{display:flex;align-items:center;gap:7px;padding:8px 13px;border-bottom:1px solid var(--line-soft);background:var(--panel-2)}
+  .code-top span{font-size:11px;color:var(--ink-faint);font-family:var(--mono)}
+  .code-top .lbl{margin-left:auto;color:var(--cyan)}
+  .code pre{padding:13px 15px;overflow-x:auto;white-space:pre}
+  .kw{color:var(--amber);font-weight:600}
+  .cl{color:var(--violet)}
+  .fn{color:var(--blue)}
+  .st{color:var(--green)}
+  .cm{color:var(--ink-faint);font-style:italic}
+  .nm{color:var(--cyan)}
+  .out{color:var(--green)}
+
+  .callout{border-left:3px solid var(--amber);background:var(--amber-soft);padding:11px 15px;border-radius:0 7px 7px 0;margin:13px 0;font-size:13.5px}
+  .callout.warn{border-left-color:var(--red);background:#33211f}
+  .callout.warn b{color:var(--red)}
+  .callout b{color:var(--amber)}
+  .callout .ic{font-weight:700;margin-right:4px}
+
+  /* result chip */
+  .result-line{
+    display:flex;align-items:center;gap:8px;margin-top:10px;padding:10px 13px;
+    background:#0c1116;border:1px solid var(--line-soft);border-radius:7px;font-family:var(--mono);font-size:13px;
+  }
+  .result-line .arrow{color:var(--amber)}
+  .result-line .val{color:var(--green);font-weight:600}
+
+  /* ===== TRACE SIMULATOR ===== */
+  .tracer{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;margin-bottom:20px}
+  .tracer-head{padding:14px 18px;border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:10px}
+  .tracer-head h3{font-size:15.5px;font-weight:700}
+  .tracer-head .lang-badge{margin-left:auto}
+  .tracer-body{display:grid;grid-template-columns:1fr;gap:0}
+  @media(min-width:680px){.tracer-body{grid-template-columns:1.3fr 1fr}}
+  .tracer-code{background:#0c1116;padding:14px 0;overflow-x:auto;border-right:1px solid var(--line-soft)}
+  .tcode-line{
+    font-family:var(--mono);font-size:13px;line-height:1.85;padding:1px 18px;white-space:pre;
+    border-left:3px solid transparent;transition:.2s;color:var(--ink-dim);
+  }
+  .tcode-line.active{background:var(--amber-soft);border-left-color:var(--amber);color:var(--ink)}
+  .tcode-line.done{color:var(--ink-faint)}
+  .tcode-line .ln{color:var(--ink-faint);margin-right:14px;display:inline-block;width:16px;text-align:right;user-select:none}
+  .tracer-state{padding:16px 18px;display:flex;flex-direction:column;gap:12px}
+  .state-vars{display:flex;flex-direction:column;gap:7px}
+  .state-label{font-family:var(--mono);font-size:11px;color:var(--ink-faint);letter-spacing:.5px;text-transform:uppercase}
+  .var-row{display:flex;align-items:center;gap:8px;font-family:var(--mono);font-size:13.5px;padding:6px 10px;background:#0c1116;border:1px solid var(--line-soft);border-radius:6px;transition:.25s}
+  .var-row.changed{border-color:var(--amber);background:var(--amber-soft)}
+  .var-row .vname{color:var(--cyan);min-width:30px}
+  .var-row .veq{color:var(--ink-faint)}
+  .var-row .vval{color:var(--ink);font-weight:600}
+  .state-output{margin-top:4px}
+  .output-box{font-family:var(--mono);font-size:13px;background:#0c1116;border:1px solid var(--line-soft);border-radius:6px;padding:10px 12px;min-height:38px;color:var(--green);white-space:pre-wrap;word-break:break-all}
+  .output-box .cursor{display:inline-block;width:7px;height:14px;background:var(--green);animation:blink 1.1s steps(2) infinite;vertical-align:middle;margin-left:1px}
+  .tracer-controls{padding:13px 18px;border-top:1px solid var(--line-soft);display:flex;align-items:center;gap:10px}
+  .t-btn{font-family:var(--mono);font-size:13px;padding:9px 16px;border-radius:7px;cursor:pointer;border:1px solid var(--line);background:var(--panel-2);color:var(--ink);transition:.15s}
+  .t-btn:hover{border-color:var(--amber);color:var(--amber)}
+  .t-btn:active{transform:scale(.97)}
+  .t-btn.primary{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber);flex:1}
+  .t-btn:disabled{opacity:.4;cursor:not-allowed}
+  .t-step{font-family:var(--mono);font-size:12px;color:var(--ink-faint);margin-left:auto}
+  .t-note{padding:0 18px 15px;font-size:13px;color:var(--ink-dim);min-height:20px}
+  .t-note b{color:var(--amber)}
+
+  /* flashcards */
+  .card-controls{display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap}
+  .card-counter{font-family:var(--mono);font-size:13px;color:var(--ink-dim)}
+  .card-counter b{color:var(--amber)}
+  .flashcard{perspective:1600px;height:240px;margin-bottom:14px;cursor:pointer}
+  .flashcard-inner{position:relative;width:100%;height:100%;transition:transform .55s cubic-bezier(.4,.2,.2,1);transform-style:preserve-3d}
+  .flashcard.flipped .flashcard-inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border-radius:var(--radius);padding:22px;display:flex;flex-direction:column;border:1px solid var(--line)}
+  .face-front{background:var(--panel);justify-content:center;align-items:center;text-align:center}
+  .face-front .q-tag{font-family:var(--mono);font-size:11px;color:var(--amber);margin-bottom:13px;letter-spacing:.5px}
+  .face-front .q-term{font-size:18px;font-weight:700;letter-spacing:-.01em;margin-bottom:8px;font-family:var(--mono);white-space:pre-wrap;line-height:1.5}
+  .face-front .q-hint{font-size:13px;color:var(--ink-faint);font-family:var(--mono)}
+  .face-front .tap{position:absolute;bottom:14px;right:16px;font-size:11px;color:var(--ink-faint);font-family:var(--mono)}
+  .face-back{background:linear-gradient(145deg,#1c242e,#171e26);transform:rotateY(180deg);justify-content:center;border-color:var(--amber-soft)}
+  .face-back .a-label{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:10px;letter-spacing:.5px}
+  .face-back .a-text{font-size:15px;line-height:1.6}
+  .face-back .a-text b{color:var(--amber)}
+  .face-back .a-text code{background:#0c1116;padding:2px 6px;border-radius:4px;font-size:13px;color:var(--cyan)}
+  .face-back .a-key{margin-top:12px;padding-top:12px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--ink-dim)}
+  .face-back .a-key b{color:var(--cyan)}
+  .deck-nav{display:flex;gap:10px}
+  .btn{font-family:var(--mono);font-size:13px;padding:10px 18px;border-radius:8px;cursor:pointer;border:1px solid var(--line);background:var(--panel);color:var(--ink);transition:.15s;flex:1}
+  .btn:hover{border-color:var(--amber);color:var(--amber)}
+  .btn:active{transform:scale(.97)}
+  .btn.primary{background:var(--amber-soft);border-color:var(--amber-soft);color:var(--amber)}
+  .btn-row{display:flex;gap:10px;margin-top:6px}
+
+  /* quiz */
+  .quiz{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:20px;margin-bottom:16px}
+  .quiz-meta{display:flex;align-items:center;gap:10px;margin-bottom:13px;flex-wrap:wrap}
+  .quiz-meta .qn{font-family:var(--mono);font-size:12px;color:var(--amber);font-weight:700}
+  .quiz-meta .qtype{font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:5px;background:var(--panel-2);color:var(--ink-dim)}
+  .quiz-meta .qtype.hot{color:var(--amber)}
+  .quiz-meta .lang-badge{font-size:10px;padding:2px 7px}
+  .quiz-q{font-size:15px;font-weight:600;margin-bottom:6px;line-height:1.55}
+  .quiz-given{background:#0c1116;border:1px solid var(--line-soft);border-radius:7px;padding:12px 14px;margin:12px 0;font-family:var(--mono);font-size:12.5px;color:var(--ink-dim);overflow-x:auto;white-space:pre;line-height:1.65}
+  .quiz-given .nm{color:var(--cyan)}
+  .quiz-given .kw{color:var(--amber)}
+  .quiz-given .cm{color:var(--ink-faint);font-style:italic}
+  .quiz-given .st{color:var(--green)}
+  .quiz-input{width:100%;background:#0c1116;border:1px solid var(--line);border-radius:8px;padding:12px 14px;color:var(--ink);font-family:var(--mono);font-size:13.5px;resize:vertical;min-height:48px;line-height:1.6}
+  .quiz-input:focus{outline:none;border-color:var(--amber)}
+  .quiz-input::placeholder{color:var(--ink-faint)}
+  .reveal-btn{margin-top:10px;font-family:var(--mono);font-size:13px;padding:9px 16px;border-radius:7px;background:var(--amber-soft);border:1px solid var(--amber-soft);color:var(--amber);cursor:pointer;transition:.15s}
+  .reveal-btn:hover{background:#4a3825}
+  .quiz-answer{display:none;margin-top:13px;padding:14px;border-radius:8px;background:#0c1116;border:1px solid var(--line-soft);border-left:3px solid var(--green)}
+  .quiz-answer.show{display:block;animation:slideIn .3s ease}
+  @keyframes slideIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
+  .quiz-answer .ans-label{font-family:var(--mono);font-size:11px;color:var(--green);margin-bottom:8px;letter-spacing:.5px}
+  .quiz-answer .ans-code{font-family:var(--mono);font-size:15px;line-height:1.7;color:var(--amber);font-weight:600;white-space:pre-wrap;margin-bottom:10px}
+  .quiz-answer .ans-note{padding-top:11px;border-top:1px solid var(--line-soft);font-size:13px;color:var(--ink-dim);line-height:1.6}
+  .quiz-answer .ans-note b{color:var(--amber)}
+  .quiz-answer .ans-note code{background:var(--panel-2);padding:1px 5px;border-radius:4px;color:var(--cyan);font-size:12.5px}
+
+  .foot{max-width:880px;margin:50px auto 0;padding:30px 20px;border-top:1px solid var(--line);text-align:center}
+  .foot p{font-family:var(--mono);font-size:12px;color:var(--ink-faint);line-height:1.8}
+  .foot .big{color:var(--amber);font-size:14px;font-weight:600;margin-bottom:6px}
+
+  .tabpane{display:none}
+  .tabpane.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+
+  @media(max-width:600px){
+    .hero{padding:34px 20px 24px}
+    .face-front .q-term{font-size:16px}
+    .sec-head h2{font-size:20px}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-inner">
+    <a href="index.html" style="font-family:var(--mono);font-size:12px;color:var(--ink-dim);text-decoration:none;border:1px solid var(--line);padding:5px 10px;border-radius:7px;white-space:nowrap;flex-shrink:0;transition:.15s" onmouseover="this.style.color='var(--amber)';this.style.borderColor='var(--amber)'" onmouseout="this.style.color='var(--ink-dim)';this.style.borderColor='var(--line)'">← 대시보드</a>
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="topbar-title"><b>code_trace</b> — 정보처리기사 실기 2주차</div>
+    <div class="progress-mini" id="progMini">D-<b>39</b></div>
+  </div>
+</div>
+
+<div class="hero">
+  <div class="kicker">~/study/week2/programming <span class="blink"></span></div>
+  <h1>코드는 <span class="hl">눈이 아니라 손</span>으로<br>한 줄씩 추적한다</h1>
+  <p class="lead">출력값 맞히기 문제는 변수 상태를 한 줄씩 따라가면 무조건 풀립니다. 머릿속 암산은 시험장에서 무너지니, 추적 시뮬레이터로 흐름을 눈에 익히고 직접 손으로 따라 쓰세요.</p>
+  <div class="meta">
+    <span class="chip hot">매회 다수 출제 ★★★</span>
+    <span class="chip">C · Java · Python</span>
+    <span class="chip">추적 시뮬 <b>3</b></span>
+    <span class="chip">암기카드 <b>24</b></span>
+    <span class="chip">문제 <b>20</b></span>
+  </div>
+</div>
+
+<div class="alert">
+  <div class="alert-box">
+    <span class="ttl">⚠ 2025년 출제 경향</span>
+    최근 코딩 문제 난이도가 크게 올라, 전공자도 헷갈리는 변형이 다수 나옵니다. <b>완전히 못 풀 문제는 과감히 넘기고</b>, 단답형·SQL에서 점수를 확보하는 전략이 안전합니다. 단, 기본 추적(반복문·포인터·재귀)은 패턴이 정해져 있으니 여기서 확실히 가져가세요.
+  </div>
+</div>
+
+<div class="navtabs" id="navtabs">
+  <button class="navtab active" data-tab="learn">📖 핵심개념</button>
+  <button class="navtab" data-tab="trace">▶️ 추적 시뮬</button>
+  <button class="navtab" data-tab="cards">🃏 암기카드</button>
+  <button class="navtab" data-tab="quiz">✍️ 문제풀이</button>
+</div>
+
+<!-- ============ LEARN ============ -->
+<div class="tabpane active" id="tab-learn">
+<div class="wrap">
+
+<section id="s-c-basic">
+  <div class="sec-head"><span class="sec-num">01</span><h2>C — 포인터 기본</h2><span class="lang-badge c">C</span></div>
+  <p class="sec-desc">실기 C의 핵심이자 최대 함정. <b>주소(&)와 값(*)</b>의 관계만 정확하면 대부분 풀립니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">PTR</span><h3>포인터 & 와 * </h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>&amp;a</b> — 변수 a의 <b>주소</b> (번지 연산자)</li>
+        <li><b>*p</b> — 포인터 p가 가리키는 곳의 <b>값</b> (역참조)</li>
+        <li><b>int *p = &amp;a;</b> — p에 a의 주소 저장 → *p는 곧 a</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">pointer.c</span></div>
+        <pre><span class="nm">int</span> a = <span class="nm">50</span>;
+<span class="nm">int</span> *b = &amp;a;     <span class="cm">// b = a의 주소</span>
+*b = *b + <span class="nm">20</span>;   <span class="cm">// b가 가리키는 a의 값 += 20</span>
+<span class="fn">printf</span>(<span class="st">"%d"</span>, a);  <span class="cm">// a도 함께 바뀜 → 70</span></pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>핵심:</b> 포인터로 값을 바꾸면 <u>원본 변수도 바뀝니다</u>. <code>*b</code>를 통한 수정 = a를 직접 수정.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">STR</span><h3>문자열 포인터 + 산술</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted"><code>char *p = "KOREA";</code> 일 때 출력 패턴이 단골입니다.</p>
+      <ul>
+        <li><b>%s, p</b> → 그 주소부터 문자열 전체: <span class="out">KOREA</span></li>
+        <li><b>%s, p+1</b> → 다음 글자부터: <span class="out">OREA</span></li>
+        <li><b>%c, *p</b> → 첫 글자 한 개: <span class="out">K</span></li>
+        <li><b>%c, *(p+3)</b> → 4번째 글자: <span class="out">E</span></li>
+        <li><b>%c, *p+4</b> → 'K'(75)+4=79: <span class="out">O</span></li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>최대 함정:</b> <code>*(p+3)</code> 와 <code>*p+3</code> 는 완전히 다릅니다. 전자는 <u>4번째 문자</u>, 후자는 <u>첫 문자 아스키 +3</u>. 괄호 위치를 반드시 확인.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-c-array">
+  <div class="sec-head"><span class="sec-num">02</span><h2>C — 배열 · 2차원 포인터</h2><span class="lang-badge c">C</span></div>
+  <p class="sec-desc">2차원 배열 포인터는 가장 어려운 유형. 행을 넘긴다는 개념이 핵심입니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">ARR</span><h3>2차원 배열과 (*p)[n]</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">array2d.c</span></div>
+        <pre><span class="nm">int</span> arr[<span class="nm">2</span>][<span class="nm">3</span>] = {{<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>},{<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>}};
+<span class="nm">int</span> (*p)[<span class="nm">3</span>] = arr;   <span class="cm">// 3열짜리 행 포인터</span>
+<span class="fn">printf</span>(<span class="st">"%d"</span>, *(*(p+<span class="nm">1</span>)+<span class="nm">2</span>));  <span class="cm">// arr[1][2] → 6</span>
+<span class="fn">printf</span>(<span class="st">"%d"</span>, p[<span class="nm">0</span>][<span class="nm">1</span>]);       <span class="cm">// arr[0][1] → 2</span></pre>
+      </div>
+      <ul>
+        <li><b>(p+1)</b> — 1칸이 아니라 <b>한 행</b>을 넘김</li>
+        <li><b>*(p+1)</b> — 1행의 시작 주소</li>
+        <li><b>*(*(p+1)+2)</b> — 1행 2열의 값 = arr[1][2]</li>
+      </ul>
+      <div class="callout"><span class="ic">💡</span> <code>*(*(p+i)+j)</code> = <code>p[i][j]</code> = <code>arr[i][j]</code>. 세 표기가 모두 같은 값입니다.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-c-recur">
+  <div class="sec-head"><span class="sec-num">03</span><h2>C — 재귀 · 변수 스코프</h2><span class="lang-badge c">C</span></div>
+  <p class="sec-desc">재귀는 호출 스택을 거꾸로 펼치면 풀리고, 스코프는 블록 단위 변수 가림이 함정.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">REC</span><h3>재귀호출 (팩토리얼)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">factorial.c</span></div>
+        <pre><span class="nm">int</span> <span class="fn">f</span>(<span class="nm">int</span> n){
+  <span class="kw">if</span>(n &lt;= <span class="nm">1</span>) <span class="kw">return</span> <span class="nm">1</span>;
+  <span class="kw">else return</span> n * <span class="fn">f</span>(n-<span class="nm">1</span>);
+}
+<span class="cm">// f(5) = 5*4*3*2*1 = 120</span></pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>푸는 법:</b> 끝(n=1)까지 펼친 뒤 거꾸로 곱하기. f(5)→5×f(4)→5×4×f(3)→…→5×4×3×2×1=<span class="out">120</span>.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">SCOPE</span><h3>변수 스코프 (블록 가림)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">안쪽 블록 <code>{ }</code>에서 같은 이름으로 다시 선언하면, 그 블록 안에서만 새 변수가 우선합니다.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>주의:</b> 안쪽 블록에서 선언한 변수는 블록을 벗어나면 사라지고, 바깥 변수 값은 그대로 유지됩니다. "어느 블록의 변수인가"를 추적하세요.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-c-struct">
+  <div class="sec-head"><span class="sec-num">04</span><h2>C — 구조체 · 구조체 포인터</h2><span class="lang-badge c">C</span></div>
+  <p class="sec-desc">거의 매회 출제되는 핵심. <b>점(.)과 화살표(->)</b> 접근 구분, 구조체 배열+포인터 연산이 단골입니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">STRUCT</span><h3>구조체 접근 — . 과 -></h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>구조체변수.멤버</b> — 일반 변수는 <b>점(.)</b>으로 접근</li>
+        <li><b>포인터->멤버</b> — 구조체 <b>포인터는 화살표(->)</b>로 접근</li>
+        <li><b>(*포인터).멤버</b> — 화살표와 동일한 표현</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">struct.c</span></div>
+        <pre><span class="kw">struct</span> <span class="cl">Point</span> { <span class="nm">int</span> x, y; };
+<span class="kw">struct</span> <span class="cl">Point</span> p = {<span class="nm">3</span>, <span class="nm">7</span>};
+<span class="kw">struct</span> <span class="cl">Point</span> *pp = &amp;p;
+<span class="fn">printf</span>(<span class="st">"%d"</span>, p.x);    <span class="cm">// 점 접근 → 3</span>
+<span class="fn">printf</span>(<span class="st">"%d"</span>, pp-&gt;y);  <span class="cm">// 화살표 접근 → 7</span>
+pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>최대 함정:</b> 변수는 <code>.</code>, 포인터는 <code>-></code>. 섞어 쓰면 틀립니다. 포인터로 멤버를 바꾸면 원본 구조체도 바뀝니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">STRUCT</span><h3>구조체 배열 + 포인터 연산</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">구조체 배열을 포인터로 가리키고 <code>(p+n)->멤버</code>로 접근하는 기출 단골 패턴입니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">struct_arr.c</span></div>
+        <pre><span class="kw">struct</span> <span class="cl">jsu</span> { <span class="nm">char</span> name[<span class="nm">12</span>]; <span class="nm">int</span> os, db; };
+<span class="kw">struct</span> <span class="cl">jsu</span> st[<span class="nm">3</span>] = {{<span class="st">"d1"</span>,<span class="nm">95</span>,<span class="nm">88</span>},
+                  {<span class="st">"d2"</span>,<span class="nm">84</span>,<span class="nm">91</span>},{<span class="st">"d3"</span>,<span class="nm">86</span>,<span class="nm">75</span>}};
+<span class="kw">struct</span> <span class="cl">jsu</span> *p = &amp;st[<span class="nm">0</span>];
+<span class="cm">// (p+1) = st[1], (p+2) = st[2]</span>
+<span class="fn">printf</span>(<span class="st">"%d"</span>, (p+<span class="nm">1</span>)-&gt;os + (p+<span class="nm">2</span>)-&gt;db);  <span class="cm">// 84+75=159</span></pre>
+      </div>
+      <div class="callout"><span class="ic">💡</span> <code>(p+1)</code>는 배열의 다음 구조체(st[1]). 포인터이므로 멤버 접근은 <code>-></code>. <code>(p+1)->os</code> = st[1].os.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-java">
+  <div class="sec-head"><span class="sec-num">05</span><h2>Java — 상속 · 오버라이딩</h2><span class="lang-badge java">JAVA</span></div>
+  <p class="sec-desc">Java의 핵심. 부모 타입 변수가 자식 객체를 가리킬 때 <b>어느 메서드가 실행되는가</b>가 단골.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">OOP</span><h3>오버라이딩과 동적 바인딩</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">Override.java</span></div>
+        <pre><span class="kw">class</span> <span class="cl">Animal</span> {
+  <span class="nm">String</span> <span class="fn">sound</span>(){ <span class="kw">return</span> <span class="st">"..."</span>; }
+}
+<span class="kw">class</span> <span class="cl">Dog</span> <span class="kw">extends</span> <span class="cl">Animal</span> {
+  <span class="nm">String</span> <span class="fn">sound</span>(){ <span class="kw">return</span> <span class="st">"Woof"</span>; }
+}
+<span class="cl">Animal</span> a = <span class="kw">new</span> <span class="cl">Dog</span>();
+<span class="fn">println</span>(a.<span class="fn">sound</span>());   <span class="cm">// Woof (실제 객체 기준)</span></pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>핵심 규칙:</b> 변수의 타입이 아니라 <u>실제 생성된 객체</u>의 메서드가 실행됩니다(동적 바인딩). <code>Animal a = new Dog()</code> → Dog의 sound().</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">STR</span><h3>문자열 + 정수 연산</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>"결과" + 5 + 3</b> → 왼→오: "결과5" + 3 = <span class="out">결과53</span></li>
+        <li><b>"결과" + (5 + 3)</b> → 괄호 먼저: <span class="out">결과8</span></li>
+        <li><b>5 + 3 + "점"</b> → 왼→오: 8 + "점" = <span class="out">8점</span></li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 문자열과 + 연산은 <u>왼쪽부터 순서대로</u>. 문자열을 만난 뒤부터는 모두 이어붙이기(concatenation)가 됩니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">CTOR</span><h3>생성자 호출 순서 (super + 오버라이딩)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">자식 객체 생성 시 <b>부모 생성자가 먼저</b> 실행됩니다. 이때 호출되는 메서드는 오버라이딩된 자식 것입니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">ctor.java</span></div>
+        <pre><span class="kw">class</span> <span class="cl">A</span> {
+  <span class="cl">A</span>(){ <span class="fn">print</span>(<span class="st">"A"</span>); <span class="fn">func</span>(); }   <span class="cm">// func는 오버라이딩됨</span>
+  <span class="kw">void</span> <span class="fn">func</span>(){ <span class="fn">print</span>(<span class="st">"B"</span>); }
+}
+<span class="kw">class</span> <span class="cl">B</span> <span class="kw">extends</span> <span class="cl">A</span> {
+  <span class="cl">B</span>(){ <span class="kw">super</span>(); <span class="fn">print</span>(<span class="st">"D"</span>); }
+  <span class="kw">void</span> <span class="fn">func</span>(){ <span class="fn">print</span>(<span class="st">"E"</span>); }
+}
+<span class="kw">new</span> <span class="cl">B</span>();   <span class="cm">// 출력: AED</span></pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>추적:</b> B() → super()로 A() 실행 → "A" 출력 → func() 호출하는데 실제 객체가 B라 <u>E</u> 실행 → A() 끝 → B()의 "D". 결과 <span class="out">AED</span>.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-java-ctrl">
+  <div class="sec-head"><span class="sec-num">06</span><h2>Java — switch · 비트연산</h2><span class="lang-badge java">JAVA</span></div>
+  <p class="sec-desc">두 가지 모두 빈출 함정. <b>switch의 break 누락</b>과 <b>비트 연산자</b>는 거의 매회 등장합니다.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">SWITCH</span><h3>switch fall-through (break 누락)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted"><b>break가 없으면</b> 일치한 case부터 아래 case들과 default까지 줄줄이 실행됩니다(fall through).</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">switch.java</span></div>
+        <pre><span class="nm">int</span> i = <span class="nm">3</span>, k = <span class="nm">1</span>;
+<span class="kw">switch</span>(i){
+  <span class="kw">case</span> <span class="nm">3</span>: k = <span class="nm">0</span>;       <span class="cm">// 여기 진입, break 없음</span>
+  <span class="kw">case</span> <span class="nm">4</span>: k += <span class="nm">3</span>;      <span class="cm">// k=3</span>
+  <span class="kw">case</span> <span class="nm">5</span>: k -= <span class="nm">10</span>;     <span class="cm">// k=-7</span>
+  <span class="kw">default</span>: k--;        <span class="cm">// k=-8</span>
+}
+<span class="fn">print</span>(k);   <span class="cm">// -8</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>핵심:</b> case마다 <code>break</code>가 있는지 확인하세요. 없으면 아래로 계속 실행됩니다. i=3 → 0 → +3=3 → -10=-7 → --=<span class="out">-8</span>.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">BIT</span><h3>비트 연산자 & | ^ << >></h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">2진수로 바꿔서 자리별로 계산. a=5(<span class="nm">101</span>), b=3(<span class="nm">011</span>) 기준.</p>
+      <ul>
+        <li><b>a & b</b> (AND, 둘 다 1) → 101 & 011 = 001 = <span class="out">1</span></li>
+        <li><b>a | b</b> (OR, 하나라도 1) → 111 = <span class="out">7</span></li>
+        <li><b>a ^ b</b> (XOR, 다르면 1) → 110 = <span class="out">6</span></li>
+        <li><b>a &lt;&lt; 1</b> (왼쪽 시프트, ×2) → 1010 = <span class="out">10</span></li>
+        <li><b>a &gt;&gt; 1</b> (오른쪽 시프트, ÷2) → 10 = <span class="out">2</span></li>
+      </ul>
+      <div class="callout"><span class="ic">💡</span> <b>시프트 암기:</b> <code>&lt;&lt;n</code> = ×2ⁿ, <code>&gt;&gt;n</code> = ÷2ⁿ. XOR(^)는 "같으면 0, 다르면 1"이 핵심.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-java2">
+  <div class="sec-head"><span class="sec-num">07</span><h2>Java — 배열 · 기본값</h2><span class="lang-badge java">JAVA</span></div>
+  <p class="sec-desc">배열 기본값, 메서드의 배열 반환이 출제 포인트.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">ARR</span><h3>배열 기본값과 반환</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>int[] arr = new int[4];</b> — 기본값 모두 <b>0</b></li>
+        <li>객체 배열의 기본값은 <b>null</b></li>
+        <li><b>arr.length</b> — 배열 크기 (괄호 없음, 메서드 아님)</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">array.java</span></div>
+        <pre><span class="nm">int</span>[] <span class="fn">make</span>(){
+  <span class="nm">int</span>[] t = <span class="kw">new</span> <span class="nm">int</span>[<span class="nm">4</span>];
+  <span class="kw">for</span>(<span class="nm">int</span> i=<span class="nm">0</span>; i&lt;t.length; i++) t[i] = i*<span class="nm">2</span>;
+  <span class="kw">return</span> t;   <span class="cm">// {0, 2, 4, 6} → 합 12</span>
+}</pre>
+      </div>
+      <div class="callout"><span class="ic">💡</span> <code>String.length()</code>는 메서드(괄호 O), <code>배열.length</code>는 필드(괄호 X). 헷갈리지 마세요.</div>
+    </div>
+  </div>
+</section>
+
+<section id="s-py">
+  <div class="sec-head"><span class="sec-num">08</span><h2>Python — 슬라이싱</h2><span class="lang-badge py">PYTHON</span></div>
+  <p class="sec-desc">최근 출제 비중이 늘었습니다. <b>[start:end:step]</b> 규칙, 특히 end 미포함과 음수 step이 핵심.</p>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">SLICE</span><h3>슬라이싱 [start:end:step]</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted"><code>s = "PYTHON"</code> 기준 (인덱스 0~5)</p>
+      <ul>
+        <li><b>s[1:4]</b> → 1,2,3번 (end=4 미포함): <span class="out">YTH</span></li>
+        <li><b>s[:3]</b> → 처음부터 2번까지: <span class="out">PYT</span></li>
+        <li><b>s[::-1]</b> → 역순(step=-1): <span class="out">NOHTYP</span></li>
+        <li><b>s[::2]</b> → 2칸씩(0,2,4): <span class="out">PTO</span></li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>핵심 함정:</b> <code>end</code>는 <u>포함하지 않습니다</u>. <code>s[1:4]</code>는 1~3번까지(3개). <code>[::-1]</code>은 문자열 뒤집기 단골.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">LIST</span><h3>리스트 · 딕셔너리</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>a[1:3] = [20,30,40]</b> — 슬라이스 자리에 통째 교체 (길이 달라도 됨)</li>
+        <li><b>리스트 메서드</b> — append(끝 추가), pop(꺼내기), len(개수)</li>
+        <li><b>딕셔너리</b> — d['키']=값, d.values(), d.keys(), d.items()</li>
+      </ul>
+      <div class="callout"><span class="ic">💡</span> <code>"ab" * 3</code> = <span class="out">ababab</span> (문자열 반복), <code>[0]*3</code> = <span class="out">[0, 0, 0]</span> (리스트 반복).</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">OP</span><h3>연산자 + lambda/map</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <ul>
+        <li><b>//</b> — 몫(정수나눗셈): 7//2 = <span class="out">3</span></li>
+        <li><b>%</b> — 나머지: 7%2 = <span class="out">1</span></li>
+        <li><b>**</b> — 거듭제곱: 2**10 = <span class="out">1024</span></li>
+        <li><b>map(lambda x: x*x, [1,2,3])</b> → <span class="out">[1, 4, 9]</span></li>
+      </ul>
+      <div class="callout"><span class="ic">🎯</span> <code>list(map(함수, 리스트))</code> = 각 원소에 함수 적용. lambda는 이름 없는 즉석 함수.</div>
+    </div>
+  </div>
+</section>
+
+</div>
+</div>
+
+<!-- ============ TRACE SIM ============ -->
+<div class="tabpane" id="tab-trace">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">▶</span><h2>변수 추적 시뮬레이터</h2></div>
+    <p class="sec-desc"><b>한 단계씩</b> 버튼을 누르며 변수가 어떻게 변하는지 눈으로 따라가세요. 이게 시험장에서 손으로 하는 작업입니다. 바뀐 변수는 <span style="color:var(--amber)">주황색</span>으로 표시됩니다.</p>
+    <div id="tracerContainer"></div>
+    <div class="callout" style="margin-top:8px"><span class="ic">📌</span> <b>실전 팁:</b> 시험지 여백에 변수 이름을 적고, 값이 바뀔 때마다 줄을 그어 갱신하세요. 반복문은 회차별로 표를 만들어 추적하면 실수가 줄어듭니다.</div>
+  </section>
+</div>
+</div>
+
+<!-- ============ CARDS ============ -->
+<div class="tabpane" id="tab-cards">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">★</span><h2>암기 카드</h2></div>
+    <p class="sec-desc">코드 조각을 보고 출력값이나 개념을 떠올린 뒤 확인하세요. 탭하면 뒤집힙니다.</p>
+    <div class="card-controls">
+      <span class="card-counter">CARD <b id="cardNum">1</b> / <span id="cardTotal">24</span></span>
+      <span class="card-counter" style="margin-left:auto" id="cardCat">C · 포인터</span>
+    </div>
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flashcard-inner" id="flashInner">
+        <div class="face face-front">
+          <div class="q-tag" id="cardTag">C · 포인터</div>
+          <div class="q-term" id="cardQ">로딩 중...</div>
+          <div class="q-hint" id="cardHint"></div>
+          <div class="tap">tap to flip ↻</div>
+        </div>
+        <div class="face face-back">
+          <div class="a-label">ANSWER</div>
+          <div class="a-text" id="cardA"></div>
+          <div class="a-key" id="cardKey"></div>
+        </div>
+      </div>
+    </div>
+    <div class="deck-nav">
+      <button class="btn" onclick="prevCard()">← 이전</button>
+      <button class="btn primary" onclick="nextCard()">다음 →</button>
+    </div>
+    <div class="btn-row">
+      <button class="btn" onclick="shuffleCards()">🔀 섞기</button>
+      <button class="btn" onclick="resetCards()">↺ 처음으로</button>
+    </div>
+  </section>
+</div>
+</div>
+
+<!-- ============ QUIZ ============ -->
+<div class="tabpane" id="tab-quiz">
+<div class="wrap">
+  <section style="padding-top:30px">
+    <div class="sec-head"><span class="sec-num">✍</span><h2>문제 풀이</h2></div>
+    <p class="sec-desc">출력값 맞히기 15문제. 모든 답은 <b>실제 컴파일·실행으로 검증</b>했습니다. 먼저 종이에 변수를 추적해 답을 적은 뒤 펼치세요.</p>
+    <div id="quizContainer"></div>
+    <div class="callout" style="margin-top:24px"><span class="ic">📌</span> <b>채점 팁:</b> 출력값은 <u>공백·줄바꿈·대소문자까지</u> 정확해야 합니다. 특히 C의 <code>printf</code>에 공백이나 <code>\n</code>이 있는지, 출력 사이 띄어쓰기가 있는지 확인하세요.</div>
+  </section>
+</div>
+</div>
+
+<div class="foot">
+  <p class="big">못 푸는 문제는 과감히 넘기세요</p>
+  <p>기본 추적(반복문·포인터·재귀·슬라이싱)을 손에 익히는 게 우선입니다.<br>난해한 변형 1~2개는 버리고, 단답·SQL로 합격선을 지키세요.<br><br>$ next: 보안 · 네트워크 약술</p>
+</div>
+
+<script>
+/* ============ TAB NAV ============ */
+const navtabs=document.querySelectorAll('.navtab');
+const panes={learn:document.getElementById('tab-learn'),trace:document.getElementById('tab-trace'),cards:document.getElementById('tab-cards'),quiz:document.getElementById('tab-quiz')};
+navtabs.forEach(t=>t.addEventListener('click',()=>{
+  navtabs.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  Object.values(panes).forEach(p=>p.classList.remove('active'));
+  panes[t.dataset.tab].classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
+
+/* ============ TRACE SIMULATORS ============ */
+/* each: lines[], steps[] where step={line:idx, vars:{}, output:str, note:str, changed:[varnames]} */
+const tracers=[
+  {
+    title:'C · 반복문으로 배열 합 구하기', lang:'c', langLabel:'C',
+    lines:[
+      'int a[5] = {3, 1, 4, 1, 5};',
+      'int sum = 0;',
+      'for(int i=0; i<5; i++)',
+      '  sum = sum + a[i];',
+      'printf("%d", sum);'
+    ],
+    steps:[
+      {line:0, vars:{'a':'{3,1,4,1,5}'}, output:'', note:'배열 a 초기화', changed:['a']},
+      {line:1, vars:{'a':'{3,1,4,1,5}','sum':'0'}, output:'', note:'합계 변수 sum=0', changed:['sum']},
+      {line:3, vars:{'a':'{3,1,4,1,5}','sum':'3','i':'0'}, output:'', note:'i=0: sum=0+a[0]=0+3=3', changed:['sum','i']},
+      {line:3, vars:{'a':'{3,1,4,1,5}','sum':'4','i':'1'}, output:'', note:'i=1: sum=3+a[1]=3+1=4', changed:['sum','i']},
+      {line:3, vars:{'a':'{3,1,4,1,5}','sum':'8','i':'2'}, output:'', note:'i=2: sum=4+a[2]=4+4=8', changed:['sum','i']},
+      {line:3, vars:{'a':'{3,1,4,1,5}','sum':'9','i':'3'}, output:'', note:'i=3: sum=8+a[3]=8+1=9', changed:['sum','i']},
+      {line:3, vars:{'a':'{3,1,4,1,5}','sum':'14','i':'4'}, output:'', note:'i=4: sum=9+a[4]=9+5=14', changed:['sum','i']},
+      {line:4, vars:{'a':'{3,1,4,1,5}','sum':'14','i':'5'}, output:'14', note:'i=5라 반복 종료 → sum 출력', changed:['output']}
+    ]
+  },
+  {
+    title:'C · 포인터로 원본 값 바꾸기', lang:'c', langLabel:'C',
+    lines:[
+      'int a = 50;',
+      'int *b = &a;',
+      '*b = *b + 20;',
+      'printf("%d", a);'
+    ],
+    steps:[
+      {line:0, vars:{'a':'50'}, output:'', note:'a에 50 저장', changed:['a']},
+      {line:1, vars:{'a':'50','b':'&a (a를 가리킴)'}, output:'', note:'포인터 b가 a의 주소를 가리킴', changed:['b']},
+      {line:2, vars:{'a':'70','b':'&a (a를 가리킴)'}, output:'', note:'*b = 50+20 = 70 → b가 가리키는 a가 70으로 변경!', changed:['a']},
+      {line:3, vars:{'a':'70','b':'&a (a를 가리킴)'}, output:'70', note:'a를 출력하면 70 (포인터로 원본이 바뀜)', changed:['output']}
+    ]
+  },
+  {
+    title:'Python · 슬라이싱과 리스트', lang:'py', langLabel:'PYTHON',
+    lines:[
+      's = "PYTHON"',
+      'print(s[1:4])',
+      'print(s[::-1])',
+      'a = [1, 2, 3]',
+      'a.append(4)',
+      'print(a[1:])'
+    ],
+    steps:[
+      {line:0, vars:{'s':'"PYTHON"'}, output:'', note:'문자열 s (인덱스 0~5)', changed:['s']},
+      {line:1, vars:{'s':'"PYTHON"'}, output:'YTH', note:'s[1:4] → 1,2,3번 문자 (4 미포함) = YTH', changed:['output']},
+      {line:2, vars:{'s':'"PYTHON"'}, output:'YTH\nNOHTYP', note:'s[::-1] → 역순 = NOHTYP', changed:['output']},
+      {line:3, vars:{'s':'"PYTHON"','a':'[1, 2, 3]'}, output:'YTH\nNOHTYP', note:'리스트 a 생성', changed:['a']},
+      {line:4, vars:{'s':'"PYTHON"','a':'[1, 2, 3, 4]'}, output:'YTH\nNOHTYP', note:'append(4) → 끝에 4 추가', changed:['a']},
+      {line:5, vars:{'s':'"PYTHON"','a':'[1, 2, 3, 4]'}, output:'YTH\nNOHTYP\n[2, 3, 4]', note:'a[1:] → 인덱스 1부터 끝까지 = [2, 3, 4]', changed:['output']}
+    ]
+  }
+];
+
+const tc=document.getElementById('tracerContainer');
+tracers.forEach((tr,ti)=>{
+  const div=document.createElement('div');
+  div.className='tracer';
+  div.innerHTML=`
+    <div class="tracer-head">
+      <h3>${tr.title}</h3>
+      <span class="lang-badge ${tr.lang}">${tr.langLabel}</span>
+    </div>
+    <div class="tracer-body">
+      <div class="tracer-code" id="tcode${ti}">
+        ${tr.lines.map((l,i)=>`<div class="tcode-line" id="tline${ti}_${i}"><span class="ln">${i+1}</span>${escapeHtml(l)}</div>`).join('')}
+      </div>
+      <div class="tracer-state">
+        <div class="state-vars">
+          <div class="state-label">변수 상태</div>
+          <div id="tvars${ti}"></div>
+        </div>
+        <div class="state-output">
+          <div class="state-label">출력 (stdout)</div>
+          <div class="output-box" id="tout${ti}"><span class="cursor"></span></div>
+        </div>
+      </div>
+    </div>
+    <div class="t-note" id="tnote${ti}">▶ "다음 단계"를 눌러 시작하세요.</div>
+    <div class="tracer-controls">
+      <button class="t-btn" onclick="traceReset(${ti})">↺ 처음</button>
+      <button class="t-btn primary" onclick="traceStep(${ti})" id="tstepbtn${ti}">다음 단계 ▶</button>
+      <span class="t-step" id="tstepnum${ti}">0 / ${tr.steps.length}</span>
+    </div>`;
+  tc.appendChild(div);
+});
+
+const traceState=tracers.map(()=>-1); // current step index, -1 = not started
+
+function renderTrace(ti){
+  const tr=tracers[ti];
+  const si=traceState[ti];
+  // reset line highlights
+  tr.lines.forEach((_,i)=>{
+    const el=document.getElementById(`tline${ti}_${i}`);
+    el.classList.remove('active','done');
+  });
+  const varsEl=document.getElementById(`tvars${ti}`);
+  const outEl=document.getElementById(`tout${ti}`);
+  const noteEl=document.getElementById(`tnote${ti}`);
+  const stepNum=document.getElementById(`tstepnum${ti}`);
+  const stepBtn=document.getElementById(`tstepbtn${ti}`);
+
+  if(si<0){
+    varsEl.innerHTML='<div style="color:var(--ink-faint);font-family:var(--mono);font-size:12px">아직 시작 전</div>';
+    outEl.innerHTML='<span class="cursor"></span>';
+    noteEl.innerHTML='▶ "다음 단계"를 눌러 시작하세요.';
+    stepNum.textContent=`0 / ${tr.steps.length}`;
+    stepBtn.textContent='다음 단계 ▶';
+    stepBtn.disabled=false;
+    return;
+  }
+  const step=tr.steps[si];
+  // highlight current & done lines
+  for(let k=0;k<=si;k++){
+    const ln=tr.steps[k].line;
+    const el=document.getElementById(`tline${ti}_${ln}`);
+    if(k===si) el.classList.add('active'); else el.classList.add('done');
+  }
+  // also mark current active even if revisited
+  document.getElementById(`tline${ti}_${step.line}`).classList.add('active');
+
+  // vars
+  varsEl.innerHTML=Object.entries(step.vars).map(([k,v])=>{
+    const ch=step.changed && step.changed.includes(k)?' changed':'';
+    return `<div class="var-row${ch}"><span class="vname">${k}</span><span class="veq">=</span><span class="vval">${escapeHtml(v)}</span></div>`;
+  }).join('');
+  // output
+  outEl.innerHTML=escapeHtml(step.output)+'<span class="cursor"></span>';
+  // note
+  noteEl.innerHTML=step.note;
+  stepNum.textContent=`${si+1} / ${tr.steps.length}`;
+  if(si>=tr.steps.length-1){
+    stepBtn.textContent='완료 ✓';
+    stepBtn.disabled=true;
+  }else{
+    stepBtn.textContent='다음 단계 ▶';
+    stepBtn.disabled=false;
+  }
+}
+function traceStep(ti){
+  if(traceState[ti]<tracers[ti].steps.length-1){traceState[ti]++;renderTrace(ti)}
+}
+function traceReset(ti){traceState[ti]=-1;renderTrace(ti)}
+tracers.forEach((_,ti)=>renderTrace(ti));
+
+/* ============ FLASHCARDS ============ */
+const cards=[
+  {tag:'C · 포인터',q:'int a=5; int *p=&a;\n*p = 10;\na = ?',hint:'역참조 수정',a:'<b>a = 10</b>',key:'*p로 값을 바꾸면 원본 a도 바뀜',cat:'C·포인터'},
+  {tag:'C · 문자열',q:'char *p="KOREA";\nprintf("%c", *(p+2));',hint:'3번째 문자',a:'<b>R</b>',key:'*(p+n) = (n+1)번째 문자 / p+0=K,1=O,2=R',cat:'C·포인터'},
+  {tag:'C · 함정',q:'*p+4 와 *(p+4)\n의 차이는?',hint:'괄호 위치',a:'<code>*p+4</code> = 첫 문자 아스키값 +4<br><code>*(p+4)</code> = 5번째 문자',key:'괄호 안에 +가 있으면 주소 이동, 밖이면 값에 연산',cat:'C·포인터'},
+  {tag:'C · 배열',q:'(*p)[3]에서 p는\n무엇을 가리키나?',hint:'2차원',a:'<b>3열짜리 행</b>을 가리키는 포인터',key:'(p+1)은 한 칸이 아니라 한 행을 넘김',cat:'C·배열'},
+  {tag:'C · 재귀',q:'f(n)=n<=1?1:n*f(n-1)\nf(4) = ?',hint:'팩토리얼',a:'<b>24</b> (4×3×2×1)',key:'끝까지 펼친 뒤 거꾸로 곱셈',cat:'C·재귀'},
+  {tag:'C · 연산',q:'int a=5, b=2;\nprintf("%d", a/b);',hint:'정수나눗셈',a:'<b>2</b> (정수끼리는 몫만)',key:'5.0/2 또는 (float) 캐스팅하면 2.5',cat:'C·연산'},
+  {tag:'C · 증감',q:'int a=5;\nprintf("%d", a++);\nprintf("%d", a);',hint:'후위',a:'<b>5</b> 그리고 <b>6</b>',key:'a++ 는 쓰고 나서 증가, ++a 는 증가 후 사용',cat:'C·연산'},
+  {tag:'Java · 상속',q:'Animal a = new Dog();\na.sound() 실행되는 건?',hint:'동적바인딩',a:'<b>Dog의 sound()</b>',key:'변수 타입 아닌 실제 객체의 메서드 실행',cat:'Java'},
+  {tag:'Java · 문자열',q:'"값" + 5 + 3\n출력은?',hint:'왼→오',a:'<b>값53</b>',key:'문자열 만난 뒤부터 모두 이어붙이기',cat:'Java'},
+  {tag:'Java · 문자열',q:'"값" + (5 + 3)\n출력은?',hint:'괄호 먼저',a:'<b>값8</b>',key:'괄호 안 숫자 연산 먼저, 그 후 연결',cat:'Java'},
+  {tag:'Java · 배열',q:'int[] a = new int[3];\na[0]의 기본값은?',hint:'초기화',a:'<b>0</b>',key:'int 기본 0, 객체 배열은 null, boolean은 false',cat:'Java'},
+  {tag:'Java · 배열',q:'배열 크기는 length,\n문자열 길이는?',hint:'괄호?',a:'문자열은 <code>length()</code> (메서드)<br>배열은 <code>length</code> (필드)',key:'배열만 괄호 없음 — 자주 틀리는 포인트',cat:'Java'},
+  {tag:'Python · 슬라이싱',q:'s="PYTHON"\ns[1:4] = ?',hint:'end 미포함',a:'<b>YTH</b>',key:'end 인덱스는 포함 안 함 (1,2,3번)',cat:'Python'},
+  {tag:'Python · 슬라이싱',q:'s="PYTHON"\ns[::-1] = ?',hint:'step -1',a:'<b>NOHTYP</b>',key:'[::-1] = 문자열 뒤집기 단골',cat:'Python'},
+  {tag:'Python · 슬라이싱',q:'s="ABCDEF"\ns[::2] = ?',hint:'2칸씩',a:'<b>ACE</b>',key:'step=2 → 0,2,4번 인덱스',cat:'Python'},
+  {tag:'Python · 연산',q:'7 // 2 와 7 % 2\n각각?',hint:'몫/나머지',a:'<code>//</code> → <b>3</b> (몫)<br><code>%</code> → <b>1</b> (나머지)',key:'** 는 거듭제곱: 2**3 = 8',cat:'Python'},
+  {tag:'Python · 문자열',q:'"ab" * 3 = ?',hint:'반복',a:'<b>ababab</b>',key:'문자열·리스트에 *n = n번 반복',cat:'Python'},
+  {tag:'Python · map',q:'list(map(lambda x:x*2,\n[1,2,3]))',hint:'각 원소',a:'<b>[2, 4, 6]</b>',key:'map = 각 원소에 함수 적용, lambda = 익명함수',cat:'Python'},
+  {tag:'C · 구조체',q:'구조체 변수는 .\n구조체 포인터는?',hint:'화살표',a:'포인터는 <code>-></code> (화살표)<br>변수는 <code>.</code> (점)',key:'(*p).멤버 = p->멤버 (같은 표현)',cat:'C·구조체'},
+  {tag:'C · 구조체',q:'struct P *p=&st[0];\n(p+1)->os 는?',hint:'배열 다음',a:'<b>st[1].os</b>',key:'(p+n)=st[n], 포인터라서 -> 로 멤버 접근',cat:'C·구조체'},
+  {tag:'Java · switch',q:'switch에서 break가\n없으면?',hint:'fall through',a:'일치한 case부터 <b>아래 case·default까지</b> 모두 실행',key:'break 누락 = fall through, 출제 단골 함정',cat:'Java'},
+  {tag:'Java · 비트',q:'5 & 3, 5 | 3, 5 ^ 3\n각각?',hint:'101,011',a:'& → <b>1</b> (001)<br>| → <b>7</b> (111)<br>^ → <b>6</b> (110)',key:'XOR(^)=다르면1 / <<n=×2ⁿ, >>n=÷2ⁿ',cat:'Java'},
+  {tag:'Java · 비트',q:'5 << 1 과 5 >> 1\n각각?',hint:'시프트',a:'<< → <b>10</b> (×2)<br>>> → <b>2</b> (÷2)',key:'왼쪽 시프트=곱하기, 오른쪽=나누기',cat:'Java'},
+  {tag:'Java · 생성자',q:'자식 객체 생성 시\n생성자 실행 순서는?',hint:'super',a:'<b>부모 생성자 먼저</b> → 자식 생성자',key:'부모 생성자 내 메서드는 오버라이딩된 자식 것 실행',cat:'Java'}
+];
+
+let order=cards.map((_,i)=>i);
+let pos=0,flipped=false;
+const elNum=document.getElementById('cardNum'),elTotal=document.getElementById('cardTotal'),
+      elCat=document.getElementById('cardCat'),elTag=document.getElementById('cardTag'),
+      elQ=document.getElementById('cardQ'),elHint=document.getElementById('cardHint'),
+      elA=document.getElementById('cardA'),elKey=document.getElementById('cardKey'),
+      fc=document.getElementById('flashcard');
+elTotal.textContent=cards.length;
+
+function renderCard(){
+  const c=cards[order[pos]];
+  flipped=false;fc.classList.remove('flipped');
+  setTimeout(()=>{
+    elNum.textContent=pos+1;elCat.textContent=c.cat;elTag.textContent=c.tag;
+    elQ.textContent=c.q;elHint.textContent=c.hint?'힌트: '+c.hint:'';
+    elA.innerHTML=c.a;elKey.innerHTML='<b>KEY</b> · '+c.key;
+  },60);
+}
+function flipCard(){flipped=!flipped;fc.classList.toggle('flipped',flipped)}
+function nextCard(){pos=(pos+1)%order.length;renderCard()}
+function prevCard(){pos=(pos-1+order.length)%order.length;renderCard()}
+function shuffleCards(){for(let i=order.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[order[i],order[j]]=[order[j],order[i]]}pos=0;renderCard()}
+function resetCards(){order=cards.map((_,i)=>i);pos=0;renderCard()}
+renderCard();
+
+/* ============ QUIZ ============ */
+const quizzes=[
+  {lang:'c',ll:'C',type:'출력',hot:true,q:'다음 C 코드의 출력값을 쓰시오.',
+   given:'int a = 7, b = 3;\nprintf("%d", a % b);',
+   answer:'1',
+   note:'7을 3으로 나눈 <b>나머지</b>. 몫(<code>/</code>)이면 2.'},
+  {lang:'c',ll:'C',type:'출력',hot:true,q:'다음 C 코드의 출력값을 쓰시오.',
+   given:'char *p = "KOREA";\nprintf("%c", *(p+1));\nprintf("%c", *p+1);',
+   answer:'OL',
+   note:'<code>*(p+1)</code>=2번째 문자 O / <code>*p+1</code>=K(75)+1=76=L. 붙여서 <b>OL</b>.'},
+  {lang:'c',ll:'C',type:'출력',hot:true,q:'재귀함수의 출력값을 쓰시오.',
+   given:'int f(int n) {\n  if(n <= 0) return 0;\n  return n + f(n-1);\n}\nprintf("%d", f(4));',
+   answer:'10',
+   note:'4+3+2+1+0 = <b>10</b>. (합을 구하는 재귀)'},
+  {lang:'c',ll:'C',type:'출력',hot:false,q:'포인터로 값을 교환하는 코드의 출력값은?',
+   given:'int a=10, b=20;\nint *pa=&a, *pb=&b;\n*pa = *pa + *pb;\n*pb = *pa - *pb;\nprintf("%d %d", a, b);',
+   answer:'30 10',
+   note:'*pa=10+20=30 → a=30. *pb=30-20=10 → b=10. 출력 <b>30 10</b> (공백 주의).'},
+  {lang:'c',ll:'C',type:'출력',hot:false,q:'2차원 배열 포인터의 출력값은?',
+   given:'int arr[2][3]={{1,2,3},{4,5,6}};\nint (*p)[3] = arr;\nprintf("%d", *(*(p+1)+2));',
+   answer:'6',
+   note:'<code>*(*(p+1)+2)</code> = arr[1][2] = <b>6</b>. (p+1)은 한 행 이동.'},
+  {lang:'c',ll:'C',type:'출력',hot:false,q:'후위 증감 연산자의 출력값은?',
+   given:'int i = 5;\nprintf("%d ", i++);\nprintf("%d", i);',
+   answer:'5 6',
+   note:'<code>i++</code>는 먼저 5를 출력하고 그 다음 6으로 증가. 출력 <b>5 6</b>.'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:true,q:'오버라이딩 코드의 출력값을 쓰시오.',
+   given:'class A { String f(){ return "A"; } }\nclass B extends A { String f(){ return "B"; } }\n\nA obj = new B();\nSystem.out.print(obj.f());',
+   answer:'B',
+   note:'변수 타입은 A지만 실제 객체는 B → <b>B</b>의 f() 실행 (동적 바인딩).'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:true,q:'문자열 연결 코드의 출력값을 쓰시오.',
+   given:'int a = 3, b = 4;\nSystem.out.print(a + b + "=" + a + b);',
+   answer:'7=34',
+   note:'왼→오: 3+4=7, +"="="7=", +3="7=3", +4="7=34". 답 <b>7=34</b>.'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:false,q:'배열 합을 구하는 코드의 출력값은?',
+   given:'int[] arr = new int[4];\nfor(int i=0;i<arr.length;i++)\n  arr[i] = i * 2;\nint sum=0;\nfor(int x: arr) sum+=x;\nSystem.out.print(sum);',
+   answer:'12',
+   note:'arr={0,2,4,6}, 합=0+2+4+6=<b>12</b>. new int[4]의 기본값은 0.'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:false,q:'반복문과 조건문의 출력값은?',
+   given:'int sum = 0;\nfor(int i=1; i<=5; i++){\n  if(i % 2 == 0) continue;\n  sum += i;\n}\nSystem.out.print(sum);',
+   answer:'9',
+   note:'짝수는 <code>continue</code>로 건너뜀 → 홀수 1+3+5 = <b>9</b>.'},
+  {lang:'py',ll:'PYTHON',type:'출력',hot:true,q:'슬라이싱 코드의 출력값을 쓰시오.',
+   given:'s = "PROGRAM"\nprint(s[2:5])',
+   answer:'OGR',
+   note:'인덱스 2,3,4번 (5 미포함) = <b>OGR</b>. P=0,R=1,O=2,G=3,R=4,A=5,M=6.'},
+  {lang:'py',ll:'PYTHON',type:'출력',hot:true,q:'역순 슬라이싱의 출력값을 쓰시오.',
+   given:'s = "PYTHON"\nprint(s[::-1])',
+   answer:'NOHTYP',
+   note:'<code>[::-1]</code> = 전체 역순 = <b>NOHTYP</b>. 문자열 뒤집기 단골 패턴.'},
+  {lang:'py',ll:'PYTHON',type:'출력',hot:false,q:'리스트 슬라이스 대입의 출력값은?',
+   given:'a = [1, 2, 3, 4, 5]\na[1:3] = [20, 30, 40]\nprint(a)',
+   answer:'[1, 20, 30, 40, 4, 5]',
+   note:'인덱스 1~2(값 2,3) 자리에 [20,30,40] 통째 교체. 길이가 늘어남.'},
+  {lang:'py',ll:'PYTHON',type:'출력',hot:false,q:'map과 lambda의 출력값은?',
+   given:'a = [1, 2, 3, 4]\nr = list(map(lambda x: x*x, a))\nprint(r)',
+   answer:'[1, 4, 9, 16]',
+   note:'각 원소를 제곱: 1,4,9,16. <code>map</code>은 list()로 감싸야 출력됨.'},
+  {lang:'py',ll:'PYTHON',type:'출력',hot:false,q:'딕셔너리와 반복문의 출력값은?',
+   given:'d = {"a":1, "b":2, "c":3}\ntotal = 0\nfor v in d.values():\n  total += v\nprint(total)',
+   answer:'6',
+   note:'<code>d.values()</code> = 1,2,3의 합 = <b>6</b>. keys()면 키들, items()면 (키,값) 쌍.'},
+  {lang:'c',ll:'C',type:'출력',hot:true,q:'구조체 포인터 코드의 출력값을 쓰시오.',
+   given:'struct P { int x, y; };\nstruct P p = {3, 7};\nstruct P *pp = &p;\npp->x = pp->x + pp->y;\nprintf("%d", p.x);',
+   answer:'10',
+   note:'<code>pp->x</code> = 3+7 = 10. 포인터로 바꾸면 원본 p.x도 <b>10</b>. (변수는 ., 포인터는 ->)'},
+  {lang:'c',ll:'C',type:'출력',hot:true,q:'구조체 배열+포인터 코드의 출력값은?',
+   given:'struct jsu { int os, db; };\nstruct jsu st[3] = {{95,88},{84,91},{86,75}};\nstruct jsu *p = &st[0];\nprintf("%d", (p+1)->os + (p+2)->db);',
+   answer:'159',
+   note:'(p+1)->os = st[1].os = 84, (p+2)->db = st[2].db = 75. 84+75 = <b>159</b>.'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:true,q:'switch fall-through 코드의 출력값을 쓰시오.',
+   given:'int i = 3, k = 1;\nswitch(i){\n  case 3: k = 0;\n  case 4: k += 3;\n  case 5: k -= 10;\n  default: k--;\n}\nSystem.out.print(k);',
+   answer:'-8',
+   note:'break 없음! case3부터: k=0 → +3=3 → -10=-7 → --=<b>-8</b>. 끝까지 실행됨.'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:true,q:'비트 연산 코드의 출력값을 쓰시오.',
+   given:'int a = 6, b = 3;  // 6=110, 3=011\nSystem.out.print(a & b);\nSystem.out.print(" ");\nSystem.out.print(a ^ b);',
+   answer:'2 5',
+   note:'a&b: 110&011=010=2. a^b: 110^011=101=5. 출력 <b>2 5</b>. (XOR은 다르면 1)'},
+  {lang:'java',ll:'JAVA',type:'출력',hot:false,q:'생성자 호출 순서 코드의 출력값은?',
+   given:'class A {\n  A(){ System.out.print("A"); func(); }\n  void func(){ System.out.print("B"); }\n}\nclass B extends A {\n  B(){ super(); System.out.print("D"); }\n  void func(){ System.out.print("E"); }\n}\nnew B();',
+   answer:'AED',
+   note:'B()→super()로 A() 실행→"A"→func()는 오버라이딩된 E→A() 끝→"D". 결과 <b>AED</b>.'}
+];
+
+const qc=document.getElementById('quizContainer');
+quizzes.forEach((quiz,i)=>{
+  const div=document.createElement('div');
+  div.className='quiz';
+  div.innerHTML=`
+    <div class="quiz-meta">
+      <span class="qn">Q${i+1}</span>
+      <span class="lang-badge ${quiz.lang}">${quiz.ll}</span>
+      <span class="qtype ${quiz.hot?'hot':''}">${quiz.hot?'★ 빈출':quiz.type}</span>
+    </div>
+    <div class="quiz-q">${quiz.q}</div>
+    <div class="quiz-given">${escapeHtml(quiz.given)}</div>
+    <textarea class="quiz-input" placeholder="출력값을 적어보세요 (종이에 변수 추적 후)" spellcheck="false"></textarea>
+    <button class="reveal-btn" onclick="toggleAns(${i})">정답 확인 ▾</button>
+    <div class="quiz-answer" id="ans${i}">
+      <div class="ans-label">정답 (실행으로 검증됨)</div>
+      <div class="ans-code">${escapeHtml(quiz.answer)}</div>
+      <div class="ans-note">${quiz.note}</div>
+    </div>`;
+  qc.appendChild(div);
+});
+
+function toggleAns(i){
+  const a=document.getElementById('ans'+i);
+  const btn=a.previousElementSibling;
+  const open=a.classList.toggle('show');
+  btn.textContent=open?'정답 숨기기 ▴':'정답 확인 ▾';
+}
+function escapeHtml(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+
+/* keyboard nav for cards */
+document.addEventListener('keydown',e=>{
+  if(!panes.cards.classList.contains('active'))return;
+  if(e.key==='ArrowRight')nextCard();
+  else if(e.key==='ArrowLeft')prevCard();
+  else if(e.key===' '){e.preventDefault();flipCard()}
+});
+</script>
+</body>
+</html>

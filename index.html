@@ -21,6 +21,7 @@
       <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
       <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
+      <button class="track-tab" data-track-tab="gigsa" role="tab" aria-selected="false" type="button"><span class="track-emoji">📜</span><span class="track-label">정처기</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -61,6 +62,12 @@
       <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
       <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
       <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
+      <li class="nav-section-label" data-track="gigsa" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">정보처리기사 실기</li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sweng.html"><span class="nav-item-text">🧩 SW공학 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-secnet.html"><span class="nav-item-text">🔒 보안 · 네트워크 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-codetrace.html"><span class="nav-item-text">💻 프로그래밍 코드추적</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sql.html"><span class="nav-item-text">🗄️ SQL 집중노트</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -80,9 +87,11 @@
         <h1 data-track="fullstack">풀스택 개발자 재활 마스터 코스</h1>
         <h1 data-track="robotics">🤖 로보틱스 입문 코스</h1>
         <h1 data-track="flutter">📱 Flutter 모바일 코스</h1>
+        <h1 data-track="gigsa">📜 정보처리기사 실기</h1>
         <p data-track="fullstack" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">복귀 준비 완료! 기초부터 핵심 최신 우대 스택까지 하나씩 차례대로 정복해 나갑니다.</p>
         <p data-track="robotics" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">기초 수학·좌표계부터 센서·제어·ROS 2·인식·SLAM까지, Python으로 로봇을 한 단계씩 정복합니다.</p>
         <p data-track="flutter" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Dart·위젯·렌더링·상태관리(Riverpod)부터 유명 앱 화면 재현·면접 대비까지. React 경험을 Flutter로 잇는 모바일 트랙입니다.</p>
+        <p data-track="gigsa" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">필기 합격 후 실기 마무리. 단답·약술·코드추적·SQL 압축 노트와 회차별 모의고사를 한곳에. 각 페이지는 암기카드·인터랙티브·자가채점을 갖춘 독립 학습 페이지입니다.</p>
       </div>
       
       <div class="header-controls">
@@ -475,6 +484,45 @@
             <span>면접 대비 · 화면 재현</span>
             <span>위젯 코드 · 면접 답변집</span>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 정보처리기사 실기 트랙 로드맵 (트랙 토글로 표시) -->
+    <section data-track="gigsa" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
+      <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--gigsa); padding-left: 12px; margin-bottom: 4px;">📜 정보처리기사 실기 대비</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 4px;">필기 합격 이후의 실기 마무리 — 단답·약술·코드추적·SQL 압축 노트와 회차별 모의고사. 각 카드는 <strong style="color:var(--gigsa);">암기카드·인터랙티브·자가채점</strong>을 갖춘 독립 학습 페이지로 열리며, 좌상단 <strong>← 대시보드</strong>로 돌아옵니다.</p>
+
+      <div class="chapters-grid">
+        <div class="glass-panel chapter-card" onclick="window.location.href='gigsa-sweng.html'" style="border-left: 3px solid var(--gigsa);">
+          <div class="chapter-badge" style="background: var(--gigsa); color: #fff;">SW공학</div>
+          <h3>🧩 SW공학 약술</h3>
+          <p>결합도·응집도 순서, GoF 디자인패턴 분류, UML, 테스트 기법, 개발방법론(SOLID)까지 — 단답·약술 빈출을 두문자와 분류 체계로 정리. 암기카드 24·문제 16.</p>
+          <div class="chapter-meta"><span>모듈화 · 패턴 · UML · 테스트</span><span>약술 / 단답</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='gigsa-secnet.html'" style="border-left: 3px solid var(--gigsa);">
+          <div class="chapter-badge" style="background: var(--gigsa); color: #fff;">보안·NW</div>
+          <h3>🔒 보안 · 네트워크 약술</h3>
+          <p>CIA 3요소, 대칭/비대칭 암호화, SQL인젝션·XSS·CSRF, 접근통제, OSI 7계층 인터랙티브, TCP/UDP·라우팅. 비전공 당락 분기 영역. 암기카드 26·문제 16.</p>
+          <div class="chapter-meta"><span>암호화 · 공격 · OSI · 프로토콜</span><span>약술 / 단답</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='gigsa-codetrace.html'" style="border-left: 3px solid var(--gigsa);">
+          <div class="chapter-badge" style="background: var(--gigsa); color: #fff;">코드추적</div>
+          <h3>💻 프로그래밍 코드추적</h3>
+          <p>C·Java·Python 출력값 추적 핵심. 포인터·배열·구조체, 상속·오버라이딩, 슬라이싱·컴프리헨션 등 언어별 함정을 코드로 짚는 실기 단골.</p>
+          <div class="chapter-meta"><span>C · Java · Python</span><span>코드 추적</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='gigsa-sql.html'" style="border-left: 3px solid var(--gigsa);">
+          <div class="chapter-badge" style="background: var(--gigsa); color: #fff;">SQL</div>
+          <h3>🗄️ SQL 집중노트</h3>
+          <p>DDL·DML·DCL, JOIN, GROUP BY·HAVING, 서브쿼리, 제약조건과 정규화 핵심을 실기 출제 포인트 위주로 압축한 집중 노트.</p>
+          <div class="chapter-meta"><span>DDL · DML · JOIN · 정규화</span><span>집중 노트</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='gigsa-mock.html'" style="border-left: 3px solid var(--gigsa);">
+          <div class="chapter-badge" style="background: var(--gigsa); color: #fff;">모의고사</div>
+          <h3>📝 실전 모의고사</h3>
+          <p>회차별 실전 모의시험 — 타이머, 진행 현황, 자가채점·결과 리포트까지. 시간을 재고 실제 시험처럼 풀어보는 마무리 점검용.</p>
+          <div class="chapter-meta"><span>타이머 · 자가채점 · 회차별</span><span>실전 시험</span></div>
         </div>
       </div>
     </section>
