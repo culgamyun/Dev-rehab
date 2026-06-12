@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>부록 R-C - 로보틱스 수학 복습 시트</title>
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^aws-/.test(f)?'aws':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack')));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
   <link rel="stylesheet" href="lib/prism.min.css">
@@ -30,6 +30,7 @@
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
       <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
       <button class="track-tab" data-track-tab="gigsa" role="tab" aria-selected="false" type="button"><span class="track-emoji">📜</span><span class="track-label">정처기</span></button>
+      <button class="track-tab" data-track-tab="aws" role="tab" aria-selected="false" type="button"><span class="track-emoji">☁️</span><span class="track-label">AWS</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -76,6 +77,13 @@
       <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-codetrace.html"><span class="nav-item-text">💻 프로그래밍 코드추적</span></a></li>
       <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sql.html"><span class="nav-item-text">🗄️ SQL 집중노트</span></a></li>
       <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
+      <li class="nav-section-label" data-track="aws" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">AWS 자격증</li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-0-clp.html"><span class="nav-item-text">☁️ A0. CLP 클라우드 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-0-clp" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-1-iam-security.html"><span class="nav-item-text">🔐 A1. SAA① 보안·자격증명</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-1-iam-security" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-2-compute-network.html"><span class="nav-item-text">🖥️ A2. SAA② 컴퓨팅·네트워킹</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-2-compute-network" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-3-storage-db.html"><span class="nav-item-text">🗄️ A3. SAA③ 스토리지·DB</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-3-storage-db" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-4-ha-architecture.html"><span class="nav-item-text">🏛️ A4. SAA④ 고가용성·설계</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-4-ha-architecture" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-5-cheatsheet.html"><span class="nav-item-text">📋 A5. 서비스 선택 치트시트</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>

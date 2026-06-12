@@ -1,0 +1,502 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A1. SAA① 보안·자격증명 · Dev Rehab</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^aws-/.test(f)?'aws':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack')));document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
+      <button class="track-tab" data-track-tab="gigsa" role="tab" aria-selected="false" type="button"><span class="track-emoji">📜</span><span class="track-label">정처기</span></button>
+      <button class="track-tab" data-track-tab="aws" role="tab" aria-selected="false" type="button"><span class="track-emoji">☁️</span><span class="track-label">AWS</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
+      <li class="nav-section-label" data-track="gigsa" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">정보처리기사 실기</li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sweng.html"><span class="nav-item-text">🧩 SW공학 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-secnet.html"><span class="nav-item-text">🔒 보안 · 네트워크 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-codetrace.html"><span class="nav-item-text">💻 프로그래밍 코드추적</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sql.html"><span class="nav-item-text">🗄️ SQL 집중노트</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
+      <li class="nav-section-label" data-track="aws" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">AWS 자격증</li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-0-clp.html"><span class="nav-item-text">☁️ A0. CLP 클라우드 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-0-clp" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-1-iam-security.html"><span class="nav-item-text">🔐 A1. SAA① 보안·자격증명</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-1-iam-security" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-2-compute-network.html"><span class="nav-item-text">🖥️ A2. SAA② 컴퓨팅·네트워킹</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-2-compute-network" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-3-storage-db.html"><span class="nav-item-text">🗄️ A3. SAA③ 스토리지·DB</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-3-storage-db" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-4-ha-architecture.html"><span class="nav-item-text">🏛️ A4. SAA④ 고가용성·설계</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-4-ha-architecture" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-5-cheatsheet.html"><span class="nav-item-text">📋 A5. 서비스 선택 치트시트</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span class="btn-icon">☀️</span><span class="btn-label">Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span class="btn-icon">🔄</span><span class="btn-label">데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>AWS 자격증</span> &gt; <span>A1. 보안·자격증명</span></div>
+      <h1>A1. SAA① 보안 · 자격증명 (IAM · KMS · 위협 방어)</h1>
+<p style="font-size:14px; color:var(--text-muted);">SAA-C03(2026 기준) 4개 도메인 중 가장 비중이 큰 <strong>도메인 1 「보안 아키텍처 설계」(30%)</strong>를 통째로 다룹니다. IAM 정책 평가 로직과 JSON 해부, IAM 역할·STS, Organizations·SCP 거버넌스, KMS 암호화와 봉투 암호화, Secrets Manager vs Parameter Store, 그리고 Cognito·WAF·Shield·GuardDuty 같은 엣지·탐지 서비스의 역할 구분까지 — "키워드를 보면 정답 서비스가 떠오르는" 수준으로 정리합니다.</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig"><svg class="blueprint" viewBox="0 0 800 340" role="img" aria-label="IAM 요청 평가 흐름 도면: 요청에서 명시적 Deny 확인, 명시적 Allow 확인, 묵시적 Deny를 거쳐 허용 또는 거부 결과로 이어진다"><defs><pattern id="grid-aws1" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern><marker id="ar-aws1" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 z" fill="#7fd4ff"/></marker></defs><rect width="800" height="340" fill="url(#grid-aws1)"/><text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG A1 · IAM 요청 평가 흐름 (명시적 Deny &gt; 명시적 Allow &gt; 묵시적 Deny)</text><text x="40" y="92" fill="#cfe8ff" font-size="12">Principal</text><text x="40" y="108" fill="#9fc7e8" font-size="10">(User · Role)</text><rect x="36" y="120" width="96" height="44" rx="6" fill="none" stroke="#7fd4ff" stroke-width="1.5"/><text x="84" y="147" fill="#cfe8ff" font-size="12" text-anchor="middle">요청 Request</text><line x1="132" y1="142" x2="186" y2="142" stroke="#7fd4ff" stroke-width="1.6" marker-end="url(#ar-aws1)"/><rect x="190" y="116" width="120" height="52" rx="6" fill="none" stroke="#ff5d5d" stroke-width="1.6"/><text x="250" y="138" fill="#ff5d5d" font-size="12" text-anchor="middle">명시적 Deny?</text><text x="250" y="156" fill="#ff5d5d" font-size="10" text-anchor="middle">(SCP·정책)</text><line x1="310" y1="142" x2="364" y2="142" stroke="#7fd4ff" stroke-width="1.6" marker-end="url(#ar-aws1)"/><text x="320" y="134" fill="#ff5d5d" font-size="10">아니오</text><rect x="368" y="116" width="120" height="52" rx="6" fill="none" stroke="#48d597" stroke-width="1.6"/><text x="428" y="138" fill="#48d597" font-size="12" text-anchor="middle">명시적 Allow?</text><text x="428" y="156" fill="#48d597" font-size="10" text-anchor="middle">(어떤 정책이든)</text><line x1="488" y1="142" x2="560" y2="142" stroke="#48d597" stroke-width="1.6" marker-end="url(#ar-aws1)"/><text x="500" y="134" fill="#48d597" font-size="10">예</text><rect x="564" y="116" width="116" height="52" rx="6" fill="none" stroke="#48d597" stroke-width="1.8"/><text x="622" y="147" fill="#48d597" font-size="13" text-anchor="middle">✓ 허용 ALLOW</text><line x1="250" y1="168" x2="250" y2="250" stroke="#ff5d5d" stroke-width="1.6" marker-end="url(#ar-aws1)"/><text x="258" y="210" fill="#ff5d5d" font-size="10">예 → 즉시 차단</text><line x1="428" y1="168" x2="428" y2="250" stroke="#ffb300" stroke-width="1.6" marker-end="url(#ar-aws1)"/><text x="436" y="210" fill="#ffb300" font-size="10">아니오 → 묵시적 Deny</text><rect x="300" y="254" width="240" height="48" rx="6" fill="none" stroke="#ff5d5d" stroke-width="1.8"/><text x="420" y="283" fill="#ff5d5d" font-size="13" text-anchor="middle">✗ 거부 DENY (기본값)</text><text x="40" y="288" fill="#9fc7e8" font-size="11">기본 원칙: 아무 것도 허용 안 됨</text><text x="40" y="304" fill="#9fc7e8" font-size="11">→ 명시적 Allow가 있어야만 통과</text></svg><figcaption>모든 IAM 요청은 먼저 명시적 Deny를 확인하고(있으면 즉시 거부), 다음으로 명시적 Allow를 찾습니다. 둘 다 없으면 묵시적 Deny(기본 거부)로 차단됩니다.</figcaption></figure>
+
+    <div class="concept-section">
+
+<section id="iam-evaluation-logic">
+<h2>1. IAM 평가 로직 — 누가 무엇을 할 수 있는가</h2>
+<p>AWS 보안의 출발점은 <strong>IAM(Identity and Access Management)</strong>입니다. 모든 API 요청은 "이 <strong>주체(Principal)</strong>가 이 <strong>리소스</strong>에 이 <strong>액션</strong>을 해도 되는가?"라는 질문으로 환원되고, IAM이 그 판정을 내립니다. 시험에서 가장 자주 나오는 건 이 <strong>평가 순서</strong>입니다.</p>
+
+<div class="analogy-box">
+<h4>💡 비유로 이해하기: 출입 통제 보안요원</h4>
+<p>건물 보안요원에게는 규칙이 있습니다. ① <strong>블랙리스트(명시적 Deny)</strong>에 이름이 있으면 무조건 돌려보냅니다 — VIP 패스가 있어도 소용없습니다. ② 블랙리스트에 없으면 <strong>출입 허가 명단(명시적 Allow)</strong>을 확인합니다. ③ 허가 명단에도 없으면? 기본은 "모르는 사람은 못 들어감"(<strong>묵시적 Deny</strong>)입니다. 그래서 <strong>아무 정책도 없는 새 사용자는 아무 것도 못 합니다.</strong></p>
+</div>
+
+<p>핵심 구성요소 4가지를 구분하세요. 시험 보기에서 "어떤 것을 EC2에 붙여야 하나?" 같은 질문으로 변형됩니다.</p>
+<table>
+<thead><tr><th>구성요소</th><th>무엇인가</th><th>핵심 포인트</th></tr></thead>
+<tbody>
+<tr><td><strong>사용자(User)</strong></td><td>사람 또는 개별 자격증명. 장기 자격증명(비밀번호·액세스 키) 보유</td><td>루트 사용자는 일상 사용 금지, MFA 필수</td></tr>
+<tr><td><strong>그룹(Group)</strong></td><td>사용자 묶음. 정책을 그룹에 붙이면 소속 사용자에 일괄 적용</td><td>권한 관리 단위 — 그룹은 다른 그룹에 중첩 불가</td></tr>
+<tr><td><strong>역할(Role)</strong></td><td>"임시로 빌려 쓰는" 권한 꾸러미. 장기 키가 없음</td><td>EC2·Lambda·교차 계정·페더레이션에 권한 부여</td></tr>
+<tr><td><strong>정책(Policy)</strong></td><td>권한을 정의한 JSON 문서</td><td>위 셋에 "붙여서(attach)" 권한을 부여</td></tr>
+</tbody>
+</table>
+
+<div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--devops);">✅ 핵심 정리: 평가 순서는 외워라</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;"><strong>명시적 Deny &gt; 명시적 Allow &gt; 묵시적 Deny(기본 거부)</strong>. 단 하나의 정책이라도 Deny를 내리면, 다른 모든 Allow를 무시하고 거부됩니다. "Deny가 항상 이긴다"가 한 줄 요약입니다.</p>
+</div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">"사용자에게 S3 전체 권한 Allow 정책과, 특정 버킷 Deny 정책이 동시에 붙어 있다. 그 버킷에 접근할 수 있는가?" → <strong>불가</strong>. 명시적 Deny가 명시적 Allow를 항상 무력화합니다. 키워드 "deny" + "allow" 충돌 = Deny 승리.</p>
+</div>
+</section>
+
+<section id="iam-policy-json">
+<h2>2. IAM 정책 JSON 해부 — Effect · Action · Resource · Condition</h2>
+<p>IAM 정책은 <strong>JSON 문서</strong>입니다. 시험은 정책을 읽고 "이게 무엇을 허용/거부하는가"를 묻습니다. 핵심 4요소만 알면 대부분 읽힙니다.</p>
+<ul style="font-size:13.5px; line-height:1.85;">
+<li><strong>Effect</strong>: <code>Allow</code> 또는 <code>Deny</code></li>
+<li><strong>Action</strong>: 허용/거부할 API 동작 (예: <code>s3:GetObject</code>, <code>ec2:*</code>)</li>
+<li><strong>Resource</strong>: 대상 리소스의 ARN (Amazon 리소스 이름)</li>
+<li><strong>Condition</strong>(선택): 조건. 특정 IP·MFA·태그일 때만 적용 등 세밀 제어</li>
+</ul>
+
+<div class="code-block-header"><span class="code-title">자격증명 기반 정책 — S3 특정 버킷 읽기 + IP 조건</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+<pre class="language-json"><code class="language-json">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ReadShopBucketFromOffice",
+      "Effect": "Allow",
+      "Action": [
+        "s3:GetObject",
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::shop-assets",
+        "arn:aws:s3:::shop-assets/*"
+      ],
+      "Condition": {
+        "IpAddress": { "aws:SourceIp": "203.0.113.0/24" }
+      }
+    }
+  ]
+}</code></pre>
+<p style="font-size:12.5px; color:var(--text-muted); margin-top:8px;">⚠️ <code>"Version": "2012-10-17"</code>은 정책 언어 버전이라 날짜가 옛날이어도 <strong>현행 최신</strong>입니다(고정값). 버킷 자체(<code>ListBucket</code>)와 객체(<code>GetObject</code>)는 ARN을 따로 써야 합니다 — 객체에는 <code>/*</code>가 붙습니다.</p>
+
+<p>정책은 "어디에 붙느냐"로 두 종류로 나뉩니다. 이 구분이 시험 단골입니다.</p>
+<table>
+<thead><tr><th>구분</th><th>자격증명 기반 정책<br>(Identity-based)</th><th>리소스 기반 정책<br>(Resource-based)</th></tr></thead>
+<tbody>
+<tr><td><strong>붙는 곳</strong></td><td>User · Group · Role</td><td>리소스 자체(S3 버킷, SQS, KMS 키 등)</td></tr>
+<tr><td><strong>Principal 필드</strong></td><td>없음(주체가 곧 붙은 대상)</td><td><strong>있음</strong> — "누가" 접근 가능한지 명시</td></tr>
+<tr><td><strong>대표 예</strong></td><td>IAM 정책</td><td>S3 버킷 정책, KMS 키 정책</td></tr>
+<tr><td><strong>교차 계정</strong></td><td>역할 위임으로 처리</td><td>다른 계정 Principal을 직접 허용 가능</td></tr>
+</tbody>
+</table>
+
+<div class="glass-panel" style="border-left:3px solid var(--interview); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--interview);">⚠️ 자주 헷갈리는 함정</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;"><strong>리소스 기반 정책에는 <code>Principal</code>이 있고, 자격증명 기반 정책에는 없습니다.</strong> "Principal 필드가 보이는가?"로 둘을 즉시 구분하세요. S3 버킷 정책에서 다른 계정을 허용하면, 역할(AssumeRole) 없이도 교차 계정 접근이 됩니다.</p>
+</div>
+</section>
+
+<section id="iam-roles-sts">
+<h2>3. IAM 역할과 STS — 액세스 키를 코드에 박지 마라</h2>
+<p>가장 흔한 실무 사고는 EC2 안에 <strong>액세스 키를 하드코딩</strong>하는 것입니다. 키가 유출되면 끝장입니다. 정답은 <strong>IAM 역할(Role)</strong>입니다. EC2·Lambda에 역할을 붙이면, AWS가 <strong>STS(Security Token Service)</strong>로 <strong>자동 교체되는 임시 자격증명</strong>을 발급해 주입합니다. 키를 코드에 둘 이유가 사라집니다.</p>
+
+<div class="analogy-box">
+<h4>💡 비유로 이해하기: 마스터키 복사 vs 임시 방문증</h4>
+<p>액세스 키를 코드에 박는 건 <strong>건물 마스터키를 복사해 책상 위에 붙여두는</strong> 것과 같습니다. 누가 사진만 찍어도 영구히 위험합니다. IAM 역할은 <strong>안내데스크에서 받는 임시 방문증</strong> — 몇 시간 뒤 자동 만료되고, 잃어버려도 곧 무효가 됩니다. 그래서 키 유출 리스크가 근본적으로 줄어듭니다.</p>
+</div>
+
+<p><strong>AssumeRole과 교차 계정 접근:</strong> A 계정의 사용자가 B 계정의 리소스에 접근해야 할 때, B 계정에 역할을 만들고 "A 계정이 이 역할을 맡을 수 있다"는 <strong>신뢰 정책(Trust Policy)</strong>을 설정합니다. A 계정 주체가 <code>sts:AssumeRole</code>을 호출하면 B 계정 권한의 임시 토큰을 받습니다.</p>
+
+<div class="code-block-header"><span class="code-title">신뢰 정책 — EC2 서비스가 이 역할을 맡도록 허용</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+<pre class="language-json"><code class="language-json">{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Principal": { "Service": "ec2.amazonaws.com" },
+      "Action": "sts:AssumeRole"
+    }
+  ]
+}</code></pre>
+
+<table>
+<thead><tr><th>방식</th><th>자격증명 수명</th><th>적합한 상황</th></tr></thead>
+<tbody>
+<tr><td>IAM 사용자 액세스 키</td><td><strong>장기(영구)</strong> — 수동 교체</td><td>AWS 외부의 레거시 도구 등 불가피한 경우만</td></tr>
+<tr><td>IAM 역할 + STS</td><td><strong>임시(자동 만료·교체)</strong></td><td>EC2·Lambda·ECS·교차 계정·SSO (권장)</td></tr>
+</tbody>
+</table>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">"EC2의 애플리케이션이 S3에 접근해야 한다. 가장 안전한 방법은?" → <strong>IAM 역할을 EC2 인스턴스 프로파일로 부여</strong>. "액세스 키를 환경변수에 저장" / "키를 코드에 포함" 보기는 <strong>전부 오답</strong>입니다. 키워드 "EC2 + 접근 + 안전/보안" = IAM Role.</p>
+</div>
+</section>
+
+<section id="organizations-scp">
+<h2>4. 멀티 계정 거버넌스 — Organizations와 SCP 가드레일</h2>
+<p>회사가 커지면 계정 하나로는 부족합니다(운영·개발·결제 분리, 폭발 반경 격리). <strong>AWS Organizations</strong>는 여러 계정을 묶어 일괄 관리하고 결제를 통합(Consolidated Billing)합니다. 그 위에서 권한의 상한선을 거는 도구가 <strong>SCP(Service Control Policy, 서비스 제어 정책)</strong>입니다.</p>
+
+<div class="analogy-box">
+<h4>💡 비유로 이해하기: 회사 지출 한도(상한선)</h4>
+<p>팀장이 팀원에게 "이 카드 마음껏 써"라고 권한(IAM Allow)을 줘도, 회사 차원의 <strong>지출 한도(SCP)</strong>가 "월 100만원까지"라면 그 위로는 절대 못 씁니다. SCP는 <strong>권한을 부여하지 않습니다 — 오직 상한(가드레일)만 정합니다.</strong> 실제 권한은 여전히 IAM 정책으로 줘야 합니다.</p>
+</div>
+
+<p>이 "교집합" 개념이 핵심입니다. 최종 권한 = <strong>SCP가 허용한 범위</strong> ∩ <strong>IAM이 허용한 범위</strong>. 어느 한쪽이라도 막으면 차단됩니다.</p>
+<table>
+<thead><tr><th>질문</th><th>SCP</th><th>IAM 정책</th></tr></thead>
+<tbody>
+<tr><td>적용 대상</td><td>멤버 계정(또는 OU) 전체</td><td>개별 User·Group·Role</td></tr>
+<tr><td>권한을 <strong>부여</strong>하나?</td><td><strong>아니오</strong> — 상한만 설정</td><td>예 — 실제 Allow를 부여</td></tr>
+<tr><td>루트 사용자에 적용?</td><td><strong>예</strong> — 멤버 계정 루트도 제한</td><td>아니오 — 루트는 IAM으로 못 막음</td></tr>
+<tr><td>비유</td><td>회사 지출 한도</td><td>개인에게 준 카드 권한</td></tr>
+</tbody>
+</table>
+
+<div class="glass-panel" style="border-left:3px solid var(--interview); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--interview);">⚠️ 자주 헷갈리는 함정</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">SCP는 <strong>멤버 계정</strong>에만 적용되며, 조직의 <strong>관리(management) 계정에는 적용되지 않습니다</strong> — 관리 계정의 사용자·역할·루트는 SCP로 제한할 수 없습니다. 그래서 관리 계정은 워크로드 없이 조직 관리용으로만 쓰는 것이 모범 사례입니다.</p>
+</div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">"모든 멤버 계정에서 특정 리전 사용을 금지하거나, 멤버 계정의 루트 사용자조차 특정 행동을 못 하게 하라." → <strong>SCP</strong>. "여러 계정의 권한 상한을 중앙에서 통제" 키워드 = Organizations + SCP. IAM 정책으로는 계정 단위·루트 제한이 불가능합니다.</p>
+</div>
+</section>
+
+<section id="kms-encryption">
+<h2>5. 암호화와 KMS — 전송 중 · 저장 중 · 봉투 암호화</h2>
+<p>보안 도메인의 또 다른 축은 <strong>암호화</strong>입니다. 두 종류를 구분하세요. <strong>전송 중 암호화(in transit)</strong>는 네트워크를 오가는 데이터를 보호(TLS/SSL/HTTPS)하고, <strong>저장 중 암호화(at rest)</strong>는 디스크에 놓인 데이터를 보호합니다. AWS에서 저장 중 암호화의 중심이 <strong>KMS(Key Management Service)</strong>입니다.</p>
+
+<div class="analogy-box">
+<h4>💡 비유로 이해하기: 봉투 암호화 = 금고 속 작은 열쇠</h4>
+<p>큰 데이터를 KMS 마스터키로 직접 암호화하면 느립니다. 그래서 <strong>봉투 암호화(Envelope Encryption)</strong>를 씁니다: ① 빠른 <strong>데이터 키(DEK)</strong>로 실제 데이터를 암호화하고, ② 그 데이터 키 자체를 <strong>KMS 마스터키(KEK)</strong>로 암호화해 데이터 옆에 봉인합니다. 마치 <strong>방 열쇠(DEK)</strong>는 데이터와 함께 두되, 그 열쇠를 <strong>금고(KMS)</strong>에 넣어 잠그는 셈입니다. 금고를 못 열면 방 열쇠도 못 꺼냅니다.</p>
+</div>
+
+<p>S3 서버측 암호화(SSE) 옵션은 "키를 누가 관리하느냐"로 갈립니다. 비교 표가 시험 단골입니다.</p>
+<table>
+<thead><tr><th>방식</th><th>키 관리 주체</th><th>핵심 특징 · 언제</th></tr></thead>
+<tbody>
+<tr><td><strong>SSE-S3</strong></td><td>AWS가 전부 관리</td><td>가장 간단. 키 제어 불필요한 기본 암호화</td></tr>
+<tr><td><strong>SSE-KMS</strong></td><td>AWS KMS 키(고객 관리 가능)</td><td><strong>감사 로그(CloudTrail)·키 접근 제어·교체</strong>가 필요할 때</td></tr>
+<tr><td><strong>SSE-C</strong></td><td>고객이 키를 직접 제공·관리</td><td>키를 AWS에 맡기기 싫을 때(요청마다 키 전달)</td></tr>
+</tbody>
+</table>
+
+<div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--devops);">✅ 핵심 정리: 키 감사·제어가 필요하면 KMS</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">"누가 언제 이 키를 썼는지 추적(CloudTrail)"하거나 "키 사용 권한을 IAM/키 정책으로 제어"해야 하면 <strong>SSE-KMS</strong>. 아무 것도 신경 쓰기 싫으면 <strong>SSE-S3</strong>. 키를 외부에서 갖고 오면 <strong>SSE-C</strong>.</p>
+</div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">"규정 준수를 위해 <strong>키 사용 내역을 감사</strong>하고 키 교체·접근을 통제해야 한다." → <strong>SSE-KMS</strong>(또는 KMS 고객 관리 키). 키워드 "감사/audit/CloudTrail/키 회전" = KMS. 단순 "저장 중 암호화만" 하면 SSE-S3로 충분.</p>
+</div>
+</section>
+
+<section id="secrets-management">
+<h2>6. 비밀 관리 — Secrets Manager vs Parameter Store</h2>
+<p>DB 비밀번호·API 키 같은 <strong>비밀(Secret)</strong>을 코드나 환경변수에 평문으로 두면 안 됩니다. AWS는 두 가지 보관소를 제공하는데, 시험은 "둘 중 무엇?"을 묻습니다. 결정적 차이는 <strong>자동 교체(rotation)</strong>입니다.</p>
+
+<table>
+<thead><tr><th>구분</th><th>Secrets Manager</th><th>Systems Manager Parameter Store</th></tr></thead>
+<tbody>
+<tr><td><strong>자동 교체(rotation)</strong></td><td><strong>내장 지원</strong>(Lambda로 DB 비번 주기 교체)</td><td>기본 없음(직접 구현 필요)</td></tr>
+<tr><td><strong>비용</strong></td><td>비밀당 유료(종량제)</td><td>표준 파라미터는 무료</td></tr>
+<tr><td><strong>주 용도</strong></td><td>교체가 중요한 DB·API 자격증명</td><td>설정값·환경변수, 비교적 단순한 비밀</td></tr>
+<tr><td><strong>RDS 연동</strong></td><td>RDS·Aurora와 긴밀 통합(자동 교체)</td><td>SecureString으로 KMS 암호화 저장</td></tr>
+</tbody>
+</table>
+
+<div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--devops);">✅ 핵심 정리: "자동 교체"가 키워드면 Secrets Manager</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">DB 비밀번호를 <strong>주기적으로 자동 교체</strong>해야 하면 <strong>Secrets Manager</strong>. 단순 설정값 저장이나 비용 최소화가 목적이면 <strong>Parameter Store</strong>(SecureString). 둘 다 평문 환경변수보다 안전하며, 애플리케이션은 <strong>IAM 역할</strong>로 접근합니다(섹션 3).</p>
+</div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">"RDS 자격증명을 30일마다 자동으로 교체하라." → <strong>Secrets Manager</strong>(rotation). "수백 개의 설정값을 비용 없이 계층적으로 저장하라." → <strong>Parameter Store</strong>. 키워드 "rotation/자동 교체" = Secrets Manager가 거의 항상 정답.</p>
+</div>
+</section>
+
+<section id="edge-threat-defense">
+<h2>7. 엣지 · 위협 방어 개요 — 인증 · L7/DDoS · 탐지</h2>
+<p>마지막으로 도메인 1에 자주 섞여 나오는 <strong>보안 서비스들의 역할 구분</strong>입니다. 이름이 비슷해 헷갈리지만, "무엇을 막거나 탐지하는가"로 나누면 깔끔합니다. 각 서비스의 <strong>한 줄 역할</strong>만 확실히 외우면 보기에서 바로 골라낼 수 있습니다.</p>
+
+<table>
+<thead><tr><th>서비스</th><th>분류</th><th>한 줄 역할</th></tr></thead>
+<tbody>
+<tr><td><strong>Cognito</strong></td><td>인증·자격증명</td><td>웹·모바일 앱의 <strong>사용자 로그인/가입</strong>, 소셜·SAML 페더레이션</td></tr>
+<tr><td><strong>WAF</strong></td><td>L7 방어</td><td>HTTP(애플리케이션 계층) <strong>SQL 인젝션·XSS 등 웹 공격 필터링</strong></td></tr>
+<tr><td><strong>Shield</strong></td><td>DDoS 방어</td><td><strong>DDoS 공격 완화</strong>(Standard 자동 무료, Advanced 유료 고급)</td></tr>
+<tr><td><strong>GuardDuty</strong></td><td>위협 탐지</td><td>로그(VPC·CloudTrail·DNS) 분석으로 <strong>이상 행위 탐지</strong>(에이전트 불필요)</td></tr>
+<tr><td><strong>Inspector</strong></td><td>취약점 평가</td><td>EC2·컨테이너 이미지의 <strong>알려진 취약점(CVE) 스캔</strong></td></tr>
+</tbody>
+</table>
+
+<div class="glass-panel" style="border-left:3px solid var(--interview); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--interview);">⚠️ 자주 헷갈리는 함정</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;"><strong>WAF(웹 공격 차단·예방) vs GuardDuty(이상 행위 탐지)</strong>를 섞지 마세요. WAF는 들어오는 요청을 <strong>막고(prevent)</strong>, GuardDuty는 이미 일어난 <strong>위협을 알아챕니다(detect)</strong>. <strong>Inspector(소프트웨어 취약점 스캔) vs GuardDuty(악성 행위 탐지)</strong>도 다릅니다 — Inspector는 "구멍이 있나", GuardDuty는 "누가 침입 중인가".</p>
+</div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;">
+<h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4>
+<p style="font-size:13px; color:var(--text-muted); margin:0;">"애플리케이션 계층의 SQL 인젝션·XSS를 차단" → <strong>WAF</strong>. "대규모 DDoS로부터 보호" → <strong>Shield</strong>. "계정에서 비정상 API 호출·암호화폐 채굴 등 위협을 탐지" → <strong>GuardDuty</strong>. "모바일 앱 사용자 인증/가입 관리" → <strong>Cognito</strong>.</p>
+</div>
+</section>
+
+<section id="one-page-summary">
+<h2>8. 한 장 요약 — 보안 도메인 키워드 → 서비스</h2>
+<p>도메인 1(30%)에서 "키워드를 보면 정답이 떠오르는" 상태가 목표입니다. 아래 한 장으로 복습하세요.</p>
+<table>
+<thead><tr><th>시험 키워드 / 상황</th><th>정답 개념·서비스</th></tr></thead>
+<tbody>
+<tr><td>Allow와 Deny가 충돌</td><td><strong>명시적 Deny 승리</strong>(평가 순서)</td></tr>
+<tr><td>아무 정책 없는 새 사용자</td><td>묵시적 Deny → <strong>아무 것도 못 함</strong></td></tr>
+<tr><td>정책에 <code>Principal</code> 필드가 있다</td><td><strong>리소스 기반 정책</strong>(버킷·KMS 키 정책)</td></tr>
+<tr><td>EC2/Lambda가 S3에 안전하게 접근</td><td><strong>IAM 역할</strong>(키 하드코딩 금지) + STS</td></tr>
+<tr><td>다른 계정의 리소스 접근</td><td><strong>AssumeRole</strong>(신뢰 정책) 또는 리소스 정책</td></tr>
+<tr><td>여러 계정 권한 상한·리전 금지·루트 제한</td><td><strong>Organizations + SCP</strong></td></tr>
+<tr><td>키 사용 감사·교체·접근 제어</td><td><strong>SSE-KMS</strong> / KMS 고객 관리 키</td></tr>
+<tr><td>대용량 데이터 효율적 암호화</td><td><strong>봉투 암호화</strong>(DEK + KMS KEK)</td></tr>
+<tr><td>DB 비밀번호 자동 교체</td><td><strong>Secrets Manager</strong>(rotation)</td></tr>
+<tr><td>SQL 인젝션·XSS 웹 공격 차단</td><td><strong>WAF</strong></td></tr>
+<tr><td>DDoS 방어</td><td><strong>Shield</strong></td></tr>
+<tr><td>이상 행위·위협 탐지(로그 기반)</td><td><strong>GuardDuty</strong></td></tr>
+<tr><td>모바일/웹 사용자 로그인·가입</td><td><strong>Cognito</strong></td></tr>
+</tbody>
+</table>
+<p style="font-size:12.5px; color:var(--text-muted); margin-top:8px;">⛓️ 다음 트랙(A2)은 SAA 도메인 3·4의 토대인 <strong>컴퓨팅·네트워킹</strong>으로 이어집니다. IAM 역할은 거기서 EC2·Lambda 권한 부여로 다시 등장합니다.</p>
+</section>
+
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: 역기구학)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const awsSecQuizzes = [
+  {
+    type: "mcq",
+    question: "한 IAM 사용자에게 'S3 모든 작업 Allow' 정책과 'shop-secret 버킷 Deny' 정책이 동시에 붙어 있습니다. 이 사용자가 shop-secret 버킷의 객체를 읽을 수 있나요?",
+    options: [
+      "읽을 수 있다 — Allow 정책이 더 광범위하므로 우선한다",
+      "읽을 수 없다 — 명시적 Deny가 명시적 Allow를 항상 무력화한다",
+      "정책 생성 순서(나중에 붙인 것)가 우선한다",
+      "두 정책이 충돌하므로 요청 자체가 오류가 난다"
+    ],
+    correct: 1,
+    explanation: "IAM 평가 순서는 '명시적 Deny > 명시적 Allow > 묵시적 Deny'입니다. 단 하나라도 Deny가 있으면 다른 모든 Allow를 무시하고 거부됩니다. 정책 범위나 생성 순서는 우선순위와 무관하며, 충돌해도 오류가 아니라 Deny로 평가됩니다."
+  },
+  {
+    type: "mcq",
+    question: "EC2에서 실행되는 Spring Boot 앱이 S3 버킷에 접근해야 합니다. 보안상 가장 권장되는 방법은?",
+    options: [
+      "액세스 키와 시크릿 키를 application.yml에 적어 둔다",
+      "액세스 키를 EC2의 환경변수로 설정한다",
+      "S3 접근 권한을 가진 IAM 역할을 EC2 인스턴스 프로파일로 부여한다",
+      "루트 사용자의 액세스 키를 사용한다"
+    ],
+    correct: 2,
+    explanation: "IAM 역할을 EC2에 부여하면 STS가 자동 교체되는 임시 자격증명을 주입하므로 키를 코드/환경에 둘 필요가 없습니다. 키를 파일·환경변수에 두는 것은 유출 위험이 크고, 루트 키 사용은 절대 금기입니다."
+  },
+  {
+    type: "mcq",
+    question: "다음 중 '리소스 기반 정책(resource-based policy)'을 자격증명 기반 정책과 구분하는 가장 확실한 단서는?",
+    options: [
+      "Effect 필드에 Deny가 들어 있다",
+      "정책에 Principal 필드가 존재한다",
+      "Version이 2012-10-17이다",
+      "Action에 와일드카드(*)가 쓰였다"
+    ],
+    correct: 1,
+    explanation: "리소스 기반 정책(S3 버킷 정책, KMS 키 정책 등)은 '누가 접근 가능한지'를 명시해야 하므로 Principal 필드가 있습니다. 자격증명 기반 정책에는 Principal이 없습니다. Version은 모든 정책에 공통인 고정값이고, Deny/와일드카드는 양쪽 모두에 나올 수 있습니다."
+  },
+  {
+    type: "mcq",
+    question: "AWS Organizations에서 SCP(서비스 제어 정책)에 대한 설명으로 옳은 것은?",
+    options: [
+      "SCP는 계정에 실제 권한을 부여한다",
+      "SCP는 권한의 상한(가드레일)만 정하며, 실제 권한은 IAM 정책으로 줘야 한다",
+      "SCP는 멤버 계정의 루트 사용자에게는 적용되지 않는다",
+      "SCP는 개별 IAM 사용자 단위로만 적용된다"
+    ],
+    correct: 1,
+    explanation: "SCP는 권한을 '부여'하지 않고 계정/OU 전체에 허용 가능한 최대 범위(상한)만 정합니다. 최종 권한은 'SCP 허용 범위 ∩ IAM 허용 범위'의 교집합입니다. SCP는 멤버 계정의 루트 사용자에게도 적용되며(단, 조직 관리 계정에는 적용되지 않음), 적용 단위는 개별 사용자가 아니라 계정/OU입니다."
+  },
+  {
+    type: "mcq",
+    question: "규정 준수를 위해 S3에 저장되는 데이터를 암호화하되, '누가 언제 암호화 키를 사용했는지'를 CloudTrail로 감사하고 키 접근을 통제해야 합니다. 가장 적합한 것은?",
+    options: [
+      "SSE-S3 (Amazon S3 관리형 키)",
+      "SSE-KMS (AWS KMS 키)",
+      "암호화 없이 버킷 정책으로만 접근 제한",
+      "클라이언트에서 압축만 적용"
+    ],
+    correct: 1,
+    explanation: "키 사용 감사(CloudTrail 로깅)·접근 제어·교체가 요구되면 SSE-KMS입니다. SSE-S3는 AWS가 키를 전부 관리해 감사·세밀한 제어가 어렵고, 암호화 없이 접근 제한만 하거나 압축만 하는 것은 '저장 중 암호화' 요구를 충족하지 못합니다."
+  },
+  {
+    type: "mcq",
+    question: "RDS 데이터베이스 자격증명을 30일마다 자동으로 교체(rotation)해야 합니다. 가장 적합한 서비스는?",
+    options: [
+      "Systems Manager Parameter Store(표준 파라미터)",
+      "AWS Secrets Manager",
+      "S3 버킷에 암호화하여 저장",
+      "EC2 환경변수에 저장 후 cron으로 수동 교체"
+    ],
+    correct: 1,
+    explanation: "Secrets Manager는 비밀의 자동 교체(rotation)를 내장 지원하며 RDS/Aurora와 긴밀히 통합됩니다. Parameter Store 표준은 자동 교체 기능이 없고, S3 저장이나 환경변수 수동 교체는 자동화·안전성 요구를 충족하지 못합니다. 키워드 'rotation/자동 교체'는 Secrets Manager 신호입니다."
+  },
+  {
+    type: "mcq",
+    question: "웹 애플리케이션을 겨냥한 SQL 인젝션과 XSS 같은 애플리케이션 계층(L7) 공격을 차단하려고 합니다. 가장 적합한 서비스는?",
+    options: [
+      "AWS Shield",
+      "Amazon GuardDuty",
+      "AWS WAF",
+      "Amazon Inspector"
+    ],
+    correct: 2,
+    explanation: "WAF는 HTTP 요청을 검사해 SQL 인젝션·XSS 등 L7 웹 공격을 필터링/차단(예방)합니다. Shield는 DDoS 방어, GuardDuty는 로그 기반 위협 '탐지', Inspector는 EC2/컨테이너의 알려진 취약점(CVE) 스캔으로 목적이 각각 다릅니다."
+  },
+  {
+    type: "mcq",
+    question: "봉투 암호화(Envelope Encryption)에 대한 설명으로 가장 정확한 것은?",
+    options: [
+      "KMS 마스터키로 대용량 데이터를 직접 암호화하는 방식이다",
+      "데이터 키(DEK)로 데이터를 암호화하고, 그 데이터 키를 KMS 마스터키(KEK)로 다시 암호화해 함께 보관한다",
+      "데이터를 두 번 Base64로 인코딩하는 방식이다",
+      "전송 중 데이터를 TLS로 한 번 더 감싸는 기법이다"
+    ],
+    correct: 1,
+    explanation: "봉투 암호화는 빠른 데이터 키(DEK)로 실제 데이터를 암호화하고, 그 DEK 자체를 KMS 마스터키(KEK)로 암호화해 데이터 옆에 봉인하는 방식입니다. 마스터키로 대용량을 직접 암호화하지 않아 효율적입니다. Base64는 암호화가 아니라 인코딩이며, TLS는 전송 중 암호화로 별개입니다."
+  }
+];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", awsSecQuizzes, "aws-1-iam-security");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

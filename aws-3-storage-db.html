@@ -1,0 +1,367 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A3. SAA③ 스토리지·DB · Dev Rehab</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^aws-/.test(f)?'aws':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack')));document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
+      <button class="track-tab" data-track-tab="gigsa" role="tab" aria-selected="false" type="button"><span class="track-emoji">📜</span><span class="track-label">정처기</span></button>
+      <button class="track-tab" data-track-tab="aws" role="tab" aria-selected="false" type="button"><span class="track-emoji">☁️</span><span class="track-label">AWS</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
+      <li class="nav-section-label" data-track="gigsa" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">정보처리기사 실기</li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sweng.html"><span class="nav-item-text">🧩 SW공학 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-secnet.html"><span class="nav-item-text">🔒 보안 · 네트워크 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-codetrace.html"><span class="nav-item-text">💻 프로그래밍 코드추적</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sql.html"><span class="nav-item-text">🗄️ SQL 집중노트</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
+      <li class="nav-section-label" data-track="aws" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">AWS 자격증</li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-0-clp.html"><span class="nav-item-text">☁️ A0. CLP 클라우드 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-0-clp" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-1-iam-security.html"><span class="nav-item-text">🔐 A1. SAA① 보안·자격증명</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-1-iam-security" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-2-compute-network.html"><span class="nav-item-text">🖥️ A2. SAA② 컴퓨팅·네트워킹</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-2-compute-network" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-3-storage-db.html"><span class="nav-item-text">🗄️ A3. SAA③ 스토리지·DB</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-3-storage-db" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-4-ha-architecture.html"><span class="nav-item-text">🏛️ A4. SAA④ 고가용성·설계</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-4-ha-architecture" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-5-cheatsheet.html"><span class="nav-item-text">📋 A5. 서비스 선택 치트시트</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span class="btn-icon">☀️</span><span class="btn-label">Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span class="btn-icon">🔄</span><span class="btn-label">데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>AWS 자격증</span> &gt; <span>A3. 스토리지·DB</span></div>
+      <h1 style="color: var(--aws);">A3. SAA③ 스토리지·데이터베이스</h1>
+<p style="font-size:14px; color:var(--text-muted);">SAA-C03(2026 기준) 시험에서 가장 문항이 많이 쏟아지는 영역입니다. S3·EBS·EFS 같은 스토리지와 RDS·Aurora·DynamoDB 같은 데이터베이스를 "어떤 요구사항엔 어떤 서비스"라는 선택 기준으로 정리합니다. 주로 <strong>고성능 아키텍처(24%)</strong>와 <strong>비용 최적화(20%)</strong> 도메인에 직결되며, 내구성·동기/비동기 복제 같은 단골 함정도 함께 짚습니다.</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig"><svg class="blueprint" viewBox="0 0 800 340" role="img" aria-label="S3 스토리지 클래스를 접근 빈도와 비용 축에 배치하고, RDS Multi-AZ 동기 복제와 Read Replica 비동기 복제 토폴로지를 함께 보여주는 도면"><defs><pattern id="grid-aws3" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern><marker id="arrow-aws3" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7fd4ff"/></marker><marker id="arrow-aws3g" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#48d597"/></marker></defs><rect width="800" height="340" fill="url(#grid-aws3)"/><text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG · 스토리지 계층 &amp; RDS 복제 토폴로지</text>
+
+<text x="40" y="70" fill="#cfe8ff" font-size="11">← 접근 빈번 / 비용↑          접근 드묾 / 비용↓ →</text>
+<line x1="40" y1="80" x2="360" y2="80" stroke="#7fd4ff" stroke-width="1" marker-end="url(#arrow-aws3)"/>
+
+<rect x="40" y="95" width="74" height="46" rx="6" fill="none" stroke="#ffb300"/><text x="50" y="118" fill="#ffb300" font-size="11">S3</text><text x="50" y="133" fill="#ffb300" font-size="11">Standard</text>
+<rect x="122" y="95" width="74" height="46" rx="6" fill="none" stroke="#7fd4ff"/><text x="132" y="118" fill="#cfe8ff" font-size="11">Standard</text><text x="132" y="133" fill="#cfe8ff" font-size="11">-IA</text>
+<rect x="204" y="95" width="74" height="46" rx="6" fill="none" stroke="#7fd4ff"/><text x="214" y="118" fill="#cfe8ff" font-size="11">Glacier</text><text x="214" y="133" fill="#cfe8ff" font-size="11">Flexible</text>
+<rect x="286" y="95" width="74" height="46" rx="6" fill="none" stroke="#48d597"/><text x="296" y="118" fill="#48d597" font-size="11">Glacier</text><text x="296" y="133" fill="#48d597" font-size="11">Deep Arc</text>
+<text x="40" y="160" fill="#cfe8ff" font-size="10">수명주기 정책으로 오래된 객체를 자동 강등</text>
+
+<line x1="440" y1="70" x2="440" y2="300" stroke="rgba(120,200,255,0.30)" stroke-width="1" stroke-dasharray="4 4"/>
+
+<text x="470" y="70" fill="#48d597" font-size="12">RDS 복제</text>
+<rect x="470" y="85" width="120" height="44" rx="6" fill="none" stroke="#48d597"/><text x="482" y="104" fill="#48d597" font-size="11">Primary</text><text x="482" y="120" fill="#cfe8ff" font-size="10">읽기+쓰기 (AZ-a)</text>
+
+<rect x="470" y="165" width="120" height="44" rx="6" fill="none" stroke="#48d597"/><text x="482" y="184" fill="#48d597" font-size="11">Standby</text><text x="482" y="200" fill="#cfe8ff" font-size="10">Multi-AZ (AZ-b)</text>
+<line x1="530" y1="129" x2="530" y2="165" stroke="#48d597" stroke-width="1.5" marker-end="url(#arrow-aws3g)"/><text x="538" y="152" fill="#48d597" font-size="10">동기 복제</text>
+
+<rect x="640" y="165" width="120" height="44" rx="6" fill="none" stroke="#7fd4ff"/><text x="652" y="184" fill="#7fd4ff" font-size="11">Read Replica</text><text x="652" y="200" fill="#cfe8ff" font-size="10">읽기 전용</text>
+<line x1="590" y1="120" x2="640" y2="178" stroke="#7fd4ff" stroke-width="1.5" stroke-dasharray="5 3" marker-end="url(#arrow-aws3)"/><text x="600" y="240" fill="#7fd4ff" font-size="10">비동기 복제</text>
+
+<text x="470" y="280" fill="#cfe8ff" font-size="10">Standby=가용성(자동 장애조치) · Replica=읽기 확장</text>
+</svg><figcaption>왼쪽: S3 스토리지 클래스는 접근 빈도가 낮아질수록 저렴해지고, 수명주기 정책이 오래된 객체를 아래 단계로 자동 강등합니다. 오른쪽: RDS의 Multi-AZ Standby는 동기 복제(가용성)이고 Read Replica는 비동기 복제(읽기 확장)로 목적이 다릅니다.</figcaption></figure>
+
+    <div class="concept-section">
+
+<section id="s3-basics">
+<h2>1. S3 기초와 내구성</h2>
+<p><strong>Amazon S3</strong>는 파일을 폴더 트리가 아니라 <strong>객체(object)</strong> 단위로 저장하는 객체 스토리지입니다. 각 객체는 <strong>버킷(bucket)</strong> 안에 키(key, 파일 경로처럼 보이는 이름)와 값(데이터), 메타데이터로 들어갑니다. 용량은 사실상 무제한이고 단일 객체는 최대 5TB까지 저장됩니다. EBS·EFS처럼 서버에 마운트하는 게 아니라 <strong>HTTP API로 접근</strong>한다는 점이 핵심 차이입니다.</p>
+<div class="analogy-box"><h4>💡 비유로 이해하기: 무한 셀프 보관함</h4><p>EBS가 "내 책상에 붙은 서랍"(한 서버에 붙는 디스크)이라면, S3는 "주소만 알면 누구나 택배로 물건을 넣고 빼는 무한 보관 창고"입니다. 서랍은 책상(인스턴스)에 종속되지만, 창고는 인터넷 주소(URL)만 있으면 어디서든 접근합니다. 그래서 정적 파일·백업·로그·데이터 레이크의 기본 저장소로 쓰입니다.</p></div>
+<p><strong>내구성(durability)</strong>은 데이터가 소실되지 않을 확률입니다. S3는 데이터를 한 리전의 여러 가용 영역(AZ)에 자동 복제해 <strong>99.999999999%(11 9s)</strong> 내구성을 제공합니다(One Zone 클래스는 단일 AZ라 AZ 장애에 약함). 내구성과 <strong>가용성(availability, 지금 읽을 수 있는가)</strong>은 다른 지표라는 점을 시험에서 자주 구분시킵니다.</p>
+<p>보안은 기본적으로 <strong>비공개</strong>입니다. 실수로 인터넷에 노출되는 사고를 막기 위해 계정·버킷 수준의 <strong>S3 블록 퍼블릭 액세스(Block Public Access)</strong>가 기본 활성화되어 있고, 접근 제어는 IAM 정책·버킷 정책·(레거시) ACL로 합니다. <strong>버저닝(Versioning)</strong>을 켜면 같은 키에 덮어써도 이전 버전이 보존되어 실수 삭제·랜섬웨어 복구에 대비할 수 있습니다.</p>
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"실수로 객체를 덮어쓰거나 삭제해도 복구하고 싶다" → <strong>버저닝 활성화</strong>(+ 강제 삭제 방지엔 MFA Delete·Object Lock). "버킷이 의도치 않게 공개되지 않게" → <strong>블록 퍼블릭 액세스</strong>. "S3의 내구성은?" → <strong>11 9s(여러 AZ 복제)</strong>.</p></div>
+</section>
+
+<section id="s3-classes">
+<h2>2. S3 스토리지 클래스와 수명주기</h2>
+<p>같은 S3여도 <strong>접근 빈도</strong>에 따라 더 싼 클래스로 옮기면 비용이 크게 줄어듭니다. 자주 읽는 데이터는 Standard, 가끔 읽는 데이터는 IA, 거의 안 보는 장기 보관은 Glacier 계열입니다. 클래스가 저렴해질수록 저장 비용은 내려가지만 <strong>꺼내는 비용·복원 지연</strong>이 붙는다는 트레이드오프를 기억하세요.</p>
+<table>
+<thead><tr><th>클래스</th><th>AZ</th><th>적합 용도</th><th>특징</th></tr></thead>
+<tbody>
+<tr><td><strong>S3 Standard</strong></td><td>다중</td><td>자주 접근하는 활성 데이터</td><td>기본값, 꺼내기 비용 없음</td></tr>
+<tr><td><strong>Standard-IA</strong></td><td>다중</td><td>가끔 접근, 즉시 필요</td><td>저장↓·검색(retrieval) 비용 발생</td></tr>
+<tr><td><strong>One Zone-IA</strong></td><td>단일</td><td>재생성 가능한 보조 사본</td><td>더 저렴하나 AZ 장애에 취약</td></tr>
+<tr><td><strong>Intelligent-Tiering</strong></td><td>다중</td><td>접근 패턴이 들쭉날쭉/예측 불가</td><td>AWS가 자동으로 계층 이동, 모니터링 요금</td></tr>
+<tr><td><strong>Glacier Instant Retrieval</strong></td><td>다중</td><td>분기 1회 접근 아카이브, 즉시 필요</td><td>밀리초 검색</td></tr>
+<tr><td><strong>Glacier Flexible Retrieval</strong></td><td>다중</td><td>장기 보관, 분~시간 대기 가능</td><td>분~시간 단위 복원</td></tr>
+<tr><td><strong>Glacier Deep Archive</strong></td><td>다중</td><td>규정상 수년 보관(거의 안 읽음)</td><td>최저가, 복원 수 시간(~12h)</td></tr>
+<tr><td><strong>S3 Express One Zone</strong></td><td>단일</td><td>지연 민감 고빈도 액세스</td><td>한 자릿수 ms, 단일 AZ 고성능</td></tr>
+</tbody>
+</table>
+<p><strong>수명주기(Lifecycle) 정책</strong>은 "객체가 N일 지나면 자동으로 더 싼 클래스로 옮기거나 삭제"하는 규칙입니다. 예를 들어 로그를 30일 후 Standard-IA, 90일 후 Glacier로 보내고 365일 후 만료(삭제)시킬 수 있습니다. 사람이 수동으로 옮기지 않아도 되므로 비용 최적화 도메인의 단골 정답입니다.</p>
+<div class="code-block-header"><span class="code-title">수명주기 규칙 예시 (로그 자동 강등·만료)</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+<pre class="language-json"><code class="language-json">{
+  "Rules": [
+    {
+      "ID": "log-archive-then-expire",
+      "Filter": { "Prefix": "logs/" },
+      "Status": "Enabled",
+      "Transitions": [
+        { "Days": 30,  "StorageClass": "STANDARD_IA" },
+        { "Days": 90,  "StorageClass": "GLACIER" }
+      ],
+      "Expiration": { "Days": 365 }
+    }
+  ]
+}</code></pre>
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"접근 패턴을 예측할 수 없는데 비용은 최적화" → <strong>Intelligent-Tiering</strong>. "규정상 7년 보관, 거의 안 꺼냄, 최저가" → <strong>Glacier Deep Archive</strong>. "오래된 객체를 자동으로 더 싼 계층으로" → <strong>수명주기 정책</strong>. "재생성 가능한 썸네일을 가장 싸게" → <strong>One Zone-IA</strong>.</p></div>
+</section>
+
+<section id="block-file-storage">
+<h2>3. 블록·파일 스토리지 (EBS · EFS · FSx)</h2>
+<p>S3가 객체 스토리지라면, 서버에 디스크처럼 붙이는 것은 <strong>블록 스토리지</strong>, 여러 서버가 동시에 공유하는 것은 <strong>파일 스토리지</strong>입니다.</p>
+<ul>
+<li><strong>EBS(Elastic Block Store)</strong>: EC2 한 대에 붙는 네트워크 블록 볼륨. OS·DB 데이터 디스크로 쓰며, 기본적으로 <strong>한 AZ에 종속</strong>되고 보통 <strong>한 인스턴스에 부착</strong>(io1/io2 Multi-Attach 예외)됩니다. 범용 기본 권장 타입은 <strong>gp3</strong>(IOPS·처리량을 용량과 독립적으로 설정), 초고성능·고내구가 필요하면 <strong>io2</strong>입니다.</li>
+<li><strong>EFS(Elastic File System)</strong>: NFS 기반 <strong>공유 파일 시스템</strong>. <strong>여러 AZ의 여러 EC2가 동시에 마운트</strong>해 같은 파일을 읽고 씁니다(리눅스). 용량 자동 확장.</li>
+<li><strong>FSx</strong>: 특정 워크로드용 관리형 파일 시스템 — <strong>FSx for Windows File Server</strong>(SMB·윈도우 공유), <strong>FSx for Lustre</strong>(HPC·머신러닝 초고성능) 등.</li>
+<li><strong>인스턴스 스토어(Instance Store)</strong>: 호스트에 물리적으로 붙은 임시 디스크. 매우 빠르지만 <strong>인스턴스를 중지/종료하면 데이터가 사라지는 휘발성</strong>이라 캐시·스크래치 용도로만.</li>
+</ul>
+<div class="analogy-box"><h4>💡 비유로 이해하기: 외장 SSD vs 공유 NAS vs 책상 위 메모지</h4><p><strong>EBS</strong>는 내 노트북에만 꽂는 외장 SSD(한 번에 한 대), <strong>EFS</strong>는 사무실 모두가 동시에 접근하는 공유 NAS, <strong>인스턴스 스토어</strong>는 컴퓨터 끄면 사라지는 책상 위 임시 메모지입니다. "동시에 여러 서버가 같은 파일"이 키워드면 EFS, "한 서버의 디스크"면 EBS입니다.</p></div>
+<table>
+<thead><tr><th>구분</th><th>EBS</th><th>EFS</th><th>인스턴스 스토어</th></tr></thead>
+<tbody>
+<tr><td>유형</td><td>블록</td><td>파일(NFS)</td><td>블록(로컬)</td></tr>
+<tr><td>동시 부착</td><td>보통 1개 인스턴스</td><td>다수 인스턴스·다수 AZ</td><td>해당 호스트만</td></tr>
+<tr><td>범위</td><td>단일 AZ</td><td>리전(다중 AZ)</td><td>인스턴스 수명</td></tr>
+<tr><td>지속성</td><td>영속(스냅샷은 S3)</td><td>영속</td><td>휘발성(중지 시 소실)</td></tr>
+</tbody>
+</table>
+<p><strong>스냅샷(Snapshot)</strong>은 EBS 볼륨의 시점 백업으로 내부적으로 S3에 증분 저장됩니다. 스냅샷으로 다른 AZ·리전에 볼륨을 복원하거나 AMI를 만들 수 있어, 단일 AZ에 묶인 EBS의 가용성·이동성 한계를 보완합니다.</p>
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"여러 EC2가 동시에 같은 파일 시스템 공유(리눅스)" → <strong>EFS</strong>. "비용·성능 균형의 범용 EBS 기본" → <strong>gp3</strong>. "EBS를 다른 AZ로 옮기거나 백업" → <strong>스냅샷</strong>. "윈도우 SMB 공유" → <strong>FSx for Windows</strong>, "ML/HPC 초고속" → <strong>FSx for Lustre</strong>.</p></div>
+</section>
+
+<section id="rds-core">
+<h2>4. RDS 핵심 — Multi-AZ vs Read Replica</h2>
+<p><strong>Amazon RDS</strong>는 MySQL·PostgreSQL·MariaDB·Oracle·SQL Server를 <strong>완전관리형</strong>으로 돌려주는 관계형 DB 서비스입니다. 백업·패치·장애 복구를 AWS가 맡아 운영 부담이 줄어듭니다. 시험에서 가장 중요한 함정은 <strong>Multi-AZ와 Read Replica를 혼동시키는 것</strong>입니다 — 둘은 복제하지만 목적이 정반대입니다.</p>
+<table>
+<thead><tr><th>구분</th><th>Multi-AZ 배포</th><th>Read Replica(읽기 전용 복제본)</th></tr></thead>
+<tbody>
+<tr><td>목적</td><td><strong>고가용성</strong>(장애 대비)</td><td><strong>읽기 성능 확장</strong></td></tr>
+<tr><td>복제 방식</td><td><strong>동기(synchronous)</strong></td><td><strong>비동기(asynchronous)</strong></td></tr>
+<tr><td>대기 인스턴스 사용</td><td>평시 접근 불가(대기)</td><td>읽기 쿼리 직접 처리</td></tr>
+<tr><td>장애 시</td><td>자동 장애 조치(failover)</td><td>(수동 승격 가능)</td></tr>
+<tr><td>위치</td><td>다른 AZ</td><td>같은/다른 AZ·리전</td></tr>
+</tbody>
+</table>
+<p><strong>Multi-AZ</strong>는 다른 AZ에 <strong>동기 복제</strong>된 Standby를 두고, 기본(primary)에 장애가 나면 자동으로 Standby로 전환(failover)합니다. 평소 Standby는 읽기에도 쓰이지 않고 오직 가용성을 위해 대기합니다. 반면 <strong>Read Replica</strong>는 <strong>비동기 복제</strong>로 읽기 전용 사본을 여러 개 만들어 읽기 트래픽을 분산합니다(약간의 복제 지연 존재). "읽기 부하가 많다"면 Read Replica, "다운타임을 줄이고 싶다"면 Multi-AZ입니다. 둘은 함께 쓸 수도 있습니다.</p>
+<div class="glass-panel" style="border-left:3px solid var(--interview); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--interview);">⚠️ 자주 틀리는 함정</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"Read Replica가 고가용성을 제공한다"는 <strong>오답</strong>입니다. Read Replica는 비동기라 약간 뒤처질 수 있고 자동 장애 조치 대상이 아닙니다. 가용성·자동 failover는 <strong>Multi-AZ(동기)</strong>의 몫입니다. 반대로 "Multi-AZ로 읽기 성능을 늘린다"도 오답입니다.</p></div>
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"읽기 쿼리가 폭증, DB 부하 분산" → <strong>Read Replica</strong>. "DB 장애 시 다운타임 최소화·자동 복구" → <strong>Multi-AZ</strong>. "저장 데이터 암호화" → <strong>KMS 기반 암호화 활성화</strong>(스냅샷·Replica도 함께 암호화).</p></div>
+</section>
+
+<section id="aurora">
+<h2>5. Aurora — 클라우드 네이티브 RDB</h2>
+<p><strong>Amazon Aurora</strong>는 MySQL·PostgreSQL과 호환되면서 AWS가 클라우드에 맞게 재설계한 관계형 DB 엔진입니다. 데이터는 <strong>3개 AZ에 6벌</strong>로 복제되는 공유 스토리지에 저장되고, 스토리지가 <strong>자동으로 확장</strong>(최대 128 TiB, 최신 엔진 버전은 그 이상)되어 디스크 용량을 미리 잡을 필요가 없습니다. 같은 워크로드에서 표준 RDS보다 높은 처리량을 목표로 합니다.</p>
+<ul>
+<li><strong>읽기 복제본</strong>을 최대 15개까지 두고, 장애 시 그중 하나로 빠르게 승격합니다(빠른 failover).</li>
+<li><strong>Aurora Serverless v2</strong>: 트래픽에 따라 용량(ACU)을 잘게 자동 확장/축소합니다. 사용량이 들쭉날쭉하거나 예측이 어려운 워크로드에 적합합니다(v1이 아니라 <strong>v2</strong>가 현행).</li>
+<li><strong>Aurora Global Database</strong>: 한 리전을 주(primary)로 두고 여러 리전에 저지연으로 복제해, 글로벌 읽기와 <strong>리전 장애 시 재해 복구(DR)</strong>에 대응합니다.</li>
+</ul>
+<div class="analogy-box"><h4>💡 비유로 이해하기: 알아서 늘어나는 물탱크</h4><p>일반 RDS가 "처음에 정한 크기의 물탱크"라면, Aurora 스토리지는 "물이 차오르면 벽이 알아서 늘어나는 탱크"입니다. 용량 부족을 걱정하며 미리 크게 잡을 필요가 없죠. 여기에 Serverless v2를 더하면 "수도꼭지(컴퓨트)도 사용량에 맞춰 자동으로 굵어졌다 가늘어졌다" 합니다.</p></div>
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"MySQL 호환 + 고성능 + 스토리지 자동 확장" → <strong>Aurora</strong>. "트래픽이 들쭉날쭉, 용량 자동 조절" → <strong>Aurora Serverless v2</strong>. "여러 리전 저지연 읽기·리전 DR" → <strong>Aurora Global Database</strong>.</p></div>
+</section>
+
+<section id="dynamodb">
+<h2>6. DynamoDB — 완전관리 NoSQL</h2>
+<p><strong>Amazon DynamoDB</strong>는 서버를 신경 쓸 필요 없는(서버리스) <strong>키-값/문서형 NoSQL</strong>입니다. 어떤 규모에서도 한 자릿수 밀리초 지연을 목표로 하며, 자동으로 여러 AZ에 복제됩니다. 테이블은 <strong>파티션 키(partition key)</strong>로 데이터를 분산 저장하므로, 키 설계가 성능을 좌우합니다 — 특정 키에 트래픽이 몰리면(핫 파티션) 성능이 떨어지므로 값이 골고루 퍼지는 키를 골라야 합니다.</p>
+<ul>
+<li><strong>GSI(Global Secondary Index)</strong>: 기본 키가 아닌 다른 속성으로 조회하게 해주는 인덱스(파티션 키까지 새로 지정 가능). <strong>LSI(Local Secondary Index)</strong>: 같은 파티션 키에 정렬 키만 다르게 두는 인덱스(테이블 생성 시에만 정의).</li>
+<li><strong>DAX(DynamoDB Accelerator)</strong>: DynamoDB 앞단의 완전관리 <strong>인메모리 캐시</strong>로, 읽기를 마이크로초 단위까지 가속합니다(읽기 폭증 시).</li>
+<li><strong>TTL(Time To Live)</strong>: 항목에 만료 시각을 지정해 지난 데이터를 자동 삭제(세션·임시 데이터 정리).</li>
+<li><strong>용량 모드</strong>: 트래픽이 불규칙하면 <strong>온디맨드</strong>(사용한 만큼), 예측 가능하고 꾸준하면 <strong>프로비저닝</strong>(미리 용량 지정, Auto Scaling 가능)이 비용 효율적입니다.</li>
+</ul>
+<div class="glass-panel" style="border-left:3px solid var(--interview); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--interview);">⚠️ 자주 틀리는 함정</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">DynamoDB는 복잡한 조인·집계·트랜잭션 분석에 부적합합니다. "유연한 SQL 조인과 복잡한 쿼리가 필요" → <strong>RDS/Aurora</strong>가 정답이고, "키 기반 초저지연·대규모 단순 조회·서버리스" → <strong>DynamoDB</strong>입니다.</p></div>
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"밀리초 지연·자동 확장·서버 관리 없는 NoSQL" → <strong>DynamoDB</strong>. "DynamoDB 읽기를 마이크로초로 캐싱" → <strong>DAX</strong>. "오래된 세션 항목 자동 만료" → <strong>TTL</strong>. "트래픽 예측 불가, 운영 단순화" → <strong>온디맨드 용량 모드</strong>.</p></div>
+</section>
+
+<section id="caching-decision-map">
+<h2>7. 캐싱과 데이터베이스 선택 지도</h2>
+<p><strong>Amazon ElastiCache</strong>는 관리형 인메모리 캐시로 DB 앞단에서 반복 조회를 가속하거나 세션을 저장합니다. 두 엔진의 결이 다릅니다 — <strong>Redis</strong>는 복제·영속성·정렬셋·Pub/Sub 등 기능이 풍부하고(고가용성 캐시·리더보드·세션), <strong>Memcached</strong>는 단순 키-값 캐시를 멀티스레드로 빠르게 처리합니다(기능은 단순, 수평 분할). "캐시에 고가용성·자료구조가 필요"하면 Redis, "단순 캐시를 가볍게"면 Memcached가 단골 정답입니다.</p>
+<p>마지막으로, 요구사항 키워드별 "이 DB를 골라라" 지도를 정리합니다. SAA 시나리오 문제는 결국 이 매핑을 묻습니다.</p>
+<table>
+<thead><tr><th>요구사항 키워드</th><th>적합 서비스</th></tr></thead>
+<tbody>
+<tr><td>관계형·트랜잭션·복잡한 조인, 관리 부담↓</td><td><strong>RDS</strong></td></tr>
+<tr><td>MySQL/PG 호환 + 고성능 + 스토리지 자동 확장</td><td><strong>Aurora</strong></td></tr>
+<tr><td>용량 자동 조절·들쭉날쭉 트래픽(관계형)</td><td><strong>Aurora Serverless v2</strong></td></tr>
+<tr><td>대규모 키-값·밀리초·서버리스 NoSQL</td><td><strong>DynamoDB</strong></td></tr>
+<tr><td>DynamoDB 읽기 마이크로초 가속</td><td><strong>DAX</strong></td></tr>
+<tr><td>DB 앞단 캐시·세션(고가용성/자료구조)</td><td><strong>ElastiCache for Redis</strong></td></tr>
+<tr><td>단순·빠른 키-값 캐시</td><td><strong>ElastiCache for Memcached</strong></td></tr>
+<tr><td>대용량 객체·정적 파일·백업·데이터 레이크</td><td><strong>S3</strong></td></tr>
+<tr><td>페타바이트급 분석·SQL 데이터 웨어하우스</td><td><strong>Redshift</strong></td></tr>
+</tbody>
+</table>
+<p style="margin-top:14px; color:var(--text-muted); font-size:13px;">💡 이 표가 SAA 스토리지·DB 영역의 "한 장 요약"입니다. 시나리오에서 <strong>관계형/NoSQL → 성능·확장 요구 → 캐싱·비용</strong> 순으로 키워드를 골라내면 대부분 정답이 보입니다. 다음 트랙(A4)에서는 이들을 묶어 고가용성 아키텍처로 설계하는 법을 다룹니다.</p>
+</section>
+
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: 역기구학)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const awsStorageQuizzes = [
+  {
+    type: "mcq",
+    question: "온라인 쇼핑몰의 RDS DB에 읽기 쿼리가 급증해 성능이 떨어진다. 가장 적합한 조치는?",
+    options: ["Multi-AZ 배포를 활성화한다", "Read Replica를 추가한다", "인스턴스 스토어를 붙인다", "버저닝을 켠다"],
+    correct: 1,
+    explanation: "읽기 부하 분산은 Read Replica(비동기 복제, 읽기 전용 사본)의 역할입니다. Multi-AZ는 동기 복제로 '가용성(자동 장애 조치)'을 위한 것이라 평시 읽기에 쓰이지 않습니다. 인스턴스 스토어·버저닝은 무관합니다."
+  },
+  {
+    type: "mcq",
+    question: "RDS의 Multi-AZ 배포에 대한 설명으로 옳은 것은?",
+    options: ["Standby로 읽기 쿼리를 분산해 성능을 높인다", "비동기로 복제되어 약간의 지연이 있다", "동기로 복제되며 장애 시 자동 장애 조치(failover)된다", "리전 간 재해 복구 전용이다"],
+    correct: 2,
+    explanation: "Multi-AZ는 다른 AZ의 Standby에 동기 복제하고, 기본 인스턴스 장애 시 자동으로 failover합니다. 평시 Standby는 읽기에 쓰이지 않습니다(그건 Read Replica). 비동기·읽기 확장은 Read Replica의 특징입니다."
+  },
+  {
+    type: "mcq",
+    question: "여러 가용 영역의 다수 EC2(리눅스)가 동시에 같은 파일 시스템을 마운트해 공유해야 한다. 알맞은 서비스는?",
+    options: ["EBS gp3 볼륨", "Amazon EFS", "인스턴스 스토어", "S3 Glacier Deep Archive"],
+    correct: 1,
+    explanation: "EFS는 NFS 기반 공유 파일 시스템으로 여러 AZ의 여러 EC2가 동시에 마운트할 수 있습니다. EBS는 보통 한 인스턴스·단일 AZ에 부착됩니다. 인스턴스 스토어는 휘발성 로컬 디스크, Glacier는 객체 아카이브라 마운트 대상이 아닙니다."
+  },
+  {
+    type: "mcq",
+    question: "접근 패턴을 예측할 수 없는 데이터를 S3에 저장하면서 비용을 최적화하려면?",
+    options: ["S3 Standard 고정", "S3 One Zone-IA", "S3 Intelligent-Tiering", "S3 Glacier Deep Archive"],
+    correct: 2,
+    explanation: "Intelligent-Tiering은 접근 패턴을 모니터링해 자주 안 쓰는 객체를 자동으로 더 싼 계층으로 옮겨줍니다(접근 예측 불가일 때 최적). Standard 고정은 비최적, One Zone-IA는 단일 AZ라 내구성↓, Deep Archive는 거의 안 읽는 장기 보관용입니다."
+  },
+  {
+    type: "mcq",
+    question: "규정상 7년간 보관해야 하지만 거의 조회하지 않는 데이터를 가장 저렴하게 저장하려면?",
+    options: ["S3 Standard", "S3 Standard-IA", "S3 Glacier Deep Archive", "EBS io2"],
+    correct: 2,
+    explanation: "거의 조회하지 않는 초장기 아카이브는 최저가인 Glacier Deep Archive가 정답입니다(복원에 수 시간 소요는 감수). Standard/Standard-IA는 저장 비용이 더 높고, EBS는 블록 스토리지라 장기 아카이브 용도가 아닙니다."
+  },
+  {
+    type: "mcq",
+    question: "대규모 트래픽에서 한 자릿수 밀리초 지연이 필요한 키-값 조회용으로, 서버 관리 없이 자동 확장되는 데이터베이스는?",
+    options: ["Amazon RDS for PostgreSQL", "Amazon DynamoDB", "Amazon Redshift", "Amazon Aurora MySQL"],
+    correct: 1,
+    explanation: "DynamoDB는 서버리스 NoSQL로 규모와 무관하게 밀리초 지연·자동 확장을 제공해 대규모 키-값 조회에 적합합니다. RDS/Aurora는 관계형(복잡한 조인용), Redshift는 분석용 데이터 웨어하우스입니다."
+  },
+  {
+    type: "mcq",
+    question: "DynamoDB 읽기 트래픽이 폭증한다. 코드 변경을 최소화하면서 읽기 지연을 마이크로초 수준으로 낮추려면?",
+    options: ["DAX(DynamoDB Accelerator)를 도입한다", "GSI를 추가한다", "TTL을 설정한다", "프로비저닝을 온디맨드로 바꾼다"],
+    correct: 0,
+    explanation: "DAX는 DynamoDB 전용 인메모리 캐시로 읽기를 마이크로초까지 가속합니다. GSI는 다른 속성 조회용 인덱스, TTL은 만료 자동 삭제, 용량 모드 변경은 캐싱과 무관합니다."
+  },
+  {
+    type: "code",
+    language: "json",
+    prompt: "S3 버킷의 'logs/' 객체를 30일 후 STANDARD_IA로 자동 전환하는 수명주기 규칙을 완성하세요.",
+    starter: "{\n  \"ID\": \"log-tiering\",\n  \"Filter\": { \"Prefix\": \"logs/\" },\n  \"Status\": \"Enabled\",\n  \"Transitions\": [\n    { \"Days\": 30, \"StorageClass\": \"___\" }\n  ]\n}",
+    validator: {
+      mustContain: ["STANDARD_IA", "Transitions"],
+      mustNotContain: []
+    },
+    solution: "{ \"Days\": 30, \"StorageClass\": \"STANDARD_IA\" }",
+    explanation: "수명주기의 Transitions에 Days와 StorageClass를 지정하면 지정 일수가 지난 객체를 자동으로 더 싼 클래스(여기선 STANDARD_IA)로 강등합니다. 수동 이동 없이 비용을 최적화하는 핵심 패턴입니다."
+  }
+];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", awsStorageQuizzes, "aws-3-storage-db");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>
