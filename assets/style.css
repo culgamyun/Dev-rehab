@@ -29,6 +29,7 @@
   --ai:        hsl(280, 70%, 58%);  /* AI Violet (v3.1+) */
   --robotics:  hsl(205, 85%, 56%);  /* Blueprint Azure (Robotics course) */
   --gigsa:     hsl(28,  82%, 62%);  /* Signature Amber (정보처리기사 track) */
+  --aws:       hsl(36,  96%, 50%);  /* AWS Orange (AWS 자격증 track) */
 
   /* Default Active States (Dark Theme Initialized) */
   --bg-app: var(--bg-dark);
@@ -368,23 +369,37 @@ html[data-track="gigsa"] .track-tab[data-track-tab="gigsa"] {
   color: #fff;
   box-shadow: 0 2px 10px hsla(28, 82%, 62%, 0.35);
 }
-/* 트랙이 4개 → 한 줄에 다 안 들어가므로 2×2 그리드로 줄바꿈(글자/여백 축소 유지) */
+html[data-track="aws"] .track-tab[data-track-tab="aws"] {
+  background: var(--aws);
+  color: #fff;
+  box-shadow: 0 2px 10px hsla(36, 96%, 50%, 0.35);
+}
+/* 트랙이 5개 → 2×2 그리드로 줄바꿈 후 마지막(AWS) 탭은 전폭(2-2-1 배치). */
 .course-track-switch { flex-wrap: wrap; }
 .track-tab { font-size: 10.5px; padding: 8px 3px; flex: 1 1 calc(50% - 2px); }
+.track-tab[data-track-tab="aws"] { flex: 1 1 100%; }
 .track-tab .track-emoji + .track-label { margin-left: 4px; }
 /* Track visibility — 활성 코스의 nav 항목·홈 카드만 노출(나머지 전부 숨김). */
 html[data-track="fullstack"] [data-track="robotics"],
 html[data-track="fullstack"] [data-track="flutter"],
 html[data-track="fullstack"] [data-track="gigsa"],
+html[data-track="fullstack"] [data-track="aws"],
 html[data-track="robotics"]  [data-track="fullstack"],
 html[data-track="robotics"]  [data-track="flutter"],
 html[data-track="robotics"]  [data-track="gigsa"],
+html[data-track="robotics"]  [data-track="aws"],
 html[data-track="flutter"]   [data-track="fullstack"],
 html[data-track="flutter"]   [data-track="robotics"],
 html[data-track="flutter"]   [data-track="gigsa"],
+html[data-track="flutter"]   [data-track="aws"],
 html[data-track="gigsa"]     [data-track="fullstack"],
 html[data-track="gigsa"]     [data-track="robotics"],
-html[data-track="gigsa"]     [data-track="flutter"] { display: none !important; }
+html[data-track="gigsa"]     [data-track="flutter"],
+html[data-track="gigsa"]     [data-track="aws"],
+html[data-track="aws"]       [data-track="fullstack"],
+html[data-track="aws"]       [data-track="robotics"],
+html[data-track="aws"]       [data-track="flutter"],
+html[data-track="aws"]       [data-track="gigsa"] { display: none !important; }
 /* Robotics roadmap teaser cards (not yet published → not clickable). */
 .robotics-locked { cursor: default; }
 .robotics-locked:hover { transform: none; box-shadow: none; }

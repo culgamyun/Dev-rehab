@@ -6,7 +6,7 @@
   <title>Antigravity Fullstack Rehab Dashboard</title>
   <!-- 로컬 라이브러리 및 공통 스타일시트 연동 -->
   <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
-  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack'));document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^aws-/.test(f)?'aws':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack')));document.documentElement.setAttribute('data-track',t);})();</script>
   <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
   <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -22,6 +22,7 @@
       <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
       <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
       <button class="track-tab" data-track-tab="gigsa" role="tab" aria-selected="false" type="button"><span class="track-emoji">📜</span><span class="track-label">정처기</span></button>
+      <button class="track-tab" data-track-tab="aws" role="tab" aria-selected="false" type="button"><span class="track-emoji">☁️</span><span class="track-label">AWS</span></button>
     </div>
     <ul class="nav-menu">
       <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
@@ -68,6 +69,13 @@
       <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-codetrace.html"><span class="nav-item-text">💻 프로그래밍 코드추적</span></a></li>
       <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sql.html"><span class="nav-item-text">🗄️ SQL 집중노트</span></a></li>
       <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
+      <li class="nav-section-label" data-track="aws" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">AWS 자격증</li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-0-clp.html"><span class="nav-item-text">☁️ A0. CLP 클라우드 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-0-clp" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-1-iam-security.html"><span class="nav-item-text">🔐 A1. SAA① 보안·자격증명</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-1-iam-security" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-2-compute-network.html"><span class="nav-item-text">🖥️ A2. SAA② 컴퓨팅·네트워킹</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-2-compute-network" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-3-storage-db.html"><span class="nav-item-text">🗄️ A3. SAA③ 스토리지·DB</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-3-storage-db" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-4-ha-architecture.html"><span class="nav-item-text">🏛️ A4. SAA④ 고가용성·설계</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-4-ha-architecture" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-5-cheatsheet.html"><span class="nav-item-text">📋 A5. 서비스 선택 치트시트</span></a></li>
     </ul>
     <div class="sidebar-footer">
       <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
@@ -88,10 +96,12 @@
         <h1 data-track="robotics">🤖 로보틱스 입문 코스</h1>
         <h1 data-track="flutter">📱 Flutter 모바일 코스</h1>
         <h1 data-track="gigsa">📜 정보처리기사 실기</h1>
+        <h1 data-track="aws">☁️ AWS 자격증 코스</h1>
         <p data-track="fullstack" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">복귀 준비 완료! 기초부터 핵심 최신 우대 스택까지 하나씩 차례대로 정복해 나갑니다.</p>
         <p data-track="robotics" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">기초 수학·좌표계부터 센서·제어·ROS 2·인식·SLAM까지, Python으로 로봇을 한 단계씩 정복합니다.</p>
         <p data-track="flutter" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">Dart·위젯·렌더링·상태관리(Riverpod)부터 유명 앱 화면 재현·면접 대비까지. React 경험을 Flutter로 잇는 모바일 트랙입니다.</p>
         <p data-track="gigsa" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">필기 합격 후 실기 마무리. 단답·약술·코드추적·SQL 압축 노트와 회차별 모의고사를 한곳에. 각 페이지는 암기카드·인터랙티브·자가채점을 갖춘 독립 학습 페이지입니다.</p>
+        <p data-track="aws" style="font-size: 14px; color: var(--text-muted); margin-top: 4px;">CLP로 클라우드 멘탈모델을 잡고 SAA로 아키텍처를 정복합니다. 보안·네트워킹·스토리지·DB·고가용성 설계와 실전 모의고사(CLP+SAA 2회분)까지 — 2026 최신 시험 기준.</p>
       </div>
       
       <div class="header-controls">
@@ -523,6 +533,49 @@
           <h3>📝 실전 모의고사</h3>
           <p>회차별 실전 모의시험 — 타이머, 진행 현황, 자가채점·결과 리포트까지. 시간을 재고 실제 시험처럼 풀어보는 마무리 점검용.</p>
           <div class="chapter-meta"><span>타이머 · 자가채점 · 회차별</span><span>실전 시험</span></div>
+        </div>
+      </div>
+    </section>
+    <section data-track="aws" style="display:flex; flex-direction:column; gap:16px; margin-bottom: 60px;">
+      <h2 style="font-size: 22px; font-weight:800; border-left: 4px solid var(--aws); padding-left: 12px; margin-bottom: 4px;">☁️ AWS 자격증 — CLP → SAA</h2>
+      <p style="font-size: 13px; color: var(--text-muted); margin: 0 0 4px;">클라우드 입문(CLP)부터 솔루션스 아키텍트(SAA) 4개 도메인까지 — 백엔드·데브옵스 경력에 가장 임팩트 있는 루트. 각 카드는 <strong style="color:var(--aws);">블루프린트 도면·검증 예제·SRS 퀴즈</strong>를 갖춘 학습 페이지로 열립니다. <strong>2026 기준 CLF-C02 · SAA-C03</strong>.</p>
+
+      <div class="chapters-grid">
+        <div class="glass-panel chapter-card" onclick="window.location.href='aws-0-clp.html'" style="border-left: 3px solid var(--aws);">
+          <div class="chapter-badge" style="background: var(--aws); color: #fff;">CLP</div>
+          <h3>☁️ A0. CLP — 클라우드 기초</h3>
+          <p>클라우드 정의·6대 장점, 리전·AZ·엣지, <strong>공동 책임 모델</strong>, IAM 첫걸음, 핵심 서비스 한 장 지도, 요금·프리티어·지원 플랜. CLF-C02 입문 워밍업.</p>
+          <div class="chapter-meta"><span>클라우드 개념 · 공동책임 · 요금</span><span>입문 / CLF-C02</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='aws-1-iam-security.html'" style="border-left: 3px solid var(--aws);">
+          <div class="chapter-badge" style="background: var(--aws); color: #fff;">SAA①</div>
+          <h3>🔐 A1. 보안·자격증명</h3>
+          <p>IAM 평가 로직(explicit deny), 정책 JSON 해부, STS·역할 전환, Organizations·SCP, KMS·암호화, Secrets Manager. SAA 최대 비중 <strong>도메인 1 (30%)</strong>.</p>
+          <div class="chapter-meta"><span>IAM · KMS · 정책 · 암호화</span><span>SAA 30%</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='aws-2-compute-network.html'" style="border-left: 3px solid var(--aws);">
+          <div class="chapter-badge" style="background: var(--aws); color: #fff;">SAA②</div>
+          <h3>🖥️ A2. 컴퓨팅·네트워킹</h3>
+          <p>VPC 설계(서브넷·라우팅·NAT), <strong>SG vs NACL</strong>, 엔드포인트·피어링·Transit GW, EC2 구매옵션 4종, Lambda, ECS/EKS/Fargate 선택.</p>
+          <div class="chapter-meta"><span>VPC · EC2 · Lambda · 컨테이너</span><span>SAA 컴퓨팅·NW</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='aws-3-storage-db.html'" style="border-left: 3px solid var(--aws);">
+          <div class="chapter-badge" style="background: var(--aws); color: #fff;">SAA③</div>
+          <h3>🗄️ A3. 스토리지·DB</h3>
+          <p>S3 클래스·수명주기·복제, EBS(gp3)·EFS·FSx, RDS <strong>Multi-AZ vs 읽기복제</strong>, Aurora 서버리스 v2, DynamoDB 키 설계·DAX. 고성능 도메인.</p>
+          <div class="chapter-meta"><span>S3 · RDS · Aurora · DynamoDB</span><span>SAA 24%</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='aws-4-ha-architecture.html'" style="border-left: 3px solid var(--aws);">
+          <div class="chapter-badge" style="background: var(--aws); color: #fff;">SAA④</div>
+          <h3>🏛️ A4. 고가용성·설계</h3>
+          <p>ELB 3종·Auto Scaling·Route 53, CloudFront vs Global Accelerator, SQS/SNS/EventBridge/Kinesis 디커플링, Well-Architected 6기둥, DR 4전략.</p>
+          <div class="chapter-meta"><span>ELB · ASG · 디커플링 · DR</span><span>SAA 복원력 26%</span></div>
+        </div>
+        <div class="glass-panel chapter-card" onclick="window.location.href='aws-5-cheatsheet.html'" style="border-left: 3px solid var(--aws);">
+          <div class="chapter-badge" style="background: var(--aws); color: #fff;">치트시트</div>
+          <h3>📋 A5. 서비스 선택 치트시트</h3>
+          <p>"이럴 땐 이 서비스" 시나리오 매핑표 + 헷갈리는 쌍 총정리(SG/NACL, SQS/SNS/Kinesis, ALB/NLB…) + 문제 풀이 키워드 시그널. 시험 직전 최종 점검.</p>
+          <div class="chapter-meta"><span>비교표 · 키워드 시그널 · 함정</span><span>시험 직전</span></div>
         </div>
       </div>
     </section>

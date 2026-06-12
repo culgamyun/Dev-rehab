@@ -27,7 +27,8 @@ const INDEX_PAGES = [
   "appendix-ai.html", "appendix-e.html", "appendix-f.html", "appendix-g.html",
   "chapter-r0.html", "chapter-r1.html", "chapter-r2.html", "chapter-r3.html", "chapter-r4.html", "chapter-r5.html", "chapter-r6.html", "chapter-r7.html", "chapter-r8.html", "chapter-r9.html", "chapter-r10.html", "appendix-r-a.html", "appendix-r-b.html", "appendix-r-c.html",
   "flutter-guide.html", "flutter-realapps.html",
-  "gigsa-sweng.html", "gigsa-secnet.html", "gigsa-codetrace.html", "gigsa-sql.html", "gigsa-mock.html"
+  "gigsa-sweng.html", "gigsa-secnet.html", "gigsa-codetrace.html", "gigsa-sql.html", "gigsa-mock.html",
+  "aws-0-clp.html", "aws-1-iam-security.html", "aws-2-compute-network.html", "aws-3-storage-db.html", "aws-4-ha-architecture.html", "aws-5-cheatsheet.html"
 ];
 
 let searchIndexData = null; // 원본 파싱 도큐먼트 배열

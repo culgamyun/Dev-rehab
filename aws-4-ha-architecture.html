@@ -1,0 +1,474 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A4. SAA④ 고가용성·아키텍처 · Dev Rehab</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^aws-/.test(f)?'aws':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack')));document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+</head>
+<body>
+
+  <!-- Sidebar Navigation (canonical · 코스 트랙 토글) -->
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
+      <button class="track-tab" data-track-tab="gigsa" role="tab" aria-selected="false" type="button"><span class="track-emoji">📜</span><span class="track-label">정처기</span></button>
+      <button class="track-tab" data-track-tab="aws" role="tab" aria-selected="false" type="button"><span class="track-emoji">☁️</span><span class="track-label">AWS</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
+      <li class="nav-section-label" data-track="gigsa" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">정보처리기사 실기</li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sweng.html"><span class="nav-item-text">🧩 SW공학 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-secnet.html"><span class="nav-item-text">🔒 보안 · 네트워크 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-codetrace.html"><span class="nav-item-text">💻 프로그래밍 코드추적</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sql.html"><span class="nav-item-text">🗄️ SQL 집중노트</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
+      <li class="nav-section-label" data-track="aws" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">AWS 자격증</li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-0-clp.html"><span class="nav-item-text">☁️ A0. CLP 클라우드 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-0-clp" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-1-iam-security.html"><span class="nav-item-text">🔐 A1. SAA① 보안·자격증명</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-1-iam-security" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-2-compute-network.html"><span class="nav-item-text">🖥️ A2. SAA② 컴퓨팅·네트워킹</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-2-compute-network" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-3-storage-db.html"><span class="nav-item-text">🗄️ A3. SAA③ 스토리지·DB</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-3-storage-db" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-4-ha-architecture.html"><span class="nav-item-text">🏛️ A4. SAA④ 고가용성·설계</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-4-ha-architecture" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-5-cheatsheet.html"><span class="nav-item-text">📋 A5. 서비스 선택 치트시트</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span class="btn-icon">☀️</span><span class="btn-label">Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span class="btn-icon">🔄</span><span class="btn-label">데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <!-- Main Content -->
+  <main id="main-content">
+    <div class="chapter-header">
+      <div class="breadcrumb"><span>AWS 자격증</span> &gt; <span>A4. 고가용성·설계</span></div>
+      <h1>A4. SAA④ 고가용성·아키텍처</h1>
+<p style="font-size:14px; color:var(--text-muted);">한 대가 죽어도 서비스는 살아남게 만드는 설계가 이 장의 핵심입니다. 로드 밸런서·Auto Scaling·다중 AZ로 단일 장애점을 없애고, SQS·SNS로 컴포넌트를 느슨하게 묶으며, Route 53·CloudFront로 전 세계에 안정적으로 전달하고, CloudWatch로 관측하며 재해 복구(DR) 전략으로 마무리합니다. SAA-C03(2026 기준)의 "복원력 있는 아키텍처 설계" 도메인(비중 26%)을 정면으로 다루며, "고성능 아키텍처 설계" 도메인(24%)의 디커플링·캐시 주제와도 직결됩니다.</p>
+    </div>
+
+    <figure class="learning-visual blueprint-fig"><svg class="blueprint" viewBox="0 0 800 340" role="img" aria-label="다중 AZ에 걸쳐 ALB가 Auto Scaling 그룹으로 트래픽을 분산하고 SQS 큐로 비동기 워커를 디커플링한 고가용성 아키텍처 도면">
+<defs>
+<pattern id="grid-aws4" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern>
+<marker id="ah-aws4" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#7fd4ff"/></marker>
+<marker id="ah-aws4g" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#48d597"/></marker>
+</defs>
+<rect width="800" height="340" fill="url(#grid-aws4)"/>
+<text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG · 다중 AZ 고가용성 + 큐 디커플링</text>
+
+<!-- Region boundary -->
+<rect x="40" y="56" width="720" height="252" rx="8" fill="none" stroke="#7fd4ff" stroke-width="1.2" stroke-dasharray="5 4"/>
+<text x="52" y="74" fill="#7fd4ff" font-size="11">Region (ap-northeast-2)</text>
+
+<!-- Internet user -->
+<circle cx="88" cy="150" r="14" fill="none" stroke="#cfe8ff" stroke-width="1.4"/>
+<text x="70" y="184" fill="#cfe8ff" font-size="11">사용자</text>
+
+<!-- ALB (multi-AZ spanning) -->
+<rect x="150" y="128" width="118" height="44" rx="6" fill="none" stroke="#7fd4ff" stroke-width="1.6"/>
+<text x="166" y="148" fill="#7fd4ff" font-size="12">ALB</text>
+<text x="160" y="164" fill="#cfe8ff" font-size="9.5">L7 · 다중 AZ</text>
+<line x1="102" y1="150" x2="148" y2="150" stroke="#7fd4ff" stroke-width="1.5" marker-end="url(#ah-aws4)"/>
+
+<!-- AZ-A box -->
+<rect x="300" y="86" width="210" height="92" rx="6" fill="none" stroke="#48d597" stroke-width="1.2"/>
+<text x="312" y="104" fill="#48d597" font-size="11">AZ-A</text>
+<rect x="318" y="116" width="80" height="24" rx="4" fill="none" stroke="#ffb300" stroke-width="1.4"/>
+<text x="330" y="132" fill="#ffb300" font-size="10">EC2</text>
+<rect x="414" y="116" width="80" height="24" rx="4" fill="none" stroke="#ffb300" stroke-width="1.4"/>
+<text x="426" y="132" fill="#ffb300" font-size="10">EC2</text>
+<text x="318" y="160" fill="#cfe8ff" font-size="9.5">Auto Scaling 그룹</text>
+
+<!-- AZ-B box -->
+<rect x="300" y="194" width="210" height="92" rx="6" fill="none" stroke="#48d597" stroke-width="1.2"/>
+<text x="312" y="212" fill="#48d597" font-size="11">AZ-B</text>
+<rect x="318" y="224" width="80" height="24" rx="4" fill="none" stroke="#ffb300" stroke-width="1.4"/>
+<text x="330" y="240" fill="#ffb300" font-size="10">EC2</text>
+<rect x="414" y="224" width="80" height="24" rx="4" fill="none" stroke="#ffb300" stroke-width="1.4"/>
+<text x="426" y="240" fill="#ffb300" font-size="10">EC2</text>
+<text x="318" y="268" fill="#cfe8ff" font-size="9.5">동일 그룹 · 자동 분산</text>
+
+<!-- ALB to AZs -->
+<line x1="268" y1="142" x2="298" y2="120" stroke="#7fd4ff" stroke-width="1.5" marker-end="url(#ah-aws4)"/>
+<line x1="268" y1="158" x2="298" y2="228" stroke="#7fd4ff" stroke-width="1.5" marker-end="url(#ah-aws4)"/>
+
+<!-- SQS queue (decouple) -->
+<rect x="556" y="128" width="92" height="44" rx="6" fill="none" stroke="#7fd4ff" stroke-width="1.6"/>
+<text x="572" y="148" fill="#7fd4ff" font-size="12">SQS</text>
+<text x="566" y="164" fill="#cfe8ff" font-size="9.5">버퍼 큐</text>
+<line x1="510" y1="132" x2="554" y2="146" stroke="#48d597" stroke-width="1.5" marker-end="url(#ah-aws4g)"/>
+<line x1="510" y1="240" x2="554" y2="156" stroke="#48d597" stroke-width="1.5" marker-end="url(#ah-aws4g)"/>
+
+<!-- Worker -->
+<rect x="556" y="214" width="92" height="40" rx="6" fill="none" stroke="#ffb300" stroke-width="1.4"/>
+<text x="566" y="238" fill="#ffb300" font-size="10">Worker(폴링)</text>
+<line x1="602" y1="172" x2="602" y2="212" stroke="#7fd4ff" stroke-width="1.5" marker-end="url(#ah-aws4)"/>
+
+<!-- caption labels -->
+<text x="672" y="150" fill="#cfe8ff" font-size="9.5">비동기</text>
+<text x="672" y="234" fill="#cfe8ff" font-size="9.5">완충</text>
+</svg><figcaption>ALB가 두 가용 영역(AZ)에 걸친 Auto Scaling 그룹으로 트래픽을 분산하고, 무거운 후처리는 SQS 큐를 통해 워커로 디커플링합니다. 한 AZ나 인스턴스가 죽어도 나머지가 요청을 계속 받는 구조가 고가용성의 출발점입니다.</figcaption></figure>
+
+    <div class="concept-section">
+
+<section id="load-balancing">
+<h2>1. 로드 밸런싱 — ALB vs NLB vs GWLB</h2>
+<p>고가용성의 1번 부품은 <strong>Elastic Load Balancing(ELB)</strong>입니다. 트래픽을 <strong>여러 AZ의 여러 대상(타깃)</strong>으로 나눠 보내고, 헬스 체크에 실패한 대상은 자동으로 제외합니다. 즉 로드 밸런서 자체가 "한 대가 죽어도 서비스는 산다"를 만드는 핵심입니다. 시험에선 <strong>어떤 LB를 고르는가</strong>가 단골입니다.</p>
+
+<div class="analogy-box"><h4>💡 비유로 이해하기: 백화점 안내 데스크</h4><p>입구의 <strong>안내 데스크(로드 밸런서)</strong>가 손님을 비어 있는 계산대로 보냅니다. 데스크가 "이 계산대는 라면 코너 담당, 저 계산대는 화장품 담당"처럼 <strong>요청 내용(경로)을 보고</strong> 보내면 ALB(L7), "그냥 줄 짧은 곳으로" 빠르게 보내면 NLB(L4)입니다. 계산대 한 곳이 셔터를 내리면(헬스 체크 실패) 데스크는 더 이상 그쪽으로 손님을 보내지 않습니다.</p></div>
+
+<table><thead><tr><th>구분</th><th>ALB (Application)</th><th>NLB (Network)</th><th>GWLB (Gateway)</th></tr></thead><tbody>
+<tr><td>OSI 계층</td><td>L7 (HTTP/HTTPS)</td><td>L4 (TCP/UDP/TLS)</td><td>L3/4 (IP 패킷)</td></tr>
+<tr><td>라우팅 기준</td><td>경로·호스트·헤더 기반</td><td>포트·프로토콜 (초저지연)</td><td>방화벽·IDS 등 가상 어플라이언스로 전달</td></tr>
+<tr><td>대표 강점</td><td>마이크로서비스·컨테이너 라우팅, WAF 연동</td><td>초고성능·고정 IP·수백만 RPS</td><td>인라인 보안 검사 체이닝</td></tr>
+<tr><td>고정 IP</td><td>없음(DNS 이름)</td><td>AZ별 고정 IP(Elastic IP 지정 가능)</td><td>—</td></tr>
+<tr><td>이럴 때</td><td>웹앱, 경로별 다른 서비스</td><td>게임·금융 등 극저지연, IP 화이트리스트 필요</td><td>트래픽을 보안 장비로 통과시켜야 할 때</td></tr>
+</tbody></table>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"<strong>URL 경로(/api, /img)별로 다른 대상 그룹</strong>으로 라우팅" → <strong>ALB</strong>. "<strong>고정 IP</strong>가 필요하거나 <strong>극도로 낮은 지연·수백만 동시 연결</strong>(TCP/UDP)" → <strong>NLB</strong>. "<strong>서드파티 방화벽/IDS 어플라이언스</strong>를 인라인으로" → <strong>GWLB</strong>. 키워드 "HTTP 헤더/호스트 기반"이 보이면 거의 ALB입니다.</p></div>
+</section>
+
+<section id="auto-scaling">
+<h2>2. Auto Scaling — 수요에 맞춰 늘고 주는 그룹</h2>
+<p><strong>EC2 Auto Scaling Group(ASG)</strong>은 부하에 따라 인스턴스 수를 자동으로 늘리고(스케일 아웃) 줄입니다(스케일 인). 단순한 "비용 절감"을 넘어 <strong>고가용성</strong> 장치입니다. 인스턴스가 죽거나 헬스 체크에 실패하면 ASG가 <strong>자동으로 새 인스턴스를 띄워</strong> 원하는 용량(Desired Capacity)을 회복하기 때문입니다.</p>
+
+<p>구성 요소를 정리하면 이렇습니다.</p>
+<table><thead><tr><th>요소</th><th>역할</th></tr></thead><tbody>
+<tr><td>시작 템플릿(Launch Template)</td><td>"어떤 인스턴스를(AMI·타입·보안 그룹·사용자 데이터)" 정의. 구버전 시작 구성(Launch Configuration)보다 권장.</td></tr>
+<tr><td>Min / Desired / Max</td><td>최소·원하는·최대 인스턴스 수. ASG가 항상 Desired를 유지하려 함.</td></tr>
+<tr><td>다중 AZ 분산</td><td>여러 서브넷(AZ)에 걸쳐 균등 배치 → 한 AZ 장애에도 생존.</td></tr>
+<tr><td>헬스 체크</td><td>EC2 상태 + <strong>ELB 헬스 체크</strong>까지 포함하면 "앱이 죽은" 인스턴스도 교체.</td></tr>
+</tbody></table>
+
+<p><strong>스케일링 정책</strong>은 세 갈래입니다. <strong>동적 조정</strong> 중 <strong>대상 추적(Target Tracking)</strong>은 "평균 CPU 50% 유지"처럼 목표값을 정하면 알아서 맞추는 가장 쉬운 방식이고, <strong>단계 조정(Step)</strong>은 임계치 구간별로 더 세밀하게, <strong>예약 조정(Scheduled)</strong>은 "매일 9시 트래픽 급증"처럼 시간이 예측될 때 씁니다. 더 나아가 <strong>예측 스케일링(Predictive)</strong>은 머신러닝으로 미래 부하를 예측해 미리 준비합니다.</p>
+
+<div class="analogy-box"><h4>💡 비유로 이해하기: 카페 아르바이트 스케줄</h4><p>손님이 몰리면 사장이 알바를 더 부르고(스케일 아웃), 한가하면 일찍 보냅니다(스케일 인). "오후 12~1시 점심엔 항상 붐빈다"를 알면 미리 인원을 잡아두죠(예약/예측). 알바가 갑자기 그만두면(인스턴스 장애) 즉시 대타를 부르는 것이 바로 ASG의 자동 복구입니다.</p></div>
+
+<div class="glass-panel" style="border-left:3px solid var(--devops); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--devops);">✅ 핵심 정리</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"ASG를 <strong>여러 AZ에 걸쳐</strong> 두는 것"이 사실상 기본 설정인 이유 — 한 AZ가 통째로 내려가도 다른 AZ의 인스턴스가 ALB 뒤에서 트래픽을 계속 받기 때문입니다. <strong>ALB + 다중 AZ ASG</strong> 조합이 SAA 복원력 설계의 정석 패턴입니다.</p></div>
+</section>
+
+<section id="dns-routing">
+<h2>3. DNS와 라우팅 — Route 53 정책</h2>
+<p><strong>Amazon Route 53</strong>은 관리형 DNS이자 <strong>도메인 등록·헬스 체크·트래픽 라우팅</strong>까지 묶은 서비스입니다. 고가용성 관점에서 핵심은 <strong>라우팅 정책</strong>입니다 — 같은 도메인이라도 누가·어디서 물어보느냐에 따라 다른 IP를 돌려줄 수 있습니다.</p>
+
+<table><thead><tr><th>라우팅 정책</th><th>무엇을 기준으로</th><th>대표 용도</th></tr></thead><tbody>
+<tr><td>단순(Simple)</td><td>고정 1개(또는 임의) 응답</td><td>단일 리소스</td></tr>
+<tr><td>가중치(Weighted)</td><td>비율(예: 90/10)로 분배</td><td>카나리 배포·A/B 테스트</td></tr>
+<tr><td>지연 시간(Latency)</td><td>가장 지연이 낮은 리전</td><td>전 세계 사용자에 가장 빠른 리전 연결</td></tr>
+<tr><td>장애 조치(Failover)</td><td>헬스 체크 결과(Primary↔Secondary)</td><td>액티브-패시브 DR</td></tr>
+<tr><td>지리(Geolocation)</td><td>사용자의 <strong>위치</strong>(국가/대륙)</td><td>지역별 콘텐츠·규제 분리</td></tr>
+<tr><td>지리 근접(Geoproximity)</td><td>리소스와의 지리적 거리(편향 bias 조정 가능)</td><td>거리 기반 트래픽 이동</td></tr>
+<tr><td>다중값(Multivalue)</td><td>헬스한 여러 IP를 무작위 반환(최대 8개)</td><td>간이 로드 밸런싱(헬스 체크 포함)</td></tr>
+</tbody></table>
+
+<div class="glass-panel" style="border-left:3px solid var(--interview); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--interview);">⚠️ 자주 헷갈리는 함정</h4><p style="font-size:13px; color:var(--text-muted); margin:0;"><strong>지연 시간</strong>(빠른 리전) vs <strong>지리</strong>(사용자 위치) vs <strong>지리 근접</strong>(거리 + bias 조정)을 구분하세요. "한국 사용자는 무조건 서울로" 같은 <strong>위치 기반</strong>은 Geolocation, "가장 빠른 곳으로"는 Latency입니다. 또 <strong>Failover</strong>는 Route 53 헬스 체크와 짝지어야 자동 전환이 동작합니다.</p></div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"평소 트래픽의 <strong>10%만 새 버전</strong>으로" → <strong>가중치</strong>. "Primary 리전이 죽으면 <strong>DR 리전으로 자동 전환</strong>" → <strong>장애 조치 + 헬스 체크</strong>. ALB/CloudFront 같은 AWS 리소스를 가리킬 땐 <strong>Alias 레코드</strong>(쿼리 무료, 루트 도메인 지원)를 쓰는 것이 정답 포인트입니다.</p></div>
+</section>
+
+<section id="content-delivery">
+<h2>4. 콘텐츠 전송·가속 — CloudFront vs Global Accelerator</h2>
+<p>전 세계 사용자에게 빠르고 안정적으로 전달하는 두 서비스를 자주 혼동합니다. 결정적 차이는 <strong>"캐시하느냐"</strong>입니다.</p>
+
+<table><thead><tr><th>구분</th><th>CloudFront (CDN)</th><th>Global Accelerator</th></tr></thead><tbody>
+<tr><td>핵심</td><td><strong>엣지 캐시</strong>(콘텐츠를 가까이 보관)</td><td><strong>애니캐스트 IP</strong>로 AWS 백본 최단 경로 전달</td></tr>
+<tr><td>캐싱</td><td>O — 정적 콘텐츠를 엣지에 저장</td><td>X — 캐시 없이 트래픽만 가속</td></tr>
+<tr><td>프로토콜</td><td>주로 HTTP/HTTPS(웹)</td><td>TCP/UDP 전반(비-HTTP 포함)</td></tr>
+<tr><td>IP</td><td>도메인(엣지별 가변)</td><td><strong>고정 애니캐스트 IP 2개</strong></td></tr>
+<tr><td>이럴 때</td><td>이미지·동영상·웹 자산, S3 오리진 가속</td><td>게임·VoIP·고정 IP 필요한 TCP/UDP 앱, 빠른 리전 장애 조치</td></tr>
+</tbody></table>
+
+<p>CloudFront에서 S3 오리진을 보호할 때는 <strong>OAC(Origin Access Control)</strong>를 씁니다. 버킷을 <strong>퍼블릭으로 열지 않고</strong> CloudFront만 접근하도록 막아, 사용자는 반드시 CDN을 거치게 합니다(구버전 OAI를 대체).</p>
+
+<div class="analogy-box"><h4>💡 비유로 이해하기: 동네 편의점 vs 전용 고속도로</h4><p><strong>CloudFront</strong>는 인기 상품을 <strong>동네 편의점(엣지)</strong>에 미리 갖다 놓아 멀리 본사 창고까지 안 가게 합니다. <strong>Global Accelerator</strong>는 물건을 미리 두진 않지만, 본사까지 가는 길을 <strong>막히지 않는 전용 고속도로(AWS 백본)</strong>로 바꿔 더 빠르고 안정적으로 도착하게 합니다.</p></div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"<strong>정적 콘텐츠 캐싱</strong>·웹사이트 가속·S3와 함께" → <strong>CloudFront(+ OAC)</strong>. "<strong>고정 IP</strong>가 필요한 <strong>비-HTTP(TCP/UDP)</strong> 앱을 전 세계에서 빠르게" 또는 "리전 간 빠른 장애 조치" → <strong>Global Accelerator</strong>. 둘 다 DDoS 완화를 위해 AWS Shield와 함께 자주 등장합니다.</p></div>
+</section>
+
+<section id="decoupling">
+<h2>5. 디커플링 — SQS · SNS · EventBridge · Kinesis</h2>
+<p>컴포넌트를 직접 호출로 묶으면 하나가 느려질 때 전체가 무너집니다. <strong>중간에 메시징 계층</strong>을 두어 느슨하게 연결(디커플)하면, 생산자와 소비자가 서로의 속도·장애에 덜 영향받습니다. 어떤 도구를 쓰느냐는 SAA 단골 비교입니다.</p>
+
+<table><thead><tr><th>서비스</th><th>모델</th><th>핵심 성질</th><th>이럴 때</th></tr></thead><tbody>
+<tr><td>SQS</td><td>큐 (1:1 소비)</td><td>버퍼·완충, 풀(pull) 방식, 메시지 보존</td><td>주문 처리·작업 큐로 부하 완충</td></tr>
+<tr><td>SNS</td><td>펍/섭 (1:N 팬아웃)</td><td>푸시(push), 여러 구독자에 동시 전달</td><td>한 이벤트를 여러 시스템에 알림</td></tr>
+<tr><td>EventBridge</td><td>이벤트 버스·라우팅</td><td>규칙·필터로 라우팅, SaaS·스케줄 연동</td><td>이벤트 기반 통합·필터링 라우팅</td></tr>
+<tr><td>Kinesis</td><td>스트리밍</td><td>순서 보존·재처리·다수 컨슈머, 대용량 실시간</td><td>로그·클릭스트림·IoT 실시간 분석</td></tr>
+</tbody></table>
+
+<p><strong>SQS</strong>는 다시 둘로 나뉩니다. <strong>표준(Standard)</strong>은 거의 무제한 처리량에 <strong>최소 1회 전달·순서 미보장</strong>(중복 가능), <strong>FIFO</strong>는 <strong>정확히 1회·순서 보장</strong>이지만 처리량이 제한됩니다. 처리하지 못한 메시지는 <strong>DLQ(Dead-Letter Queue)</strong>로 빼 격리하고, <strong>가시성 타임아웃(Visibility Timeout)</strong> 동안에는 다른 소비자가 같은 메시지를 못 보게 해 중복 처리를 줄입니다.</p>
+
+<div class="analogy-box"><h4>💡 비유로 이해하기: 식당 주문 전표</h4><p>홀(생산자)이 주방(소비자)에 대고 직접 외치면 바쁠 때 엉킵니다. 대신 <strong>주문 전표를 꽂이(SQS 큐)</strong>에 끼워두면 주방이 처리 가능한 속도로 하나씩 가져갑니다(완충). "VIP 입장!"을 홀·주방·발렛에 <strong>동시에 방송(SNS 팬아웃)</strong>할 수도 있죠. 전표가 자꾸 실패하면 <strong>'보류함(DLQ)'</strong>에 따로 모읍니다.</p></div>
+
+<div class="code-block-header"><span class="code-title">SQS 표준 vs FIFO 큐 정의 (CloudFormation 발췌)</span><button class="btn-copy" onclick="copyCode(this)">코드 복사</button></div>
+<pre class="language-yaml"><code class="language-yaml">Resources:
+  OrderQueue:                      # 표준 큐 + DLQ 연결
+    Type: AWS::SQS::Queue
+    Properties:
+      VisibilityTimeout: 60        # 처리 중 60초간 다른 소비자에게 숨김
+      RedrivePolicy:
+        deadLetterTargetArn: !GetAtt OrderDLQ.Arn
+        maxReceiveCount: 5         # 5회 실패 시 DLQ로 이동
+
+  PaymentQueue:                    # 논리 ID는 영숫자만 가능(점 불가)
+    Type: AWS::SQS::Queue
+    Properties:
+      QueueName: payment-queue.fifo  # FIFO는 큐 이름이 .fifo 로 끝나야 함
+      FifoQueue: true              # 순서 보장 + 정확히 1회
+      ContentBasedDeduplication: true</code></pre>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"<strong>순서·중복 제거가 필수</strong>(결제·금융)" → <strong>SQS FIFO</strong>. "한 이벤트를 <strong>여러 구독자에 동시 전달</strong>" → <strong>SNS 팬아웃</strong>(SNS→여러 SQS 패턴도 빈출). "<strong>이벤트 규칙으로 필터·라우팅</strong>, SaaS/스케줄" → <strong>EventBridge</strong>. "<strong>실시간 스트림·재처리·순서</strong>(로그/클릭스트림)" → <strong>Kinesis</strong>. "처리 실패 메시지를 잃지 않고 격리" → <strong>DLQ</strong>.</p></div>
+</section>
+
+<section id="observability">
+<h2>6. 관측성 — CloudWatch · CloudTrail · Config</h2>
+<p>고가용성은 "보여야" 지킵니다. 세 서비스가 자주 헷갈리는데, <strong>"무엇을 관측하느냐"</strong>로 깔끔히 갈립니다.</p>
+
+<table><thead><tr><th>서비스</th><th>무엇을</th><th>한 줄 요약</th></tr></thead><tbody>
+<tr><td>CloudWatch</td><td>지표·로그·알람 (성능/상태)</td><td>"<strong>지금 잘 돌아가나?</strong>" — CPU·지연·에러율 모니터링, 알람으로 Auto Scaling 트리거</td></tr>
+<tr><td>CloudTrail</td><td>API 호출 기록 (감사)</td><td>"<strong>누가 무엇을 했나?</strong>" — 계정 활동·보안 감사 로그</td></tr>
+<tr><td>AWS Config</td><td>리소스 구성·변경 (준수)</td><td>"<strong>설정이 규칙에 맞나?</strong>" — 구성 변경 추적·컴플라이언스 평가</td></tr>
+</tbody></table>
+
+<div class="analogy-box"><h4>💡 비유로 이해하기: 매장 운영의 세 장부</h4><p><strong>CloudWatch</strong>는 매대 온도·재고 수량을 실시간으로 보는 <strong>계기판</strong>(이상하면 알람), <strong>CloudTrail</strong>은 "누가 몇 시에 금고를 열었나"를 적는 <strong>출입 일지</strong>, <strong>Config</strong>는 "소화기는 규정대로 비치됐나"를 점검하는 <strong>안전 점검표</strong>입니다.</p></div>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"<strong>누가 이 리소스를 삭제했는지</strong> 추적" → <strong>CloudTrail</strong>. "지표 임계치를 넘으면 <strong>알람·자동 확장</strong>" → <strong>CloudWatch(Alarm)</strong>. "보안 그룹이 <strong>규정에 어긋나게 변경</strong>되면 감지" → <strong>AWS Config(규칙)</strong>. 셋을 같이 쓰는 게 정석이며, 키워드 "감사(audit)"는 CloudTrail로 직결됩니다.</p></div>
+</section>
+
+<section id="well-architected-dr">
+<h2>7. Well-Architected와 재해 복구(DR)</h2>
+<p>마지막은 설계를 평가하는 틀과 최악을 대비하는 전략입니다. AWS <strong>Well-Architected Framework</strong>는 6대 기둥으로 아키텍처를 점검합니다.</p>
+
+<table><thead><tr><th>기둥</th><th>핵심 질문</th></tr></thead><tbody>
+<tr><td>운영 우수성(Operational Excellence)</td><td>운영·배포·관측을 코드로 자동화했는가</td></tr>
+<tr><td>보안(Security)</td><td>최소 권한·암호화·추적이 되는가</td></tr>
+<tr><td>안정성(Reliability)</td><td>장애에서 자동 복구되고 수요에 맞춰 확장되는가</td></tr>
+<tr><td>성능 효율성(Performance Efficiency)</td><td>적절한 리소스를 선택·진화시키는가</td></tr>
+<tr><td>비용 최적화(Cost Optimization)</td><td>불필요한 지출 없이 가치를 내는가</td></tr>
+<tr><td>지속 가능성(Sustainability)</td><td>자원·에너지 영향을 줄였는가</td></tr>
+</tbody></table>
+
+<p><strong>재해 복구(DR)</strong>는 <strong>RTO</strong>(복구 목표 시간 — 얼마나 빨리 복구)와 <strong>RPO</strong>(복구 목표 시점 — 얼마만큼의 데이터 손실 허용)를 기준으로 4전략 중 하나를 고릅니다. 오른쪽으로 갈수록 RTO·RPO는 짧아지지만 비용이 커지는 <strong>트레이드오프</strong>입니다.</p>
+
+<table><thead><tr><th>전략</th><th>대기 상태</th><th>RTO/RPO</th><th>비용</th></tr></thead><tbody>
+<tr><td>백업 &amp; 복원(Backup &amp; Restore)</td><td>백업만 보관, 평소 인프라 없음</td><td>가장 김(시간 단위)</td><td>가장 저렴</td></tr>
+<tr><td>파일럿 라이트(Pilot Light)</td><td>핵심(DB 복제 등)만 최소로 가동</td><td>김(분~시간)</td><td>낮음</td></tr>
+<tr><td>웜 스탠바이(Warm Standby)</td><td>축소판 전체를 항상 가동(스케일다운)</td><td>짧음(분)</td><td>중간</td></tr>
+<tr><td>멀티 사이트 액티브-액티브(Multi-Site)</td><td>양쪽 풀 가동·동시 처리</td><td>거의 0</td><td>가장 높음</td></tr>
+</tbody></table>
+
+<div class="glass-panel" style="border-left:3px solid var(--aws); margin:10px 0 16px;"><h4 style="font-weight:700; color:var(--aws);">📝 시험에 이렇게 나온다</h4><p style="font-size:13px; color:var(--text-muted); margin:0;">"<strong>비용 최소</strong>, 복구 시간은 길어도 됨" → <strong>백업 &amp; 복원</strong>. "<strong>RTO 수 분, 무중단에 가깝게</strong>(돈은 더 써도)" → <strong>웜 스탠바이</strong> 또는 <strong>멀티 사이트</strong>. "DB만 복제해 두고 평소 컴퓨트는 최소" → <strong>파일럿 라이트</strong>. RTO/RPO 수치가 작아질수록 더 비싼 전략을 고르는 트레이드오프를 묻습니다.</p></div>
+
+<p><strong>📋 한 장 요약</strong></p>
+<table><thead><tr><th>문제 키워드</th><th>정답 서비스/개념</th></tr></thead><tbody>
+<tr><td>경로·호스트 기반 HTTP 라우팅</td><td>ALB(L7)</td></tr>
+<tr><td>고정 IP·극저지연 TCP/UDP</td><td>NLB(L4)</td></tr>
+<tr><td>인스턴스 자동 복구·다중 AZ 확장</td><td>EC2 Auto Scaling(ASG)</td></tr>
+<tr><td>리전 장애 자동 전환(DNS)</td><td>Route 53 장애 조치 + 헬스 체크</td></tr>
+<tr><td>정적 콘텐츠 캐싱·CDN</td><td>CloudFront(+ OAC)</td></tr>
+<tr><td>고정 IP·비-HTTP 전 세계 가속</td><td>Global Accelerator</td></tr>
+<tr><td>주문/작업 완충·디커플</td><td>SQS(표준), 순서·중복제거면 FIFO</td></tr>
+<tr><td>한 이벤트를 여러 시스템에</td><td>SNS 팬아웃</td></tr>
+<tr><td>실시간 스트림·재처리</td><td>Kinesis</td></tr>
+<tr><td>"누가 무엇을 했나" 감사</td><td>CloudTrail</td></tr>
+<tr><td>구성 변경·컴플라이언스</td><td>AWS Config</td></tr>
+<tr><td>지표·알람·자동 확장 트리거</td><td>CloudWatch</td></tr>
+<tr><td>비용 최소 DR / 거의 무중단 DR</td><td>백업&amp;복원 / 멀티 사이트</td></tr>
+</tbody></table>
+</section>
+
+      <section id="quiz-anchor"><div id="quiz-wrapper"></div></section>
+
+    </div>
+  </main>
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: 역기구학)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/prism.min.js"></script>
+  <script src="lib/prism-json.min.js"></script>
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/quiz.js"></script>
+
+  <script>
+    const awsHaQuizzes = [
+  {
+    type: "mcq",
+    question: "웹 애플리케이션 트래픽을 URL 경로(/api, /static)에 따라 서로 다른 대상 그룹으로 보내야 합니다. 적합한 로드 밸런서는?",
+    options: [
+      "NLB (Network Load Balancer)",
+      "ALB (Application Load Balancer)",
+      "GWLB (Gateway Load Balancer)",
+      "Classic Load Balancer만 가능하다"
+    ],
+    correct: 1,
+    explanation: "경로·호스트·헤더 같은 HTTP(L7) 정보로 라우팅하는 것은 ALB의 핵심 기능입니다. NLB는 L4라 경로를 보지 못하고 초저지연·고정 IP가 강점이며, GWLB는 보안 어플라이언스로 트래픽을 통과시키는 용도입니다."
+  },
+  {
+    type: "mcq",
+    question: "게임 서버에 '고정 IP'와 '수백만 동시 TCP 연결, 극도로 낮은 지연'이 필요합니다. 가장 적합한 것은?",
+    options: [
+      "ALB — HTTP 헤더 기반 라우팅",
+      "CloudFront — 엣지 캐싱",
+      "NLB — L4, 고정 IP와 초고성능",
+      "AWS Config — 구성 추적"
+    ],
+    correct: 2,
+    explanation: "NLB는 L4에서 동작해 초저지연·초고처리량을 제공하고 AZ별 고정 IP(Elastic IP)를 지정할 수 있어 IP 화이트리스트·게임/금융에 적합합니다. ALB는 L7 웹용, CloudFront는 정적 콘텐츠 캐싱, Config는 관측·준수용으로 목적이 다릅니다."
+  },
+  {
+    type: "mcq",
+    question: "Auto Scaling 그룹을 '여러 가용 영역(AZ)에 걸쳐' 구성하는 가장 큰 이유는?",
+    options: [
+      "인스턴스 비용을 0으로 만들 수 있어서",
+      "한 AZ 전체가 장애가 나도 다른 AZ의 인스턴스가 트래픽을 계속 받아 고가용성이 유지되어서",
+      "샤딩이 자동으로 적용되어서",
+      "보안 그룹 규칙이 필요 없어져서"
+    ],
+    correct: 1,
+    explanation: "다중 AZ 배치는 단일 AZ 장애에도 서비스가 살아남게 하는 복원력 설계의 기본입니다. ALB가 살아있는 AZ로 트래픽을 보내고 ASG가 부족분을 자동 복구합니다. 비용 0이나 자동 샤딩과는 무관합니다."
+  },
+  {
+    type: "mcq",
+    question: "Primary 리전이 다운되면 자동으로 DR 리전으로 트래픽을 넘기고 싶습니다. DNS 계층에서 쓰는 Route 53 라우팅 정책은?",
+    options: [
+      "가중치(Weighted) 라우팅",
+      "지연 시간(Latency) 라우팅",
+      "장애 조치(Failover) 라우팅 + 헬스 체크",
+      "단순(Simple) 라우팅"
+    ],
+    correct: 2,
+    explanation: "장애 조치 라우팅은 헬스 체크와 짝지어 Primary가 비정상이면 Secondary로 응답을 전환합니다(액티브-패시브 DR). 가중치는 비율 분배(카나리), 지연 시간은 가장 빠른 리전, 단순은 고정 응답으로 자동 전환 기능이 없습니다."
+  },
+  {
+    type: "mcq",
+    question: "S3에 저장한 이미지·동영상을 전 세계 사용자에게 빠르게 제공하고, 버킷은 퍼블릭으로 열지 않으려 합니다. 알맞은 조합은?",
+    options: [
+      "Global Accelerator + 퍼블릭 버킷",
+      "CloudFront + OAC(Origin Access Control)",
+      "NLB + 퍼블릭 버킷",
+      "EventBridge + 퍼블릭 버킷"
+    ],
+    correct: 1,
+    explanation: "정적 콘텐츠는 CloudFront로 엣지에 캐싱해 전 세계 지연을 낮추고, OAC로 'CloudFront만 S3에 접근'하도록 막아 버킷을 비공개로 유지합니다. Global Accelerator는 캐싱이 없고, NLB·EventBridge는 콘텐츠 전송용이 아닙니다."
+  },
+  {
+    type: "mcq",
+    question: "결제 메시지를 처리할 때 '순서 보장'과 '정확히 1회 처리(중복 제거)'가 필수입니다. 적합한 것은?",
+    options: [
+      "SQS 표준(Standard) 큐",
+      "SQS FIFO 큐",
+      "SNS 표준 토픽",
+      "CloudWatch Logs"
+    ],
+    correct: 1,
+    explanation: "SQS FIFO 큐는 메시지 순서 보장과 정확히 1회 처리(중복 제거)를 제공해 결제·금융 같은 정합성 민감 작업에 맞습니다. 표준 큐는 처리량이 크지만 순서 미보장·최소 1회(중복 가능)이고, SNS는 팬아웃 알림, CloudWatch Logs는 로그 저장용입니다."
+  },
+  {
+    type: "mcq",
+    question: "보안 감사를 위해 '누가, 언제, 어떤 API로 이 EC2 인스턴스를 종료했는지' 추적해야 합니다. 사용할 서비스는?",
+    options: [
+      "Amazon CloudWatch",
+      "AWS Config",
+      "AWS CloudTrail",
+      "Amazon SNS"
+    ],
+    correct: 2,
+    explanation: "CloudTrail은 계정의 API 호출(누가 무엇을 했는지)을 기록하는 감사 로그라 '누가 종료했는가'를 추적합니다. CloudWatch는 성능 지표·알람, Config는 리소스 구성 변경·컴플라이언스, SNS는 알림 발송으로 목적이 다릅니다."
+  },
+  {
+    type: "mcq",
+    question: "DR 요구사항이 'RTO 수 분 이내, 데이터 손실 거의 없음(돈은 더 써도 됨)'입니다. 가장 적합한 전략은?",
+    options: [
+      "백업 & 복원(Backup & Restore)",
+      "파일럿 라이트(Pilot Light)",
+      "웜 스탠바이(Warm Standby) 또는 멀티 사이트 액티브-액티브",
+      "백업조차 두지 않는다"
+    ],
+    correct: 2,
+    explanation: "RTO를 수 분으로 줄이려면 축소판 전체를 상시 가동하는 웜 스탠바이나, 양쪽을 모두 가동하는 멀티 사이트가 적합합니다(비용은 높음). 백업&복원은 가장 저렴하지만 복구가 가장 오래 걸리고, 파일럿 라이트는 핵심만 가동해 그 중간입니다."
+  }
+];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      quizEngine.render("quiz-wrapper", awsHaQuizzes, "aws-4-ha-architecture");
+    });
+
+    function copyCode(button) {
+      const pre = button.parentElement.nextElementSibling;
+      const code = pre.querySelector("code");
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const originalText = button.textContent;
+        button.textContent = "복사 완료! ✓";
+        button.style.borderColor = "var(--devops)";
+        button.style.color = "var(--devops)";
+        showToast("📋 코드가 클립보드에 성공적으로 복사되었습니다!");
+        setTimeout(() => {
+          button.textContent = originalText;
+          button.style.borderColor = "";
+          button.style.color = "";
+        }, 2000);
+      });
+    }
+  </script>
+</body>
+</html>

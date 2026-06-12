@@ -35,6 +35,19 @@ const CHAPTER_SEQUENCE = [
   { file: "appendix-ai.html", title: "부록 D. AI-Native 통합" }
 ];
 
+// AWS 자격증 트랙 시퀀스 (독립 — 트랙 경계를 넘는 prev/next 링크를 막기 위해 분리)
+const AWS_SEQUENCE = [
+  { file: "aws-0-clp.html", title: "A0. CLP 클라우드 기초" },
+  { file: "aws-1-iam-security.html", title: "A1. 보안·자격증명" },
+  { file: "aws-2-compute-network.html", title: "A2. 컴퓨팅·네트워킹" },
+  { file: "aws-3-storage-db.html", title: "A3. 스토리지·DB" },
+  { file: "aws-4-ha-architecture.html", title: "A4. 고가용성·설계" },
+  { file: "aws-5-cheatsheet.html", title: "A5. 서비스 선택 치트시트" }
+];
+
+// 페이저가 탐색할 전체 시퀀스 목록. 현재 페이지가 속한 시퀀스 안에서만 이전/다음을 잇는다.
+const ALL_SEQUENCES = [CHAPTER_SEQUENCE, AWS_SEQUENCE];
+
 document.addEventListener("DOMContentLoaded", () => {
   // 0. 사이드바 리브랜딩 (타이틀 "Dev Rehab" + 클릭 시 대시보드 이동, '대시보드 홈' 항목 제거)
   initSidebarBrand();
@@ -998,16 +1011,18 @@ function initGlossaryTooltips() {
  */
 function initChapterPager() {
   const currentFile = (window.location.pathname.split("/").pop() || "").toLowerCase();
-  const idx = CHAPTER_SEQUENCE.findIndex(c => c.file === currentFile);
-  if (idx === -1) return;  // 인덱스 페이지 등은 제외
+  // 현재 페이지가 속한 트랙 시퀀스를 찾는다(트랙 간 cross-link 방지).
+  const seq = ALL_SEQUENCES.find(s => s.some(c => c.file === currentFile));
+  if (!seq) return;  // 인덱스 페이지·시퀀스 외 페이지는 제외
+  const idx = seq.findIndex(c => c.file === currentFile);
 
   const main = document.querySelector("main#main-content");
   if (!main) return;
   // 이미 있는 경우 중복 생성 방지
   if (main.querySelector(".chapter-pager")) return;
 
-  const prev = idx > 0 ? CHAPTER_SEQUENCE[idx - 1] : null;
-  const next = idx < CHAPTER_SEQUENCE.length - 1 ? CHAPTER_SEQUENCE[idx + 1] : null;
+  const prev = idx > 0 ? seq[idx - 1] : null;
+  const next = idx < seq.length - 1 ? seq[idx + 1] : null;
 
   const pager = document.createElement("nav");
   pager.className = "chapter-pager";
