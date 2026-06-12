@@ -1,0 +1,378 @@
+﻿<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AWS 실전 모의고사 · Dev Rehab</title>
+  <script>document.documentElement.setAttribute('data-theme',localStorage.getItem('antigravity_theme')||'light');</script>
+  <script>(function(){var f=(location.pathname.split('/').pop()||'index.html').toLowerCase();var t=/^flutter-/.test(f)?'flutter':(/^aws-/.test(f)?'aws':(/^(chapter-r\d|appendix-r)/.test(f)?'robotics':((f===''||f==='index.html')?(localStorage.getItem('antigravity_track')||'fullstack'):'fullstack')));document.documentElement.setAttribute('data-track',t);})();</script>
+  <script>(function(){var d=document.documentElement;var c=localStorage.getItem('sidebar_collapsed');if(c===null)c=(window.innerWidth<=1024)?'1':'0';if(c==='1'){d.classList.add('sidebar-collapsed');}else{var w=parseInt(localStorage.getItem('sidebar_width'),10);if(w>=200&&w<=460)d.style.setProperty('--sidebar-w',w+'px');}})();</script>
+  <link rel="stylesheet" href="assets/style.css">
+  <link rel="stylesheet" href="lib/prism.min.css">
+  <style>
+    .blueprint { width: 100%; height: auto; display: block; background: #0a1929; border-radius: 12px; border: 1px solid rgba(120, 200, 255, 0.25); }
+    .blueprint text { font-family: 'Fira Code', 'JetBrains Mono', monospace; }
+    figure.learning-visual.blueprint-fig { background: transparent; border: none; padding: 0; }
+  </style>
+
+  <style>
+  /* ===== AWS 모의고사 엔진 전용 스타일 (.mk-) ===== */
+  #mock-app { width: 100%; }
+  .mk-setcards { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 18px; }
+  .mk-setcard { display: flex; flex-direction: column; gap: 5px; text-align: left; padding: 18px 16px; border-radius: 14px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; transition: var(--transition); color: var(--text-color); }
+  .mk-setcard:hover { border-color: var(--aws); transform: translateY(-2px); }
+  .mk-setcard.on { border-color: var(--aws); box-shadow: 0 4px 18px hsla(36, 96%, 50%, 0.22); }
+  .mk-sc-exam { font-size: 11px; font-weight: 800; color: var(--aws); letter-spacing: .5px; }
+  .mk-sc-name { font-size: 15.5px; font-weight: 700; }
+  .mk-sc-meta { font-size: 12.5px; color: var(--text-muted); }
+  .mk-sc-best { font-size: 12px; font-weight: 700; color: var(--devops); margin-top: 2px; }
+  .mk-sc-best.dim { color: var(--text-muted); font-weight: 500; }
+  .mk-startinfo { padding: 14px 16px; font-size: 13.5px; margin-bottom: 14px; }
+  .mk-rules { padding: 20px 22px; }
+  .mk-rules h4 { font-size: 14px; font-weight: 800; color: var(--aws); margin-bottom: 12px; }
+  .mk-rules ul { margin: 0 0 18px; padding-left: 18px; display: flex; flex-direction: column; gap: 7px; }
+  .mk-rules li { font-size: 13px; color: var(--text-muted); line-height: 1.55; }
+  .mk-rules li b { color: var(--text-color); }
+
+  .mk-btn { font-size: 14px; font-weight: 700; padding: 11px 20px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-color); cursor: pointer; transition: var(--transition); }
+  .mk-btn:hover:not(:disabled) { border-color: var(--aws); color: var(--aws); }
+  .mk-btn:disabled { opacity: .4; cursor: not-allowed; }
+  .mk-btn.primary { background: var(--aws); border-color: var(--aws); color: #1a1205; }
+  .mk-btn.primary:hover { filter: brightness(1.08); color: #1a1205; }
+  .mk-btn.submit { background: var(--devops); border-color: var(--devops); color: #fff; }
+  .mk-btn.submit:hover { filter: brightness(1.08); color: #fff; }
+  .mk-btn.big { width: 100%; padding: 14px; font-size: 15px; }
+
+  .mk-exam-bar { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; position: sticky; top: 8px; z-index: 20; margin-bottom: 12px; }
+  .mk-exam-title { font-size: 14px; font-weight: 700; }
+  .mk-timer { font-family: var(--font-mono); font-size: 16px; font-weight: 800; color: var(--devops); }
+  .mk-timer.warn { color: var(--test); }
+  .mk-timer.danger { color: var(--interview); animation: mkpulse 1s infinite; }
+  @keyframes mkpulse { 0%,100%{opacity:1} 50%{opacity:.55} }
+
+  .mk-pbar { height: 6px; background: var(--bg-card); border-radius: 99px; overflow: hidden; margin-bottom: 8px; }
+  .mk-pbar-fill { height: 100%; background: linear-gradient(90deg, var(--aws), var(--devops)); border-radius: 99px; transition: width .25s; }
+  .mk-meta { font-size: 12.5px; color: var(--text-muted); margin-bottom: 10px; }
+  .mk-meta b { color: var(--aws); }
+  .mk-dots { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+  .mk-dot { width: 28px; height: 28px; border-radius: 7px; border: 1px solid var(--border-color); background: var(--bg-card); color: var(--text-muted); font-size: 11px; font-weight: 700; cursor: pointer; transition: var(--transition); font-family: var(--font-mono); }
+  .mk-dot:hover { border-color: var(--aws); }
+  .mk-dot.done { background: hsla(36, 96%, 50%, 0.14); border-color: hsla(36, 96%, 50%, 0.5); color: var(--aws); }
+  .mk-dot.cur { border-color: var(--aws); color: var(--aws); box-shadow: 0 0 0 2px hsla(36, 96%, 50%, 0.25); }
+
+  .mk-qbox { padding: 22px 24px; margin-bottom: 14px; }
+  .mk-q-top { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; flex-wrap: wrap; }
+  .mk-q-num { font-size: 15px; font-weight: 800; color: var(--aws); }
+  .mk-q-tot { color: var(--text-muted); font-weight: 500; font-size: 13px; }
+  .mk-q-dom { font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 6px; background: var(--bg-card); border: 1px solid var(--border-color); color: var(--text-muted); }
+  .mk-q-multi { font-size: 11px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: hsla(36, 96%, 50%, 0.15); color: var(--aws); }
+  .mk-q-text { font-size: 16px; font-weight: 600; line-height: 1.65; margin-bottom: 16px; }
+  .mk-opts { display: flex; flex-direction: column; gap: 9px; }
+  .mk-opt { display: flex; align-items: flex-start; gap: 11px; padding: 13px 15px; border-radius: 10px; border: 1px solid var(--border-color); background: var(--bg-card); cursor: pointer; transition: var(--transition); }
+  .mk-opt:hover { border-color: var(--aws); }
+  .mk-opt.on { border-color: var(--aws); background: hsla(36, 96%, 50%, 0.08); }
+  .mk-opt input { margin-top: 3px; accent-color: var(--aws); flex-shrink: 0; }
+  .mk-opt-k { font-family: var(--font-mono); font-weight: 800; color: var(--aws); flex-shrink: 0; }
+  .mk-opt-t { font-size: 14px; line-height: 1.5; }
+  .mk-nav { display: flex; gap: 10px; }
+  .mk-nav .mk-btn { flex: 1; }
+  .mk-nav .mk-btn.primary, .mk-nav .mk-btn.submit { flex: 2; }
+
+  .mk-res-hero { text-align: center; padding: 20px 0 26px; }
+  .mk-ring { position: relative; width: 140px; height: 140px; margin: 0 auto 16px; }
+  .mk-ring svg { transform: rotate(-90deg); }
+  .mk-ring-bg { fill: none; stroke: var(--bg-card); stroke-width: 11; }
+  .mk-ring-fg { fill: none; stroke-width: 11; stroke-linecap: round; transition: stroke-dashoffset .6s; }
+  .mk-ring-fg.pass { stroke: var(--devops); }
+  .mk-ring-fg.fail { stroke: var(--interview); }
+  .mk-ring-txt { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .mk-ring-pct { font-size: 34px; font-weight: 800; }
+  .mk-ring-sub { font-size: 13px; color: var(--text-muted); font-family: var(--font-mono); }
+  .mk-res-verdict { font-size: 18px; font-weight: 800; margin-bottom: 8px; }
+  .mk-res-verdict.pass { color: var(--devops); }
+  .mk-res-verdict.fail { color: var(--interview); }
+  .mk-res-note { font-size: 13.5px; line-height: 1.6; }
+  .mk-res-doms { margin-bottom: 22px; }
+  .mk-res-doms h3, .mk-rev-h { font-size: 16px; font-weight: 800; margin: 8px 0 14px; }
+  .mk-dombar { margin-bottom: 12px; }
+  .mk-dombar-top { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 5px; }
+  .mk-dombar-track { height: 9px; background: var(--bg-card); border-radius: 99px; overflow: hidden; }
+  .mk-dombar-fill { height: 100%; border-radius: 99px; transition: width .5s; }
+  .mk-dombar-fill.ok { background: var(--devops); }
+  .mk-dombar-fill.low { background: var(--interview); }
+  .mk-res-actions { display: flex; gap: 10px; margin-bottom: 28px; }
+  .mk-res-actions .mk-btn { flex: 1; }
+
+  .mk-review { display: flex; flex-direction: column; gap: 12px; }
+  .mk-rev { padding: 16px 18px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--bg-card); border-left-width: 4px; }
+  .mk-rev.ok { border-left-color: var(--devops); }
+  .mk-rev.no { border-left-color: var(--interview); }
+  .mk-rev-top { display: flex; align-items: center; gap: 9px; margin-bottom: 9px; }
+  .mk-rev-st { font-size: 11px; font-weight: 800; padding: 2px 8px; border-radius: 5px; }
+  .mk-rev-st.ok { background: hsla(150, 75%, 45%, 0.16); color: var(--devops); }
+  .mk-rev-st.no { background: hsla(0, 75%, 60%, 0.16); color: var(--interview); }
+  .mk-rev-num { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+  .mk-rev-q { font-size: 14px; font-weight: 600; line-height: 1.6; margin-bottom: 10px; }
+  .mk-rev-opts { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+  .mk-rev-opt { font-size: 13px; padding: 6px 10px; border-radius: 7px; color: var(--text-muted); }
+  .mk-rev-opt.ans { background: hsla(150, 75%, 45%, 0.12); color: var(--devops); font-weight: 600; }
+  .mk-rev-opt.wrong { background: hsla(0, 75%, 60%, 0.12); color: var(--interview); text-decoration: line-through; }
+  .mk-rev-exp { font-size: 12.5px; color: var(--text-muted); line-height: 1.6; padding-top: 9px; border-top: 1px solid var(--border-color); }
+  .mk-rev-exp b { color: var(--text-color); }
+</style>
+</head>
+<body>
+  <aside id="sidebar">
+    <div class="sidebar-logo"><span>Antigravity</span> Rehab</div>
+    <div class="course-track-switch" role="tablist" aria-label="학습 코스 전환">
+      <button class="track-tab" data-track-tab="fullstack" role="tab" aria-selected="true" type="button"><span class="track-emoji">💻</span><span class="track-label">풀스택 재활</span></button>
+      <button class="track-tab" data-track-tab="robotics" role="tab" aria-selected="false" type="button"><span class="track-emoji">🤖</span><span class="track-label">로보틱스</span></button>
+      <button class="track-tab" data-track-tab="flutter" role="tab" aria-selected="false" type="button"><span class="track-emoji">📱</span><span class="track-label">Flutter</span></button>
+      <button class="track-tab" data-track-tab="gigsa" role="tab" aria-selected="false" type="button"><span class="track-emoji">📜</span><span class="track-label">정처기</span></button>
+      <button class="track-tab" data-track-tab="aws" role="tab" aria-selected="false" type="button"><span class="track-emoji">☁️</span><span class="track-label">AWS</span></button>
+    </div>
+    <ul class="nav-menu">
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">백엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-1.html"><span class="nav-item-text">01. 모던 자바 핵심</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-2.html"><span class="nav-item-text">02. 스프링 부트 3 &amp; JPA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-3.html"><span class="nav-item-text">03. DB &amp; SQL + QueryDSL</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="backend"><a href="chapter-4.html"><span class="nav-item-text">04. Security &amp; Redis JWT</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">프론트엔드 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-5.html"><span class="nav-item-text">05. React &amp; Next.js 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-6.html"><span class="nav-item-text">06. 고급 React &amp; Zustand</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="chapter-7.html"><span class="nav-item-text">07. 풀스택 통합 &amp; 소켓</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">데브옵스 코스</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="chapter-8.html"><span class="nav-item-text">08. DevOps &amp; AWS &amp; MSA</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="fullstack" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">실무 연계 스페셜 부록</li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="test"><a href="appendix-test.html"><span class="nav-item-text">🧪 부록 A. 실무 테스트 코드</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-interview.html"><span class="nav-item-text">💬 부록 B. 면접 CS &amp; 심화</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="algo"><a href="appendix-algorithm.html"><span class="nav-item-text">🧩 부록 C. 코딩 테스트 대비</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="ai"><a href="appendix-ai.html"><span class="nav-item-text">🤖 부록 D. AI-Native 통합</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="interview"><a href="appendix-e.html"><span class="nav-item-text">🏗️ 부록 E. 시스템 설계 면접</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="frontend"><a href="appendix-f.html"><span class="nav-item-text">🎨 부록 F. 프론트엔드 품질</span></a></li>
+      <li class="nav-item" data-track="fullstack" data-chapter-class="devops"><a href="appendix-g.html"><span class="nav-item-text">📡 부록 G. 백엔드 운영</span></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 코스</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r0.html"><span class="nav-item-text">R0. 수학 리부트 (선수지식)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r0" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r1.html"><span class="nav-item-text">R1. 로보틱스 입문 &amp; 선형대수</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r1" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r2.html"><span class="nav-item-text">R2. 센서와 신호</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r2" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r3.html"><span class="nav-item-text">R3. 액추에이터 &amp; 임베디드</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r3" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r4.html"><span class="nav-item-text">R4. 키네매틱스</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r4" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r5.html"><span class="nav-item-text">R5. 제어 이론 (PID)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r5" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r6.html"><span class="nav-item-text">R6. ROS 2 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r6" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r7.html"><span class="nav-item-text">R7. ROS 2 심화 &amp; 시뮬</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r7" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r8.html"><span class="nav-item-text">R8. 인식 (OpenCV)</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r8" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r9.html"><span class="nav-item-text">R9. SLAM &amp; 내비게이션</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r9" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="chapter-r10.html"><span class="nav-item-text">R10. 매니퓰레이션 &amp; 학습제어</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="chapter-r10" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-section-label" data-track="robotics" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">로보틱스 스페셜 부록</li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-a.html"><span class="nav-item-text">📐 부록 R-A. Python 치트시트</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-b.html"><span class="nav-item-text">💬 부록 R-B. 로보틱스 면접 CS</span></a></li>
+      <li class="nav-item" data-track="robotics" data-chapter-class="robotics"><a href="appendix-r-c.html"><span class="nav-item-text">📊 부록 R-C. 수학 복습</span></a></li>
+      <li class="nav-section-label" data-track="flutter" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">모바일 코스 (Flutter)</li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-guide.html"><span class="nav-item-text">📱 Flutter 마스터 가이드</span></a></li>
+      <li class="nav-item" data-track="flutter" data-chapter-class="frontend"><a href="flutter-realapps.html"><span class="nav-item-text">🚀 실전 Flutter · 앱 재현 &amp; 면접</span></a></li>
+      <li class="nav-section-label" data-track="gigsa" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">정보처리기사 실기</li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sweng.html"><span class="nav-item-text">🧩 SW공학 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-secnet.html"><span class="nav-item-text">🔒 보안 · 네트워크 약술</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-codetrace.html"><span class="nav-item-text">💻 프로그래밍 코드추적</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-sql.html"><span class="nav-item-text">🗄️ SQL 집중노트</span></a></li>
+      <li class="nav-item" data-track="gigsa" data-chapter-class="gigsa"><a href="gigsa-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
+      <li class="nav-section-label" data-track="aws" style="font-size: 11px; color: var(--text-muted); font-weight: 700; margin: 16px 0 8px 8px; text-transform: uppercase; letter-spacing: 0.5px;">AWS 자격증</li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-0-clp.html"><span class="nav-item-text">☁️ A0. CLP 클라우드 기초</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-0-clp" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-1-iam-security.html"><span class="nav-item-text">🔐 A1. SAA① 보안·자격증명</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-1-iam-security" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-2-compute-network.html"><span class="nav-item-text">🖥️ A2. SAA② 컴퓨팅·네트워킹</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-2-compute-network" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-3-storage-db.html"><span class="nav-item-text">🗄️ A3. SAA③ 스토리지·DB</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-3-storage-db" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-4-ha-architecture.html"><span class="nav-item-text">🏛️ A4. SAA④ 고가용성·설계</span><input type="checkbox" class="progress-checkbox sidebar-progress-check" data-chapter="aws-4-ha-architecture" onclick="event.stopPropagation()"></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-5-cheatsheet.html"><span class="nav-item-text">📋 A5. 서비스 선택 치트시트</span></a></li>
+      <li class="nav-item" data-track="aws" data-chapter-class="aws"><a href="aws-mock.html"><span class="nav-item-text">📝 실전 모의고사</span></a></li>
+    </ul>
+    <div class="sidebar-footer">
+      <button class="btn-sidebar btn-open-glossary"><span class="btn-icon">📖</span><span class="btn-label">용어 사전 (Ctrl+K)</span></button>
+      <button class="btn-sidebar theme-toggle"><span class="btn-icon">☀️</span><span class="btn-label">Mode</span></button>
+      <button class="btn-sidebar btn-reset"><span class="btn-icon">🔄</span><span class="btn-label">데이터 초기화</span></button>
+    </div>
+  </aside>
+
+  <main id="main-content">
+  <div class="chapter-header">
+    <div class="breadcrumb"><span>AWS 자격증</span> &gt; <span>실전 모의고사</span></div>
+    <h1>☁️ AWS 실전 모의고사</h1>
+    <p style="font-size: 14px; color: var(--text-muted);">CLP 미니 1세트 + SAA 풀모의 2회분(총 150문항). 실제 시험과 같은 <strong>타이머</strong> 아래에서 풀고, 제출하면 <strong>자동 채점·도메인별 정답률·오답 리뷰</strong>를 받습니다. 2026 기준 CLF-C02 · SAA-C03.</p>
+  </div>
+
+  <div id="mock-app">
+    <!-- START -->
+    <section id="mk-start">
+      <div id="mk-setcards" class="mk-setcards"></div>
+      <div id="mk-startinfo" class="mk-startinfo glass-panel"></div>
+      <div class="mk-rules glass-panel">
+        <h4>📌 응시 안내</h4>
+        <ul>
+          <li>실제 시험과 동일한 <b>타이머</b>가 작동합니다(CLP 90분 / SAA 130분). 시간이 끝나면 <b>자동 제출</b>됩니다.</li>
+          <li>문항은 <b>단일 정답</b>과 <b>복수응답(2개 선택)</b>이 섞여 있습니다. 상단 번호 칸으로 자유롭게 이동할 수 있습니다.</li>
+          <li>제출하면 <b>점수·도메인별 정답률·문항별 오답 리뷰</b>가 표시됩니다.</li>
+          <li>실제 합격선은 스케일 점수(CLP 700 · SAA 720 / 1000)입니다. 여기서는 <b>원점수 70%+</b>를 목표로 삼으세요.</li>
+        </ul>
+        <button class="mk-btn primary big" onclick="MockExam.start()">🚀 시험 시작</button>
+      </div>
+    </section>
+
+    <!-- EXAM -->
+    <section id="mk-exam" hidden>
+      <div class="mk-exam-bar glass-panel">
+        <span id="mk-exam-title" class="mk-exam-title"></span>
+        <span id="mk-timer" class="mk-timer"></span>
+      </div>
+      <div class="mk-pbar"><div id="mk-pbar-fill" class="mk-pbar-fill" style="width:0"></div></div>
+      <div class="mk-meta"><b id="mk-answered">0</b>문항 응답</div>
+      <div id="mk-dots" class="mk-dots"></div>
+      <div id="mk-qbox" class="mk-qbox glass-panel"></div>
+      <div class="mk-nav">
+        <button id="mk-prevBtn" class="mk-btn" onclick="MockExam.prev()">← 이전</button>
+        <button id="mk-nextBtn" class="mk-btn primary" onclick="MockExam.next()">다음 →</button>
+        <button id="mk-submitBtn" class="mk-btn submit" onclick="MockExam.confirmSubmit()" style="display:none">제출하고 채점 ✓</button>
+      </div>
+    </section>
+
+    <!-- RESULT (JS가 채움) -->
+    <section id="mk-result" hidden></section>
+  </div>
+</main>
+
+
+  <div id="toast-container"></div>
+
+  <div id="glossary-modal">
+    <div class="glossary-header">
+      <h3 style="font-size:18px; font-weight:800;">📚 실무 기술 용어 사전</h3>
+      <button class="btn-close-glossary">✕</button>
+    </div>
+    <input type="text" id="glossary-search" class="glossary-search" placeholder="단어명 또는 정의 검색 (예: 역기구학)...">
+    <div class="glossary-list"></div>
+  </div>
+
+  <script src="lib/lunr.min.js"></script>
+  <script src="assets/mock-api.js"></script>
+  <script src="assets/main.js"></script>
+  <script src="assets/search.js"></script>
+  <script src="assets/aws-mock-questions.js"></script>
+  <script>
+(function () {
+  // 데이터 계약: window.AWS_MOCK_SETS = [{ id, name, exam, minutes, passText, questions: [{ domain, type:'single'|'multi', question, options:[], answer:[정답 인덱스], explanation }] }]
+  const SETS = (window.AWS_MOCK_SETS || []);
+  let si = 0, qs = [], ans = [], cur = 0, tId = null, secs = 0, done = false;
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const arrEq = (a, b) => { const x = [...a].sort(), y = [...b].sort(); return x.length === y.length && x.every((v, i) => v === y[i]); };
+  const results = () => { try { return JSON.parse(localStorage.getItem('aws_mock_results') || '{}'); } catch (e) { return {}; } };
+
+  function renderStart() {
+    if (!SETS.length) { $('mk-start').innerHTML = '<div class="glass-panel" style="padding:24px;">문항 데이터를 불러오지 못했습니다.</div>'; return; }
+    const r = results();
+    $('mk-setcards').innerHTML = SETS.map((s, i) => {
+      const best = r[s.id];
+      return '<button class="mk-setcard' + (i === si ? ' on' : '') + '" onclick="MockExam.sel(' + i + ')">' +
+        '<span class="mk-sc-exam">' + esc(s.exam) + '</span>' +
+        '<span class="mk-sc-name">' + esc(s.name) + '</span>' +
+        '<span class="mk-sc-meta">' + s.questions.length + '문항 · ' + s.minutes + '분</span>' +
+        (best != null ? '<span class="mk-sc-best">최고 ' + best + '%</span>' : '<span class="mk-sc-best dim">미응시</span>') +
+        '</button>';
+    }).join('');
+    const s = SETS[si];
+    $('mk-startinfo').innerHTML = '<strong>' + esc(s.name) + '</strong> — ' + s.questions.length + '문항 / ' + s.minutes + '분 · 합격 기준 ' + esc(s.passText);
+  }
+  function sel(i) { si = i; renderStart(); }
+
+  function start() {
+    const s = SETS[si]; if (!s) return;
+    qs = s.questions; ans = qs.map(() => []); cur = 0; done = false; secs = s.minutes * 60;
+    $('mk-start').hidden = true; $('mk-result').hidden = true; $('mk-exam').hidden = false;
+    $('mk-exam-title').textContent = s.name;
+    renderQ(); startTimer(); window.scrollTo(0, 0);
+  }
+  function startTimer() { updateTimer(); tId = setInterval(() => { secs--; updateTimer(); if (secs <= 0) { clearInterval(tId); finish(true); } }, 1000); }
+  function updateTimer() {
+    const m = Math.floor(secs / 60), s = secs % 60;
+    const e = $('mk-timer'); e.textContent = '⏱ ' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+    e.className = 'mk-timer' + (secs <= 300 ? ' danger' : (secs <= 900 ? ' warn' : ''));
+  }
+
+  function renderQ() {
+    const q = qs[cur], multi = q.type === 'multi', s = ans[cur];
+    $('mk-qbox').innerHTML =
+      '<div class="mk-q-top"><span class="mk-q-num">Q' + (cur + 1) + ' <span class="mk-q-tot">/ ' + qs.length + '</span></span>' +
+      '<span class="mk-q-dom">' + esc(q.domain) + '</span>' + (multi ? '<span class="mk-q-multi">2개 선택</span>' : '') + '</div>' +
+      '<div class="mk-q-text">' + esc(q.question) + '</div>' +
+      '<div class="mk-opts">' + q.options.map((o, oi) =>
+        '<label class="mk-opt' + (s.includes(oi) ? ' on' : '') + '"><input type="' + (multi ? 'checkbox' : 'radio') + '" name="mkopt" ' + (s.includes(oi) ? 'checked' : '') + ' onchange="MockExam.pick(' + oi + ')">' +
+        '<span class="mk-opt-k">' + String.fromCharCode(65 + oi) + '</span><span class="mk-opt-t">' + esc(o) + '</span></label>'
+      ).join('') + '</div>';
+    $('mk-pbar-fill').style.width = ((cur + 1) / qs.length * 100) + '%';
+    $('mk-prevBtn').disabled = cur === 0;
+    $('mk-nextBtn').style.display = cur === qs.length - 1 ? 'none' : '';
+    $('mk-submitBtn').style.display = cur === qs.length - 1 ? '' : 'none';
+    renderDots();
+  }
+  function pick(oi) {
+    const q = qs[cur];
+    if (q.type === 'multi') { const s = ans[cur], k = s.indexOf(oi); if (k >= 0) s.splice(k, 1); else { if (s.length >= 2) s.shift(); s.push(oi); } }
+    else ans[cur] = [oi];
+    renderQ();
+  }
+  function renderDots() {
+    $('mk-dots').innerHTML = qs.map((_, i) => '<button class="mk-dot' + (i === cur ? ' cur' : '') + (ans[i].length ? ' done' : '') + '" onclick="MockExam.jump(' + i + ')">' + (i + 1) + '</button>').join('');
+    $('mk-answered').textContent = ans.filter(a => a.length).length;
+  }
+  function prev() { if (cur > 0) { cur--; renderQ(); window.scrollTo(0, 0); } }
+  function next() { if (cur < qs.length - 1) { cur++; renderQ(); window.scrollTo(0, 0); } }
+  function jump(i) { cur = i; renderQ(); window.scrollTo(0, 0); }
+
+  function confirmSubmit() {
+    const un = ans.filter(a => !a.length).length;
+    if (un && !confirm('미응답 ' + un + '문항이 있습니다. 제출할까요?')) return;
+    finish(false);
+  }
+  function finish(auto) {
+    if (done) return; done = true; clearInterval(tId);
+    let correct = 0; const dom = {};
+    qs.forEach((q, i) => { const ok = arrEq(ans[i], q.answer); if (ok) correct++; const d = q.domain; (dom[d] = dom[d] || { c: 0, t: 0 }).t++; if (ok) dom[d].c++; });
+    const pct = Math.round(correct / qs.length * 100), pass = pct >= 70;
+    const r = results(), s = SETS[si]; if (r[s.id] == null || pct > r[s.id]) r[s.id] = pct; localStorage.setItem('aws_mock_results', JSON.stringify(r));
+    renderResult(correct, pct, pass, dom, auto);
+    $('mk-exam').hidden = true; $('mk-result').hidden = false; window.scrollTo(0, 0);
+  }
+  function renderResult(correct, pct, pass, dom, auto) {
+    const s = SETS[si], circ = 2 * Math.PI * 52, off = circ * (1 - pct / 100);
+    $('mk-result').innerHTML =
+      '<div class="mk-res-hero"><div class="mk-ring"><svg width="140" height="140">' +
+      '<circle cx="70" cy="70" r="52" class="mk-ring-bg"></circle>' +
+      '<circle cx="70" cy="70" r="52" class="mk-ring-fg ' + (pass ? 'pass' : 'fail') + '" stroke-dasharray="' + circ + '" stroke-dashoffset="' + off + '"></circle>' +
+      '</svg><div class="mk-ring-txt"><span class="mk-ring-pct">' + pct + '%</span><span class="mk-ring-sub">' + correct + '/' + qs.length + '</span></div></div>' +
+      '<div class="mk-res-verdict ' + (pass ? 'pass' : 'fail') + '">' + (pass ? '✅ 합격선 도달 (70%+)' : '❌ 합격선 미달') + '</div>' +
+      '<div class="mk-res-note">' + esc(s.name) + ' · 원점수 ' + pct + '%' + (auto ? ' · ⏱ 시간 종료 자동 제출' : '') +
+      '<br><span style="color:var(--text-muted); font-size:12px;">실제 시험은 스케일 점수(' + esc(s.passText) + ')로 환산됩니다.</span></div></div>' +
+      '<div class="mk-res-doms"><h3>도메인별 정답률</h3>' +
+      Object.keys(dom).map(d => { const v = dom[d], p = Math.round(v.c / v.t * 100); return '<div class="mk-dombar"><div class="mk-dombar-top"><span>' + esc(d) + '</span><span>' + v.c + '/' + v.t + ' (' + p + '%)</span></div><div class="mk-dombar-track"><div class="mk-dombar-fill ' + (p >= 70 ? 'ok' : 'low') + '" style="width:' + p + '%"></div></div></div>'; }).join('') +
+      '</div>' +
+      '<div class="mk-res-actions"><button class="mk-btn primary" onclick="MockExam.start()">🔁 다시 풀기</button><button class="mk-btn" onclick="MockExam.home()">← 다른 세트 선택</button></div>' +
+      '<h3 class="mk-rev-h">📋 문항 리뷰 (' + correct + '/' + qs.length + ' 정답)</h3>' +
+      '<div class="mk-review">' + qs.map((q, i) => {
+        const ok = arrEq(ans[i], q.answer);
+        const my = ans[i].length ? ans[i].map(x => String.fromCharCode(65 + x)).join(', ') : '미응답';
+        const co = q.answer.map(x => String.fromCharCode(65 + x)).join(', ');
+        return '<div class="mk-rev ' + (ok ? 'ok' : 'no') + '"><div class="mk-rev-top"><span class="mk-rev-st ' + (ok ? 'ok' : 'no') + '">' + (ok ? '정답' : '오답') + '</span><span class="mk-rev-num">Q' + (i + 1) + ' · ' + esc(q.domain) + '</span></div>' +
+          '<div class="mk-rev-q">' + esc(q.question) + '</div>' +
+          '<div class="mk-rev-opts">' + q.options.map((o, oi) => {
+            const isAns = q.answer.includes(oi), isMine = ans[i].includes(oi);
+            return '<div class="mk-rev-opt' + (isAns ? ' ans' : '') + (isMine && !isAns ? ' wrong' : '') + '">' + String.fromCharCode(65 + oi) + '. ' + esc(o) + (isAns ? ' ✓' : '') + (isMine && !isAns ? ' ✗' : '') + '</div>';
+          }).join('') + '</div>' +
+          '<div class="mk-rev-exp"><b>내 답:</b> ' + my + ' · <b>정답:</b> ' + co + '<br>' + esc(q.explanation) + '</div></div>';
+      }).join('') + '</div>';
+  }
+  function home() { $('mk-result').hidden = true; $('mk-exam').hidden = true; $('mk-start').hidden = false; renderStart(); window.scrollTo(0, 0); }
+
+  window.MockExam = { sel, start, pick, prev, next, jump, confirmSubmit, home };
+  document.addEventListener('DOMContentLoaded', renderStart);
+})();
+</script>
+</body>
+</html>
