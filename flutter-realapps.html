@@ -988,14 +988,14 @@ dio.interceptors.add(<span class="tok-t">InterceptorsWrapper</span>(
     <span class="tok-k">if</span> (constraints.maxWidth &gt;= <span class="tok-n">600</span>) {
       <span class="tok-c">// 태블릿: 사이드바 + 그리드</span>
       <span class="tok-k">return</span> <span class="tok-t">Row</span>(children: [
-        <span class="tok-t">NavigationRail</span>(destinations: _navItems),  <span class="tok-c">// 좌측 메뉴</span>
+        <span class="tok-t">NavigationRail</span>(destinations: _railDests),  <span class="tok-c">// NavigationRailDestination 리스트</span>
         <span class="tok-t">Expanded</span>(child: <span class="tok-t">LessonGrid</span>(columns: <span class="tok-n">2</span>)),
       ]);
     }
     <span class="tok-c">// 폰: 하단 탭 + 1열</span>
     <span class="tok-k">return</span> <span class="tok-t">Scaffold</span>(
       body: <span class="tok-t">LessonGrid</span>(columns: <span class="tok-n">1</span>),
-      bottomNavigationBar: <span class="tok-t">NavigationBar</span>(destinations: _navItems),
+      bottomNavigationBar: <span class="tok-t">NavigationBar</span>(destinations: _barDests),  <span class="tok-c">// NavigationDestination 리스트(Rail과 타입 다름)</span>
     );
   },
 )</pre>
@@ -1046,7 +1046,7 @@ dio.interceptors.add(<span class="tok-t">InterceptorsWrapper</span>(
     <summary><span class="qmark">Q.</span> React 경험은 있지만 Flutter 리드는 처음인데, 괜찮을까요?<span class="arrow">▶</span></summary>
     <div class="qa-ans">
       <span class="qa-tag">⭐ 약점 정면 돌파</span>
-      <p><span class="star">★</span> "프론트엔드 <b>설계 원칙은 프레임워크를 초월</b>합니다. 상태 관리, 컴포넌트 합성, 리렌더 최적화, 관심사 분리 — 이 사고방식은 React에서 충분히 단련했고, Flutter에 1:1로 매핑됩니다(<code>useState↔setState</code>, <code>Context↔Riverpod</code>, 가상DOM↔위젯트리). 문법은 학습 곡선이 짧고, 실제로 토이 프로젝트로 검증했습니다. 게다가 <b>Spring 백엔드를 직접 만들어본 경험</b>은 API 설계까지 이해한 프론트 리드라는 흔치 않은 강점이라, 팀의 프론트-백엔드 협업을 매끄럽게 만들 수 있습니다."</p>
+      <p><span class="star">★</span> "프론트엔드 <b>설계 원칙은 프레임워크를 초월</b>합니다. 상태 관리, 컴포넌트 합성, 리렌더 최적화, 관심사 분리 — 이 사고방식은 React에서 충분히 단련했고, Flutter로 거의 그대로 옮겨갑니다(<code>useState↔setState</code>, <code>Context↔Riverpod</code>, 가상DOM 발상↔위젯·Element 트리 — 내부 메커니즘은 달라도 설계 사고는 전이됩니다). 문법은 학습 곡선이 짧고, 실제로 토이 프로젝트로 검증했습니다. 게다가 <b>Spring 백엔드를 직접 만들어본 경험</b>은 API 설계까지 이해한 프론트 리드라는 흔치 않은 강점이라, 팀의 프론트-백엔드 협업을 매끄럽게 만들 수 있습니다."</p>
     </div>
   </details>
 
