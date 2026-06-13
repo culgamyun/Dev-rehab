@@ -96,6 +96,11 @@
 <p style="font-size:14px; color:var(--text-muted);">SAA-C03(2026 기준) 시험에서 가장 문항이 많이 쏟아지는 영역입니다. S3·EBS·EFS 같은 스토리지와 RDS·Aurora·DynamoDB 같은 데이터베이스를 "어떤 요구사항엔 어떤 서비스"라는 선택 기준으로 정리합니다. 주로 <strong>고성능 아키텍처(24%)</strong>와 <strong>비용 최적화(20%)</strong> 도메인에 직결되며, 내구성·동기/비동기 복제 같은 단골 함정도 함께 짚습니다.</p>
     </div>
 
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/aws-3-storage-db.webp" alt="S3 스토리지 클래스 수명주기와 RDS Primary, Standby, Read Replica 복제 차이를 비교하는 2D 도식" loading="lazy">
+      <figcaption>S3는 접근 빈도와 비용에 따라 계층을 내리고, RDS는 Multi-AZ 동기 복제로 가용성을, Read Replica 비동기 복제로 읽기 확장을 잡습니다.</figcaption>
+    </figure>
+
     <figure class="learning-visual blueprint-fig"><svg class="blueprint" viewBox="0 0 800 340" role="img" aria-label="S3 스토리지 클래스를 접근 빈도와 비용 축에 배치하고, RDS Multi-AZ 동기 복제와 Read Replica 비동기 복제 토폴로지를 함께 보여주는 도면"><defs><pattern id="grid-aws3" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern><marker id="arrow-aws3" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#7fd4ff"/></marker><marker id="arrow-aws3g" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto"><path d="M0,0 L7,3 L0,6 Z" fill="#48d597"/></marker></defs><rect width="800" height="340" fill="url(#grid-aws3)"/><text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG · 스토리지 계층 &amp; RDS 복제 토폴로지</text>
 
 <text x="40" y="70" fill="#cfe8ff" font-size="11">← 접근 빈번 / 비용↑          접근 드묾 / 비용↓ →</text>

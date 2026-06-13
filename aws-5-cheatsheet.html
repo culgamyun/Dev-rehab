@@ -96,6 +96,11 @@
 <p style="font-size:14px; color:var(--text-muted);">시험 직전, 머릿속을 압축 정리하는 페이지입니다. "이런 요구사항이면 어떤 서비스?"를 한 표로 매핑하고, SAA·CLP 단골 함정인 헷갈리는 서비스 쌍(SG vs NACL, SQS vs SNS, ALB vs NLB 등)을 나란히 비교합니다. 문제 지문의 영문 키워드("cost-effective", "decouple", "lowest latency")가 어떤 서비스를 가리키는지도 정리합니다. CLF-C02 전 도메인과 SAA-C03 4개 도메인(보안 30% · 복원력 26% · 고성능 24% · 비용 20%) 전체를 가로지르는 2026 기준 마지막 점검용입니다.</p>
     </div>
 
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/aws-5-service-decision-map.webp" alt="요구사항을 중심으로 컴퓨팅, 스토리지, 데이터베이스, 네트워크, 보안, 메시징 AWS 서비스 선택지를 분기한 2D 지도" loading="lazy">
+      <figcaption>문제 지문의 요구사항을 먼저 분류하면 EC2·Lambda·S3·RDS·VPC·IAM·SQS처럼 정답 후보가 빠르게 좁혀집니다.</figcaption>
+    </figure>
+
     <figure class="learning-visual blueprint-fig"><svg class="blueprint" viewBox="0 0 800 340" role="img" aria-label="요구사항 키워드를 입력하면 정답 AWS 서비스로 분기하는 의사결정 트리 도면"><defs><pattern id="grid-aws5" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern></defs><rect width="800" height="340" fill="url(#grid-aws5)"/><text x="24" y="34" fill="#7fd4ff" font-size="14" letter-spacing="1">FIG · 키워드 → 서비스 의사결정 트리</text>
 
 <rect x="40" y="150" width="150" height="40" rx="6" fill="none" stroke="#7fd4ff" stroke-width="1.5"/><text x="115" y="174" fill="#cfe8ff" font-size="12" text-anchor="middle">문제 지문 키워드</text>
