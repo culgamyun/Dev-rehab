@@ -306,7 +306,7 @@
     question: "접근 패턴을 예측할 수 없는 데이터를 S3에 저장하면서 비용을 최적화하려면?",
     options: ["S3 Standard 고정", "S3 One Zone-IA", "S3 Intelligent-Tiering", "S3 Glacier Deep Archive"],
     correct: 2,
-    explanation: "Intelligent-Tiering은 접근 패턴을 모니터링해 자주 안 쓰는 객체를 자동으로 더 싼 계층으로 옮겨줍니다(접근 예측 불가일 때 최적). Standard 고정은 비최적, One Zone-IA는 단일 AZ라 내구성↓, Deep Archive는 거의 안 읽는 장기 보관용입니다."
+    explanation: "Intelligent-Tiering은 접근 패턴을 모니터링해 자주 안 쓰는 객체를 자동으로 더 싼 계층으로 옮겨줍니다(접근 예측 불가일 때 최적). Standard 고정은 비최적, One Zone-IA는 내구성 수치(11 9s)는 동일하지만 단일 AZ라 그 AZ 장애 시 데이터 유실 위험(가용성·복원력↓), Deep Archive는 거의 안 읽는 장기 보관용입니다."
   },
   {
     type: "mcq",

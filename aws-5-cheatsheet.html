@@ -140,7 +140,7 @@
 <tr><td>여러 EC2가 동시에 마운트하는 공유 파일</td><td><strong>EFS</strong></td><td>NFS 기반, 다중 AZ·다중 인스턴스 공유</td></tr>
 <tr><td>EC2 한 대에 붙는 고성능 블록 디스크</td><td><strong>EBS</strong> (gp3)</td><td>단일 인스턴스용 블록 볼륨, OS·DB 디스크</td></tr>
 <tr><td>온프레미스→AWS 대용량 데이터 이전(페타급)</td><td><strong>Snowball</strong> / DataSync</td><td>네트워크 한계 시 물리 전송, 온라인이면 DataSync</td></tr>
-<tr><td>IAM 없이 임시 자격증명으로 외부 접근</td><td><strong>STS</strong> (AssumeRole)</td><td>단기 토큰, 교차 계정·페더레이션</td></tr>
+<tr><td>장기 액세스 키 없이 임시 자격증명으로 접근</td><td><strong>STS</strong> (AssumeRole)</td><td>IAM 역할 기반 단기 토큰, 교차 계정·페더레이션</td></tr>
 <tr><td>인프라를 코드로 정의·반복 배포</td><td><strong>CloudFormation</strong></td><td>IaC, 템플릿으로 스택 생성·삭제</td></tr>
 </tbody>
 </table>
@@ -324,7 +324,7 @@
 ⑨ 암호화: 저장=KMS/SSE, 전송=TLS/ACM<br>
 ⑩ 비용: 온디맨드 / 예약·Savings Plans / 스팟 선택 기준<br>
 ⑪ CloudTrail=감사, CloudWatch=모니터링, Config=구성 추적<br>
-⑫ 서버리스 3종: Lambda · Fargate · DynamoDB / Aurora Serverless v2
+⑫ 대표 서버리스: Lambda(컴퓨트)·Fargate(컨테이너)·DynamoDB·Aurora Serverless v2(DB) — S3·API Gateway·SQS/SNS도 서버리스
 </p>
 </div>
 <table>
