@@ -337,7 +337,7 @@
       <div class="sec-head"><span class="sec-num">0</span><h2>Flutter란 무엇인가</h2><span class="sec-tag">overview</span></div>
       <p class="lede">하나의 코드베이스로 iOS·Android·웹·데스크톱을 모두 그리는 UI 툴킷. 언어는 Dart.</p>
 
-      <p>Flutter의 가장 큰 특징은 <strong>네이티브 컴포넌트를 쓰지 않는다</strong>는 점입니다. React Native가 OS의 버튼을 빌려 쓰는 것과 달리, Flutter는 <strong>자체 렌더링 엔진</strong>으로 모든 픽셀을 직접 그립니다. 그래서 어떤 플랫폼에서도 디자인이 100% 동일하게 나옵니다. <span class="dim">(2026년 기준 신형 <b>Impeller</b>가 iOS·Android 기본 엔진이고, 구형 Skia는 레거시 폴백입니다.)</span></p>
+      <p>Flutter의 가장 큰 특징은 <strong>네이티브 컴포넌트를 쓰지 않는다</strong>는 점입니다. React Native가 OS의 버튼을 빌려 쓰는 것과 달리, Flutter는 <strong>자체 렌더링 엔진</strong>으로 모든 픽셀을 직접 그립니다. 그래서 플랫폼이 달라도 디자인이 거의 동일하게(픽셀 일관성 높게) 나옵니다. <span class="dim">(2026년 기준 모바일은 <b>Impeller</b>가 기본 — iOS는 Impeller 전용, Android는 Vulkan 지원 기기에서 기본이고 미지원 기기는 OpenGL로 폴백. 웹은 여전히 Skia(CanvasKit) 기반입니다.)</span></p>
 
       <figure class="diagram">
         <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Flutter 아키텍처 계층">
@@ -516,8 +516,8 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
 <span class="tok-c">// 맵 패턴 + switch — JSON 모양 그대로 분기</span>
 <span class="tok-k">final</span> json = {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-n">4</span>};
 <span class="tok-k">final</span> area = <span class="tok-k">switch</span> (json) {
-  {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-k">final</span> r} => <span class="tok-n">3.14</span> * r * r,
-  {<span class="tok-s">'type'</span>: <span class="tok-s">'square'</span>, <span class="tok-s">'a'</span>: <span class="tok-k">final</span> a} => a * a,
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> r} => <span class="tok-n">3.14</span> * r * r,  <span class="tok-c">// 타입 패턴 num — 안 적으면 Object로 추론돼 곱셈 불가</span>
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'square'</span>, <span class="tok-s">'a'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> a} => a * a,
   _ => <span class="tok-n">0</span>,
 };</pre>
       </div>
@@ -695,7 +695,7 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
       <div class="two-col">
         <div class="card">
           <h4 style="margin-top:0">StatelessWidget</h4>
-          <p class="dim" style="margin-bottom:8px">받은 값(props)만으로 그림. 한 번 그려지면 스스로 안 변함.</p>
+          <p class="dim" style="margin-bottom:8px">받은 값(props)만으로 그림. 스스로 바꿀 내부 상태가 없어, 새 값을 받아야(부모 리빌드 등) 다시 그려짐.</p>
           <ul class="bullet">
             <li>외부 데이터만 표시</li>
             <li>아이콘, 라벨, 정적 카드</li>
@@ -821,7 +821,7 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
 
       <div class="note tip"><b>왜 빠른가 (면접 정답):</b> "Widget은 설계도일 뿐이라 매번 새로 만들어도 비용이 거의 없습니다. 비싼 작업(레이아웃·페인팅)을 담당하는 RenderObject는 Element가 diff를 통해 <b>실제로 바뀐 부분만</b> 골라 갱신합니다. 그래서 build를 자주 호출해도 성능에 문제가 없는 구조입니다."</div>
       <div class="note q"><b>예상 꼬리질문:</b> "build가 자주 불리면 느리지 않나요?" → "아닙니다. Widget 생성은 싸고, 무거운 RenderObject는 재사용됩니다. 오히려 <code class="inl">const</code> 위젯을 쓰면 Element가 '동일함'을 즉시 판단해 재빌드를 통째로 건너뜁니다."</div>
-      <div class="note react"><b>React 매핑:</b> Widget 트리 = 가상 DOM, RenderObject 트리 = 실제 DOM. diff 후 바뀐 것만 반영하는 발상이 동일합니다. Element 트리는 React의 Fiber에 해당한다고 보면 정확합니다.</div>
+      <div class="note react"><b>React 매핑(발상 비교용):</b> Widget 트리 ≈ 가상 DOM, RenderObject 트리 ≈ 실제 DOM. "diff 후 바뀐 것만 반영"하는 <em>발상</em>이 비슷합니다. Element 트리는 React의 Fiber에 대응한다고 보면 이해하기 쉽습니다 — 다만 Flutter는 트리 전체 diff가 아니라 자식 리스트 단위 재조정(reconciliation)이라 내부 메커니즘은 동일하지 않습니다.</div>
 
       <h3><span class="ic">🔑</span>Key — 위젯의 신원 확인 (면접 빈출)</h3>
       <p>Element가 "이 위젯이 이전의 그 위젯과 같은가?"를 판단할 때, 보통은 <strong>타입과 위치</strong>로 비교합니다. 그런데 <strong>같은 타입의 위젯이 여러 개 있고 순서가 바뀌면</strong> Element가 헷갈려 상태가 엉킵니다. 이때 신원을 못박아주는 게 <code class="inl">Key</code>예요.</p>
@@ -1091,7 +1091,7 @@ items.map((item) => <span class="tok-t">TodoTile</span>(
       </div>
 
       <h4>그 밑바탕 — InheritedWidget (꼬리질문 대비)</h4>
-      <p>Provider도 Riverpod도, 사실 Flutter 내장의 <code class="inl">InheritedWidget</code> 위에서 동작합니다. 이건 "트리 위쪽에 데이터를 매달아두면, 아래 위젯들이 <code class="inl">.of(context)</code>로 효율적으로 꺼내 쓰는" 기본 메커니즘이에요. <code class="inl">Theme.of(context)</code>, <code class="inl">MediaQuery.of(context)</code>가 바로 이 방식으로 동작합니다.</p>
+      <p><code class="inl">Provider</code> 패키지는 사실 Flutter 내장의 <code class="inl">InheritedWidget</code>을 감싼 것입니다. 이건 "트리 위쪽에 데이터를 매달아두면, 아래 위젯들이 <code class="inl">.of(context)</code>로 효율적으로 꺼내 쓰는" 기본 메커니즘이에요. <code class="inl">Theme.of(context)</code>, <code class="inl">MediaQuery.of(context)</code>가 바로 이 방식으로 동작합니다. <strong>단, Riverpod은 다릅니다</strong> — 상태를 위젯 트리·<code class="inl">BuildContext</code>에 묶지 않고 <code class="inl">ProviderContainer</code>/<code class="inl">Ref</code>로 관리하며, <code class="inl">ProviderScope</code>만 InheritedWidget으로 컨테이너를 트리에 노출합니다(그래서 context 없이도 상태 접근·테스트가 쉬움).</p>
       <div class="note tip"><b>📡 일상 비유 — 천장에 단 공용 와이파이 공유기:</b> 집 천장(트리 상단)에 공유기를 하나 달아두면, 각 방(하위 위젯)이 선을 끌어올 필요 없이 어디서든 신호를 잡습니다. InheritedWidget이 그 공유기예요. 그리고 공유기 설정이 바뀌면(데이터 변경) 연결된 기기만 자동으로 갱신됩니다 — 이게 구독한 위젯만 리빌드되는 원리입니다.</div>
       <div class="note q"><b>예상 꼬리질문:</b> "Provider는 내부적으로 어떻게 동작하나요?" → "Flutter 내장 <code class="inl">InheritedWidget</code>을 감싸 사용하기 쉽게 만든 것입니다. 트리 상단에 상태를 두고, 의존하는 위젯이 <code class="inl">.of(context)</code>로 구독하면 변경 시 그 위젯만 다시 빌드됩니다." → 원리까지 답하면 깊이 있는 지원자로 평가됩니다.</div>
 
