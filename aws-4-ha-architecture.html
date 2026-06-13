@@ -96,6 +96,11 @@
 <p style="font-size:14px; color:var(--text-muted);">한 대가 죽어도 서비스는 살아남게 만드는 설계가 이 장의 핵심입니다. 로드 밸런서·Auto Scaling·다중 AZ로 단일 장애점을 없애고, SQS·SNS로 컴포넌트를 느슨하게 묶으며, Route 53·CloudFront로 전 세계에 안정적으로 전달하고, CloudWatch로 관측하며 재해 복구(DR) 전략으로 마무리합니다. SAA-C03(2026 기준)의 "복원력 있는 아키텍처 설계" 도메인(비중 26%)을 정면으로 다루며, "고성능 아키텍처 설계" 도메인(24%)의 디커플링·캐시 주제와도 직결됩니다.</p>
     </div>
 
+    <figure class="learning-visual chapter-hero-visual">
+      <img src="assets/learning-visuals/aws-4-ha-architecture.webp" alt="DNS와 CDN, ALB, 두 가용 영역의 Auto Scaling 그룹, SQS와 워커, 모니터링으로 구성된 고가용성 2D 아키텍처 도식" loading="lazy">
+      <figcaption>ALB와 ASG를 여러 AZ에 걸치고, SQS로 무거운 작업을 분리하면 인스턴스나 AZ 장애에도 요청 흐름을 유지하기 쉽습니다.</figcaption>
+    </figure>
+
     <figure class="learning-visual blueprint-fig"><svg class="blueprint" viewBox="0 0 800 340" role="img" aria-label="다중 AZ에 걸쳐 ALB가 Auto Scaling 그룹으로 트래픽을 분산하고 SQS 큐로 비동기 워커를 디커플링한 고가용성 아키텍처 도면">
 <defs>
 <pattern id="grid-aws4" width="40" height="40" patternUnits="userSpaceOnUse"><path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(120,200,255,0.10)" stroke-width="1"/></pattern>
