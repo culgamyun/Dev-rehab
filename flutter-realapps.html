@@ -252,6 +252,14 @@
   .qa-ans .star{color:var(--accent)}
   .qa-ans code{font-family:var(--mono);font-size:.85em;background:var(--bg-soft);border:1px solid var(--line);padding:1px 6px;border-radius:5px;color:var(--flutter)}
   .qa-tag{display:inline-block;font-size:.68rem;font-family:var(--mono);color:var(--green);background:rgba(63,185,80,.1);padding:2px 8px;border-radius:6px;margin-bottom:10px}
+  /* ── flutter-guide 상호참조 링크: 용어 클릭 → 가이드 해당 섹션 ── */
+  a.gx{color:inherit;text-decoration:none;cursor:pointer}
+  .wtag.gx-chip{padding:0;transition:background .15s,border-color .15s}
+  .wtag.gx-chip>a.gx{display:inline-block;padding:4px 11px;border-radius:7px}
+  .wtag.gx-chip>a.gx::after{content:" ↗";font-size:.62rem;opacity:.55;vertical-align:1px}
+  .wtag.gx-chip:hover{background:rgba(84,197,248,.22);border-color:var(--flutter)}
+  .tok-t a.gx,.maps code a.gx,.tryit code a.gx,.explain p code a.gx{text-decoration:underline dotted rgba(84,197,248,.6);text-underline-offset:3px;text-decoration-thickness:1px}
+  .tok-t a.gx:hover,.maps code a.gx:hover,.tryit code a.gx:hover,.explain p code a.gx:hover{text-decoration-style:solid;color:var(--flutter)}
 </style>
 </head>
 <body>
@@ -1233,6 +1241,54 @@ function fireVisibleCases(){
 window.addEventListener('scroll',fireVisibleCases,{passive:true});
 window.addEventListener('resize',fireVisibleCases);
 fireVisibleCases();
+
+// ===== flutter-guide 상호참조: 본문 Flutter 용어 클릭 → 가이드 해당 섹션 =====
+(function(){
+  // 용어 → flutter-guide.html 섹션 앵커 (가이드가 실제 다루는 개념만 매핑)
+  const GX={
+    // 상태관리 → #statemgmt
+    'Riverpod':'statemgmt','Notifier':'statemgmt','NotifierProvider':'statemgmt','Provider':'statemgmt',
+    'ProviderScope':'statemgmt','ConsumerWidget':'statemgmt','AsyncNotifier':'statemgmt',
+    'ref.watch':'statemgmt','ref.read':'statemgmt',
+    // 비동기 → #async
+    'FutureBuilder':'async','StreamBuilder':'async','Future':'async','Stream':'async','StreamSubscription':'async',
+    // 화면 전환 → #nav
+    'Navigator':'nav','Route':'nav','PageRoute':'nav','MaterialPageRoute':'nav','PageView':'nav',
+    'PageController':'nav','Hero':'nav','NavigationBar':'nav','NavigationRail':'nav','RouteObserver':'nav','go_router':'nav',
+    // BuildContext → #context
+    'BuildContext':'context',
+    // Key / 트리 → #trees
+    'Key':'trees','ValueKey':'trees','GlobalKey':'trees','ObjectKey':'trees',
+    // 레이아웃 → #layout
+    'Row':'layout','Column':'layout','Expanded':'layout','Flexible':'layout','Flex':'layout','Wrap':'layout',
+    'Stack':'layout','LayoutBuilder':'layout','OrientationBuilder':'layout','MediaQuery':'layout',
+    // 성능 → #perf
+    'ListView':'perf','GridView':'perf','ListView.builder':'perf','GridView.builder':'perf',
+    'SliverGrid':'perf','RepaintBoundary':'perf',
+    // Stateless / Stateful → #state-basic
+    'StatelessWidget':'state-basic','StatefulWidget':'state-basic','setState':'state-basic',
+    // 생명주기 → #lifecycle
+    'initState':'lifecycle','dispose':'lifecycle','didChangeDependencies':'lifecycle','didUpdateWidget':'lifecycle',
+    // 위젯 일반 → #widget
+    'Widget':'widget','Container':'widget','Text':'widget','GestureDetector':'widget',
+    'Card':'widget','Scaffold':'widget','Stepper':'widget'
+  };
+  const BASE='flutter-guide.html#';
+  function link(el,cls){
+    if(el.querySelector('a.gx'))return false;
+    const t=el.textContent.trim(); const anchor=GX[t]; if(!anchor)return false;
+    const a=document.createElement('a');
+    a.href=BASE+anchor; a.className='gx';
+    a.title='가이드에서 「'+t+'」 보기 →';
+    while(el.firstChild)a.appendChild(el.firstChild);
+    el.appendChild(a); el.classList.add(cls);
+    return true;
+  }
+  let n=0;
+  document.querySelectorAll('.wtag').forEach(el=>{ if(link(el,'gx-chip'))n++; });          // 위젯 태그 칩
+  document.querySelectorAll('.code pre .tok-t').forEach(el=>{ if(link(el,'gx-code'))n++; }); // 코드 타입 토큰
+  document.querySelectorAll('.maps code,.tryit code,.explain p code').forEach(el=>{ if(link(el,'gx-inl'))n++; }); // 산문 인라인 코드
+})();
 </script>
 </body>
 </html>
