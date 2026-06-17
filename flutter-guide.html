@@ -444,10 +444,10 @@
   <span class="tok-k">final</span> <span class="tok-t">String</span> name;
   <span class="tok-k">final</span> <span class="tok-t">int</span> age;
 
-  <span class="tok-c">// 간결 생성자 — this.x로 바로 필드 초기화</span>
+  <span class="tok-c">// 기본(unnamed) 생성자 — this.x는 '초기화 형식 매개변수'로 필드 즉시 초기화</span>
   <span class="tok-t">User</span>({<span class="tok-k">required</span> <span class="tok-k">this</span>.name, <span class="tok-k">required</span> <span class="tok-k">this</span>.age});
 
-  <span class="tok-c">// 명명 생성자 (factory 패턴 등)</span>
+  <span class="tok-c">// 명명 생성자(named) — 초기화 리스트(: name=...)로 필드 설정. generative이며 factory 아님</span>
   <span class="tok-t">User</span>.guest() : name = <span class="tok-s">'손님'</span>, age = <span class="tok-n">0</span>;
 
   <span class="tok-t">String</span> <span class="tok-f">describe</span>() => <span class="tok-s">'$name ($age)'</span>;
@@ -726,7 +726,7 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
   <span class="tok-t">int</span> count = <span class="tok-n">0</span>;          <span class="tok-c">// 👈 이게 "상태"</span>
 
   <span class="tok-t">void</span> <span class="tok-f">increment</span>() {
-    <span class="tok-f">setState</span>(() {        <span class="tok-c">// 👈 핵심! "다시 그려라" 신호</span>
+    <span class="tok-f">setState</span>(() {        <span class="tok-c">// 👈 State를 dirty로 표시 → build 재예약(리렌더 트리거)</span>
       count++;
     });
   }
@@ -755,7 +755,7 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
       <div class="sec-head"><span class="sec-num">5</span><h2>3-트리 렌더링 모델 ⭐</h2><span class="sec-tag">part 2 · 핵심</span></div>
       <p class="lede">"Flutter는 왜 빠른가?"의 정답. 면접에서 가장 깊이 파고드는 주제입니다.</p>
 
-      <p>Flutter는 화면을 <strong>3개의 평행한 트리</strong>로 관리합니다. 각 트리의 역할 분담이 성능의 비밀이에요.</p>
+      <p>Flutter는 화면을 <strong>3개의 트리</strong>(Widget·Element·RenderObject)로 관리합니다. 각 트리의 역할 분담이 성능의 비밀이에요. <span class="dim">(엄밀히는 <strong>RenderObject 트리는 Element 트리의 부분집합</strong> — 레이아웃·페인팅을 맡는 Element만 RenderObject를 갖고, 구조·상태만 담당하는 Element엔 없습니다.)</span></p>
 
       <div class="note tip"><b>🏗️ 일상 비유 — 건축 현장:</b> 집을 짓는 과정으로 생각하면 한 번에 이해됩니다.<br>
       • <b>Widget = 설계도면</b> 📄 — 종이라서 다시 그려도 비용이 거의 없음. "방을 파란색으로" 같은 <i>요구사항</i>일 뿐.<br>
@@ -791,9 +791,9 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
           </g>
           <!-- render nodes -->
           <g>
-            <rect x="560" y="70" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="92" text-anchor="middle" class="svg-mono" font-size="10" fill="#ff9e64">RenderPad</text>
+            <rect x="560" y="70" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="92" text-anchor="middle" class="svg-mono" font-size="8" fill="#ff9e64">RenderPadding</text>
             <rect x="560" y="140" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="162" text-anchor="middle" class="svg-mono" font-size="10" fill="#ff9e64">RenderFlex</text>
-            <rect x="560" y="210" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="232" text-anchor="middle" class="svg-mono" font-size="10" fill="#ff9e64">RenderPar</text>
+            <rect x="560" y="210" width="80" height="34" rx="7" fill="#1c232e" stroke="#ff9e64"/><text x="600" y="232" text-anchor="middle" class="svg-mono" font-size="8" fill="#ff9e64">RenderParagraph</text>
             <line x1="600" y1="104" x2="600" y2="140" stroke="#ff9e64" stroke-width="1.2"/>
             <line x1="600" y1="174" x2="600" y2="210" stroke="#ff9e64" stroke-width="1.2"/>
           </g>
@@ -809,7 +809,7 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
           <rect x="80" y="282" width="560" height="40" rx="8" fill="rgba(84,197,248,.06)" stroke="#2d3643"/>
           <text x="360" y="307" text-anchor="middle" class="svg-mono" font-size="11" fill="#9da7b3">build() 재호출 → 새 Widget 생성(쌈) → Element가 비교 → 바뀐 RenderObject만 갱신(비쌈)</text>
         </svg>
-        <figcaption>3개 트리가 평행하게 연결됨 · Element가 중간에서 상태를 들고 diff를 수행</figcaption>
+        <figcaption>Element가 중간에서 상태를 들고 diff 수행 · RenderObject 트리는 Element 트리의 부분집합(이 예시는 세 위젯 모두 RenderObject를 갖는 경우)</figcaption>
       </figure>
 
       <table>
@@ -820,7 +820,7 @@ print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">
       </table>
 
       <div class="note tip"><b>왜 빠른가 (면접 정답):</b> "Widget은 설계도일 뿐이라 매번 새로 만들어도 비용이 거의 없습니다. 비싼 작업(레이아웃·페인팅)을 담당하는 RenderObject는 Element가 diff를 통해 <b>실제로 바뀐 부분만</b> 골라 갱신합니다. 그래서 build를 자주 호출해도 성능에 문제가 없는 구조입니다."</div>
-      <div class="note q"><b>예상 꼬리질문:</b> "build가 자주 불리면 느리지 않나요?" → "아닙니다. Widget 생성은 싸고, 무거운 RenderObject는 재사용됩니다. 오히려 <code class="inl">const</code> 위젯을 쓰면 Element가 '동일함'을 즉시 판단해 재빌드를 통째로 건너뜁니다."</div>
+      <div class="note q"><b>예상 꼬리질문:</b> "build가 자주 불리면 느리지 않나요?" → "아닙니다. Widget 생성은 싸고, 무거운 RenderObject는 재사용됩니다. 오히려 <code class="inl">const</code> 위젯을 쓰면 Element가 '동일 인스턴스'임을 즉시 판단해 그 서브트리의 재빌드를 건너뛸 수 있습니다."</div>
       <div class="note react"><b>React 매핑(발상 비교용):</b> Widget 트리 ≈ 가상 DOM, RenderObject 트리 ≈ 실제 DOM. "diff 후 바뀐 것만 반영"하는 <em>발상</em>이 비슷합니다. Element 트리는 React의 Fiber에 대응한다고 보면 이해하기 쉽습니다 — 다만 Flutter는 트리 전체 diff가 아니라 자식 리스트 단위 재조정(reconciliation)이라 내부 메커니즘은 동일하지 않습니다.</div>
 
       <h3><span class="ic">🔑</span>Key — 위젯의 신원 확인 (면접 빈출)</h3>
@@ -903,6 +903,7 @@ items.map((item) => <span class="tok-t">TodoTile</span>(
       <table>
         <tr><th>메서드</th><th>호출 시점</th><th>용도</th></tr>
         <tr><td><code>initState()</code></td><td>위젯 생성 직후 1회</td><td>구독 시작, 컨트롤러 초기화, API 첫 호출</td></tr>
+        <tr><td><code>didChangeDependencies()</code></td><td>initState 직후 + 의존 InheritedWidget 변경 시</td><td>Theme·MediaQuery 등 상속 의존성 반영</td></tr>
         <tr><td><code>build()</code></td><td>최초 + 상태 변경마다</td><td>UI 그리기 (여기선 부수효과 금지!)</td></tr>
         <tr><td><code>didUpdateWidget()</code></td><td>부모가 새 설정 전달 시</td><td>부모 props 변화에 반응</td></tr>
         <tr><td><code>dispose()</code></td><td>위젯 영구 제거 시</td><td>구독 해제, 컨트롤러 정리 (메모리 누수 방지)</td></tr>
@@ -937,7 +938,7 @@ items.map((item) => <span class="tok-t">TodoTile</span>(
       <div class="note warn"><b>면접 단골 — async 후 context 사용:</b> <code class="inl">await</code> 뒤에서 context를 다시 쓰면 그 사이 위젯이 사라졌을 수 있어 에러가 납니다. <code class="inl">if (context.mounted)</code>로 체크하세요. 이걸 알면 실무 경험자로 평가받습니다.</div>
       <div class="code">
         <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">mounted_check.dart</span></div>
-        <pre><span class="tok-t">void</span> <span class="tok-f">save</span>() <span class="tok-k">async</span> {
+        <pre><span class="tok-t">Future</span>&lt;<span class="tok-t">void</span>&gt; <span class="tok-f">save</span>() <span class="tok-k">async</span> {
   <span class="tok-k">await</span> api.save();          <span class="tok-c">// 비동기 — 이 사이 화면이 닫힐 수도</span>
   <span class="tok-k">if</span> (!context.mounted) <span class="tok-k">return</span>; <span class="tok-c">// ✅ 살아있는지 확인</span>
   <span class="tok-t">Navigator</span>.of(context).pop();
@@ -1104,7 +1105,7 @@ items.map((item) => <span class="tok-t">TodoTile</span>(
         <tr><td><b>Bloc</b></td><td>이벤트→상태 단방향. 대규모·엄격한 팀</td><td>⭐⭐⭐⭐</td></tr>
         <tr><td><b>GetX</b></td><td>올인원(상태+라우팅+DI). 간편하나 호불호</td><td>⭐⭐</td></tr>
       </table>
-      <div class="note react"><b>React 매핑:</b> Provider = Context store, <code class="inl">ref.watch</code> = <code class="inl">useSelector</code>, 상태 변경 시 구독 위젯만 리빌드되는 것은 <code class="inl">React.memo</code>로 리렌더 최적화하던 것과 동일한 발상입니다.</div>
+      <div class="note react"><b>React 매핑:</b> Provider = Context store, <code class="inl">ref.watch</code> = <code class="inl">useSelector</code>. 상태 변경 시 <strong>구독한 위젯만</strong> 리빌드되는 건 React의 <code class="inl">useContext</code> 구독(소비 위젯이 값 변경 시 리렌더)과 같은 방식입니다. <span class="dim">(<code class="inl">React.memo</code>는 prop 기반 리렌더 최적화로 별개 — context 값 변경은 막지 못함.)</span></div>
       <div class="note warn"><b>2026 버전 주의:</b> <code class="inl">StateNotifier</code>·<code class="inl">StateProvider</code>·<code class="inl">ChangeNotifierProvider</code>는 <b>Riverpod 3.0에서 legacy</b>로 분리(<code class="inl">package:flutter_riverpod/legacy.dart</code> 별도 import 필요)되어 신규 코드엔 비권장입니다. 표준은 <code class="inl">Notifier</code>/<code class="inl">AsyncNotifier</code> + <code class="inl">NotifierProvider</code>(또는 <code class="inl">@riverpod</code> 코드젠).</div>
       <div class="note q"><b>면접 답변 추천:</b> "소규모는 setState, 전역 상태는 Riverpod를 주로 씁니다. Riverpod는 컴파일 타임 안전성과 의존성 주입·테스트 용이성 때문에 Provider보다 선호합니다."</div>
     </section>
@@ -1176,7 +1177,7 @@ items.map((item) => <span class="tok-t">TodoTile</span>(
         <ul>
           <li><b>Flutter:</b> OS 위젯 안 쓰고 자체 엔진(Skia/Impeller)으로 직접 그림 → 플랫폼 무관 동일 UI</li>
           <li><b>Everything is a Widget:</b> 패딩·정렬·화면까지 전부 위젯, 중첩이 곧 위젯 트리</li>
-          <li><b>Stateless vs Stateful:</b> 내부 상태 유무. <code>setState</code> = "다시 그려라" 신호 (= 리렌더 트리거)</li>
+          <li><b>Stateless vs Stateful:</b> 내부 상태 유무. <code>setState</code> = State를 dirty 표시 → 리렌더(build 재예약)</li>
           <li><b>3-트리:</b> Widget(설계도·쌈) → Element(상태보관·재사용·diff) → RenderObject(그리기·비쌈). 그래서 build 자주 해도 빠름</li>
           <li><b>Key:</b> 위젯의 이름표. 같은 타입 위젯 재정렬·삭제 시 신원 유지 → <code>ValueKey(id)</code></li>
           <li><b>Navigation:</b> 화면 스택에 push(올리기)/pop(치우기). 규모 커지면 go_router</li>
@@ -1185,7 +1186,7 @@ items.map((item) => <span class="tok-t">TodoTile</span>(
           <li><b>Future:</b> 미래의 단일 값 + <code>FutureBuilder</code>(로딩/에러/성공 자동 분기). build에서 직접 호출 금지</li>
           <li><b>Stream:</b> 연속 값 + <code>StreamBuilder</code> (채팅·실시간)</li>
           <li><b>에러 처리:</b> try/catch로 유형 구분 → 사용자 메시지 + 재시도. finally에서 로딩 해제</li>
-          <li><b>Riverpod:</b> <code>watch</code>=구독, <code>read</code>=1회. 전역 상태, prop drilling 해결. 밑바탕은 InheritedWidget</li>
+          <li><b>Riverpod:</b> <code>watch</code>=구독, <code>read</code>=1회. 전역 상태, prop drilling 해결. 상태는 <code>ProviderContainer</code>/<code>Ref</code> 기반(트리 비종속)</li>
           <li><b>성능:</b> const 적극 사용 · setState 범위 최소화 · ListView.builder · build 안 무거운 연산 금지</li>
         </ul>
       </div>

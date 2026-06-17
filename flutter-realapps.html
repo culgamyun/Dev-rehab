@@ -454,7 +454,7 @@
         <div class="phone-cap">숫자가 실시간으로 카운트업됩니다</div>
       </div>
       <div class="explain">
-        <p><b>왜 유명한가:</b> Google이 <b>자사 제품</b>을 Flutter로 만든 첫 대형 사례입니다. "Google이 직접 쓴다"는 게 프레임워크 신뢰의 결정적 근거가 됐죠. 실시간 통계·차트·알림이 핵심입니다.</p>
+        <p><b>왜 유명한가:</b> Google이 <b>자사 제품</b>을 Flutter로 만든 대표 사례입니다. "Google이 직접 쓴다"는 게 프레임워크 신뢰의 결정적 근거가 됐죠. 실시간 통계·차트·알림이 핵심입니다.</p>
 
         <h3>핵심 — 실시간 데이터 + 애니메이션 카운터</h3>
         <p>이 포지션 JD의 <b>"사용자 데이터 모니터링"</b>과 직결됩니다. 서버에서 받은 숫자를 부드럽게 갱신하고, 막대 차트로 시각화하는 패턴이에요.</p>
@@ -537,7 +537,7 @@
 )</pre>
         </div>
         <div class="maps"><b>React 매핑:</b> <code>GridView.builder</code> = react-window/virtualized 리스트, <code>CachedNetworkImage</code> = 이미지 lazy-load + 캐시 라이브러리, <code>ValueKey</code> = <code>key</code> prop.</div>
-        <div class="tryit"><b>면접 활용:</b> "대규모 리스트는 <code>.builder</code> 생성자로 지연 렌더링해 메모리를 관리하고, 이미지는 캐싱으로 스크롤 성능을 확보합니다" — 성능 의식이 있는 지원자로 평가받습니다.</div>
+        <div class="tryit"><b>면접 활용:</b> "대규모 리스트는 <code>.builder</code> 생성자로 보이는 항목만 지연 생성해 메모리를 관리하고, 이미지는 캐싱으로 스크롤 성능을 확보합니다" — 성능 의식이 있는 지원자로 평가받습니다.</div>
       </div>
     </div>
   </div>
@@ -669,7 +669,7 @@
 
 <span class="tok-k">class</span> <span class="tok-t">StreakNotifier</span> <span class="tok-k">extends</span> <span class="tok-t">Notifier</span>&lt;<span class="tok-t">int</span>&gt; {
   <span class="tok-an">@override</span>
-  <span class="tok-t">int</span> <span class="tok-f">build</span>() { _loadAndCheck(); <span class="tok-k">return</span> <span class="tok-n">0</span>; }
+  <span class="tok-t">int</span> <span class="tok-f">build</span>() =&gt; _prefs.streak ?? <span class="tok-n">0</span>;  <span class="tok-c">// 저장된 스트릭을 초기 상태로 (build에선 부수효과 금지)</span>
 
   <span class="tok-c">// 마지막 학습일이 어제면 연속, 그 전이면 0으로 리셋</span>
   <span class="tok-t">void</span> <span class="tok-f">completeToday</span>() {
@@ -853,7 +853,7 @@ dio.interceptors.add(<span class="tok-t">InterceptorsWrapper</span>(
     }
   }
 '''</span>;
-<span class="tok-k">final</span> result = <span class="tok-k">await</span> client.query(<span class="tok-t">QueryOptions</span>(document: gql(q)));</pre>
+<span class="tok-k">final</span> result = <span class="tok-k">await</span> client.query(<span class="tok-t">QueryOptions</span>(document: gql(q), variables: {<span class="tok-s">'userId'</span>: userId}));</pre>
         </div>
         <div class="maps"><b>React 매핑:</b> <code>Dio + Interceptor</code> = axios 인터셉터, <code>Repository</code> = API 서비스 레이어/커스텀 훅, <code>graphql_flutter</code> = Apollo Client. 토큰 자동 갱신 로직은 양쪽이 동일합니다.</div>
         <div class="tryit"><b>⭐ 면접 결정타:</b> "Spring으로 REST·GraphQL API를 직접 설계·구현해봤기 때문에, 프론트에서 <code>Repository</code> 패턴으로 관심사를 분리하고 인터셉터로 인증·에러를 일괄 처리합니다. 오버페칭이 문제면 GraphQL로, 단순 CRUD면 REST로 — 백엔드 트레이드오프를 알고 프론트를 설계할 수 있습니다." → 백엔드+프론트를 잇는 유일한 강점.</div>
@@ -908,7 +908,7 @@ dio.interceptors.add(<span class="tok-t">InterceptorsWrapper</span>(
   <span class="tok-an">@override</span>
   <span class="tok-t">void</span> <span class="tok-f">didPush</span>(<span class="tok-t">Route</span> route, <span class="tok-t">Route</span>? prev) {
     <span class="tok-k">super</span>.didPush(route, prev);
-    analytics.setCurrentScreen(screenName: route.settings.name);
+    analytics.logScreenView(screenName: route.settings.name);  <span class="tok-c">// setCurrentScreen은 deprecated → logScreenView</span>
   }
 }
 
