@@ -156,6 +156,16 @@
   .tok-p{color:#ffa657}    /* property */
   .tok-an{color:#7ee787}   /* annotation */
 
+  /* ---------- before/after 대조 (쓸 때 vs 안 쓸 때) ---------- */
+  .code.bad{border-color:rgba(248,81,73,.45)}
+  .code.bad .bar{background:rgba(248,81,73,.13)}
+  .code.bad .bar .fn{color:#ff9492}
+  .code.good{border-color:rgba(63,185,80,.45)}
+  .code.good .bar{background:rgba(63,185,80,.13)}
+  .code.good .bar .fn{color:#56d364}
+  .ba-note{font-size:.88rem;color:var(--ink-dim);line-height:1.65;margin:-4px 0 18px;padding:10px 14px;background:var(--bg-soft);border-radius:9px;border:1px solid var(--line)}
+  .ba-note b{color:var(--hero-h1)}
+
   /* ---------- CALLOUTS ---------- */
   .note{border-radius:12px;padding:16px 18px 16px 46px;margin:16px 0;position:relative;font-size:.95rem;line-height:1.7}
   .note::before{position:absolute;left:16px;top:15px;font-size:1.1rem}
@@ -380,179 +390,932 @@
       <div class="sec-head"><span class="sec-num">1</span><h2>Dart 언어 기초</h2><span class="sec-tag">part 1 · 기초</span></div>
       <p class="lede">Flutter를 쓰려면 Dart를 알아야 합니다. JS/Java를 안다면 70%는 이미 아는 셈.</p>
 
-      <h3><span class="ic">📦</span>변수와 타입</h3>
+      <h3><span class="ic">📦</span>변수와 타입 — var · final · const · dynamic</h3>
+      <p>Dart의 변수 선언은 이 다섯을 구분하면 끝입니다. 특히 <code class="inl">dynamic</code>은 편해 보여도 타입 검사를 통째로 꺼버려 <strong>런타임 사고의 주범</strong>이라, 언제 무엇을 쓰는지가 중요해요.</p>
       <div class="code">
         <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">variables.dart</span></div>
-        <pre><span class="tok-c">// 타입 명시</span>
+        <pre><span class="tok-c">// ① 타입 명시 — 의도가 분명해 협업·유지보수에 가장 안전</span>
 <span class="tok-t">int</span> age = <span class="tok-n">30</span>;
-<span class="tok-t">double</span> height = <span class="tok-n">175.5</span>;
 <span class="tok-t">String</span> name = <span class="tok-s">'창한'</span>;
-<span class="tok-t">bool</span> isDev = <span class="tok-k">true</span>;
 
-<span class="tok-c">// 타입 추론 (var) — Java 10+ var, JS let과 유사</span>
-<span class="tok-k">var</span> city = <span class="tok-s">'Seoul'</span>;   <span class="tok-c">// String으로 추론됨</span>
+<span class="tok-c">// ② var — 우변으로 타입을 '추론'(단, 타입은 고정됨)</span>
+<span class="tok-k">var</span> city = <span class="tok-s">'Seoul'</span>;       <span class="tok-c">// String으로 고정 → city = 1; 은 컴파일 에러</span>
 
-<span class="tok-c">// 불변 — final(런타임 상수), const(컴파일타임 상수)</span>
-<span class="tok-k">final</span> now = DateTime.now();  <span class="tok-c">// 실행 시점에 한 번 정해짐</span>
-<span class="tok-k">const</span> pi = <span class="tok-n">3.14</span>;          <span class="tok-c">// 컴파일 시점에 박제됨</span></pre>
-      </div>
-      <div class="note warn"><b>final vs const 꼭 구분:</b> <code class="inl">final</code>은 "한 번만 할당"(값은 런타임에 결정 가능), <code class="inl">const</code>는 "컴파일 시점에 이미 값이 확정"되어야 합니다. Flutter에서 <code class="inl">const</code> 위젯은 성능 최적화의 핵심이라 면접에서 자주 물어봅니다.</div>
+<span class="tok-c">// ③ final — 딱 한 번만 할당(값은 실행 중에 정해도 됨)</span>
+<span class="tok-k">final</span> now = <span class="tok-t">DateTime</span>.now();  <span class="tok-c">// 실행 시점에 한 번 박힘, 재할당 불가</span>
 
-      <h3><span class="ic">❓</span>Null Safety</h3>
-      <p>Dart는 <strong>기본적으로 null을 허용하지 않습니다.</strong> null이 될 수 있으면 타입 뒤에 <code class="inl">?</code>를 붙여야 해요. NPE(Null Pointer Exception)를 컴파일 단계에서 막는 장치입니다.</p>
-      <div class="note tip"><b>🥤 일상 비유 — "내용물 있음" 보장된 컵:</b> Dart에서 <code class="inl">String</code>은 "반드시 음료가 담긴 컵"입니다. 빈 컵(null)을 건네면 컴파일러가 거부해요. 빈 컵일 수도 있는 경우엔 <code class="inl">String?</code>로 "빈 컵일 수 있음" 라벨을 붙여야 합니다. 마시기 전(사용 전) 컵이 비었는지 확인하라고 강제하니, "빈 컵인 줄 모르고 들이켜다 사레들리는"(런타임 NPE) 사고를 컴파일 단계에서 막아줍니다.</div>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">null_safety.dart</span></div>
-        <pre><span class="tok-t">String</span> name = <span class="tok-k">null</span>;    <span class="tok-c">// ❌ 컴파일 에러! null 불가</span>
-<span class="tok-t">String</span>? nickname = <span class="tok-k">null</span>; <span class="tok-c">// ✅ ?를 붙이면 null 허용</span>
-
-<span class="tok-c">// ?. → null이면 건너뜀 (JS의 optional chaining과 동일)</span>
-<span class="tok-t">int</span>? len = nickname?.length;
-
-<span class="tok-c">// ?? → null이면 기본값 사용</span>
-<span class="tok-t">String</span> display = nickname ?? <span class="tok-s">'손님'</span>;
-
-<span class="tok-c">// ! → "절대 null 아님" 단언 (틀리면 런타임 에러, 신중히!)</span>
-<span class="tok-t">int</span> sure = nickname!.length;</pre>
+<span class="tok-c">// ④ const — 컴파일 시점에 값이 '박제'(깊은 불변)</span>
+<span class="tok-k">const</span> pi = <span class="tok-n">3.14</span>;            <span class="tok-c">// 빌드 전에 이미 확정돼야 함</span></pre>
       </div>
 
-      <h3><span class="ic">🔧</span>함수 · 화살표 · 명명 파라미터</h3>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">functions.dart</span></div>
-        <pre><span class="tok-c">// 일반 함수</span>
+      <table>
+        <tr><th>키워드</th><th>재할당</th><th>값이 정해지는 시점</th><th>언제 쓰나</th></tr>
+        <tr><td><code>int</code>·<code>String</code></td><td>O</td><td>—</td><td>타입을 분명히 드러내고 싶을 때(권장 기본)</td></tr>
+        <tr><td><code>var</code></td><td>O</td><td>—</td><td>우변만 봐도 타입이 뻔할 때(추론, 타입은 고정)</td></tr>
+        <tr><td><code>final</code></td><td><b>X</b></td><td>런타임</td><td>한 번 정하고 안 바꾸는 값(대부분의 지역변수·필드)</td></tr>
+        <tr><td><code>const</code></td><td><b>X</b></td><td><b>컴파일타임</b></td><td>상수·<code>const</code> 위젯(빌드 최적화)</td></tr>
+        <tr><td><code>dynamic</code></td><td>O</td><td>—</td><td>타입을 정말 모를 때만(JSON 등) — 가급적 회피</td></tr>
+      </table>
+
+      <p style="margin-top:18px"><b>🔍 dynamic을 쓸 때 vs 안 쓸 때</b> — 같은 로직인데 한쪽은 런타임에 터지고, 한쪽은 컴파일에서 막힙니다.</p>
+      <div class="two-col">
+        <div class="code bad">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ dynamic — 컴파일이 안 막아줌</span></div>
+          <pre><span class="tok-k">dynamic</span> value = <span class="tok-s">'42'</span>;   <span class="tok-c">// 사실은 String</span>
+<span class="tok-t">int</span> n = value + <span class="tok-n">1</span>;     <span class="tok-c">// 컴파일 통과!</span>
+
+<span class="tok-c">// 💥 런타임에서야 폭발:</span>
+<span class="tok-c">// type 'int' is not a</span>
+<span class="tok-c">// subtype of type 'String'</span></pre>
+        </div>
+        <div class="code good">
+          <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 타입 명시 — 컴파일에서 차단</span></div>
+          <pre><span class="tok-t">int</span> value = <span class="tok-n">42</span>;
+<span class="tok-t">int</span> n = value + <span class="tok-n">1</span>;     <span class="tok-c">// 43</span>
+
+<span class="tok-c">// 잘못 쓰면 IDE가 빨간 줄로</span>
+<span class="tok-c">// 즉시 알려줌(런타임까지 안 감)</span></pre>
+        </div>
+      </div>
+      <div class="ba-note"><b>차이:</b> <code>dynamic</code>은 "타입 검사하지 마" 표시라 자동완성·컴파일 체크가 전부 꺼집니다. 위 ❌는 빌드는 되지만 결국 사용자 손에서 터지죠. <code>dynamic</code>은 JSON 파싱처럼 타입을 정말 모를 때만 쓰고, <b>받는 즉시 구체 타입으로 변환</b>하세요(<code>value as int</code>, <code>int.parse(...)</code>).</div>
+
+      <div class="note warn"><b>final vs const — 가장 헷갈리는 함정:</b> <code class="inl">final</code>은 "변수를 다시 할당 못 함", <code class="inl">const</code>는 "값 자체가 컴파일타임 상수"입니다. 그래서 <b>내용 변경</b>이 갈립니다 — <code class="inl">final l = [1]; l.add(2);</code> 는 <b>OK</b>([1, 2]), <code class="inl">const l = [1]; l.add(2);</code> 는 <b>런타임 에러</b>(UnsupportedError). Flutter의 <code class="inl">const</code> 위젯이 재빌드를 건너뛰는 것도 이 "깊은 불변" 덕분입니다.</div>
+
+<h3><span class="ic">❓</span>Null Safety — <code class="inl">?</code> · <code class="inl">?.</code> · <code class="inl">??</code> · <code class="inl">!</code></h3>
+<p>개념: Dart는 <strong>기본적으로 null을 허용하지 않습니다.</strong> 변수에 null이 들어올 수 있으면 타입 뒤에 <code class="inl">?</code>를 붙여 "이건 비어 있을 수 있어"라고 컴파일러에 알려야 해요. 이렇게 nullable과 non-nullable을 타입으로 나눠두면, 다른 언어에서 런타임에 앱을 죽이던 <strong>NPE(Null Pointer Exception)를 컴파일 단계에서 미리 차단</strong>합니다. 즉 "실행해 봐야 아는 버그"를 "빌드하면 빨간 줄로 알려주는 버그"로 끌어올리는 장치입니다.</p>
+<div class="note tip"><b>🥤 일상 비유 — "내용물 있음"이 보장된 컵:</b> Dart에서 <code class="inl">String</code>은 "반드시 음료가 담긴 컵"입니다. 빈 컵(null)을 건네면 컴파일러가 거부해요. 비어 있을 수도 있으면 <code class="inl">String?</code>로 "빈 컵일 수 있음" 라벨을 붙여야 하고, 마시기 전(사용 전)에 비었는지 확인하도록 강제됩니다. "빈 컵인 줄 모르고 들이켜다 사레들리는"(런타임 NPE) 사고를 미리 막아주는 셈이죠.</div>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">null_safety.dart</span></div>
+  <pre><span class="tok-t">String</span> name = <span class="tok-k">null</span>;    <span class="tok-c">// ❌ 컴파일 에러! non-nullable엔 null 불가</span>
+<span class="tok-t">String</span>? nickname = <span class="tok-k">null</span>; <span class="tok-c">// ✅ ?를 붙이면 null 허용(nullable)</span>
+
+<span class="tok-c">// ?. → 앞이 null이면 통째로 건너뛰고 결과는 null (JS의 ?. 와 동일)</span>
+<span class="tok-t">int</span>? len = nickname?.length;        <span class="tok-c">// nickname이 null이면 len도 null</span>
+
+<span class="tok-c">// ?? → 왼쪽이 null이면 오른쪽 기본값 사용</span>
+<span class="tok-t">String</span> display = nickname ?? <span class="tok-s">'손님'</span>; <span class="tok-c">// null이면 '손님'</span>
+
+<span class="tok-c">// ??= → 비어 있을 때만 채워 넣기(이미 값 있으면 그대로)</span>
+nickname ??= <span class="tok-s">'익명'</span>;
+
+<span class="tok-c">// ! → "이건 절대 null 아님"이라고 개발자가 단언(틀리면 런타임 폭발, 신중히!)</span>
+<span class="tok-t">String</span>? raw = display.isEmpty ? <span class="tok-k">null</span> : display; <span class="tok-c">// raw는 String?(nullable)</span>
+<span class="tok-t">int</span> sure = raw!.length;            <span class="tok-c">// 값이 있다고 확신할 때만 !</span></pre>
+</div>
+<table>
+  <tr><th>연산자</th><th>하는 일</th><th>결과가 null일 수 있나</th><th>대표 쓰임</th></tr>
+  <tr><td><code>?</code> (타입 뒤)</td><td>그 타입에 null 허용을 표시</td><td>—</td><td><code>String? name;</code> 처럼 nullable 선언</td></tr>
+  <tr><td><code>?.</code></td><td>앞이 null이면 호출 자체를 건너뜀</td><td><b>O</b> (null 반환 가능)</td><td><code>user?.profile?.name</code> 안전한 체이닝</td></tr>
+  <tr><td><code>??</code></td><td>왼쪽이 null이면 오른쪽으로 대체</td><td>X (기본값으로 메움)</td><td><code>name ?? '손님'</code> 기본값 제공</td></tr>
+  <tr><td><code>??=</code></td><td>변수가 null일 때만 할당</td><td>X</td><td><code>cache ??= load();</code> 지연 초기화</td></tr>
+  <tr><td><code>!</code></td><td>"null 아님" 단언(검사 X)</td><td>X (대신 <b>틀리면 던짐</b>)</td><td>확실할 때만, 최소한으로</td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 ? · ??를 쓸 때 vs 안 쓸 때</b> — 같은 "빈 값 처리"인데, 한쪽은 사용자 손에서 터지고 한쪽은 빌드 전에 막힙니다.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ ! 로 우격다짐 — 런타임에 폭발</span></div>
+    <pre><span class="tok-k">final</span> config = &lt;<span class="tok-t">String</span>, <span class="tok-t">String</span>&gt;{<span class="tok-s">'host'</span>: <span class="tok-s">'api.io'</span>};
+
+<span class="tok-c">// Map 조회는 String? (키 없으면 null)인데</span>
+<span class="tok-c">// ! 로 "무조건 있다"고 우겨버림</span>
+<span class="tok-t">String</span> port = config[<span class="tok-s">'port'</span>]!;  <span class="tok-c">// 컴파일은 통과!</span>
+
+<span class="tok-c">// 💥 'port' 키가 없어 실제로는 null →</span>
+<span class="tok-c">// Null check operator used on a</span>
+<span class="tok-c">// null value (런타임 크래시)</span>
+print(<span class="tok-s">'포트: $port'</span>);</pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ ?. + ?? — 빈 값을 안전하게 흡수</span></div>
+    <pre><span class="tok-k">final</span> config = &lt;<span class="tok-t">String</span>, <span class="tok-t">String</span>&gt;{<span class="tok-s">'host'</span>: <span class="tok-s">'api.io'</span>};
+
+<span class="tok-c">// 없을 수 있음을 인정하고 기본값을 준비</span>
+<span class="tok-t">String</span> port = config[<span class="tok-s">'port'</span>] ?? <span class="tok-s">'8080'</span>;
+
+<span class="tok-c">// 체이닝도 ?. 로 중간 null을 자동 통과</span>
+<span class="tok-t">int</span>? hostLen = config[<span class="tok-s">'host'</span>]?.length;
+
+<span class="tok-c">// 키가 없어도 크래시 없이 '8080'</span>
+print(<span class="tok-s">'포트: $port'</span>);</pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> <code>!</code>는 "검사하지 말고 그냥 믿어"라는 뜻이라, 단언이 틀리면 그 줄에서 바로 앱이 죽습니다. 반면 <code>?.</code>·<code>??</code>는 "null일 수도 있다"는 현실을 코드에 녹여 <b>크래시 대신 기본값/통과로 흡수</b>합니다. 실무 원칙: <b>외부에서 들어오는 값(JSON·Map·쿼리 결과·플랫폼 채널)은 거의 다 nullable</b>로 보고 <code>?.</code>/<code>??</code>로 받으세요. <code>!</code>는 "바로 위에서 null 검사를 끝냈다"처럼 확실한 곳에만, 한 줄짜리로 씁니다.</div>
+<div class="note warn"><b>함정 — <code class="inl">!</code> 남용은 null safety를 무력화합니다:</b> <code class="inl">!</code>를 습관처럼 붙이면 컴파일러의 보호를 스스로 꺼버리는 꼴이라, null safety 이전의 NPE 지옥으로 되돌아갑니다. 특히 <code class="inl">a!.b!.c!</code> 식 연쇄 단언은 "어디서 터졌는지"도 모호해 디버깅이 괴로워요. 값이 정말 있는지 모르면 <code class="inl">if (x != null) { ... }</code>로 좁히거나(이 블록 안에선 컴파일러가 <code class="inl">x</code>를 non-null로 승격해 줍니다), <code class="inl">?.</code>/<code class="inl">??</code>로 흘려보내세요. <code class="inl">!</code>는 "안전함을 내가 방금 증명했다"는 곳에서만 쓰는 예외 도구입니다.</div>
+
+<h3><span class="ic">🔧</span>함수 — 화살표 · 명명/위치 파라미터 · 익명·클로저</h3>
+<p>개념: 함수는 "입력을 받아 결과를 돌려주는 작은 기계"입니다. Dart는 한 줄짜리 함수를 짧게 쓰는 <strong>화살표(<code class="inl">=&gt;</code>)</strong>, 인자를 이름으로 넘기는 <strong>명명 파라미터(<code class="inl">{}</code>)</strong>, 순서대로 넘기되 생략 가능한 <strong>선택 위치 파라미터(<code class="inl">[]</code>)</strong>를 제공합니다. 또 함수를 값처럼 변수에 담거나 콜백으로 넘길 수 있고(<strong>익명 함수</strong>), 바깥 변수를 기억하는 함수를 만들 수도 있어요(<strong>클로저</strong>). Flutter 위젯 생성자·이벤트 콜백·리스트 변환이 전부 이 문법 위에 서 있어, 손에 익히면 실전 코드가 크게 짧아집니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">functions.dart</span></div>
+  <pre><span class="tok-c">// ① 일반 함수 — 본문이 여러 줄이면 { } 와 return</span>
 <span class="tok-t">int</span> <span class="tok-f">add</span>(<span class="tok-t">int</span> a, <span class="tok-t">int</span> b) {
   <span class="tok-k">return</span> a + b;
 }
 
-<span class="tok-c">// 화살표 함수 (단일 표현식) — JS와 동일</span>
-<span class="tok-t">int</span> <span class="tok-f">square</span>(<span class="tok-t">int</span> x) => x * x;
+<span class="tok-c">// ② 화살표 함수 — 본문이 '단일 표현식'일 때만 (=&gt; 식)</span>
+<span class="tok-t">int</span> <span class="tok-f">square</span>(<span class="tok-t">int</span> x) =&gt; x * x;
 
-<span class="tok-c">// 명명 파라미터 {} + required → 위젯에서 매우 자주 씀</span>
+<span class="tok-c">// ③ 명명 파라미터 {} — required는 필수, 나머지는 기본값/nullable</span>
 <span class="tok-t">void</span> <span class="tok-f">greet</span>({<span class="tok-k">required</span> <span class="tok-t">String</span> name, <span class="tok-t">int</span> age = <span class="tok-n">0</span>}) {
   print(<span class="tok-s">'$name, $age살'</span>);
 }
+<span class="tok-f">greet</span>(name: <span class="tok-s">'창한'</span>, age: <span class="tok-n">30</span>); <span class="tok-c">// 순서 무관, 이름으로 지정</span>
 
-<span class="tok-c">// 호출 — 순서 무관, 이름으로 지정</span>
-<span class="tok-f">greet</span>(name: <span class="tok-s">'창한'</span>, age: <span class="tok-n">30</span>);</pre>
-      </div>
-      <div class="note react"><b>React 개발자라면:</b> 위젯 생성자의 <code class="inl">{required this.title}</code> 패턴은 컴포넌트에 props를 넘기는 것과 같습니다. 명명 파라미터 = props 객체라고 생각하면 됩니다.</div>
+<span class="tok-c">// ④ 선택 위치 파라미터 [] — 순서대로, 생략 가능(nullable이거나 기본값)</span>
+<span class="tok-t">String</span> <span class="tok-f">tag</span>(<span class="tok-t">String</span> body, [<span class="tok-t">String</span> name = <span class="tok-s">'div'</span>]) =&gt; <span class="tok-s">'&lt;$name&gt;$body'</span>;
+<span class="tok-f">tag</span>(<span class="tok-s">'hi'</span>);          <span class="tok-c">// '&lt;div&gt;hi' — name 생략</span>
+<span class="tok-f">tag</span>(<span class="tok-s">'hi'</span>, <span class="tok-s">'p'</span>);     <span class="tok-c">// '&lt;p&gt;hi'</span>
 
-      <h3><span class="ic">🏗️</span>클래스와 생성자</h3>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">class.dart</span></div>
-        <pre><span class="tok-k">class</span> <span class="tok-t">User</span> {
+<span class="tok-c">// ⑤ 익명 함수 — 이름 없이 값처럼 변수에 담거나 콜백으로 전달</span>
+<span class="tok-k">final</span> nums = &lt;<span class="tok-t">int</span>&gt;[<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>];
+<span class="tok-k">final</span> evens = nums.<span class="tok-f">where</span>((n) =&gt; n.isEven).<span class="tok-f">toList</span>(); <span class="tok-c">// [2]</span>
+
+<span class="tok-c">// ⑥ 클로저 — 바깥 변수(count)를 '기억'하는 함수를 만들어 반환</span>
+<span class="tok-t">int</span> <span class="tok-f">Function</span>() <span class="tok-f">makeCounter</span>() {
+  <span class="tok-k">var</span> count = <span class="tok-n">0</span>;
+  <span class="tok-k">return</span> () =&gt; ++count;   <span class="tok-c">// count를 가둬(capture) 둠</span>
+}
+<span class="tok-k">final</span> next = <span class="tok-f">makeCounter</span>();
+print(<span class="tok-s">'${next()} ${next()}'</span>); <span class="tok-c">// 1 2 — 호출 사이에 상태 유지</span></pre>
+</div>
+<table>
+  <tr><th></th><th>명명 파라미터 <code>{ }</code></th><th>선택 위치 파라미터 <code>[ ]</code></th></tr>
+  <tr><td>호출 방식</td><td>이름으로 지정 <code>f(age: 30)</code></td><td>순서대로 <code>f(30)</code></td></tr>
+  <tr><td>순서</td><td>무관(아무 순서로 OK)</td><td>선언 순서를 지켜야 함</td></tr>
+  <tr><td>필수 지정</td><td><code>required</code>로 가능</td><td>불가(선택은 본질적으로 생략 가능)</td></tr>
+  <tr><td>생략한 값</td><td>기본값 또는 nullable이어야</td><td>기본값 또는 nullable이어야</td></tr>
+  <tr><td>대표 쓰임</td><td><b>Flutter 위젯 생성자</b>(인자 많고 가독성 중요)</td><td>인자 1~2개, 뒤쪽이 가끔만 필요할 때</td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 명명 파라미터를 쓸 때 vs 안 쓸 때</b> — 위치로 넘기면 인자 순서를 사람이 외워야 하고, 명명으로 넘기면 컴파일러·IDE가 짝을 맞춰 줍니다.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 위치 파라미터 — 순서 헷갈려 조용히 오작동</span></div>
+    <pre><span class="tok-c">// 같은 타입(int) 4개를 순서로만 받음</span>
+<span class="tok-t">void</span> <span class="tok-f">rect</span>(<span class="tok-t">int</span> left, <span class="tok-t">int</span> top,
+          <span class="tok-t">int</span> width, <span class="tok-t">int</span> height) {
+  <span class="tok-c">// ...</span>
+}
+
+<span class="tok-c">// width와 height를 바꿔 넣음</span>
+<span class="tok-f">rect</span>(<span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">200</span>, <span class="tok-n">100</span>); <span class="tok-c">// 의도는 100×200?</span>
+
+<span class="tok-c">// 💥 타입이 다 int라 컴파일은 통과 →</span>
+<span class="tok-c">// 잘못된 크기로 그려져도 에러 없음</span>
+<span class="tok-c">// (런타임에 눈으로 봐야 발견)</span></pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 명명 파라미터 — 이름으로 짝이 명확</span></div>
+    <pre><span class="tok-t">void</span> <span class="tok-f">rect</span>({<span class="tok-k">required</span> <span class="tok-t">int</span> left,
+           <span class="tok-k">required</span> <span class="tok-t">int</span> top,
+           <span class="tok-k">required</span> <span class="tok-t">int</span> width,
+           <span class="tok-k">required</span> <span class="tok-t">int</span> height}) {
+  <span class="tok-c">// ...</span>
+}
+
+<span class="tok-c">// 무엇이 무엇인지 호출부에서 바로 보임</span>
+<span class="tok-f">rect</span>(left: <span class="tok-n">0</span>, top: <span class="tok-n">0</span>,
+     width: <span class="tok-n">100</span>, height: <span class="tok-n">200</span>);
+
+<span class="tok-c">// 이름을 빠뜨리면 컴파일 에러로 즉시 차단</span></pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> 위치 파라미터는 <b>타입이 같은 인자가 여러 개</b>일 때 순서를 바꿔 넣어도 컴파일러가 못 잡아, 화면을 봐야 아는 버그가 됩니다. 명명 파라미터는 <code>left:</code>·<code>width:</code>처럼 <b>호출부에 의도가 그대로 드러나고</b>, <code>required</code>를 빠뜨리면 빌드가 막히죠. 그래서 Flutter 위젯 생성자는 대부분 명명 파라미터를 씁니다. 실무 팁: 인자가 2개를 넘거나 같은 타입이 반복되면 <b>망설이지 말고 명명 파라미터</b>로 가세요. 콜백처럼 한 줄짜리 함수는 익명 함수를 <code>=&gt;</code>로 짧게 쓰는 게 정석입니다.</div>
+<div class="note react"><b>React 개발자라면:</b> 위젯 생성자의 <code class="inl">{required this.title}</code>는 컴포넌트에 props를 넘기는 것과 같습니다. <b>명명 파라미터 = props 객체</b>로 생각하면 자연스러워요. 익명 함수 <code class="inl">(n) =&gt; n.isEven</code>는 JS 화살표 콜백과 동일하고, <code class="inl">makeCounter</code> 같은 클로저는 <code class="inl">useState</code>가 리렌더 사이에 값을 기억하는 것과 같은 "변수 가두기(capture)" 원리입니다.</div>
+<div class="note warn"><b>함정 — <code class="inl">{}</code>와 <code class="inl">[]</code>는 한 함수에 같이 못 씁니다:</b> 명명 파라미터 그룹 <code class="inl">{}</code>와 선택 위치 파라미터 그룹 <code class="inl">[]</code>는 한 함수 시그니처에 <b>동시에 선언할 수 없어요</b>(둘 중 하나만). 선택 인자가 필요하면 거의 항상 명명 파라미터를 고르는 게 안전합니다. 또 화살표 <code class="inl">=&gt;</code>는 "단일 표현식" 전용이라 그 뒤에 <code class="inl">if</code> 문이나 여러 줄을 넣으면 컴파일 에러 — 이럴 땐 <code class="inl">{ }</code> 본문으로 풀어 쓰세요.</div>
+
+<h3 id="class-ctor"><span class="ic">🏗️</span>클래스와 생성자 — 기본 / named / factory</h3>
+<p>개념: 클래스는 데이터(필드)와 동작(메서드)을 한 덩어리로 묶는 설계도이고, 생성자는 그 설계도로 실제 인스턴스를 찍어내는 출입구입니다. Dart는 같은 클래스에 출입구를 여러 개 둘 수 있어요 — 기본 생성자(unnamed), 이름표를 단 named 생성자, 그리고 인스턴스를 <b>직접 골라 돌려주는</b> factory 생성자. 객체를 매번 새로 만들지(generative), 아니면 캐시·검증을 거쳐 돌려줄지(factory)를 골라야 할 때 이 구분이 결정적입니다.</p>
+<div class="code"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">user.dart</span></div><pre><span class="tok-k">class</span> <span class="tok-t">User</span> {
+  <span class="tok-c">// 필드 — final이면 생성 후 재할당 불가(불변 객체)</span>
   <span class="tok-k">final</span> <span class="tok-t">String</span> name;
   <span class="tok-k">final</span> <span class="tok-t">int</span> age;
 
-  <span class="tok-c">// 기본(unnamed) 생성자 — this.x는 '초기화 형식 매개변수'로 필드 즉시 초기화</span>
+  <span class="tok-c">// 기본(unnamed) 생성자 — this.name은 '초기화 형식 매개변수':</span>
+  <span class="tok-c">// 받은 인자를 동명의 필드에 곧바로 꽂아줌(본문·: 없이 끝)</span>
   <span class="tok-t">User</span>({<span class="tok-k">required</span> <span class="tok-k">this</span>.name, <span class="tok-k">required</span> <span class="tok-k">this</span>.age});
 
-  <span class="tok-c">// 명명 생성자(named) — 초기화 리스트(: name=...)로 필드 설정. generative이며 factory 아님</span>
+  <span class="tok-c">// named 생성자 — '초기화 리스트'(: 필드 = 값)로 필드를 채움.</span>
+  <span class="tok-c">// 여전히 generative(매번 새 인스턴스 생성), factory 아님</span>
   <span class="tok-t">User</span>.guest() : name = <span class="tok-s">'손님'</span>, age = <span class="tok-n">0</span>;
 
   <span class="tok-t">String</span> <span class="tok-f">describe</span>() => <span class="tok-s">'$name ($age)'</span>;
 }
 
-<span class="tok-k">final</span> u = <span class="tok-t">User</span>(name: <span class="tok-s">'창한'</span>, age: <span class="tok-n">30</span>);
-<span class="tok-k">final</span> g = <span class="tok-t">User</span>.guest();</pre>
-      </div>
+<span class="tok-k">final</span> u = <span class="tok-t">User</span>(name: <span class="tok-s">'창한'</span>, age: <span class="tok-n">30</span>); <span class="tok-c">// 기본 생성자</span>
+<span class="tok-k">final</span> g = <span class="tok-t">User</span>.guest();                    <span class="tok-c">// named 생성자</span></pre></div>
+<table>
+<tr><th>구분</th><th>generative (기본·named)</th><th>factory</th></tr>
+<tr><td>인스턴스 생성</td><td><b>항상 새로</b> 만듦</td><td>직접 만들지 않음 — 무엇을 돌려줄지 결정</td></tr>
+<tr><td><code>return</code></td><td>쓰지 않음(암묵적으로 새 객체)</td><td><b>반드시 인스턴스를 return</b></td></tr>
+<tr><td>캐시·기존 객체 재사용</td><td>불가</td><td>가능(캐시·싱글턴·하위타입 반환)</td></tr>
+<tr><td>초기화 리스트(<code>: x = ...</code>)</td><td>사용 가능</td><td>사용 불가(본문에서 계산 후 return)</td></tr>
+<tr><td><code>this</code> 접근</td><td>가능</td><td><b>불가</b>(아직 객체가 없음)</td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 factory 쓸 때 vs 안 쓸 때</b> — 같은 색을 매번 새 객체로 찍어내며 검증 로직이 호출부마다 흩어지느냐, 캐시·검증을 생성자 안에 가두느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 중복 인스턴스 + 검증 산재</span></div><pre><span class="tok-k">class</span> <span class="tok-t">Color8</span> {
+  <span class="tok-k">final</span> <span class="tok-t">int</span> r, g, b;
+  <span class="tok-t">Color8</span>(<span class="tok-k">this</span>.r, <span class="tok-k">this</span>.g, <span class="tok-k">this</span>.b);
+}
 
-      <h3><span class="ic">📚</span>컬렉션 &amp; Flutter에서 매일 쓰는 연산자</h3>
-      <p>위젯 트리를 조립할 때 가장 자주 등장하는 문법입니다. 이 네 가지가 손에 익으면 실전 코드가 훨씬 편해져요.</p>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">collections.dart</span></div>
-        <pre><span class="tok-c">// List / Map / Set 리터럴</span>
+<span class="tok-c">// 검증을 호출하는 쪽마다 직접 복붙해야 함</span>
+<span class="tok-t">int</span> <span class="tok-f">clamp</span>(<span class="tok-t">int</span> v) => v &lt; <span class="tok-n">0</span> ? <span class="tok-n">0</span> : (v &gt; <span class="tok-n">255</span> ? <span class="tok-n">255</span> : v);
+
+<span class="tok-c">// 같은 검정(0,0,0)을 부를 때마다 새 객체 생성</span>
+<span class="tok-k">final</span> a = <span class="tok-t">Color8</span>(<span class="tok-f">clamp</span>(<span class="tok-n">0</span>), <span class="tok-f">clamp</span>(<span class="tok-n">0</span>), <span class="tok-f">clamp</span>(<span class="tok-n">0</span>));
+<span class="tok-k">final</span> b = <span class="tok-t">Color8</span>(<span class="tok-f">clamp</span>(<span class="tok-n">0</span>), <span class="tok-f">clamp</span>(<span class="tok-n">0</span>), <span class="tok-f">clamp</span>(<span class="tok-n">0</span>));
+<span class="tok-c">// 💥 identical(a, b) == false — 메모리 낭비 + 검증 깜빡 위험</span></pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — 캐시 + 검증을 생성자에 캡슐화</span></div><pre><span class="tok-k">class</span> <span class="tok-t">Color8</span> {
+  <span class="tok-k">final</span> <span class="tok-t">int</span> r, g, b;
+
+  <span class="tok-c">// private generative 생성자(앞의 _) — factory만 호출</span>
+  <span class="tok-t">Color8</span>._(<span class="tok-k">this</span>.r, <span class="tok-k">this</span>.g, <span class="tok-k">this</span>.b);
+
+  <span class="tok-k">static</span> <span class="tok-k">final</span> _cache = &lt;<span class="tok-t">int</span>, <span class="tok-t">Color8</span>&gt;{};
+
+  <span class="tok-c">// factory — 검증·캐시를 거쳐 인스턴스를 'return'</span>
+  <span class="tok-k">factory</span> <span class="tok-t">Color8</span>(<span class="tok-t">int</span> r, <span class="tok-t">int</span> g, <span class="tok-t">int</span> b) {
+    <span class="tok-t">int</span> <span class="tok-f">c</span>(<span class="tok-t">int</span> v) => v.<span class="tok-f">clamp</span>(<span class="tok-n">0</span>, <span class="tok-n">255</span>); <span class="tok-c">// 검증 한곳</span>
+    <span class="tok-k">final</span> key = (<span class="tok-f">c</span>(r) &lt;&lt; <span class="tok-n">16</span>) | (<span class="tok-f">c</span>(g) &lt;&lt; <span class="tok-n">8</span>) | <span class="tok-f">c</span>(b);
+    <span class="tok-k">return</span> _cache[key] ??= <span class="tok-t">Color8</span>._(<span class="tok-f">c</span>(r), <span class="tok-f">c</span>(g), <span class="tok-f">c</span>(b));
+  }
+}
+
+<span class="tok-k">final</span> a = <span class="tok-t">Color8</span>(<span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>);
+<span class="tok-k">final</span> b = <span class="tok-t">Color8</span>(<span class="tok-n">0</span>, <span class="tok-n">0</span>, <span class="tok-n">0</span>);
+<span class="tok-c">// ✅ identical(a, b) == true — 같은 객체 재사용</span></pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> factory는 <code>return</code> 문으로 "무엇을 돌려줄지"를 직접 정하니, 캐시된 객체를 재사용하거나(<code>??=</code>) 검증을 한 곳에 모을 수 있습니다. 반면 generative 생성자는 호출될 때마다 무조건 새 객체를 만들죠. 실무에선 <code>int.parse</code>·<code>DateTime.now</code> 같은 표준 API, 그리고 JSON 역직렬화 <code>factory User.fromJson(Map&lt;String, dynamic&gt; json)</code> 패턴에서 factory를 끝없이 만납니다. 캡슐화 핵심은 <b>검증·캐시 같은 "생성 정책"을 생성자 안에 가둬</b> 호출부를 단순하게 유지하는 것.</div>
+<div class="note warn"><b>함정:</b> factory 안에서는 <code class="inl">this</code>를 쓸 수 없습니다 — 아직 객체가 만들어지기 전이라 가리킬 대상이 없거든요(필드 초기화는 generative 생성자나 초기화 리스트의 몫). 또 factory는 <b>반드시 인스턴스를 <code class="inl">return</code></b> 해야 하고, generative 생성자는 반대로 <code class="inl">return</code> 문을 쓰지 않습니다.</div>
+
+<h3 id="cascade-collections"><span class="ic">📚</span>컬렉션 리터럴 · cascade(..) · spread · collection-if/for · late</h3>
+<p>개념: 위젯 트리를 조립할 때 가장 자주 등장하는 문법 묶음입니다. List·Map·Set 리터럴로 데이터를 담고, spread(<code>...</code>)로 펼쳐 합치고, collection-if/for로 리스트 "안에서" 분기·반복하고, cascade(<code>..</code>)로 한 객체에 설정을 연쇄하고, late로 초기화를 잠시 미룹니다. 임시 변수와 삼항·<code>.map().toList()</code> 떡칠을 걷어내고 UI를 <b>선언적으로</b> 쓰게 해주는 도구들이에요.</p>
+<div class="code"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">collections.dart</span></div><pre><span class="tok-c">// List / Map / Set 리터럴(앞에 &lt;타입&gt;으로 원소 타입 지정)</span>
 <span class="tok-k">final</span> nums = &lt;<span class="tok-t">int</span>&gt;[<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>];
 <span class="tok-k">final</span> user = &lt;<span class="tok-t">String</span>, <span class="tok-t">dynamic</span>&gt;{<span class="tok-s">'name'</span>: <span class="tok-s">'창한'</span>, <span class="tok-s">'age'</span>: <span class="tok-n">30</span>};
+<span class="tok-k">final</span> tags = &lt;<span class="tok-t">String</span>&gt;{<span class="tok-s">'a'</span>, <span class="tok-s">'a'</span>, <span class="tok-s">'b'</span>};   <span class="tok-c">// Set → {a, b} (중복 제거)</span>
 
-<span class="tok-c">// ① spread(...) — 리스트를 펼쳐 합치기</span>
-<span class="tok-k">final</span> all = [<span class="tok-n">0</span>, ...nums, <span class="tok-n">4</span>];          <span class="tok-c">// [0, 1, 2, 3, 4]</span>
+<span class="tok-c">// ① spread(...) — 리스트를 펼쳐 합치기 / ...? 는 null이면 건너뜀</span>
+<span class="tok-t">List</span>&lt;<span class="tok-t">int</span>&gt;? extra;
+<span class="tok-k">final</span> all = [<span class="tok-n">0</span>, ...nums, ...?extra, <span class="tok-n">4</span>];      <span class="tok-c">// [0, 1, 2, 3, 4]</span>
 
 <span class="tok-c">// ② collection-if / for — children 리스트 안에서 바로 분기·반복</span>
+<span class="tok-k">final</span> isLoggedIn = <span class="tok-k">true</span>;
 <span class="tok-k">final</span> widgets = [
   <span class="tok-k">const</span> <span class="tok-t">Header</span>(),
-  <span class="tok-k">if</span> (isLoggedIn) <span class="tok-k">const</span> <span class="tok-t">Profile</span>(),   <span class="tok-c">// 조건부 포함</span>
-  <span class="tok-k">for</span> (<span class="tok-k">final</span> n <span class="tok-k">in</span> nums) <span class="tok-t">Item</span>(n),     <span class="tok-c">// 반복 생성</span>
+  <span class="tok-k">if</span> (isLoggedIn) <span class="tok-k">const</span> <span class="tok-t">Profile</span>(),       <span class="tok-c">// 조건부 포함</span>
+  <span class="tok-k">for</span> (<span class="tok-k">final</span> n <span class="tok-k">in</span> nums) <span class="tok-t">Item</span>(n),         <span class="tok-c">// 반복 생성</span>
 ];
 
-<span class="tok-c">// ③ cascade(..) — 같은 객체에 연속 설정(반환값 무시)</span>
+<span class="tok-c">// ③ cascade(..) — 같은 객체에 연속 설정(..는 메서드 반환값이 아니라</span>
+<span class="tok-c">//    '그 객체 자신'을 돌려줌 → 끝에서 paint를 그대로 받음)</span>
 <span class="tok-k">final</span> paint = <span class="tok-t">Paint</span>()
   ..color = <span class="tok-t">Colors</span>.red
   ..strokeWidth = <span class="tok-n">4</span>;
 
-<span class="tok-c">// ④ late — 나중에(단, 사용 전엔 반드시) 초기화</span>
-<span class="tok-k">late</span> <span class="tok-k">final</span> <span class="tok-t">AnimationController</span> controller;  <span class="tok-c">// initState에서 할당</span></pre>
-      </div>
-      <div class="note tip"><b>왜 중요한가:</b> <code class="inl">if</code>·<code class="inl">for</code>를 위젯 <code class="inl">children: [ ... ]</code> 안에 바로 쓸 수 있는 게 Flutter 가독성의 핵심입니다. 삼항·<code class="inl">.map().toList()</code> 떡칠 없이 선언적으로 UI를 조립하죠. <code class="inl">late</code>는 StatefulWidget의 컨트롤러 초기화에 단골로 등장합니다.</div>
-      <div class="note react"><b>React 매핑:</b> spread = JS <code class="inl">...</code>, collection-if/for = JSX의 <code class="inl">{cond &amp;&amp; &lt;X/&gt;}</code> / <code class="inl">{arr.map(...)}</code>를 언어 차원에서 더 깔끔하게 제공하는 셈입니다.</div>
+<span class="tok-c">// ④ late — 선언은 지금, 할당은 나중에(단, 사용 전엔 반드시)</span>
+<span class="tok-k">late</span> <span class="tok-k">final</span> <span class="tok-t">AnimationController</span> controller;   <span class="tok-c">// initState에서 할당</span></pre></div>
+<p style="margin-top:18px"><b>🔍 cascade 쓸 때 vs 안 쓸 때</b> — 같은 객체를 가리키는 임시 변수를 줄줄이 반복하느냐, <code>..</code>로 객체 이름 한 번에 연쇄하느냐.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 임시 변수 + 이름 반복</span></div><pre><span class="tok-c">// 객체 이름(p)을 줄마다 다시 적어야 함</span>
+<span class="tok-k">final</span> p = <span class="tok-t">Paint</span>();
+p.color = <span class="tok-t">Colors</span>.red;
+p.strokeWidth = <span class="tok-n">4</span>;
+p.style = <span class="tok-t">PaintingStyle</span>.stroke;
+<span class="tok-c">// 한 줄만 다른 변수로 잘못 적어도 컴파일은 통과 → 버그 유발</span></pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — .. 로 연쇄, 식 하나로</span></div><pre><span class="tok-c">// 객체를 한 번만 적고 .. 로 연달아 설정</span>
+<span class="tok-k">final</span> p = <span class="tok-t">Paint</span>()
+  ..color = <span class="tok-t">Colors</span>.red
+  ..strokeWidth = <span class="tok-n">4</span>
+  ..style = <span class="tok-t">PaintingStyle</span>.stroke;
+<span class="tok-c">// 전체가 'p를 돌려주는' 하나의 식 → final 초기화에 바로 사용</span></pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> <code>..</code>는 메서드/세터의 반환값을 무시하고 <b>수신 객체 자신</b>을 돌려줘서, 설정을 연쇄한 결과를 그대로 <code>final p = ...</code>에 담을 수 있습니다(임시 변수·재대입 불필요). 객체 이름을 한 번만 쓰니 "다른 변수에 잘못 설정"하는 실수도 원천 차단되죠. 참고로 한 단계가 <code>null</code>일 수 있으면 <code class="inl">?..</code>(null-aware cascade)로 안전하게 건너뜁니다.</div>
+<p style="margin-top:18px"><b>🔍 collection-if/for 쓸 때 vs 안 쓸 때</b> — 삼항과 <code>.map().toList()</code>·<code>...</code>로 떡칠하느냐, 리스트 리터럴 안에서 선언적으로 분기·반복하느냐.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 삼항 + map().toList() 중첩</span></div><pre><span class="tok-k">final</span> children = [
+  <span class="tok-k">const</span> <span class="tok-t">Header</span>(),
+  <span class="tok-c">// 조건부 한 개: 삼항 + spread + 빈 리스트</span>
+  ...(isLoggedIn ? [<span class="tok-k">const</span> <span class="tok-t">Profile</span>()] : []),
+  <span class="tok-c">// 반복: map → toList → 다시 spread로 펼침</span>
+  ...nums.<span class="tok-f">map</span>((n) => <span class="tok-t">Item</span>(n)).<span class="tok-f">toList</span>(),
+];
+<span class="tok-c">// 읽기 어렵고 빈 [] / toList() 같은 군더더기가 가득</span></pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — if / for 를 리스트 안에 직접</span></div><pre><span class="tok-k">final</span> children = [
+  <span class="tok-k">const</span> <span class="tok-t">Header</span>(),
+  <span class="tok-k">if</span> (isLoggedIn) <span class="tok-k">const</span> <span class="tok-t">Profile</span>(),   <span class="tok-c">// 분기</span>
+  <span class="tok-k">for</span> (<span class="tok-k">final</span> n <span class="tok-k">in</span> nums) <span class="tok-t">Item</span>(n),     <span class="tok-c">// 반복</span>
+];
+<span class="tok-c">// 빈 [] · toList() 없이 의도가 그대로 드러남</span></pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> collection-if/for는 리스트를 <b>만드는 과정 자체</b>에 제어 흐름을 넣어, 중간 리스트(<code>[]</code>)나 <code>.toList()</code> 변환 없이 원소를 곧바로 끼워 넣습니다. Flutter의 <code class="inl">children: [ ... ]</code>를 선언적으로 읽히게 하는 핵심이라, 실무 위젯 코드의 가독성이 확 올라가요. <code>late</code>는 StatefulWidget의 <code class="inl">AnimationController</code>처럼 "생성자 시점엔 못 만들지만 build 전엔 반드시 채워질" 필드에 단골로 씁니다.</div>
+<div class="note warn"><b>함정:</b> <code class="inl">late</code> 변수를 <b>할당하기 전에 읽으면</b> 컴파일이 아니라 런타임에 터집니다(LateInitializationError). "사용 전 초기화"를 개발자가 책임진다는 약속이라, initState에서 빠짐없이 할당하세요. 또 collection-for는 <code class="inl">for (final x in list)</code>(요소 순회)와 <code class="inl">for (var i = 0; i &lt; n; i++)</code>(C식) 둘 다 리터럴 안에서 쓸 수 있습니다.</div>
+<div class="note react"><b>React 매핑:</b> spread <code class="inl">...</code>는 JS 스프레드 그대로, collection-if/for는 JSX의 <code class="inl">{cond &amp;&amp; &lt;X/&gt;}</code> / <code class="inl">{arr.map(...)}</code>를 언어 차원에서 더 깔끔하게 제공하는 셈입니다. cascade(<code class="inl">..</code>)는 JS엔 없는 Dart 고유 문법이고요.</div>
 
-      <h3><span class="ic">🆕</span>Dart 3 — 알아두면 좋은 최신 문법 (2023~)</h3>
-      <p>Dart 3부터 표준이 된 기능들. 보일러플레이트를 줄이고 상태를 안전하게 모델링합니다. 면접에서 "최신 Dart 아세요?"에 예시로 답할 수 있게 정리했습니다.</p>
+<h3><span class="ic">🔁</span>컬렉션 고차함수 — map · where · fold · any · every · firstWhere</h3>
+<p>개념: 리스트를 <strong>함수를 인자로 받아</strong> 변환·필터·집계하는 메서드들입니다. <code class="inl">for</code> 루프로 직접 돌리는 대신 "무엇을 할지"만 선언하면 되니, Flutter에서 데이터를 위젯 리스트로 바꾸거나(<code class="inl">map</code>) 조건에 맞는 항목만 추리는(<code class="inl">where</code>) 일을 한 줄로 끝냅니다. 모두 <code class="inl">Iterable</code>에 정의돼 있어 <code class="inl">List</code>·<code class="inl">Set</code>에서 똑같이 쓸 수 있어요.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">higher_order.dart</span></div>
+  <pre><span class="tok-c">// Flutter에서 매일 쓰는 6가지. 모두 Iterable에 정의돼 있습니다.</span>
+<span class="tok-k">final</span> nums = &lt;<span class="tok-t">int</span>&gt;[<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>, <span class="tok-n">4</span>, <span class="tok-n">5</span>];
 
-      <h4>① records — 여러 값을 가볍게 묶어 반환</h4>
-      <p>클래스를 따로 만들지 않고도 여러 값을 하나로 묶어 반환합니다. "이 함수만을 위한 일회용 묶음"에 딱이에요.</p>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">records.dart</span></div>
-        <pre><span class="tok-c">// 위치 기반 — .$1, .$2로 접근</span>
-(<span class="tok-t">double</span>, <span class="tok-t">double</span>) <span class="tok-f">center</span>() => (<span class="tok-n">12.5</span>, <span class="tok-n">8.0</span>);
+<span class="tok-c">// ① map — 각 요소를 변환해 새 Iterable 생성</span>
+<span class="tok-k">final</span> doubled = nums.<span class="tok-f">map</span>((n) =&gt; n * <span class="tok-n">2</span>).<span class="tok-f">toList</span>();   <span class="tok-c">// [2, 4, 6, 8, 10]</span>
+
+<span class="tok-c">// ② where — 조건을 만족하는 요소만 거름</span>
+<span class="tok-k">final</span> evens = nums.<span class="tok-f">where</span>((n) =&gt; n.isEven).<span class="tok-f">toList</span>();  <span class="tok-c">// [2, 4]</span>
+
+<span class="tok-c">// ③ fold — 누적해 하나의 값으로 접기(초기값 0)</span>
+<span class="tok-k">final</span> sum = nums.<span class="tok-f">fold</span>&lt;<span class="tok-t">int</span>&gt;(<span class="tok-n">0</span>, (acc, n) =&gt; acc + n);  <span class="tok-c">// 15</span>
+
+<span class="tok-c">// ④ any / ⑤ every — 조건 검사 결과는 bool</span>
+<span class="tok-k">final</span> hasNeg = nums.<span class="tok-f">any</span>((n) =&gt; n &lt; <span class="tok-n">0</span>);    <span class="tok-c">// false (하나라도 음수?)</span>
+<span class="tok-k">final</span> allPos = nums.<span class="tok-f">every</span>((n) =&gt; n &gt; <span class="tok-n">0</span>);  <span class="tok-c">// true  (전부 양수?)</span>
+
+<span class="tok-c">// ⑥ firstWhere — 조건에 맞는 첫 요소(없으면 orElse 반환)</span>
+<span class="tok-k">final</span> firstBig = nums.<span class="tok-f">firstWhere</span>((n) =&gt; n &gt; <span class="tok-n">3</span>, orElse: () =&gt; -<span class="tok-n">1</span>);  <span class="tok-c">// 4</span></pre>
+</div>
+<table>
+  <tr><th>메서드</th><th>받는 함수</th><th>돌려주는 것</th><th>한 줄 용도</th></tr>
+  <tr><td><code class="inl">map</code></td><td><code class="inl">(e) =&gt; 새값</code></td><td><code class="inl">Iterable&lt;R&gt;</code></td><td>각 요소를 <b>변환</b></td></tr>
+  <tr><td><code class="inl">where</code></td><td><code class="inl">(e) =&gt; bool</code></td><td><code class="inl">Iterable&lt;E&gt;</code></td><td>조건으로 <b>필터링</b></td></tr>
+  <tr><td><code class="inl">fold</code></td><td><code class="inl">(acc, e) =&gt; acc</code></td><td>누적값 <code class="inl">R</code></td><td>하나의 값으로 <b>집계</b>(합·연결 등)</td></tr>
+  <tr><td><code class="inl">any</code></td><td><code class="inl">(e) =&gt; bool</code></td><td><code class="inl">bool</code></td><td><b>하나라도</b> 만족하나?</td></tr>
+  <tr><td><code class="inl">every</code></td><td><code class="inl">(e) =&gt; bool</code></td><td><code class="inl">bool</code></td><td><b>전부</b> 만족하나?</td></tr>
+  <tr><td><code class="inl">firstWhere</code></td><td><code class="inl">(e) =&gt; bool</code></td><td>요소 <code class="inl">E</code></td><td>조건 맞는 <b>첫 요소</b>(없으면 orElse, 그것도 없으면 예외)</td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 고차함수 쓸 때 vs 안 쓸 때</b> — "거른다 → 바꾼다 → 더한다"는 의도가 코드에 그대로 보이느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — for 루프로 변환·필터·합산</span></div><pre><span class="tok-c">// 임시 리스트와 인덱스 i가 산재 → 의도가 안 드러남</span>
+<span class="tok-k">final</span> prices = &lt;<span class="tok-t">int</span>&gt;[<span class="tok-n">1000</span>, <span class="tok-n">2000</span>, <span class="tok-n">3000</span>];
+<span class="tok-k">final</span> result = &lt;<span class="tok-t">int</span>&gt;[];
+<span class="tok-k">for</span> (<span class="tok-k">var</span> i = <span class="tok-n">0</span>; i &lt; prices.length; i++) {
+  <span class="tok-k">if</span> (prices[i] &gt;= <span class="tok-n">2000</span>) {        <span class="tok-c">// 2000원 이상만</span>
+    result.<span class="tok-f">add</span>(prices[i] ~/ <span class="tok-n">1000</span>);  <span class="tok-c">// 천원 단위로</span>
+  }
+}
+<span class="tok-k">var</span> total = <span class="tok-n">0</span>;
+<span class="tok-k">for</span> (<span class="tok-k">var</span> i = <span class="tok-n">0</span>; i &lt; result.length; i++) {
+  total += result[i];                <span class="tok-c">// 합산 로직이 또 따로</span>
+}
+<span class="tok-c">// result = [2, 3], total = 5</span></pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — where·map·fold 체인 한 줄씩</span></div><pre><span class="tok-c">// 의도가 그대로 읽힘: 거른다 → 바꾼다 → 접는다</span>
+<span class="tok-k">final</span> prices = &lt;<span class="tok-t">int</span>&gt;[<span class="tok-n">1000</span>, <span class="tok-n">2000</span>, <span class="tok-n">3000</span>];
+
+<span class="tok-k">final</span> result = prices
+    .<span class="tok-f">where</span>((p) =&gt; p &gt;= <span class="tok-n">2000</span>)   <span class="tok-c">// 2000원 이상만</span>
+    .<span class="tok-f">map</span>((p) =&gt; p ~/ <span class="tok-n">1000</span>)     <span class="tok-c">// 천원 단위로</span>
+    .<span class="tok-f">toList</span>();                    <span class="tok-c">// [2, 3]</span>
+
+<span class="tok-k">final</span> total = result.<span class="tok-f">fold</span>&lt;<span class="tok-t">int</span>&gt;(<span class="tok-n">0</span>, (acc, v) =&gt; acc + v);  <span class="tok-c">// 5</span></pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> 두 코드의 결과는 <code class="inl">[2, 3]</code>·<code class="inl">5</code>로 똑같지만, 오른쪽은 <b>임시 변수·인덱스·재할당이 0개</b>라 "무엇을 하는 코드인지"가 메서드 이름에 그대로 드러납니다. 버그가 끼어들 틈(off-by-one, 빈 <code class="inl">result</code> 초기화 누락)도 사라지죠. 실무에선 이 체인이 곧 <code class="inl">products.where(재고있음).map(상품카드).toList()</code> 형태로 위젯 리스트를 만드는 데 그대로 쓰입니다.</div>
+<div class="note warn"><b>함정 — lazy(지연 평가):</b> <code class="inl">map</code>·<code class="inl">where</code>는 즉시 실행되지 않고 <b>Iterable을 돌려줄 뿐</b>입니다. 실제 변환은 순회할 때 일어나요. 그래서 <code class="inl">children: list.map(...)</code>처럼 <code class="inl">List</code>가 필요한 자리(위젯 children, <code class="inl">ListView</code> 등)에선 끝에 <b><code class="inl">.toList()</code></b>를 붙여 materialize해야 합니다. 반대로 <code class="inl">fold</code>·<code class="inl">any</code>·<code class="inl">every</code>·<code class="inl">firstWhere</code>는 값을 바로 돌려주니 <code class="inl">.toList()</code>가 필요 없습니다. 또 <code class="inl">firstWhere</code>는 조건에 맞는 게 하나도 없고 <code class="inl">orElse</code>도 안 주면 <code class="inl">StateError</code> 예외를 던지므로, 없을 수 있는 상황이면 <code class="inl">orElse</code>를 꼭 지정하세요.</div>
+<div class="note react"><b>React/JS 매핑:</b> <code class="inl">map</code>≈<code class="inl">Array.map</code>, <code class="inl">where</code>≈<code class="inl">filter</code>, <code class="inl">fold</code>≈<code class="inl">reduce</code>, <code class="inl">any</code>≈<code class="inl">some</code>, <code class="inl">every</code>≈<code class="inl">every</code>, <code class="inl">firstWhere</code>≈<code class="inl">find</code>. 단 JS의 <code class="inl">map</code>은 곧바로 배열을 주지만 Dart는 lazy Iterable이라 <code class="inl">.toList()</code>가 추가로 필요한 점이 핵심 차이입니다.</div>
+
+<h3><span class="ic">🧬</span>제네릭 — &lt;T&gt;로 타입 안전 재사용</h3>
+<p>개념: <strong>제네릭(Generics)</strong>은 "타입을 나중에 채워 넣는 빈칸 &lt;T&gt;"입니다. 같은 자료구조·로직을 <code class="inl">int</code>, <code class="inl">String</code>, <code class="inl">User</code> 등 어떤 타입에도 재사용하되, 그 타입 정보를 컴파일 단계까지 그대로 유지하는 게 목적이에요. <code class="inl">List&lt;int&gt;</code>의 <code class="inl">&lt;int&gt;</code>가 바로 그 빈칸을 채운 모습입니다. 덕분에 "담을 때의 타입"과 "꺼낼 때의 타입"이 어긋나는 사고를 IDE가 빨간 줄로 막아줍니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">generics.dart</span></div>
+  <pre><span class="tok-c">// ① 컬렉션의 타입 빈칸 — 가장 자주 보는 제네릭</span>
+<span class="tok-t">List</span>&lt;<span class="tok-t">int</span>&gt; scores = [<span class="tok-n">90</span>, <span class="tok-n">85</span>, <span class="tok-n">100</span>];
+<span class="tok-t">Map</span>&lt;<span class="tok-t">String</span>, <span class="tok-t">int</span>&gt; ages = {<span class="tok-s">'창한'</span>: <span class="tok-n">30</span>};
+<span class="tok-t">int</span> total = scores.<span class="tok-f">reduce</span>((a, b) =&gt; a + b);  <span class="tok-c">// a, b가 int로 추론됨</span>
+
+<span class="tok-c">// ② 제네릭 함수 — &lt;T&gt;를 선언하면 인자·반환에 그 T를 그대로 씀</span>
+<span class="tok-t">T</span> <span class="tok-f">firstOf</span>&lt;<span class="tok-t">T</span>&gt;(<span class="tok-t">List</span>&lt;<span class="tok-t">T</span>&gt; items) =&gt; items.first;
+
+<span class="tok-k">final</span> name = <span class="tok-f">firstOf</span>(<span class="tok-s">'안녕'</span>.<span class="tok-f">split</span>(<span class="tok-s">''</span>));  <span class="tok-c">// T=String → name은 String</span>
+<span class="tok-k">final</span> top  = <span class="tok-f">firstOf</span>(scores);            <span class="tok-c">// T=int → top은 int (캐스팅 불필요)</span>
+
+<span class="tok-c">// ③ 제네릭 클래스 — &lt;T&gt; 빈칸을 가진 재사용 박스</span>
+<span class="tok-k">class</span> <span class="tok-t">Box</span>&lt;<span class="tok-t">T</span>&gt; {
+  <span class="tok-k">final</span> <span class="tok-t">T</span> value;
+  <span class="tok-t">Box</span>(<span class="tok-k">this</span>.value);              <span class="tok-c">// 초기화 형식 매개변수로 T 필드 채움</span>
+  <span class="tok-t">T</span> <span class="tok-f">unwrap</span>() =&gt; value;
+}
+
+<span class="tok-k">final</span> intBox = <span class="tok-t">Box</span>&lt;<span class="tok-t">int</span>&gt;(<span class="tok-n">42</span>);
+<span class="tok-t">int</span> n = intBox.<span class="tok-f">unwrap</span>();          <span class="tok-c">// 꺼낸 값이 int임을 컴파일러가 앎</span></pre>
+</div>
+<table>
+  <tr><th>표기</th><th>의미</th><th>예</th></tr>
+  <tr><td><code>List&lt;T&gt;</code></td><td>T 타입만 담는 리스트</td><td><code>List&lt;String&gt;</code> = 문자열 전용</td></tr>
+  <tr><td><code>Map&lt;K, V&gt;</code></td><td>키 K·값 V 타입 고정</td><td><code>Map&lt;String, int&gt;</code></td></tr>
+  <tr><td><code>T func&lt;T&gt;(...)</code></td><td>호출 시 T가 결정되는 함수</td><td><code>firstOf(scores)</code> → T=int</td></tr>
+  <tr><td><code>class C&lt;T&gt;</code></td><td>T 빈칸을 가진 재사용 클래스</td><td><code>Box&lt;User&gt;</code></td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 &lt;T&gt; 쓸 때 vs 안 쓸 때</b> — <code class="inl">dynamic</code>/<code class="inl">Object</code>로 뭉뚱그리면 꺼낼 때마다 캐스팅·런타임 위험, &lt;T&gt;는 컴파일 타임에 타입을 보장합니다.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — Object로 담고 캐스팅</span></div>
+    <pre><span class="tok-c">// 타입 정보를 버리고 Object로 담음</span>
+<span class="tok-t">List</span>&lt;<span class="tok-t">Object</span>&gt; items = [<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>];
+
+<span class="tok-c">// 꺼낼 때마다 손으로 캐스팅해야 함</span>
+<span class="tok-t">int</span> x = items.first <span class="tok-k">as</span> <span class="tok-t">int</span>;
+
+<span class="tok-c">// 실수로 String을 섞어도 컴파일은 통과…</span>
+items.<span class="tok-f">add</span>(<span class="tok-s">'oops'</span>);
+<span class="tok-t">int</span> y = items.last <span class="tok-k">as</span> <span class="tok-t">int</span>;
+<span class="tok-c">// 💥 런타임: type 'String' is not a subtype of type 'int' in type cast</span></pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — &lt;int&gt;로 타입 고정</span></div>
+    <pre><span class="tok-c">// 담을 타입을 못 박음</span>
+<span class="tok-t">List</span>&lt;<span class="tok-t">int</span>&gt; items = [<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>];
+
+<span class="tok-c">// 캐스팅 없이 바로 int</span>
+<span class="tok-t">int</span> x = items.first;
+
+<span class="tok-c">// String을 섞으려 하면 IDE가 즉시 빨간 줄</span>
+<span class="tok-c">// items.add('oops'); ← 컴파일 에러로 차단</span>
+<span class="tok-t">int</span> y = items.last;       <span class="tok-c">// 항상 안전</span></pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> ❌는 "무엇이든 담기는 자루"라 꺼낼 때마다 <code class="inl">as</code> 캐스팅이 필요하고, 엉뚱한 타입이 섞여도 빌드는 통과해 결국 사용자 손에서 터집니다. ✅의 &lt;int&gt;는 "int만 담는 칸"이라 캐스팅이 사라지고, 잘못된 삽입은 컴파일 단계에서 막혀요. 실무 팁: 빈 컬렉션을 만들 땐 <code class="inl">&lt;int&gt;[]</code>·<code class="inl">&lt;String, int&gt;{}</code>처럼 타입을 명시해 추론이 <code class="inl">dynamic</code>으로 새는 걸 막으세요.</div>
+<div class="note warn"><b>함정:</b> 제약을 걸지 않은 <code class="inl">&lt;T&gt;</code>는 <code class="inl">Object?</code>로 취급돼 <code class="inl">+</code>·<code class="inl">&lt;</code> 같은 연산을 바로 못 씁니다. 숫자 연산이 필요하면 <code class="inl">T extends num</code>처럼 <b>상한(bound)</b>을 지정하세요 — 예: <code class="inl">T maxOf&lt;T extends num&gt;(T a, T b) =&gt; a &gt; b ? a : b;</code>.</div>
+
+<h3><span class="ic">🏷️</span>enum — 특히 enhanced enum</h3>
+<p>개념: <code class="inl">enum</code>은 "정해진 값들의 집합"을 하나의 타입으로 만드는 문법입니다(요일·등급·상태 등). 문자열 상수와 달리 오타가 컴파일 단계에서 막히고, <code class="inl">switch</code> 망라성도 검사돼요. Dart 2.17+의 <strong>enhanced enum</strong>은 여기서 한발 더 나아가, 각 값에 <b>필드와 메서드</b>를 묶을 수 있습니다 — 즉 "이 값에 딸린 색·라벨·동작"을 enum 안에 캡슐화해, 여기저기 흩어진 <code class="inl">switch</code> 분기를 통째로 없앱니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">enum_basic.dart</span></div>
+  <pre><span class="tok-c">// 기본 enum — 값들의 집합. 오타 불가, switch 망라성 체크 가능</span>
+<span class="tok-k">enum</span> <span class="tok-t">Direction</span> { north, east, south, west }
+
+<span class="tok-c">// 모든 enum이 공짜로 갖는 멤버들</span>
+<span class="tok-k">const</span> d = <span class="tok-t">Direction</span>.north;
+print(d.name);                  <span class="tok-c">// 'north'  (값의 이름 문자열)</span>
+print(d.index);                 <span class="tok-c">// 0        (선언 순서)</span>
+print(<span class="tok-t">Direction</span>.values.length); <span class="tok-c">// 4        (전체 값 리스트)</span></pre>
+</div>
+<h4>① enhanced enum — 값에 필드·메서드를 묶기 (Dart 2.17+)</h4>
+<p>각 값이 <b>생성자 인자</b>를 받아 필드를 채우고, enum 본문에 <b>메서드·게터</b>를 둘 수 있습니다. 생성자는 반드시 <code class="inl">const</code>여야 하고, <code class="inl">this.x</code>(초기화 형식 매개변수)로 필드를 채웁니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">enum_enhanced.dart</span></div>
+  <pre><span class="tok-c">// enhanced enum: 각 값에 색·라벨·적립률을 묶는다</span>
+<span class="tok-k">enum</span> <span class="tok-t">Grade</span> {
+  bronze(<span class="tok-n">0xFFCD7F32</span>, <span class="tok-s">'브론즈'</span>, <span class="tok-n">1.0</span>),   <span class="tok-c">// 각 값이 생성자 인자를 가짐</span>
+  silver(<span class="tok-n">0xFFC0C0C0</span>, <span class="tok-s">'실버'</span>, <span class="tok-n">1.2</span>),
+  gold(<span class="tok-n">0xFFFFD700</span>, <span class="tok-s">'골드'</span>, <span class="tok-n">1.5</span>);   <span class="tok-c">// 마지막 값 뒤 ; 필수(메서드 선언 시작)</span>
+
+  <span class="tok-c">// 반드시 const 생성자 — this.x(초기화 형식 매개변수)로 필드 채움</span>
+  <span class="tok-k">const</span> <span class="tok-t">Grade</span>(<span class="tok-k">this</span>.colorValue, <span class="tok-k">this</span>.label, <span class="tok-k">this</span>.pointRate);
+
+  <span class="tok-k">final</span> <span class="tok-t">int</span> colorValue;
+  <span class="tok-k">final</span> <span class="tok-t">String</span> label;
+  <span class="tok-k">final</span> <span class="tok-t">double</span> pointRate;
+
+  <span class="tok-c">// 메서드·게터도 가질 수 있다 → 데이터와 로직을 한곳에</span>
+  <span class="tok-t">int</span> <span class="tok-f">pointsFor</span>(<span class="tok-t">int</span> amount) =&gt; (amount * pointRate).<span class="tok-f">round</span>();
+  <span class="tok-t">bool</span> <span class="tok-k">get</span> isPremium =&gt; pointRate &gt;= <span class="tok-n">1.5</span>;
+}
+
+<span class="tok-c">// 사용: 값 + 데이터 + 동작이 전부 Grade 안에 캡슐화됨</span>
+<span class="tok-k">final</span> pts = <span class="tok-t">Grade</span>.gold.<span class="tok-f">pointsFor</span>(<span class="tok-n">10000</span>);  <span class="tok-c">// 15000</span>
+print(<span class="tok-t">Grade</span>.gold.label);                  <span class="tok-c">// '골드'</span>
+print(<span class="tok-t">Grade</span>.gold.isPremium);              <span class="tok-c">// true</span></pre>
+</div>
+<table>
+  <tr><th></th><th>기본 enum</th><th>enhanced enum</th></tr>
+  <tr><td>각 값에 데이터(필드)</td><td>없음(이름만)</td><td><b>필드+생성자로 부착</b>(색·라벨·수치 등)</td></tr>
+  <tr><td>인자 받는 생성자</td><td>없음(암묵 <code class="inl">const</code>)</td><td><b>값마다 <code class="inl">const</code> 생성자 인자</b></td></tr>
+  <tr><td>메서드·게터·<code class="inl">implements</code></td><td>멤버가 없을 뿐, 붙이면 가능</td><td><b>자유롭게 추가</b>(<code class="inl">pointsFor</code>·<code class="inl">isPremium</code> 등)</td></tr>
+  <tr><td>공통 제공</td><td colspan="2"><code class="inl">.name</code> · <code class="inl">.index</code> · <code class="inl">.values</code> 는 둘 다 자동</td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 enhanced enum 쓸 때 vs 안 쓸 때</b> — 값에 딸린 데이터가 <b>한곳에 모이느냐</b>, <code class="inl">switch</code>로 사방에 흩어지느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — String 상수 + switch 산재</span></div><pre><span class="tok-c">// 색·라벨·적립률이 String + switch로 사방에 흩어짐</span>
+<span class="tok-k">const</span> tier = <span class="tok-s">'gold'</span>;  <span class="tok-c">// 오타 나도 컴파일 통과 → 런타임 버그</span>
+
+<span class="tok-t">int</span> <span class="tok-f">colorOf</span>(<span class="tok-t">String</span> t) {
+  <span class="tok-k">switch</span> (t) {
+    <span class="tok-k">case</span> <span class="tok-s">'bronze'</span>: <span class="tok-k">return</span> <span class="tok-n">0xFFCD7F32</span>;
+    <span class="tok-k">case</span> <span class="tok-s">'silver'</span>: <span class="tok-k">return</span> <span class="tok-n">0xFFC0C0C0</span>;
+    <span class="tok-k">case</span> <span class="tok-s">'gold'</span>:   <span class="tok-k">return</span> <span class="tok-n">0xFFFFD700</span>;
+    <span class="tok-k">default</span>:       <span class="tok-k">return</span> <span class="tok-n">0xFF000000</span>;
+  }
+}
+
+<span class="tok-c">// 라벨용·적립률용 switch가 또 따로… 같은 분기가 곳곳에 복제</span>
+<span class="tok-c">// String labelOf(String t) { ...라벨용 switch가 또... }</span>
+<span class="tok-c">// int rewardOf(String t) { ...적립률용 switch가 또... }</span>
+<span class="tok-c">// → 같은 'tier' 분기가 색·라벨·적립률마다 복제됨</span></pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — enum에 필드로 캡슐화</span></div><pre><span class="tok-c">// 색·라벨·적립률을 enum 필드로 — 분기 없이 점 하나로 꺼냄</span>
+<span class="tok-k">enum</span> <span class="tok-t">Grade</span> {
+  bronze(<span class="tok-n">0xFFCD7F32</span>, <span class="tok-s">'브론즈'</span>, <span class="tok-n">1.0</span>),
+  silver(<span class="tok-n">0xFFC0C0C0</span>, <span class="tok-s">'실버'</span>, <span class="tok-n">1.2</span>),
+  gold(<span class="tok-n">0xFFFFD700</span>, <span class="tok-s">'골드'</span>, <span class="tok-n">1.5</span>);
+  <span class="tok-k">const</span> <span class="tok-t">Grade</span>(<span class="tok-k">this</span>.color, <span class="tok-k">this</span>.label, <span class="tok-k">this</span>.rate);
+  <span class="tok-k">final</span> <span class="tok-t">int</span> color;
+  <span class="tok-k">final</span> <span class="tok-t">String</span> label;
+  <span class="tok-k">final</span> <span class="tok-t">double</span> rate;
+}
+
+<span class="tok-c">// 호출부: switch 0개. 새 등급도 enum 한 곳만 고치면 끝</span>
+<span class="tok-k">final</span> g = <span class="tok-t">Grade</span>.gold;
+print(g.color);  <span class="tok-c">// 0xFFFFD700</span>
+print(g.label);  <span class="tok-c">// '골드'</span></pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> 왼쪽은 색·라벨·적립률마다 <code class="inl">switch</code>가 따로라 <b>같은 분기가 복제</b>되고, <code class="inl">'gold'</code> 오타는 런타임에야 터집니다. 오른쪽은 데이터가 <code class="inl">Grade</code> 한 곳에 모여 <code class="inl">g.color</code>·<code class="inl">g.label</code>로 바로 꺼내고, 새 등급(platinum) 추가도 enum에 한 줄만 더하면 끝입니다. 실무 팁: <code class="inl">switch (grade) { ... }</code>를 자주 쓰게 된다면, 그 분기 로직을 enum의 메서드·게터로 끌어올릴 신호예요. 단, 화면 표시 문자열은 다국어(i18n)가 필요하면 enum 필드에 한국어를 박기보다 라벨 <b>키</b>만 두고 번역 레이어에서 매핑하는 편이 낫습니다.</div>
+<div class="note q"><b>예상 꼬리질문:</b> "enum과 sealed class, 언제 뭘 쓰나요?" → "케이스가 <b>유한·고정</b>이고 각 케이스가 같은 모양의 데이터(필드)만 가지면 enhanced enum이 간결합니다. 반대로 케이스마다 <b>담는 데이터의 종류가 다르면</b>(예: Success는 데이터, Failure는 에러 메시지) sealed class가 적합해요. 둘 다 <code class="inl">switch</code> 망라성을 컴파일러가 보장한다는 공통점이 있습니다."</div>
+<div class="note react"><b>React/TS 매핑:</b> 기본 enum ≈ TS <code class="inl">enum</code>/유니온 리터럴, enhanced enum ≈ 값마다 메타데이터를 든 <code class="inl">as const</code> 객체 맵 + 메서드를 언어 차원에서 타입 안전하게 묶은 형태입니다.</div>
+
+<h3 id="extension"><span class="ic">🧩</span>extension — 기존 타입에 메서드 추가</h3>
+<p>개념: <code class="inl">extension</code>은 <strong>내가 고칠 수 없는 남의 타입</strong>(<code class="inl">String</code>·<code class="inl">int</code>·SDK 클래스 등)에 메서드·게터를 덧붙이는 문법입니다. 소스를 상속하거나 수정하지 않고도 <code class="inl">'hi'.capitalized</code>처럼 그 타입의 원래 기능인 것처럼 호출할 수 있어요. 자주 쓰는 유틸을 <code class="inl">capitalize(s)</code> 같은 자유 함수로 흩어 두면 발견이 어려운데, 확장으로 묶으면 <strong>점(.) 자동완성</strong>에 바로 떠서 찾을 필요가 없어집니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">extension_basics.dart</span></div>
+  <pre><span class="tok-c">// String에 기능을 '확장' — on 뒤에 대상 타입을 적는다</span>
+<span class="tok-k">extension</span> <span class="tok-t">StringCasing</span> <span class="tok-k">on</span> <span class="tok-t">String</span> {
+  <span class="tok-c">// 게터: 첫 글자만 대문자로</span>
+  <span class="tok-t">String</span> <span class="tok-k">get</span> capitalized =&gt;
+      isEmpty ? <span class="tok-k">this</span> : <span class="tok-s">'${this[0].toUpperCase()}${substring(1)}'</span>;
+
+  <span class="tok-c">// 메서드도 가능 — this 는 확장 대상(여기선 String)</span>
+  <span class="tok-t">bool</span> <span class="tok-f">isPhone</span>() =&gt; <span class="tok-t">RegExp</span>(<span class="tok-s">r'^\d{2,3}-\d{3,4}-\d{4}$'</span>).hasMatch(<span class="tok-k">this</span>);
+}
+
+<span class="tok-c">// 마치 String이 원래 갖고 있던 멤버처럼 호출 → '.' 자동완성에 뜬다</span>
+print(<span class="tok-s">'hi'</span>.capitalized);          <span class="tok-c">// Hi</span>
+print(<span class="tok-s">'010-1234-5678'</span>.isPhone()); <span class="tok-c">// true</span></pre>
+</div>
+<table>
+  <tr><th>구분</th><th>자유 함수 <code>capitalize(s)</code></th><th>extension <code>s.capitalized</code></th></tr>
+  <tr><td>호출 형태</td><td><code>capitalize(name)</code> (함수가 어디 있는지 알아야 함)</td><td><code>name.capitalized</code> (점 찍으면 바로 보임)</td></tr>
+  <tr><td>발견성</td><td>낮음 — 이름을 기억해 import해야</td><td><b>높음</b> — IDE 자동완성에 등장</td></tr>
+  <tr><td>멤버 결정</td><td>그 이름의 함수 하나로 <b>정적</b> 바인딩(오버라이드 없음)</td><td><b>정적</b> — 변수의 <b>정적 타입</b>으로 결정(런타임 타입 무시)</td></tr>
+  <tr><td>상태 추가</td><td>—</td><td>불가(필드 X, 게터·메서드만)</td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 extension 쓸 때 vs 안 쓸 때</b> — 같은 유틸을 자유 함수로 흩뿌리느냐, 타입에 자연스럽게 붙이느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 유틸 함수가 흩어져 발견이 어려움</span></div>
+    <pre><span class="tok-c">// 어딘가 util.dart 에 박혀 있는 자유 함수</span>
+<span class="tok-t">String</span> <span class="tok-f">capitalize</span>(<span class="tok-t">String</span> s) =&gt;
+    s.isEmpty ? s : <span class="tok-s">'${s[0].toUpperCase()}${s.substring(1)}'</span>;
+
+<span class="tok-c">// 호출부: 함수 이름·위치를 외워서 import 해야 한다</span>
+<span class="tok-c">// 'hi'. 까지 쳐도 자동완성엔 절대 안 뜸</span>
+<span class="tok-k">final</span> title = <span class="tok-f">capitalize</span>(name);
+<span class="tok-c">// 중첩되면 안에서 바깥으로 읽혀 더 장황:</span>
+<span class="tok-k">final</span> t2 = <span class="tok-f">capitalize</span>(name.trim());</pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — 타입에 붙어 자동완성에 등장</span></div>
+    <pre><span class="tok-c">// 한 번 정의해 두면 String 전체가 능력을 얻는다</span>
+<span class="tok-k">extension</span> <span class="tok-t">Cap</span> <span class="tok-k">on</span> <span class="tok-t">String</span> {
+  <span class="tok-t">String</span> <span class="tok-k">get</span> capitalized =&gt;
+      isEmpty ? <span class="tok-k">this</span> : <span class="tok-s">'${this[0].toUpperCase()}${substring(1)}'</span>;
+}
+
+<span class="tok-c">// 호출부: name. 만 찍어도 capitalized 가 보인다</span>
+<span class="tok-k">final</span> title = name.capitalized;
+<span class="tok-c">// 체이닝이 왼→오로 자연스럽게 읽힘</span>
+<span class="tok-k">final</span> t2 = name.trim().capitalized;</pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> 두 코드의 로직은 같지만, 확장은 기능을 <b>타입 위에 얹어</b> IDE 자동완성·체이닝으로 끌어올립니다. 함수 이름을 기억하거나 어느 파일에 있는지 찾을 필요가 없어요. 실무 팁 — 확장은 import한 파일 범위에서만 보이므로 <code class="inl">extensions/string_x.dart</code>처럼 모아 두고, 충돌이 나면 <code class="inl">StringCasing('hi').capitalized</code>로 확장 이름을 명시해 해소합니다. 단, 확장은 <b>필드(상태)를 추가할 수 없고</b> 게터·메서드만 가능합니다.</div>
+<div class="note warn"><b>함정 ① 정적 디스패치:</b> 확장 메서드는 <b>변수의 정적 타입</b>으로 고른다 — 다형성이 아닙니다. <code class="inl">Object o = 'hi'; o.capitalized;</code>는 컴파일 에러예요(<code class="inl">Object</code>엔 확장이 없음). 런타임 타입이 <code class="inl">String</code>이어도 소용없습니다. <b>함정 ② null 확장:</b> <code class="inl">on String</code> 확장은 <code class="inl">String?</code> 값엔 안 붙습니다. nullable에 쓰려면 <code class="inl">extension on String?</code>로 따로 선언하고 본문에서 <code class="inl">this == null</code>을 직접 처리하세요(이때만 null에서 메서드 호출이 안전합니다).</div>
+
+<h3 id="mixin"><span class="ic">🧬</span>mixin — with로 기능 조합</h3>
+<p>개념: <code class="inl">mixin</code>은 <strong>여러 클래스가 공유할 기능 묶음</strong>을 한 곳에 정의해 두고, <code class="inl">with</code>로 끼워 넣는 문법입니다. Dart는 클래스 다중 상속을 금지하는데, mixin이 그 빈자리를 메워 <strong>코드 재사용</strong>을 가능하게 해요. 같은 메서드를 클래스마다 복붙하는 대신 mixin 하나로 모으고, 필요한 클래스에 <code class="inl">with</code>로 조합합니다. Flutter의 <code class="inl">SingleTickerProviderStateMixin</code>(애니메이션 ticker 제공)이 대표적인 예입니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">mixin_basics.dart</span></div>
+  <pre><span class="tok-c">// 재사용할 기능 묶음을 mixin으로 정의(직접 인스턴스화 X)</span>
+<span class="tok-k">mixin</span> <span class="tok-t">Swimmer</span> {
+  <span class="tok-t">void</span> <span class="tok-f">swim</span>() =&gt; print(<span class="tok-s">'헤엄친다'</span>);
+}
+<span class="tok-k">mixin</span> <span class="tok-t">Walker</span> {
+  <span class="tok-t">void</span> <span class="tok-f">walk</span>() =&gt; print(<span class="tok-s">'걷는다'</span>);
+}
+
+<span class="tok-c">// with로 두 기능을 한 클래스에 조합 — 다중 상속의 대체</span>
+<span class="tok-k">class</span> <span class="tok-t">Duck</span> <span class="tok-k">with</span> <span class="tok-t">Swimmer</span>, <span class="tok-t">Walker</span> {}
+
+<span class="tok-k">final</span> duck = <span class="tok-t">Duck</span>();
+duck.<span class="tok-f">swim</span>(); <span class="tok-c">// 헤엄친다  ← Swimmer에서 옴</span>
+duck.<span class="tok-f">walk</span>(); <span class="tok-c">// 걷는다    ← Walker에서 옴</span>
+
+<span class="tok-c">// on으로 적용 대상을 제한할 수도 있다(이 mixin은 Animal에만 with 가능)</span>
+<span class="tok-k">class</span> <span class="tok-t">Animal</span> {}
+<span class="tok-k">mixin</span> <span class="tok-t">Logger</span> <span class="tok-k">on</span> <span class="tok-t">Animal</span> {
+  <span class="tok-t">void</span> <span class="tok-f">log</span>() =&gt; print(<span class="tok-s">'[$runtimeType]'</span>); <span class="tok-c">// Animal 멤버 접근 가능</span>
+}</pre>
+</div>
+<p style="margin-top:18px"><b>🔍 같은 기능을 복붙할 때 vs mixin으로 조합할 때</b> — 헤엄 기능을 클래스마다 똑같이 적느냐, 한 번 정의해 <code class="inl">with</code>로 나눠 쓰느냐.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 같은 코드를 클래스마다 복붙</span></div>
+    <pre><span class="tok-k">class</span> <span class="tok-t">Duck</span> {
+  <span class="tok-t">void</span> <span class="tok-f">swim</span>() =&gt; print(<span class="tok-s">'헤엄친다'</span>); <span class="tok-c">// 복붙 ①</span>
+}
+<span class="tok-k">class</span> <span class="tok-t">Fish</span> {
+  <span class="tok-t">void</span> <span class="tok-f">swim</span>() =&gt; print(<span class="tok-s">'헤엄친다'</span>); <span class="tok-c">// 복붙 ② (똑같음)</span>
+}
+<span class="tok-k">class</span> <span class="tok-t">Otter</span> {
+  <span class="tok-t">void</span> <span class="tok-f">swim</span>() =&gt; print(<span class="tok-s">'헤엄친다'</span>); <span class="tok-c">// 복붙 ③</span>
+}
+<span class="tok-c">// 💥 swim 규칙이 바뀌면 세 곳을 전부 고쳐야 함(누락 위험)</span></pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — 한 번 정의해 with로 공유</span></div>
+    <pre><span class="tok-k">mixin</span> <span class="tok-t">Swimmer</span> {
+  <span class="tok-t">void</span> <span class="tok-f">swim</span>() =&gt; print(<span class="tok-s">'헤엄친다'</span>); <span class="tok-c">// 단 한 곳</span>
+}
+
+<span class="tok-c">// 필요한 클래스에 with로 끼워 넣기만</span>
+<span class="tok-k">class</span> <span class="tok-t">Duck</span>  <span class="tok-k">with</span> <span class="tok-t">Swimmer</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Fish</span>  <span class="tok-k">with</span> <span class="tok-t">Swimmer</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Otter</span> <span class="tok-k">with</span> <span class="tok-t">Swimmer</span> {}
+<span class="tok-c">// ✅ swim 규칙은 mixin 한 곳만 고치면 전부 반영</span></pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> 복붙은 같은 코드를 N벌로 늘려 수정 시 누락·불일치를 부르지만, mixin은 <b>단일 출처(single source)</b>라 한 곳만 고치면 끝입니다. 상속과 달리 <code class="inl">with</code>는 <b>여러 개</b>를 조합할 수 있어 "수직 계층"이 아닌 "수평 기능 단위"로 재사용해요. 실무 팁 — 여러 mixin이 같은 이름 메서드를 가지면 <code class="inl">with A, B</code>에서 <b>뒤쪽(B)이 이김</b>(선형화 순서). 충돌을 피하려면 mixin마다 책임을 좁게 나누세요.</div>
+<p style="margin-top:18px"><b>🔍 extends vs with vs implements</b> — 비슷해 보이지만 "무엇을 물려받고 무엇을 강제하느냐"가 다릅니다.</p>
+<table>
+  <tr><th>키워드</th><th>구현(코드)</th><th>개수</th><th>의미 / 언제</th></tr>
+  <tr><td><code>extends</code></td><td>물려받음</td><td><b>1개</b></td><td>"~이다(is-a)" 부모-자식 단일 상속. 부모 구현을 그대로 쓰고 일부만 override</td></tr>
+  <tr><td><code>with</code></td><td>물려받음</td><td><b>여러 개</b></td><td>"~기능을 가짐" 기능 묶음 조합(mixin). 코드 재사용이 목적</td></tr>
+  <tr><td><code>implements</code></td><td><b>안 물려받음</b></td><td>여러 개</td><td>"~규약을 따름" 인터페이스 계약만. 모든 멤버를 직접 구현해야</td></tr>
+</table>
+<div class="note warn"><b>함정:</b> <code class="inl">with</code>는 구현까지 가져오지만 <code class="inl">implements</code>는 <b>시그니처만</b> 강제합니다 — <code class="inl">class X implements Swimmer {}</code>는 <code class="inl">swim()</code>을 직접 작성하지 않으면 컴파일 에러예요. 또 mixin은 <b>생성자를 가질 수 없습니다</b>(상태 초기화가 필요하면 <code class="inl">late</code> 필드나 <code class="inl">on</code>으로 제한한 상위 타입의 생성자에 맡기세요). 순서도 중요 — <code class="inl">extends A with B, C</code>는 "A → B → C" 순으로 쌓여, 같은 멤버는 가장 오른쪽이 최종 우선합니다.</div>
+
+<h3><span class="ic">🏷️</span>typedef — 복잡한 타입에 이름 붙이기</h3>
+<p>개념: <strong>typedef</strong>는 길고 반복되는 타입에 <em>별명(alias)</em>을 붙이는 도구입니다. 특히 <code class="inl">void Function(int, String)</code> 같은 <strong>함수 타입</strong>은 콜백 인자로 여기저기 등장하는데, 매번 풀어 쓰면 길고 한 글자만 틀려도 안 맞아요. 이름을 한 번 정해 두면 의미가 드러나고, 시그니처가 바뀔 때 정의 한 곳만 고치면 됩니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">typedef.dart</span></div>
+  <pre><span class="tok-c">// ① 함수 타입에 이름 붙이기 (가장 흔한 용도)</span>
+<span class="tok-k">typedef</span> <span class="tok-t">IntCallback</span> = <span class="tok-t">void</span> <span class="tok-t">Function</span>(<span class="tok-t">int</span> value);
+
+<span class="tok-c">// 이제 콜백 인자를 짧고 의미 있게 선언</span>
+<span class="tok-t">void</span> <span class="tok-f">onTapEach</span>(<span class="tok-t">List</span>&lt;<span class="tok-t">int</span>&gt; ids, <span class="tok-t">IntCallback</span> handler) {
+  <span class="tok-k">for</span> (<span class="tok-k">final</span> id <span class="tok-k">in</span> ids) <span class="tok-f">handler</span>(id);
+}
+
+<span class="tok-f">onTapEach</span>([<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>], (id) =&gt; print(<span class="tok-s">'tap $id'</span>));
+
+<span class="tok-c">// ② 반환값·명명 파라미터가 있는 함수 타입도 OK</span>
+<span class="tok-k">typedef</span> <span class="tok-t">Validator</span> = <span class="tok-t">String</span>? <span class="tok-t">Function</span>(<span class="tok-t">String</span> input);
+
+<span class="tok-t">String</span>? <span class="tok-f">notEmpty</span>(<span class="tok-t">String</span> v) =&gt; v.isEmpty ? <span class="tok-s">'필수 항목'</span> : <span class="tok-k">null</span>;
+<span class="tok-t">Validator</span> rule = notEmpty;        <span class="tok-c">// 타입이 정확히 일치</span>
+
+<span class="tok-c">// ③ 일반 타입의 별명 (제네릭 포함)</span>
+<span class="tok-k">typedef</span> <span class="tok-t">Json</span> = <span class="tok-t">Map</span>&lt;<span class="tok-t">String</span>, <span class="tok-t">dynamic</span>&gt;;
+<span class="tok-t">Json</span> user = {<span class="tok-s">'name'</span>: <span class="tok-s">'창한'</span>, <span class="tok-s">'age'</span>: <span class="tok-n">30</span>};  <span class="tok-c">// Map&lt;String, dynamic&gt; 그대로</span></pre>
+</div>
+<p style="margin-top:18px"><b>🔍 typedef 쓸 때 vs 안 쓸 때</b> — 같은 함수 타입을 매번 풀어 쓰는 대신, 이름 한 번으로 의미를 드러내고 변경을 한 곳에 모읍니다.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 긴 타입을 곳곳에 반복</span></div>
+    <pre><span class="tok-c">// 같은 시그니처를 매번 풀어 씀</span>
+<span class="tok-t">void</span> <span class="tok-f">register</span>(
+    <span class="tok-t">void</span> <span class="tok-t">Function</span>(<span class="tok-t">int</span> a, <span class="tok-t">String</span> b) cb) {}
+
+<span class="tok-t">void</span> <span class="tok-f">remove</span>(
+    <span class="tok-t">void</span> <span class="tok-t">Function</span>(<span class="tok-t">int</span> a, <span class="tok-t">String</span> b) cb) {}
+
+<span class="tok-t">List</span>&lt;<span class="tok-t">void</span> <span class="tok-t">Function</span>(<span class="tok-t">int</span>, <span class="tok-t">String</span>)&gt; all = [];
+
+<span class="tok-c">// 시그니처에 매개변수 하나 추가하면</span>
+<span class="tok-c">// 위 세 곳을 전부 손으로 고쳐야 함(누락 위험)</span></pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — 이름 한 번, 변경도 한 곳</span></div>
+    <pre><span class="tok-c">// 한 번만 정의</span>
+<span class="tok-k">typedef</span> <span class="tok-t">Listener</span> =
+    <span class="tok-t">void</span> <span class="tok-t">Function</span>(<span class="tok-t">int</span> a, <span class="tok-t">String</span> b);
+
+<span class="tok-t">void</span> <span class="tok-f">register</span>(<span class="tok-t">Listener</span> cb) {}
+<span class="tok-t">void</span> <span class="tok-f">remove</span>(<span class="tok-t">Listener</span> cb) {}
+<span class="tok-t">List</span>&lt;<span class="tok-t">Listener</span>&gt; all = [];
+
+<span class="tok-c">// 시그니처 변경은 typedef 한 줄만 수정</span>
+<span class="tok-c">// → 쓰는 곳 전부 자동 반영</span></pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> ❌는 같은 함수 타입이 세 군데 흩어져, 인자 하나만 바뀌어도 모두 찾아 고쳐야 하고 한 곳만 빠뜨리면 타입 불일치가 납니다. ✅는 <code class="inl">Listener</code>라는 <em>이름</em> 자체가 의도를 설명하고, 정의 한 줄만 바꾸면 사용처가 전부 따라옵니다. 실무 팁: 콜백·검증 함수·이벤트 핸들러처럼 "같은 모양의 함수"가 반복되면 typedef가 제격이에요. 다만 단순 타입의 별명(<code class="inl">typedef Json = ...</code>)은 가독성에 도움이 될 때만 쓰고 남발하지 마세요 — 원래 타입이 가려질 수 있습니다.</div>
+<div class="note tip"><b>참고:</b> Dart 2.13+부터 typedef는 함수 타입뿐 아니라 <b>일반 타입의 별명</b>으로도 쓸 수 있습니다(위 <code class="inl">Json</code> 예). Flutter 콜백 이름인 <code class="inl">ValueChanged&lt;T&gt;</code>, <code class="inl">VoidCallback</code>도 실은 프레임워크가 정의해 둔 typedef예요.</div>
+
+<h3><span class="ic">🆕</span>Dart 3 — 보일러플레이트를 줄이는 최신 문법</h3>
+<p>Dart 3(2023~)부터 표준이 된 기능들입니다. 핵심 목적은 두 가지 — <strong>여러 값을 가볍게 다루기</strong>(records·패턴 매칭)와 <strong>상태를 타입으로 안전하게 모델링하기</strong>(switch 표현식·sealed class)예요. 예전이라면 클래스를 따로 만들거나 <code class="inl">if-else</code>를 길게 늘어놓던 코드가 한두 줄로 줄고, 빠뜨린 경우(case)를 컴파일러가 대신 잡아줍니다. 면접에서 "최신 Dart 아세요?"라는 질문에 구체적 예시로 답할 수 있도록 네 가지를 정리했습니다.</p>
+
+<h4>① records — 여러 값 가볍게 묶기</h4>
+<p>개념: <b>record(레코드)</b>는 여러 값을 클래스 선언 없이 하나로 묶는 익명 타입입니다. 함수가 두세 개의 값을 한꺼번에 돌려줘야 하는데 그것만을 위한 클래스를 만들기는 번거로울 때 씁니다. 필드에 순서로 접근하는 <b>위치 기반</b>(<code class="inl">.$1</code>, <code class="inl">.$2</code>)과 이름으로 접근하는 <b>이름 기반</b>(<code class="inl">(code: 200, msg: 'OK')</code>) 두 형태가 있어요.</p>
+<div class="code"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">records.dart</span></div><pre><span class="tok-c">// 위치 기반 record — 필드 순서대로 .$1, .$2 로 접근</span>
+(<span class="tok-t">double</span>, <span class="tok-t">double</span>) <span class="tok-f">center</span>() =&gt; (<span class="tok-n">12.5</span>, <span class="tok-n">8.0</span>);
 <span class="tok-k">final</span> c = <span class="tok-f">center</span>();
-print(<span class="tok-s">'${c.$1}, ${c.$2}'</span>);
+print(<span class="tok-s">'${c.$1}, ${c.$2}'</span>);     <span class="tok-c">// 12.5, 8.0</span>
 
-<span class="tok-c">// 이름 기반 — 가독성↑ (필드에 이름 부여)</span>
-({<span class="tok-t">int</span> code, <span class="tok-t">String</span> msg}) <span class="tok-f">status</span>() => (code: <span class="tok-n">200</span>, msg: <span class="tok-s">'OK'</span>);
+<span class="tok-c">// 이름 기반 record — 필드에 이름을 붙여 가독성↑</span>
+({<span class="tok-t">int</span> code, <span class="tok-t">String</span> msg}) <span class="tok-f">status</span>() =&gt; (code: <span class="tok-n">200</span>, msg: <span class="tok-s">'OK'</span>);
 <span class="tok-k">final</span> s = <span class="tok-f">status</span>();
-print(<span class="tok-s">'${s.code} ${s.msg}'</span>);     <span class="tok-c">// 200 OK</span></pre>
-      </div>
-      <div class="note tip"><b>실전:</b> "두 값을 돌려줘야 하는데 클래스 만들긴 번거로운" 경우 — 위젯 크기 <code class="inl">(w, h)</code>, 페이징 결과 <code class="inl">(items, hasMore)</code> 등에 유용합니다.</div>
+print(<span class="tok-s">'${s.code} ${s.msg}'</span>);   <span class="tok-c">// 200 OK</span></pre></div>
+<p style="margin-top:18px"><b>🔍 record 쓸 때 vs 안 쓸 때</b> — "두 값을 반환"하려고 전용 클래스를 만드느냐, 그 자리에서 묶어 돌려주느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 일회용 클래스를 따로 선언</span></div><pre><span class="tok-c">// 좌표 두 개 반환하려고 클래스를 통째로 만듦</span>
+<span class="tok-k">class</span> <span class="tok-t">Point</span> {
+  <span class="tok-k">final</span> <span class="tok-t">double</span> x, y;
+  <span class="tok-t">Point</span>(<span class="tok-k">this</span>.x, <span class="tok-k">this</span>.y);
+}
 
-      <h4>② 패턴 매칭 · 구조분해 (destructuring)</h4>
-      <p>레코드·리스트·맵·객체를 한 줄로 분해해 변수에 꽂습니다. JS의 구조분해와 같은 발상이에요.</p>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">patterns.dart</span></div>
-        <pre><span class="tok-c">// 레코드·리스트 구조분해</span>
+<span class="tok-t">Point</span> <span class="tok-f">center</span>() =&gt; <span class="tok-t">Point</span>(<span class="tok-n">12.5</span>, <span class="tok-n">8.0</span>);
+<span class="tok-c">// 이 함수 하나 때문에 타입 정의·파일이 늘어남</span></pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — record로 즉시 묶어 반환</span></div><pre><span class="tok-c">// 선언 없이 그 자리에서 두 값을 묶음</span>
+(<span class="tok-t">double</span>, <span class="tok-t">double</span>) <span class="tok-f">center</span>() =&gt; (<span class="tok-n">12.5</span>, <span class="tok-n">8.0</span>);
+
+<span class="tok-k">final</span> (x, y) = <span class="tok-f">center</span>();   <span class="tok-c">// 구조분해까지 한 줄</span>
+print(<span class="tok-s">'$x, $y'</span>);            <span class="tok-c">// 12.5, 8.0</span></pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> 전용 클래스는 "이 값들에 행동(메서드)·정체성을 부여하고 여러 곳에서 재사용"할 때 가치가 있습니다. 단지 함수가 값 몇 개를 한 번 돌려주는 용도라면 record가 군더더기를 없애요. 실무에서는 위젯 크기 <code class="inl">(w, h)</code>, 페이징 결과 <code class="inl">(items, hasMore)</code>처럼 "이 함수만을 위한 일회용 묶음"에 record를 쓰고, 도메인 모델이 되면 클래스로 승격하는 식으로 나눕니다.</div>
+<div class="note tip"><b>실전:</b> record는 <b>불변</b>이고 필드 값이 모두 같으면 <code class="inl">==</code>가 <code class="inl">true</code>입니다(값 동등성). 그래서 "여러 값을 키로 쓰고 싶을 때"나 비교가 필요한 임시 묶음에 특히 편합니다.</div>
+
+<h4>② 패턴 매칭 · 구조분해</h4>
+<p>개념: <b>패턴(pattern)</b>은 값의 "모양"을 검사하면서 동시에 내부 값을 꺼내는 문법입니다. record·리스트·맵을 한 줄로 분해해 변수에 꽂고(<b>구조분해, destructuring</b>), <code class="inl">switch</code>에서는 JSON 같은 데이터의 형태별로 분기까지 합니다. JS의 구조분해와 발상은 같되, <b>타입을 붙인 변수 패턴</b>(<code class="inl">final num r</code>)으로 꺼낸 값의 타입까지 좁혀준다는 점이 강력해요.</p>
+<div class="code"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">patterns.dart</span></div><pre><span class="tok-c">// record · 리스트 구조분해 — 한 줄로 여러 변수에 분해</span>
 <span class="tok-k">final</span> (id, name) = (<span class="tok-n">1</span>, <span class="tok-s">'창한'</span>);
-<span class="tok-k">final</span> [first, _, third] = [<span class="tok-n">10</span>, <span class="tok-n">20</span>, <span class="tok-n">30</span>];   <span class="tok-c">// _ 는 건너뜀</span>
+<span class="tok-k">final</span> [first, _, third] = [<span class="tok-n">10</span>, <span class="tok-n">20</span>, <span class="tok-n">30</span>];  <span class="tok-c">// _ 는 무시(건너뜀)</span>
 
-<span class="tok-c">// 맵 패턴 + switch — JSON 모양 그대로 분기</span>
-<span class="tok-k">final</span> json = {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-n">4</span>};
+<span class="tok-c">// 맵 패턴 + switch 표현식 — JSON 모양 그대로 분기</span>
+<span class="tok-k">final</span> <span class="tok-t">Map</span>&lt;<span class="tok-t">String</span>, <span class="tok-t">dynamic</span>&gt; json = {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-n">4</span>};
 <span class="tok-k">final</span> area = <span class="tok-k">switch</span> (json) {
-  {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> r} => <span class="tok-n">3.14</span> * r * r,  <span class="tok-c">// 타입 패턴 num — 안 적으면 Object로 추론돼 곱셈 불가</span>
-  {<span class="tok-s">'type'</span>: <span class="tok-s">'square'</span>, <span class="tok-s">'a'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> a} => a * a,
-  _ => <span class="tok-n">0</span>,
-};</pre>
-      </div>
+  <span class="tok-c">// 값에 num 타입을 붙이면 r 이 num 으로 타입되고, num 일 때만 이 가지가 매칭</span>
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> r} =&gt; <span class="tok-n">3.14</span> * r * r,
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'square'</span>, <span class="tok-s">'a'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> a} =&gt; a * a,
+  _ =&gt; <span class="tok-n">0</span>,                <span class="tok-c">// 그 외 모양은 0</span>
+};</pre></div>
+<p style="margin-top:18px"><b>🔍 패턴 쓸 때 vs 안 쓸 때</b> — 중첩 <code class="inl">if</code> + 수동 캐스팅이냐, 형태 검사·추출을 패턴 한 줄로 합치느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 중첩 if + 수동 as 캐스팅</span></div><pre><span class="tok-t">double</span> <span class="tok-f">areaOf</span>(<span class="tok-t">Map</span>&lt;<span class="tok-t">String</span>, <span class="tok-t">dynamic</span>&gt; j) {
+  <span class="tok-k">if</span> (j[<span class="tok-s">'type'</span>] == <span class="tok-s">'circle'</span>) {
+    <span class="tok-c">// as 로 직접 캐스팅 — 틀리면 런타임에 터짐</span>
+    <span class="tok-k">final</span> r = j[<span class="tok-s">'r'</span>] <span class="tok-k">as</span> <span class="tok-t">num</span>;
+    <span class="tok-k">return</span> <span class="tok-n">3.14</span> * r * r;
+  } <span class="tok-k">else</span> <span class="tok-k">if</span> (j[<span class="tok-s">'type'</span>] == <span class="tok-s">'square'</span>) {
+    <span class="tok-k">final</span> a = j[<span class="tok-s">'a'</span>] <span class="tok-k">as</span> <span class="tok-t">num</span>;
+    <span class="tok-k">return</span> (a * a).<span class="tok-f">toDouble</span>();
+  }
+  <span class="tok-k">return</span> <span class="tok-n">0</span>;
+}</pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — 패턴으로 형태 검사·추출 동시에</span></div><pre><span class="tok-t">double</span> <span class="tok-f">areaOf</span>(<span class="tok-t">Map</span>&lt;<span class="tok-t">String</span>, <span class="tok-t">dynamic</span>&gt; j) =&gt; <span class="tok-k">switch</span> (j) {
+  <span class="tok-c">// 키 존재·값 타입 검사 + r 추출이 한 줄에</span>
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'circle'</span>, <span class="tok-s">'r'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> r} =&gt; <span class="tok-n">3.14</span> * r * r,
+  {<span class="tok-s">'type'</span>: <span class="tok-s">'square'</span>, <span class="tok-s">'a'</span>: <span class="tok-k">final</span> <span class="tok-t">num</span> a} =&gt; (a * a).<span class="tok-f">toDouble</span>(),
+  _ =&gt; <span class="tok-n">0</span>,
+};</pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> 왼쪽은 "키가 있나? → 값을 꺼내 → 타입을 캐스팅"을 사람이 일일이 나눠 쓰고, <code class="inl">as</code>가 틀리면 런타임에서야 터집니다. 오른쪽 맵 패턴은 키 존재·값 타입 매칭·변수 바인딩을 한 번에 처리해, 매칭에 성공한 가지에서는 <code class="inl">r</code>이 이미 <code class="inl">num</code>으로 타입돼 있고, <code class="inl">r</code>이 숫자가 아니면 이 가지는 매칭되지 않고 다음 case로 넘어갑니다. 실무 팁: <code class="inl">final num r</code>처럼 타입을 붙이면 그 타입일 때만 매칭되는 <b>런타임 타입 검사</b>가 함께 걸립니다. 반면 <code class="inl">final r</code>처럼 타입을 빼면 맵이 <code class="inl">Map&lt;String, dynamic&gt;</code>이라 <code class="inl">r</code>이 <code class="inl">dynamic</code>으로 잡혀 타입 검사 없이 무엇이든 통과하므로, 잘못된 값이 들어와도 런타임에서야 터집니다. 꺼내 쓸 값에는 타입을 적는 습관을 들이세요.</div>
+<div class="note warn"><b>함정:</b> 리스트 패턴 <code class="inl">[a, b, c]</code>는 <b>길이가 정확히 3</b>일 때만 매칭됩니다. 길이가 다르면 그 가지를 건너뛰니(<code class="inl">switch</code>면 다음 case로), 가변 길이는 <code class="inl">[first, ...rest]</code>처럼 <b>rest 패턴</b>(<code class="inl">...</code>)을 써야 해요. 또 구조분해 변수로 <code class="inl">_</code>를 쓰면 "안 쓰는 값"을 명시적으로 버리는 의미입니다.</div>
 
-      <h4>③ switch 표현식 — 값을 돌려주는 switch</h4>
-      <p>장황한 if-else 체인을 표현식 하나로. <code class="inl">break</code> 없이 모든 가지가 값을 반환합니다. 상태에 따라 위젯을 고를 때 특히 깔끔해요.</p>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">switch_expr.dart</span></div>
-        <pre><span class="tok-c">// 상태 → 위젯 (삼항 중첩보다 훨씬 읽기 쉬움)</span>
-<span class="tok-t">Widget</span> <span class="tok-f">buildIcon</span>(<span class="tok-t">Status</span> s) => <span class="tok-k">switch</span> (s) {
-  <span class="tok-t">Status</span>.loading => <span class="tok-k">const</span> <span class="tok-t">CircularProgressIndicator</span>(),
-  <span class="tok-t">Status</span>.success => <span class="tok-k">const</span> <span class="tok-t">Icon</span>(<span class="tok-t">Icons</span>.check),
-  <span class="tok-t">Status</span>.error   => <span class="tok-k">const</span> <span class="tok-t">Icon</span>(<span class="tok-t">Icons</span>.error),
-};</pre>
-      </div>
+<h4>③ switch 표현식 — 값을 돌려주는 switch</h4>
+<p>개념: 기존 <code class="inl">switch</code>가 "문장(statement)"이라 <code class="inl">case</code>·<code class="inl">break</code>로 동작을 <i>수행</i>했다면, <b>switch 표현식(expression)</b>은 각 가지가 <code class="inl">=&gt;</code>로 <b>값을 반환</b>합니다. <code class="inl">break</code>가 없고 가지를 <code class="inl">,</code>로 구분하며, 결과를 바로 변수에 대입하거나 함수에서 돌려줄 수 있어요. 상태에 따라 위젯·문자열을 "고르는" 코드에서 특히 깔끔합니다.</p>
+<div class="code"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">switch_expr.dart</span></div><pre><span class="tok-k">enum</span> <span class="tok-t">Status</span> { loading, success, error }
 
-      <h4>④ sealed class — 망라성을 컴파일이 보장</h4>
-      <p>하위 타입을 "봉인"하면, switch에서 모든 경우를 다루지 않을 때 <strong>컴파일 에러</strong>가 납니다. 상태(로딩/성공/에러)를 타입으로 모델링해 누락을 원천 차단해요.</p>
-      <div class="code">
-        <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">sealed.dart</span></div>
-        <pre><span class="tok-k">sealed</span> <span class="tok-k">class</span> <span class="tok-t">Result</span> {}
+<span class="tok-c">// 상태 → 라벨. 모든 가지가 String 값을 반환</span>
+<span class="tok-t">String</span> <span class="tok-f">label</span>(<span class="tok-t">Status</span> s) =&gt; <span class="tok-k">switch</span> (s) {
+  <span class="tok-t">Status</span>.loading =&gt; <span class="tok-s">'불러오는 중…'</span>,
+  <span class="tok-t">Status</span>.success =&gt; <span class="tok-s">'완료'</span>,
+  <span class="tok-t">Status</span>.error   =&gt; <span class="tok-s">'오류'</span>,
+};
+
+<span class="tok-c">// 관계 패턴(&gt;=, &lt;)으로 값의 범위에 따라 분기</span>
+<span class="tok-t">String</span> <span class="tok-f">grade</span>(<span class="tok-t">int</span> score) =&gt; <span class="tok-k">switch</span> (score) {
+  &gt;= <span class="tok-n">90</span> =&gt; <span class="tok-s">'A'</span>,
+  &gt;= <span class="tok-n">80</span> =&gt; <span class="tok-s">'B'</span>,
+  _    =&gt; <span class="tok-s">'C'</span>,
+};</pre></div>
+<p style="margin-top:18px"><b>🔍 switch 표현식 쓸 때 vs 안 쓸 때</b> — 장황한 <code class="inl">if-else</code> 체인으로 변수를 채우느냐, 한 표현식으로 값을 곧장 반환하느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — if-else 체인 + 가변 변수</span></div><pre><span class="tok-t">String</span> <span class="tok-f">label</span>(<span class="tok-t">Status</span> s) {
+  <span class="tok-c">// late + 분기마다 재대입 — 누락하면 미초기화 위험</span>
+  <span class="tok-k">late</span> <span class="tok-t">String</span> text;
+  <span class="tok-k">if</span> (s == <span class="tok-t">Status</span>.loading) {
+    text = <span class="tok-s">'불러오는 중…'</span>;
+  } <span class="tok-k">else</span> <span class="tok-k">if</span> (s == <span class="tok-t">Status</span>.success) {
+    text = <span class="tok-s">'완료'</span>;
+  } <span class="tok-k">else</span> {
+    text = <span class="tok-s">'오류'</span>;
+  }
+  <span class="tok-k">return</span> text;
+}</pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — switch 표현식으로 곧장 반환</span></div><pre><span class="tok-t">String</span> <span class="tok-f">label</span>(<span class="tok-t">Status</span> s) =&gt; <span class="tok-k">switch</span> (s) {
+  <span class="tok-t">Status</span>.loading =&gt; <span class="tok-s">'불러오는 중…'</span>,
+  <span class="tok-t">Status</span>.success =&gt; <span class="tok-s">'완료'</span>,
+  <span class="tok-t">Status</span>.error   =&gt; <span class="tok-s">'오류'</span>,
+};
+<span class="tok-c">// 가변 변수·break 없음 → 분기 누락을 컴파일러가 점검</span></pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> <code class="inl">if-else</code> 체인은 임시 변수를 만들고 분기마다 대입해야 해서, 한 갈래를 빠뜨리면 값이 안 채워질 수 있습니다. switch 표현식은 "입력 → 값" 매핑이 한눈에 들어오고, <code class="inl">enum</code>·<code class="inl">sealed</code>처럼 경우가 유한한 대상에선 한 가지라도 빠뜨리면 <strong>컴파일 오류</strong>로 막아줍니다(default <code class="inl">_</code> 없이 썼을 때). 실무 팁: 위젯을 고를 때 삼항(<code class="inl">? :</code>)을 중첩하지 말고 <code class="inl">child: switch (state) { ... }</code>로 쓰면 가독성이 크게 올라가요. 범위 분기는 <code class="inl">&gt;= 90</code> 같은 <b>관계 패턴</b>으로 처리합니다.</div>
+<div class="note tip"><b>팁:</b> 표현식이므로 <code class="inl">final msg = switch (...) { ... };</code>처럼 곧바로 대입하거나, <code class="inl">build()</code>의 <code class="inl">return</code> 자리에 그대로 넣을 수 있습니다. 마지막 <code class="inl">_ =&gt; ...</code>는 "그 외 전부"를 받는 와일드카드입니다.</div>
+
+<h4>④ sealed class — 망라성 보장</h4>
+<p>개념: <code class="inl">sealed</code>는 클래스의 하위 타입을 "같은 라이브러리(보통 한 파일) 안의 것들로 봉인"하는 키워드입니다. 컴파일러가 <b>가능한 하위 타입 전체를 알게 되므로</b>, <code class="inl">switch</code>에서 한 경우라도 빠뜨리면 <strong>컴파일 에러</strong>가 납니다. 화면 상태(로딩·성공·에러)를 타입으로 모델링하면, 나중에 상태를 하나 추가했을 때 "처리 안 한 곳"을 컴파일러가 전부 찾아줘 누락을 원천 차단해요.</p>
+<div class="code"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">sealed.dart</span></div><pre><span class="tok-c">// 하위 타입을 봉인 — 외부에서 임의 상속 불가</span>
+<span class="tok-k">sealed</span> <span class="tok-k">class</span> <span class="tok-t">Result</span> {}
 <span class="tok-k">class</span> <span class="tok-t">Loading</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
 <span class="tok-k">class</span> <span class="tok-t">Success</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> { <span class="tok-k">final</span> <span class="tok-t">String</span> data; <span class="tok-t">Success</span>(<span class="tok-k">this</span>.data); }
 <span class="tok-k">class</span> <span class="tok-t">Failure</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> { <span class="tok-k">final</span> <span class="tok-t">String</span> err; <span class="tok-t">Failure</span>(<span class="tok-k">this</span>.err); }
 
-<span class="tok-c">// 한 경우라도 빠뜨리면 컴파일 에러 → 처리 누락 차단</span>
-<span class="tok-t">String</span> <span class="tok-f">render</span>(<span class="tok-t">Result</span> r) => <span class="tok-k">switch</span> (r) {
-  <span class="tok-t">Loading</span>()             => <span class="tok-s">'불러오는 중…'</span>,
-  <span class="tok-t">Success</span>(:<span class="tok-k">final</span> data) => data,            <span class="tok-c">// 필드까지 구조분해</span>
-  <span class="tok-t">Failure</span>(:<span class="tok-k">final</span> err)  => <span class="tok-s">'에러: $err'</span>,
-};</pre>
-      </div>
-      <div class="note q"><b>예상 꼬리질문:</b> "상태 관리에서 sealed class가 왜 좋나요?" → "로딩·성공·에러를 sealed로 모델링하면 switch 망라성을 컴파일러가 강제해, 새 상태를 추가했을 때 처리 누락을 컴파일 단계에서 잡아줍니다. Riverpod의 <code class="inl">AsyncValue</code>(data/loading/error)도 같은 발상입니다."</div>
-      <div class="note react"><b>React/TS 매핑:</b> records ≈ 튜플/익명 객체, 패턴 구조분해 ≈ JS destructuring, switch 표현식 ≈ 즉시 평가되는 매핑, sealed class + switch ≈ 판별 유니온(discriminated union)의 exhaustive 처리(TS <code class="inl">never</code> 체크).</div>
-    </section>
+<span class="tok-c">// 객체 패턴으로 분기 + 필드 구조분해. default(_)가 없어도 OK</span>
+<span class="tok-t">String</span> <span class="tok-f">render</span>(<span class="tok-t">Result</span> r) =&gt; <span class="tok-k">switch</span> (r) {
+  <span class="tok-t">Loading</span>()             =&gt; <span class="tok-s">'불러오는 중…'</span>,
+  <span class="tok-t">Success</span>(:<span class="tok-k">final</span> data) =&gt; data,        <span class="tok-c">// data 필드를 바로 추출</span>
+  <span class="tok-t">Failure</span>(:<span class="tok-k">final</span> err)  =&gt; <span class="tok-s">'에러: $err'</span>,
+};</pre></div>
+<p style="margin-top:18px"><b>🔍 sealed 쓸 때 vs 안 쓸 때</b> — 새 상태를 추가했을 때 누락이 <b>런타임에 조용히 새는가</b>, <b>컴파일이 막아주는가</b>의 차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 일반 class + default로 누락이 샘</span></div><pre><span class="tok-c">// 봉인 없음 → 컴파일러가 전체 경우를 모름</span>
+<span class="tok-k">class</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Loading</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Success</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Failure</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
+
+<span class="tok-t">String</span> <span class="tok-f">render</span>(<span class="tok-t">Result</span> r) =&gt; <span class="tok-k">switch</span> (r) {
+  <span class="tok-t">Loading</span>() =&gt; <span class="tok-s">'불러오는 중…'</span>,
+  <span class="tok-t">Success</span>() =&gt; <span class="tok-s">'완료'</span>,
+  <span class="tok-c">// 새 상태 Failure 를 깜빡 → _ 가 조용히 삼킴</span>
+  _ =&gt; <span class="tok-s">'알 수 없음'</span>,
+};</pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — sealed로 컴파일이 누락을 강제</span></div><pre><span class="tok-k">sealed</span> <span class="tok-k">class</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Loading</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Success</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
+<span class="tok-k">class</span> <span class="tok-t">Failure</span> <span class="tok-k">extends</span> <span class="tok-t">Result</span> {}
+
+<span class="tok-c">// _ 없이 모든 타입을 나열. Failure 빼면 컴파일 에러!</span>
+<span class="tok-t">String</span> <span class="tok-f">render</span>(<span class="tok-t">Result</span> r) =&gt; <span class="tok-k">switch</span> (r) {
+  <span class="tok-t">Loading</span>() =&gt; <span class="tok-s">'불러오는 중…'</span>,
+  <span class="tok-t">Success</span>() =&gt; <span class="tok-s">'완료'</span>,
+  <span class="tok-t">Failure</span>() =&gt; <span class="tok-s">'오류'</span>,
+};</pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> 왼쪽은 <code class="inl">Result</code>가 평범한 클래스라 컴파일러가 "하위 타입이 몇 개인지" 모릅니다. 그래서 <code class="inl">_</code>(default)를 넣게 되고, 나중에 <code class="inl">Failure</code> 같은 새 상태가 추가돼도 처리 누락이 <code class="inl">_</code>로 조용히 흘러가 버그가 됩니다. 오른쪽 <code class="inl">sealed</code>는 하위 타입이 봉인돼 있어 <code class="inl">_</code> 없이 전부 나열할 수 있고, 하나라도 빠지면 컴파일이 거부합니다. 실무 팁: 상태를 새로 추가하면 컴파일 에러가 "여기도, 저기도 처리해"라며 모든 <code class="inl">switch</code>를 가리켜 주니, 리팩터링이 안전해집니다. 그래서 default(<code class="inl">_</code>)를 일부러 <b>쓰지 않는 것</b>이 핵심이에요.</div>
+<div class="note q"><b>예상 꼬리질문:</b> "상태 관리에서 sealed class가 왜 좋나요?" → "로딩·성공·에러를 sealed로 모델링하면 <code class="inl">switch</code> 망라성을 컴파일러가 강제해, 새 상태를 추가했을 때 처리 누락을 컴파일 단계에서 잡아줍니다. <code class="inl">default</code>로 뭉뚱그리지 않으니 UI가 모든 상태를 반드시 다루게 되죠. Riverpod의 <code class="inl">AsyncValue</code>(data·loading·error)도 같은 발상입니다."</div>
+<div class="note react"><b>React/TS 매핑:</b> sealed class + 망라적 <code class="inl">switch</code>는 TypeScript의 <b>판별 유니온(discriminated union)</b>을 <code class="inl">never</code>로 exhaustive 체크하는 패턴과 같습니다. <code class="inl">type Result = Loading | Success | Failure</code>를 <code class="inl">switch</code>로 좁히고, 빠진 경우를 <code class="inl">never</code> 할당으로 컴파일 타임에 잡는 그 기법을, Dart는 언어 차원에서 기본 제공하는 셈이에요.</div>
+
+<h3><span class="ic">⏳</span>비동기 첫걸음 — Future · async · await</h3>
+<p>개념: 네트워크 요청·파일 읽기처럼 "결과가 <strong>나중에</strong> 오는" 작업은 즉시 값을 줄 수 없습니다. 그 "나중에 올 값의 약속"이 <strong>Future</strong>이고, <code class="inl">async</code>/<code class="inl">await</code>는 그 약속이 풀릴 때까지 기다린 결과를 <em>마치 동기 코드처럼</em> 받아 쓰게 해 줍니다. 기다리는 동안 UI가 멈추지 않도록(스레드를 막지 않도록) 해 주는 게 핵심이에요. 여기서는 맛보기만 보고, 깊은 내용은 뒤 비동기 섹션에서 다룹니다.</p>
+<div class="code">
+  <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">async_intro.dart</span></div>
+  <pre><span class="tok-c">// Future&lt;T&gt; → "나중에 T 타입 값을 주겠다"는 약속</span>
+<span class="tok-t">Future</span>&lt;<span class="tok-t">String</span>&gt; <span class="tok-f">fetchUser</span>() <span class="tok-k">async</span> {
+  <span class="tok-c">// 서버 호출을 흉내 (2초 뒤 응답)</span>
+  <span class="tok-k">await</span> <span class="tok-t">Future</span>.<span class="tok-f">delayed</span>(<span class="tok-t">Duration</span>(seconds: <span class="tok-n">2</span>));
+  <span class="tok-k">return</span> <span class="tok-s">'창한'</span>;
+}
+
+<span class="tok-c">// async 함수 안에서 await → 결과를 동기처럼 받음</span>
+<span class="tok-t">Future</span>&lt;<span class="tok-t">void</span>&gt; <span class="tok-f">main</span>() <span class="tok-k">async</span> {
+  print(<span class="tok-s">'불러오는 중…'</span>);
+  <span class="tok-t">String</span> name = <span class="tok-k">await</span> <span class="tok-f">fetchUser</span>();  <span class="tok-c">// 여기서 2초 기다림(UI는 안 멈춤)</span>
+  print(<span class="tok-s">'안녕, $name'</span>);            <span class="tok-c">// 결과가 온 뒤 실행</span>
+
+  <span class="tok-c">// 실패할 수 있으면 try/catch로 감쌈</span>
+  <span class="tok-k">try</span> {
+    <span class="tok-k">final</span> u = <span class="tok-k">await</span> <span class="tok-f">fetchUser</span>();
+    print(<span class="tok-s">'ok: $u'</span>);
+  } <span class="tok-k">catch</span> (e) {
+    print(<span class="tok-s">'에러: $e'</span>);
+  }
+}</pre>
+</div>
+<table>
+  <tr><th>키워드</th><th>역할</th></tr>
+  <tr><td><code>Future&lt;T&gt;</code></td><td>나중에 도착할 T 값(또는 에러)을 담는 약속 객체</td></tr>
+  <tr><td><code>async</code></td><td>이 함수 안에서 <code>await</code>를 쓰겠다는 표시(반환은 자동으로 Future)</td></tr>
+  <tr><td><code>await</code></td><td>Future가 풀릴 때까지 기다렸다가 <b>알맹이 값</b>을 꺼냄</td></tr>
+</table>
+<p style="margin-top:18px"><b>🔍 async/await 쓸 때 vs 안 쓸 때</b> — <code class="inl">.then()</code> 콜백을 중첩하면 단계가 깊어질수록 읽기 어려운 "콜백 지옥", async/await는 위에서 아래로 읽히는 동기 코드 모양이 됩니다.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — then 중첩(콜백 지옥)</span></div>
+    <pre><span class="tok-c">// 단계마다 콜백 안으로 들어가 우측으로 밀림</span>
+<span class="tok-f">fetchUser</span>().<span class="tok-f">then</span>((name) {
+  <span class="tok-f">fetchPosts</span>(name).<span class="tok-f">then</span>((posts) {
+    <span class="tok-f">fetchComments</span>(posts).<span class="tok-f">then</span>((c) {
+      print(c);          <span class="tok-c">// 본문이 3겹 안쪽</span>
+    }).<span class="tok-f">catchError</span>((e) {
+      print(<span class="tok-s">'에러: $e'</span>);  <span class="tok-c">// 에러 처리도 흩어짐</span>
+    });
+  });
+});
+<span class="tok-c">// 순서·에러 흐름이 한눈에 안 들어옴</span></pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — async/await로 평탄하게</span></div>
+    <pre><span class="tok-t">Future</span>&lt;<span class="tok-t">void</span>&gt; <span class="tok-f">load</span>() <span class="tok-k">async</span> {
+  <span class="tok-k">try</span> {
+    <span class="tok-k">final</span> name  = <span class="tok-k">await</span> <span class="tok-f">fetchUser</span>();
+    <span class="tok-k">final</span> posts = <span class="tok-k">await</span> <span class="tok-f">fetchPosts</span>(name);
+    <span class="tok-k">final</span> c     = <span class="tok-k">await</span> <span class="tok-f">fetchComments</span>(posts);
+    print(c);              <span class="tok-c">// 위→아래로 그대로 읽힘</span>
+  } <span class="tok-k">catch</span> (e) {
+    print(<span class="tok-s">'에러: $e'</span>);      <span class="tok-c">// 한 곳에서 일괄 처리</span>
+  }
+}</pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> ❌의 <code class="inl">.then()</code> 중첩은 단계가 늘수록 들여쓰기가 오른쪽으로 밀리고 에러 처리(<code class="inl">catchError</code>)가 곳곳에 흩어져, 실행 순서를 따라가기 어렵습니다. ✅는 <code class="inl">await</code> 한 줄씩 위에서 아래로 읽히고, <code class="inl">try/catch</code> 하나로 모든 단계의 에러를 모아 잡아요. 실무 팁: 서로 의존하지 않는 작업은 굳이 줄줄이 await 하지 말고 <code class="inl">await Future.wait([a(), b()])</code>로 <b>동시에</b> 기다리면 더 빠릅니다.</div>
+<div class="note tip"><b>더 자세히는 뒤 '비동기' 섹션에서:</b> 여기서는 <code class="inl">Future</code>·<code class="inl">async</code>·<code class="inl">await</code> 맛보기만 봤습니다. 여러 값이 시간차로 흘러오는 <code class="inl">Stream</code>, UI에 비동기 결과를 꽂는 <code class="inl">FutureBuilder</code>/<code class="inl">StreamBuilder</code>, 그리고 "한 줄 한 줄 어떤 순서로 실행되는가"(이벤트 루프)는 뒤 <b>비동기 처리</b> 섹션에서 깊이 다룹니다.</div>
+</section>
 
     <div class="div"></div>
 
