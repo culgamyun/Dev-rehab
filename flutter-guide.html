@@ -2044,6 +2044,81 @@ context.<span class="tok-f">go</span>(<span class="tok-s">'/detail/7'</span>);  
       </div>
       <div class="note tip"><b>💬 일상 비유 — 식당의 매끄러운 응대:</b> 주문한 메뉴가 품절이어도 좋은 식당은 손님을 방치하지 않죠. "죄송합니다, 대신 이건 어떠세요?"라고 대안을 줍니다. 앱도 에러 화면에서 멈추지 말고 <b>"다시 시도" 버튼</b>이나 안내 메시지로 사용자를 다음 행동으로 이끌어야 합니다. <code class="inl">finally</code>는 성공·실패와 무관하게 "로딩 스피너는 반드시 끈다"를 보장하는 안전장치예요.</div>
       <div class="note q"><b>예상 꼬리질문:</b> "API 호출이 실패하면 화면을 어떻게 처리하나요?" → "<code class="inl">try/catch</code>로 에러 유형을 구분해(네트워크 끊김 vs 서버 오류) 각기 다른 메시지를 보여주고, '다시 시도' 액션을 제공합니다. <code class="inl">finally</code>에서 로딩 상태를 정리해 스피너가 멈추지 않는 일을 방지합니다."</div>
+    
+      <p style="margin-top:18px"><b>🔍 async/await · FutureBuilder 쓸 때 vs 안 쓸 때</b> — 같은 비동기 작업, 코드는 천지차이.</p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — .then() 콜백 지옥</span></div><pre><span class="tok-c">// 콜백이 안으로 안으로 중첩 → 읽기 어렵고</span>
+<span class="tok-c">// 에러 처리가 단계마다 흩어진다</span>
+<span class="tok-t">void</span> <span class="tok-f">load</span>() {
+  fetchUser().<span class="tok-f">then</span>((user) {
+    fetchPosts(user.id).<span class="tok-f">then</span>((posts) {
+      fetchComments(posts.first).<span class="tok-f">then</span>((c) {
+        <span class="tok-f">render</span>(c);
+      }).<span class="tok-f">catchError</span>((e) =&gt; <span class="tok-f">show</span>(<span class="tok-s">'댓글 실패'</span>));
+    }).<span class="tok-f">catchError</span>((e) =&gt; <span class="tok-f">show</span>(<span class="tok-s">'글 실패'</span>));
+  }).<span class="tok-f">catchError</span>((e) =&gt; <span class="tok-f">show</span>(<span class="tok-s">'유저 실패'</span>));
+}</pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — async/await로 평탄화</span></div><pre><span class="tok-c">// 위에서 아래로 동기처럼 읽힌다</span>
+<span class="tok-c">// try 하나로 에러를 한곳에 모음</span>
+<span class="tok-t">Future</span>&lt;<span class="tok-t">void</span>&gt; <span class="tok-f">load</span>() <span class="tok-k">async</span> {
+  <span class="tok-k">try</span> {
+    <span class="tok-k">final</span> user  = <span class="tok-k">await</span> fetchUser();
+    <span class="tok-k">final</span> posts = <span class="tok-k">await</span> fetchPosts(user.id);
+    <span class="tok-k">final</span> c     = <span class="tok-k">await</span> fetchComments(posts.first);
+    <span class="tok-f">render</span>(c);
+  } <span class="tok-k">catch</span> (e) {
+    <span class="tok-f">show</span>(<span class="tok-s">'불러오기 실패'</span>);   <span class="tok-c">// 어느 단계든 여기로</span>
+  }
+}</pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> <code class="inl">.then()</code> 체인은 단계가 늘수록 우측으로 깊어지고(콜백 지옥) <code class="inl">catchError</code>를 단마다 붙여야 합니다. <code class="inl">async/await</code>는 같은 흐름을 직선 코드로 펴고, <code class="inl">try/catch</code> 한 블록이 모든 <code class="inl">await</code>의 에러를 받습니다. <b>실무 팁:</b> 서로 의존 없는 호출은 직렬로 <code class="inl">await</code>하면 지연이 합산되니, Dart 3의 레코드 <i>동시 대기</i> <code class="inl">final (user, posts) = await (fetchUser(), fetchPosts()).wait;</code> 로 병렬 실행하세요(반환 타입이 서로 달라도 각 타입이 그대로 보존됩니다). 타입이 동일한 N개라면 <code class="inl">Future.wait([...])</code> 가 <code class="inl">List</code>로 모아줍니다.</div>
+
+<p style="margin-top:18px"><b>🔍 로딩 상태 관리 — 수동 setState vs FutureBuilder</b></p>
+<div class="two-col">
+  <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — 플래그 3개 수동 관리</span></div><pre><span class="tok-c">// 로딩·에러·데이터를 손으로 추적</span>
+<span class="tok-t">bool</span> loading = <span class="tok-k">true</span>;
+<span class="tok-t">Object</span>? error;
+<span class="tok-t">User</span>? data;
+
+<span class="tok-an">@override</span>
+<span class="tok-t">void</span> <span class="tok-f">initState</span>() {
+  <span class="tok-k">super</span>.<span class="tok-f">initState</span>();
+  fetchUser().<span class="tok-f">then</span>((u) {
+    <span class="tok-f">setState</span>(() { data = u; loading = <span class="tok-k">false</span>; });
+  }).<span class="tok-f">catchError</span>((e) {
+    <span class="tok-f">setState</span>(() { error = e; loading = <span class="tok-k">false</span>; });
+  });
+  <span class="tok-c">// build에서 loading→error→data 일일이 if 분기…</span>
+}</pre></div>
+  <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — 상태를 위젯이 들고 있음</span></div><pre><span class="tok-c">// future는 필드에 1회 보관 (재요청 방지)</span>
+<span class="tok-k">late</span> <span class="tok-k">final</span> <span class="tok-t">Future</span>&lt;<span class="tok-t">User</span>&gt; _future = fetchUser();
+
+<span class="tok-an">@override</span>
+<span class="tok-t">Widget</span> <span class="tok-f">build</span>(<span class="tok-t">BuildContext</span> ctx) {
+  <span class="tok-k">return</span> <span class="tok-t">FutureBuilder</span>&lt;<span class="tok-t">User</span>&gt;(
+    future: _future,
+    builder: (ctx, snap) {
+      <span class="tok-k">if</span> (snap.connectionState !=
+          <span class="tok-t">ConnectionState</span>.done) <span class="tok-k">return</span> <span class="tok-t">Spinner</span>();
+      <span class="tok-k">if</span> (snap.hasError)  <span class="tok-k">return</span> <span class="tok-t">ErrorView</span>();
+      <span class="tok-k">return</span> <span class="tok-t">Text</span>(snap.data!.name);
+    },
+  );
+}</pre></div>
+</div>
+<div class="ba-note"><b>차이:</b> 수동 방식은 <code class="inl">loading/error/data</code> 세 변수의 모든 조합을 직접 일관되게 유지해야 하고, 하나라도 빠뜨리면 무한 스피너나 빈 화면이 됩니다. <code class="inl">FutureBuilder</code>는 그 상태 머신을 위젯이 대신 들고 <code class="inl">snapshot</code>으로 넘겨줘, build는 <code class="inl">connectionState</code>/<code class="inl">hasError</code>/<code class="inl">hasData</code>만 보고 <i>선언적으로</i> 분기합니다. (<code class="inl">FutureBuilder&lt;User&gt;</code>처럼 <b>non-nullable 타입</b>이고 future가 null로 완료하지 않으면 <code class="inl">connectionState == done</code>·<code class="inl">hasError</code>가 아닐 때 <code class="inl">data</code>를 non-null로 봐도 되지만, <code class="inl">FutureBuilder&lt;User?&gt;</code>면 정상 완료여도 <code class="inl">data</code>가 null일 수 있으니 주의.) <b>실무 팁:</b> 화면 진입마다 새로고침이 필요하면 그대로 두되, <i>버튼으로</i> 다시 불러와야 하면 <code class="inl">setState</code>로 새 Future를 필드에 갈아끼우거나 Riverpod <code class="inl">AsyncNotifier</code>를 쓰세요.</div>
+
+<p style="margin-top:18px"><b>📊 소비(consume) 관점 — Future vs Stream</b>: 개수 차이를 넘어 <i>어떻게 받아 쓰는지</i>가 다릅니다.</p>
+<table>
+  <tr><th>소비 방식</th><th>Future (1회)</th><th>Stream (여러 값)</th></tr>
+  <tr><td>값 받기</td><td><code>await f</code> — 한 번 받고 끝</td><td><code>await for (x in s)</code> 또는 <code>s.listen(...)</code> — 값마다 반복</td></tr>
+  <tr><td>UI 위젯</td><td><code>FutureBuilder</code></td><td><code>StreamBuilder</code></td></tr>
+  <tr><td>완료 시점</td><td>값 1개 도착 = 완료</td><td><code>onDone</code>까지 계속 — 끝이 없을 수도</td></tr>
+  <tr><td>정리(cleanup)</td><td>불필요</td><td><code>StreamBuilder</code>는 구독을 자동 정리; 직접 <code>listen</code>했다면 <code>dispose</code>에서 <code>cancel</code> (안 하면 누수)</td></tr>
+  <tr><td>대표 예</td><td>HTTP 1건, 파일 읽기</td><td>웹소켓, 위치·센서, Firestore 실시간 쿼리</td></tr>
+</table>
+<div class="note tip"><b>한 줄 판별:</b> "값이 <i>한 번만</i> 오나(→Future), 시간에 따라 <i>여러 번</i> 오나(→Stream)"로 고릅니다. <code class="inl">StreamBuilder</code>의 <code class="inl">snapshot.data</code>는 <b>가장 최근 1개 값</b>이라는 점도 기억하세요 — 누적이 필요하면 <code class="inl">State</code>·provider 같은 명시적 상태 저장소에 모으세요(빌더 밖 가변 리스트에 직접 쌓으면 리빌드·재구독 때 꼬입니다).</div>
+<div class="note warn"><b>함정 — FutureBuilder 무한 깜빡임:</b> <code class="inl">future: fetchUser()</code>처럼 <code class="inl">build()</code> 안에서 Future를 <i>새로</i> 만들면, 리빌드(키보드 등장·부모 setState 등)마다 새 Future가 생겨 매번 로딩으로 되돌아가고 API도 재호출됩니다. → 위 ✅처럼 <code class="inl">late final</code> 필드나 <code class="inl">initState</code>에 <b>한 번</b> 만들어 보관한 변수를 넘기세요. (<code class="inl">StatelessWidget</code>만으로는 Future를 보관할 곳이 없어 이 버그가 잘 생깁니다 — StatefulWidget의 필드나 Riverpod 프로바이더에 보관하세요.)</div>
     </section>
 
     <div class="div"></div>
@@ -2138,6 +2213,79 @@ context.<span class="tok-f">go</span>(<span class="tok-s">'/detail/7'</span>);  
       <div class="note react"><b>React 매핑:</b> Provider = Context store, <code class="inl">ref.watch</code> = <code class="inl">useSelector</code>. 상태 변경 시 <strong>구독한 위젯만</strong> 리빌드되는 건 React의 <code class="inl">useContext</code> 구독(소비 위젯이 값 변경 시 리렌더)과 같은 방식입니다. <span class="dim">(<code class="inl">React.memo</code>는 prop 기반 리렌더 최적화로 별개 — context 값 변경은 막지 못함.)</span></div>
       <div class="note warn"><b>2026 버전 주의:</b> <code class="inl">StateNotifier</code>·<code class="inl">StateProvider</code>·<code class="inl">ChangeNotifierProvider</code>는 <b>Riverpod 3.0에서 legacy</b>로 분리(<code class="inl">package:flutter_riverpod/legacy.dart</code> 별도 import 필요)되어 신규 코드엔 비권장입니다. 표준은 <code class="inl">Notifier</code>/<code class="inl">AsyncNotifier</code> + <code class="inl">NotifierProvider</code>(또는 <code class="inl">@riverpod</code> 코드젠).</div>
       <div class="note q"><b>면접 답변 추천:</b> "소규모는 setState, 전역 상태는 Riverpod를 주로 씁니다. Riverpod는 컴파일 타임 안전성과 의존성 주입·테스트 용이성 때문에 Provider보다 선호합니다."</div>
+    
+      <p style="margin-top:18px"><b>🔍 Riverpod 구독을 쓸 때 vs 안 쓸 때</b> — 같은 화면인데 한쪽은 중간 위젯이 남의 데이터를 떠안고, 한쪽은 쓰는 위젯이 직접 가져옵니다.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — prop drilling</span></div>
+    <pre><span class="tok-c">// user를 깊은 자식까지 손으로 운반</span>
+<span class="tok-k">class</span> <span class="tok-t">Page</span> <span class="tok-k">extends</span> <span class="tok-t">StatelessWidget</span> {
+  <span class="tok-k">final</span> <span class="tok-t">User</span> user;
+  <span class="tok-k">const</span> <span class="tok-t">Page</span>({<span class="tok-k">required</span> <span class="tok-k">this</span>.user});
+  <span class="tok-an">@override</span>
+  <span class="tok-t">Widget</span> <span class="tok-f">build</span>(<span class="tok-t">BuildContext</span> c) =&gt;
+    <span class="tok-c">// Body는 user 안 쓰는데 받아 넘김</span>
+    <span class="tok-t">Body</span>(user: user);
+}
+<span class="tok-c">// Body → Header → Avatar 까지 전부</span>
+<span class="tok-c">// 생성자에 user 파라미터를 줄줄이…</span>
+<span class="tok-c">// 💥 위젯 하나 추가될 때마다 배선 수정</span></pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — 자식이 직접 watch</span></div>
+    <pre><span class="tok-c">// 중간 위젯은 user를 모른다</span>
+<span class="tok-k">class</span> <span class="tok-t">Avatar</span> <span class="tok-k">extends</span> <span class="tok-t">ConsumerWidget</span> {
+  <span class="tok-k">const</span> <span class="tok-t">Avatar</span>();
+  <span class="tok-an">@override</span>
+  <span class="tok-t">Widget</span> <span class="tok-f">build</span>(<span class="tok-t">BuildContext</span> c, <span class="tok-t">WidgetRef</span> ref) {
+    <span class="tok-c">// 쓰는 위젯이 통에서 바로 꺼냄</span>
+    <span class="tok-k">final</span> user = ref.<span class="tok-f">watch</span>(userProvider);
+    <span class="tok-k">return</span> <span class="tok-t">Text</span>(user.name);
+  }
+}
+<span class="tok-c">// Page·Body·Header 생성자는 그대로</span>
+<span class="tok-c">// → 중간 위젯 시그니처가 안 바뀜</span></pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> ❌는 데이터를 안 쓰는 <code>Body</code>·<code>Header</code>까지 <code>user</code> 파라미터를 달아야 해서, 위젯 한 칸만 끼워 넣어도 배선 전체를 손봐야 합니다. ✅는 <b>필요한 위젯만</b> <code>ref.watch</code>로 직접 구독하니 중간 위젯의 생성자가 깨끗하게 유지됩니다. 실무 팁: 그렇다고 모든 값을 provider로 올리진 마세요 — <b>버튼 라벨처럼 부모만 아는 값은 그냥 생성자</b>로 넘기고, 멀리 떨어진 위젯이 공유하는 값만 provider로 빼는 게 균형점입니다.</div>
+
+<p style="margin-top:22px"><b>🔍 화면 간 공유 상태에 setState를 쓸 때 vs 안 쓸 때</b> — 상태를 트리에 묶느냐, 트리 밖으로 빼느냐의 차이.</p>
+<div class="two-col">
+  <div class="code bad">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — setState로 공유</span></div>
+    <pre><span class="tok-c">// 공유하려고 공통 부모로 상태를 올림</span>
+<span class="tok-k">class</span> <span class="tok-t">_ShellState</span> <span class="tok-k">extends</span> <span class="tok-t">State</span>&lt;<span class="tok-t">Shell</span>&gt; {
+  <span class="tok-t">int</span> cart = <span class="tok-n">0</span>;          <span class="tok-c">// 장바구니 수</span>
+  <span class="tok-t">void</span> <span class="tok-f">add</span>() =&gt; <span class="tok-f">setState</span>(() =&gt; cart++);
+  <span class="tok-an">@override</span>
+  <span class="tok-t">Widget</span> <span class="tok-f">build</span>(<span class="tok-t">BuildContext</span> c) =&gt;
+    <span class="tok-c">// cart·add를 두 화면에 콜백으로 전달</span>
+    <span class="tok-t">ShopPage</span>(cart: cart, onAdd: add);
+}
+<span class="tok-c">// 상태가 위젯 트리에 묶임 →</span>
+<span class="tok-c">// 화면 밖에서 못 읽고, 테스트하려면</span>
+<span class="tok-c">// 💥 위젯 전체를 띄워야 함</span></pre>
+  </div>
+  <div class="code good">
+    <div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — Notifier로 트리 밖</span></div>
+    <pre><span class="tok-c">// 상태·로직을 위젯과 분리</span>
+<span class="tok-k">class</span> <span class="tok-t">Cart</span> <span class="tok-k">extends</span> <span class="tok-t">Notifier</span>&lt;<span class="tok-t">int</span>&gt; {
+  <span class="tok-an">@override</span>
+  <span class="tok-t">int</span> <span class="tok-f">build</span>() =&gt; <span class="tok-n">0</span>;
+  <span class="tok-t">void</span> <span class="tok-f">add</span>() =&gt; state++;
+}
+<span class="tok-k">final</span> cartProvider =
+  <span class="tok-t">NotifierProvider</span>&lt;<span class="tok-t">Cart</span>, <span class="tok-t">int</span>&gt;(<span class="tok-t">Cart</span>.new);
+<span class="tok-c">// 어느 화면이든 ref.watch(cartProvider)</span>
+<span class="tok-c">// 테스트: 위젯 없이 컨테이너로 검증</span>
+<span class="tok-k">final</span> container = <span class="tok-t">ProviderContainer</span>.<span class="tok-f">test</span>();
+container.<span class="tok-f">read</span>(cartProvider.notifier).<span class="tok-f">add</span>();</pre>
+  </div>
+</div>
+<div class="ba-note"><b>차이:</b> ❌의 <code>cart</code>는 <code>State</code> 객체 안에 살아서 그 위젯이 트리에 있어야만 존재합니다 — 다른 화면이 읽으려면 콜백을 계속 끌어내려야 하고, 단위 테스트도 위젯을 띄워야 가능하죠. ✅는 상태가 <code>Notifier</code>(트리 밖)에 있어 <b>어디서든 같은 값을 구독</b>하고, <code>ProviderContainer.test()</code>로 위젯 없이 로직만 빠르게 테스트할 수 있습니다(<code>.test()</code>로 만든 컨테이너는 테스트 종료 시 자동 정리 — 일반 <code>ProviderContainer()</code>는 직접 <code>dispose</code> 필요). 실무 팁: <b>화면 하나 안에서만 쓰는 임시 상태(토글·텍스트필드 포커스 등)는 여전히 setState가 정답</b>입니다 — 모든 걸 provider로 올리는 게 아니라, 공유·테스트가 필요한 상태만 올리세요.</div>
+
+<div class="note warn"><b>watch vs read 함정:</b> <code class="inl">build</code> 안에서는 <code class="inl">ref.watch</code>(구독 → 값이 바뀌면 리빌드), <b>버튼 onPressed 같은 콜백 안에서는</b> <code class="inl">ref.read</code>(그 순간 1회 읽기)를 씁니다. 거꾸로 쓰면 두 가지로 터져요 — ① 콜백 안에서 <code class="inl">watch</code>하면 "build 밖에서는 watch 불가"라는 정적 분석(riverpod_lint) 경고가 뜨고, ② build에서 <code class="inl">read</code>로 값을 받으면 <b>이후 변경을 못 받아 화면이 안 갱신</b>됩니다. 외우기: <b>그리는 중엔 watch, 누를 때만 read.</b></div>
+<div class="note tip"><b>Riverpod ≠ InheritedWidget 한 줄:</b> Riverpod의 상태는 <code class="inl">BuildContext</code>가 아니라 <code class="inl">ProviderContainer</code>/<code class="inl">Ref</code>에 저장되는 <b>트리 비종속</b> 구조라, <code class="inl">.of(context)</code>로 조상을 타고 올라가는 InheritedWidget과 달리 <b>위젯 트리·context 없이도</b> 상태를 읽고 테스트할 수 있습니다(<code class="inl">ProviderScope</code>만 컨테이너를 트리에 노출하는 얇은 InheritedWidget).</div>
     </section>
 
     <div class="div"></div>
@@ -2171,6 +2319,60 @@ context.<span class="tok-f">go</span>(<span class="tok-s">'/detail/7'</span>);  
 
       <h3><span class="ic">🎯</span>const가 성능에 미치는 영향</h3>
       <p>이 한 글자가 면접에서 자주 나옵니다. <code class="inl">const Text('hi')</code>는 컴파일 시점에 단 하나의 인스턴스로 박제(canonicalize)됩니다. 부모가 리빌드되어도 Element는 "같은 const다"라고 즉시 판단해 <strong>해당 서브트리 전체의 재빌드를 생략</strong >합니다.</p>
+    
+      <p style="margin-top:18px"><b>🔍 정적 서브트리를 const 위젯으로 떼어낼 때 vs 안 뗄 때</b> — 같은 "고정 헤더"인데, 부모 build마다 통째로 새로 만들어지느냐, 한 번 만든 인스턴스를 그대로 재사용하느냐의 차이.</p>
+      <div class="two-col">
+        <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 뗌 — 부모 리빌드마다 자식까지 재생성</span></div><pre><span class="tok-c">// 부모가 1초마다 setState로 시계만 갱신</span>
+<span class="tok-an">@override</span>
+<span class="tok-t">Widget</span> <span class="tok-f">build</span>(<span class="tok-t">BuildContext</span> context) {
+  <span class="tok-k">return</span> <span class="tok-t">Column</span>(children: [
+    <span class="tok-t">Clock</span>(time: now),        <span class="tok-c">// 진짜 바뀌는 부분</span>
+    <span class="tok-c">// 로고+제목은 평생 안 바뀌는데…</span>
+    <span class="tok-t">BrandHeader</span>(),          <span class="tok-c">// const 아님 → build마다 새 인스턴스</span>
+  ]);                          <span class="tok-c">// → 매 프레임 BrandHeader를 다시 만들고 그 아래를 재조정</span>
+}</pre></div>
+        <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ const 위젯으로 분리 — 인스턴스 1개 고정</span></div><pre><span class="tok-c">// BrandHeader에 const 생성자(필드 전부 final)</span>
+<span class="tok-k">class</span> <span class="tok-t">BrandHeader</span> <span class="tok-k">extends</span> <span class="tok-t">StatelessWidget</span> {
+  <span class="tok-k">const</span> <span class="tok-f">BrandHeader</span>({<span class="tok-k">super</span>.key});
+  <span class="tok-c">// …build 생략…</span>
+}
+
+<span class="tok-c">// 호출부: const 한 단어만 추가</span>
+<span class="tok-k">const</span> <span class="tok-t">BrandHeader</span>(),       <span class="tok-c">// 컴파일타임에 단일 인스턴스로 박제</span>
+<span class="tok-c">// → 부모가 새 BrandHeader를 만들어도 같은 인스턴스라,</span>
+<span class="tok-c">//   Element가 identical()로 통과시켜 서브트리 rebuild를 스킵</span></pre></div>
+      </div>
+      <div class="ba-note"><b>차이:</b> 단순히 <code class="inl">const Text(...)</code> 한 줄에 붙이는 데서 끝나지 않고, <b>안 바뀌는 서브트리 전체를 const 생성자를 가진 위젯으로 떼어내는 것</b>이 실무에서 더 크게 먹힙니다. 그 위젯을 <code class="inl">const</code>로 호출하면 부모가 아무리 자주 build돼도 컴파일타임에 박제된 같은 인스턴스가 쓰이고, Element는 <code class="inl">identical()</code>로 같은 인스턴스임을 보고 <b>그 서브트리의 위젯 재생성·element 갱신(rebuild)을 건너뜁니다</b>(레이아웃·페인트는 부모 제약 변경·dirty·상속 의존성에 따라 별개로 일어날 수 있어, "재조정까지 전부 스킵"은 과장입니다). 단 위젯을 <code class="inl">const</code>로 호출하려면 <b>필드가 모두 <code class="inl">final</code>이고 넘기는 인자가 전부 컴파일타임 상수</b>여야 합니다 — 그래서 변하는 값(<code class="inl">Clock(time: now)</code>)은 분리된 채로 두고, 고정 부분만 const화하는 게 핵심입니다.</div>
+
+      <p style="margin-top:18px"><b>🔍 긴 리스트를 한 번에 만들 때 vs 지연 생성할 때</b> — 같은 1만 줄 목록인데, 첫 프레임에 전부 만들어 두느냐, 스크롤되며 보이는 만큼만 만들어 내느냐의 차이.</p>
+      <table>
+        <tr><th>구분</th><th>❌ 한 번에 생성</th><th>✅ 지연 생성(builder)</th></tr>
+        <tr><td>위젯 생성 시점</td><td>build 호출 시 전부</td><td>화면에 들어올 때마다 그것만</td></tr>
+        <tr><td>초기 비용 / 메모리</td><td>항목 수에 비례해 폭증</td><td>보이는 ~수십 개 수준으로 일정</td></tr>
+        <tr><td>화면 밖 항목</td><td>이미 만들어 메모리 점유</td><td>보이는 영역+캐시 범위(<code>cacheExtent</code>)만 생성, 나머지는 스크롤 시</td></tr>
+        <tr><td>적합한 상황</td><td>항목이 적고 고정적일 때</td><td>길거나 개수를 모르는 목록</td></tr>
+      </table>
+      <div class="two-col">
+        <div class="code bad"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">❌ 안 쓰면 — children에 전부 펼쳐 즉시 생성</span></div><pre><span class="tok-c">// 1만 개 자식을 build 시점에 전부 인스턴스화</span>
+<span class="tok-t">SingleChildScrollView</span>(
+  child: <span class="tok-t">Column</span>(
+    children: [
+      <span class="tok-k">for</span> (<span class="tok-k">final</span> p <span class="tok-k">in</span> products)  <span class="tok-c">// 1만 회 반복</span>
+        <span class="tok-t">ProductTile</span>(p),         <span class="tok-c">// 화면 밖 것까지 미리 생성</span>
+    ],
+  ),
+);
+<span class="tok-c">// 💥 첫 프레임이 길어지고(jank) 메모리 급증</span></pre></div>
+        <div class="code good"><div class="bar"><span class="d r"></span><span class="d y"></span><span class="d g"></span><span class="fn">✅ 쓰면 — builder로 보이는 만큼만 지연 생성</span></div><pre><span class="tok-t">ListView</span>.builder(
+  itemCount: products.length,
+  itemExtent: <span class="tok-n">72</span>,             <span class="tok-c">// 높이 고정 시 레이아웃 더 빠름</span>
+  itemBuilder: (ctx, i) =&gt; <span class="tok-t">ProductTile</span>(products[i]),
+);
+<span class="tok-c">// 보이는 ~수십 개만 생성 → 초기 비용·메모리 일정</span>
+<span class="tok-c">// 스크롤하면 그때그때 만들고, 벗어나면 회수</span></pre></div>
+      </div>
+      <div class="ba-note"><b>차이:</b> <code class="inl">Column</code>(또는 <code class="inl">ListView(children: [...])</code>)은 자식 리스트를 <b>build 시점에 즉시 전부 인스턴스화</b>합니다. 항목이 많으면 첫 프레임이 길어지고(끊김·jank) 메모리도 항목 수에 비례해 늘죠. <code class="inl">ListView.builder</code>는 <code class="inl">itemBuilder</code>를 <b>화면에 들어오는 항목에 대해서만 호출(lazy)</b>해, 초기 비용과 메모리를 화면에 보이는 양 수준으로 묶어 둡니다. 항목 높이가 일정하면 <code class="inl">itemExtent</code>를 주는 것만으로 스크롤 레이아웃 계산이 더 싸집니다(리드 가점 포인트). <b>리페인트 격리도 같은 결:</b> 항목 안에 자주 다시 그려지는 애니메이션이 있다면 그 부분만 <code class="inl">RepaintBoundary</code>로 감싸 주변 페인팅까지 번지지 않게 막습니다.</div>
+      <div class="note warn"><b>함정 — 무분별하게 바르면 의미 없음(과장 금지):</b> <code class="inl">const</code>는 <b>부모의 build 호출 자체를 막지 못합니다</b>. 부모가 <code class="inl">setState</code>하면 부모 build는 그대로 돌고, const가 아끼는 건 그 <b>const 서브트리</b>의 위젯 재생성뿐입니다. <code class="inl">RepaintBoundary</code>도 마찬가지로 공짜가 아니라 별도 레이어를 만드는 비용이 있어, <b>실제로 자주·독립적으로 다시 그려지는 영역</b>(예: 끊임없이 도는 스피너)에만 써야 효과가 납니다. 거의 안 바뀌는 정적 위젯이나 부모와 늘 함께 갱신되는 영역에 둘 다 덕지덕지 붙이면 이득은 없고 코드만 복잡해집니다 — DevTools의 <i>Highlight repaints</i>로 실측한 뒤 붙이세요.</div>
     </section>
 
     <div class="div"></div>
