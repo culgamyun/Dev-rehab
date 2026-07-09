@@ -315,6 +315,32 @@
       <div class="callout warn"><span class="ic">⚠</span> <b>최대 함정:</b> <code>*(p+3)</code> 와 <code>*p+3</code> 는 완전히 다릅니다. 전자는 <u>4번째 문자</u>, 후자는 <u>첫 문자 아스키 +3</u>. 괄호 위치를 반드시 확인.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">SWAP</span><h3>포인터 swap — 값 전달 vs 주소 전달</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">같은 두 값을 값 전달·주소 전달 두 방식으로 교환한다. <b>원본이 바뀌는가</b>로 두 방식을 구별하는 단골 유형으로, C는 참조가 없어 주소를 넘겨야 원본이 바뀐다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">swap.c</span></div>
+        <pre><span class="nm">void</span> <span class="fn">swap_val</span>(<span class="nm">int</span> x, <span class="nm">int</span> y){    <span class="cm">// 값(복사본)을 받음</span>
+  <span class="nm">int</span> t = x; x = y; y = t;       <span class="cm">// 복사본끼리만 교환</span>
+}
+<span class="nm">void</span> <span class="fn">swap_ptr</span>(<span class="nm">int</span> *x, <span class="nm">int</span> *y){  <span class="cm">// 주소를 받음</span>
+  <span class="nm">int</span> t = *x; *x = *y; *y = t;    <span class="cm">// 가리키는 원본끼리 교환</span>
+}
+<span class="nm">int</span> <span class="fn">main</span>(){
+  <span class="nm">int</span> a = <span class="nm">3</span>, b = <span class="nm">5</span>;
+  <span class="fn">swap_val</span>(a, b);
+  <span class="fn">printf</span>(<span class="st">"%d %d\n"</span>, a, b);     <span class="cm">// 원본 불변 → 3 5</span>
+  <span class="fn">swap_ptr</span>(&amp;a, &amp;b);
+  <span class="fn">printf</span>(<span class="st">"%d %d\n"</span>, a, b);     <span class="cm">// 원본 교환 → 5 3</span>
+}</pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>단계 추적:</b> <code>swap_val(a,b)</code>는 x·y가 <u>복사본</u>이라 t=3,x=5,y=3이 지역에서만 일어나고 a·b는 그대로 → 첫 줄 <span class="out">3 5</span>. <code>swap_ptr(&amp;a,&amp;b)</code>는 <code>*x</code>가 곧 a, <code>*y</code>가 곧 b라 실제로 교환 → 둘째 줄 <span class="out">5 3</span>.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 값 전달(swap_val)은 함수 안에서 아무리 바꿔도 <u>원본은 안 바뀝니다</u>. C에는 참조(&amp;) 매개변수가 따로 없으므로, 원본을 바꾸려면 반드시 <code>*</code> 포인터 매개변수에 <b>주소(&amp;)</b>를 넘겨야 합니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "값을 복사해 전달하여 원본이 변하지 않는 인자 전달 방식은 ( ① ), 주소를 넘겨 원본을 변경하는 방식은 ( ② )이다." → 답: ① <u>값 호출(Call by Value)</u> ② <u>참조 호출(Call by Reference)</u> — 위 코드 출력은 <span class="out">3 5</span> / <span class="out">5 3</span>.</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-c-array">
@@ -337,6 +363,50 @@
         <li><b>*(*(p+1)+2)</b> — 1행 2열의 값 = arr[1][2]</li>
       </ul>
       <div class="callout"><span class="ic">💡</span> <code>*(*(p+i)+j)</code> = <code>p[i][j]</code> = <code>arr[i][j]</code>. 세 표기가 모두 같은 값입니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">ARR</span><h3>배열 + 포인터 순회 — *(p+i) 합계</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">포인터로 배열을 훑는 전형. <code>*(p+i)</code>가 <code>p[i]</code>·<code>a[i]</code>와 같은 값이라는 점과, '인덱스' 조건과 '값' 조건을 섞어 헷갈리게 하는 것이 구별 포인트다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">arrsum.c</span></div>
+        <pre><span class="nm">int</span> <span class="fn">main</span>(){
+  <span class="nm">int</span> a[<span class="nm">5</span>] = {<span class="nm">10</span>,<span class="nm">20</span>,<span class="nm">30</span>,<span class="nm">40</span>,<span class="nm">50</span>};
+  <span class="nm">int</span> *p = a;                  <span class="cm">// p = &amp;a[0]</span>
+  <span class="nm">int</span> sum = <span class="nm">0</span>, odd = <span class="nm">0</span>;
+  <span class="kw">for</span>(<span class="nm">int</span> i = <span class="nm">0</span>; i &lt; <span class="nm">5</span>; i++){
+    sum += *(p + i);           <span class="cm">// *(p+i) == p[i] == a[i]</span>
+    <span class="kw">if</span>(i % <span class="nm">2</span> == <span class="nm">1</span>) odd += p[i];  <span class="cm">// 홀수 인덱스(1,3)만</span>
+  }
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, sum);        <span class="cm">// 10+20+30+40+50 → 150</span>
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, odd);        <span class="cm">// a[1]+a[3]=20+40 → 60</span>
+}</pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>단계 추적:</b> i=0..4에서 sum에 <code>*(p+i)</code> 누적 → 10, 30, 60, 100, <span class="out">150</span>. odd는 홀수 인덱스 i=1(20)·i=3(40)만 더해 <span class="out">60</span>.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>*(p+i)</code>와 <code>*p+i</code>는 다릅니다 — 전자는 <u>i번째 원소</u>, 후자는 <u>첫 원소 값에 i를 더한 수</u>. 또 홀수 '인덱스'(1·3)와 홀수 '값'을 혼동하지 마세요(여기선 인덱스 기준).</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "포인터 <code>p</code>가 배열 <code>a</code>의 시작을 가리킬 때, <code>a[i]</code>와 같은 값을 포인터 산술로 나타내면 ( )이다." → 답: <u>*(p+i)</u> (= p[i]) — 위 코드 출력은 <span class="out">150</span> / <span class="out">60</span>.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">ARR2D</span><h3>2차원 배열 — a[i][j] ≡ *(*(a+i)+j)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">2차원 배열 접근 표기 네 가지가 <b>각각 어느 원소</b>를 가리키는지 추적하는 유형. <code>a+i</code>가 한 행을 통째로 건너뛴다는 점을 아는지로 난도를 가른다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">arr2d.c</span></div>
+        <pre><span class="nm">int</span> <span class="fn">main</span>(){
+  <span class="nm">int</span> a[<span class="nm">2</span>][<span class="nm">3</span>] = {{<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>},{<span class="nm">4</span>,<span class="nm">5</span>,<span class="nm">6</span>}};
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, a[<span class="nm">1</span>][<span class="nm">2</span>]);        <span class="cm">// 1행 2열 → 6</span>
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, *(*(a+<span class="nm">1</span>)+<span class="nm">1</span>));    <span class="cm">// a[1][1] → 5</span>
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, *(a[<span class="nm">0</span>]+<span class="nm">2</span>));      <span class="cm">// a[0][2] → 3</span>
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, (*(a+<span class="nm">1</span>))[<span class="nm">0</span>]);    <span class="cm">// a[1][0] → 4</span>
+}</pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>단계 추적:</b> <code>a[1][2]</code>=6. <code>*(*(a+1)+1)</code>은 <code>a+1</code>(1행)→역참조로 1행 시작→+1 뒤 역참조 = <code>a[1][1]</code>=5. <code>*(a[0]+2)</code>=<code>a[0][2]</code>=3. <code>(*(a+1))[0]</code>=<code>a[1][0]</code>=4 → <span class="out">6 5 3 4</span>.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>a+1</code>은 한 칸이 아니라 <u>한 행(int 3개)</u>을 건너뜁니다. <code>*(a+i)</code>는 i행의 <u>시작 주소</u>일 뿐이라 한 번 더 <code>*</code>를 붙여야 원소 값이 됩니다. 행 범위를 넘는 <code>*(a[0]+3)</code> 이상의 역참조는 미정의 동작이므로 시험은 범위 안만 다룹니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "2차원 배열 <code>a</code>에서 <code>a[i][j]</code>와 동일한 포인터 표기를 쓰시오." → 답: <u>*(*(a+i)+j)</u> (또는 *(a[i]+j)) — 위 코드는 <span class="out">6 5 3 4</span> 출력.</div>
     </div>
   </div>
 </section>
@@ -388,6 +458,71 @@
       <div class="callout warn"><span class="ic">⚠</span> <b>핵심:</b> 중첩 루프에서 <code>break</code>는 <u>자신이 속한 안쪽 루프만</u> 빠져나가고 바깥 루프는 계속 돕니다. while/for는 조건을 먼저 검사해 0회 실행이 가능하지만, <code>do-while</code>은 무조건 1회는 실행합니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag">FIB</span><h3>재귀 — 피보나치 값과 호출 횟수 추적</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">재귀는 <b>결과값</b>과 <b>호출 횟수</b>를 따로 묻는다. fib(5)는 값 5, 호출 15로, 값만 세다 호출 수를 놓치게 만드는 것이 함정.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">fib.c</span></div>
+        <pre><span class="nm">int</span> cnt = <span class="nm">0</span>;                   <span class="cm">// 전역 호출 카운터</span>
+<span class="nm">int</span> <span class="fn">fib</span>(<span class="nm">int</span> n){
+  cnt++;                         <span class="cm">// fib() 진입마다 +1</span>
+  <span class="kw">if</span>(n &lt;= <span class="nm">1</span>) <span class="kw">return</span> n;        <span class="cm">// fib(0)=0, fib(1)=1 (종료조건)</span>
+  <span class="kw">return</span> <span class="fn">fib</span>(n-<span class="nm">1</span>) + <span class="fn">fib</span>(n-<span class="nm">2</span>);  <span class="cm">// 두 갈래로 재귀</span>
+}
+<span class="nm">int</span> <span class="fn">main</span>(){
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, <span class="fn">fib</span>(<span class="nm">5</span>));      <span class="cm">// 값: 0 1 1 2 3 5 → 5</span>
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, cnt);         <span class="cm">// 호출 횟수 → 15</span>
+}</pre>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">fib(5) 호출 트리</span></div>
+        <pre><span class="cm">// fib() 진입 = 노드 1개 (총 15개), 잎 fib0·fib1은 즉시 반환
+// fib(5)
+//   fib(4)
+//     fib(3)
+//       fib(2)
+//         fib(1) → 1
+//         fib(0) → 0
+//       fib(1) → 1
+//     fib(2)
+//       fib(1) → 1
+//       fib(0) → 0
+//   fib(3)
+//     fib(2)
+//       fib(1) → 1
+//       fib(0) → 0
+//     fib(1) → 1</span></pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>단계 추적:</b> 값은 잎에서부터 fib0=0, fib1=1, fib2=1, fib3=2, fib4=3, fib5=<span class="out">5</span>. 호출 횟수는 트리 노드 수 — 진입마다 cnt++이라 <code>T(n)=1+T(n-1)+T(n-2)</code>, T(0)=T(1)=1 → T(2)=3, T(3)=5, T(4)=9, T(5)=<span class="out">15</span>.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 결과값 <span class="out">5</span>와 호출 횟수 <span class="out">15</span>를 혼동하지 마세요. 같은 값을 거듭 다시 계산해(fib(3)은 2회, fib(2)는 3회 호출) 호출 수가 지수적으로 늡니다. <code>n &lt;= 1</code> 종료조건이 없으면 무한 재귀입니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "위 함수로 fib(5)를 계산할 때 fib 함수가 호출되는 <u>총 횟수</u>를 쓰시오." → 답: <u>15</u> (반환값 자체는 5).</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">STATIC</span><h3>static 지역 변수 — 호출 사이 값 유지</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted"><code>static</code> 지역 변수는 함수가 끝나도 값이 남고 초기화는 최초 1회뿐이다. 일반 지역 변수라면 매번 초기화되어 나올 <span class="out">1 1 1</span>과의 출력 차이가 포인트.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">static.c</span></div>
+        <pre><span class="nm">void</span> <span class="fn">counter</span>(){
+  <span class="kw">static</span> <span class="nm">int</span> c = <span class="nm">0</span>;   <span class="cm">// 최초 1회만 초기화, 호출 사이 유지</span>
+  c++;
+  <span class="fn">printf</span>(<span class="st">"%d\n"</span>, c);
+}
+<span class="nm">int</span> <span class="fn">main</span>(){
+  <span class="fn">counter</span>();            <span class="cm">// c: 0→1, 출력 1</span>
+  <span class="fn">counter</span>();            <span class="cm">// c: 1→2, 출력 2</span>
+  <span class="fn">counter</span>();            <span class="cm">// c: 2→3, 출력 3</span>
+}</pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>단계 추적:</b> <code>c</code>는 <code>static</code>이라 프로그램 전체에서 딱 한 번 0으로 시작. 호출①에서 c=1, ②에서 c=2, ③에서 c=3 → 줄마다 <span class="out">1</span>, <span class="out">2</span>, <span class="out">3</span>.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>static</code>을 빼서 일반 지역 변수 <code>int c = 0;</code>로 두면 매 호출마다 0으로 <u>다시 초기화</u>되어 출력이 <span class="out">1 1 1</span>이 됩니다. 초기화 <code>= 0</code>은 <u>최초 1회만</u> 실행된다는 점이 핵심.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "함수 안에서 선언되지만 프로그램 종료까지 값이 유지되고 최초 한 번만 초기화되는 변수의 기억 부류(저장 클래스)는 ( )이다." → 답: <u>static(정적)</u> — 위 코드 출력은 <span class="out">1</span>, <span class="out">2</span>, <span class="out">3</span>.</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-c-struct">
@@ -429,6 +564,34 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
 <span class="fn">printf</span>(<span class="st">"%d"</span>, (p+<span class="nm">1</span>)-&gt;os + (p+<span class="nm">2</span>)-&gt;db);  <span class="cm">// 84+75=159</span></pre>
       </div>
       <div class="callout"><span class="ic">💡</span> <code>(p+1)</code>는 배열의 다음 구조체(st[1]). 포인터이므로 멤버 접근은 <code>-></code>. <code>(p+1)->os</code> = st[1].os.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">LIST</span><h3>자기 참조 구조체 — 연결 리스트 순회</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">자기 참조 구조체로 노드를 잇고 <code>while</code>로 순회한다. 꼬리의 <code>NULL</code>이 종료 신호이며, 이를 빠뜨리면 순회가 끝나지 않는다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">list.c</span></div>
+        <pre><span class="kw">struct</span> <span class="cl">Node</span> {
+  <span class="nm">int</span> data;
+  <span class="kw">struct</span> <span class="cl">Node</span> *next;    <span class="cm">// 자기 자신 타입의 포인터(자기 참조)</span>
+};
+<span class="nm">int</span> <span class="fn">main</span>(){
+  <span class="kw">struct</span> <span class="cl">Node</span> n3 = {<span class="nm">30</span>, <span class="nm">NULL</span>}; <span class="cm">// 꼬리: next=NULL</span>
+  <span class="kw">struct</span> <span class="cl">Node</span> n2 = {<span class="nm">20</span>, &amp;n3};  <span class="cm">// n2 → n3</span>
+  <span class="kw">struct</span> <span class="cl">Node</span> n1 = {<span class="nm">10</span>, &amp;n2};  <span class="cm">// n1 → n2</span>
+  <span class="kw">struct</span> <span class="cl">Node</span> *p = &amp;n1;        <span class="cm">// head부터 시작</span>
+  <span class="kw">while</span>(p != <span class="nm">NULL</span>){            <span class="cm">// NULL 만나면 종료</span>
+    <span class="fn">printf</span>(<span class="st">"%d -&gt; "</span>, p-&gt;data); <span class="cm">// 현재 노드 값</span>
+    p = p-&gt;next;                 <span class="cm">// 다음 노드로 전진</span>
+  }
+  <span class="fn">printf</span>(<span class="st">"NULL\n"</span>);
+}</pre>
+      </div>
+      <div class="callout"><span class="ic">🎯</span> <b>단계 추적:</b> p=&amp;n1 → 10 출력, p=n1.next=&amp;n2 → 20, p=&amp;n3 → 30, n3.next가 <code>NULL</code>이라 <code>while</code> 종료 → <span class="out">10 -&gt; 20 -&gt; 30 -&gt; NULL</span>.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 꼬리 노드의 <code>next</code>를 <u>NULL로 두지 않으면</u> <code>while(p)</code>가 정상 종료하지 못하고 정의되지 않은 메모리를 따라가 오동작합니다(미정의 동작). 포인터 멤버는 화살표(<code>-&gt;</code>)로 접근하고, <code>p = p-&gt;next</code> 전진 문장을 빠뜨리면 무한 루프입니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "멤버로 자기 자신과 같은 자료형의 포인터를 가지며 연결 리스트의 기본 단위가 되는 구조체를 ( ) 구조체라 한다." → 답: <u>자기 참조(self-referential)</u> — 위 순회 출력은 <span class="out">10 -&gt; 20 -&gt; 30 -&gt; NULL</span>.</div>
     </div>
   </div>
 </section>
@@ -517,6 +680,109 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
       <div class="callout"><span class="ic">🎯</span> <b>추적:</b> B() → super()로 A() 실행 → "A" 출력 → func() 호출하는데 실제 객체가 B라 <u>E</u> 실행 → A() 끝 → B()의 "D". 결과 <span class="out">AED</span>.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">ABS</span><h3>추상 클래스 · 인터페이스 — 무엇이 호출되나</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">추상 클래스와 인터페이스를 함께 구현한 객체를 <b>부모 타입으로 업캐스팅</b>한 뒤 어떤 메서드가 실행되는지 묻는 유형입니다. 각 메서드가 어디에 정의됐는지로 구별하세요.</p>
+      <ul>
+        <li><b>추상 메서드</b> — 본문이 없어 자식이 반드시 오버라이드 → <code>area()</code>는 Circle 것이 실행되어 <span class="out">12.0</span></li>
+        <li><b>추상 클래스의 일반 메서드</b> — 구현이 있으면 그대로 상속 → <code>kind()</code>는 Shape 것 실행: <span class="out">shape</span></li>
+        <li><b>인터페이스 default 메서드</b> — 인터페이스인데도 본문을 가짐 → <code>info()</code> 그대로: <span class="out">drawable</span></li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">Main.java</span></div>
+        <pre><span class="kw">abstract class</span> <span class="cl">Shape</span> {
+  <span class="kw">abstract</span> <span class="nm">double</span> <span class="fn">area</span>();           <span class="cm">// 본문 없음(;로 끝)</span>
+  <span class="nm">String</span> <span class="fn">kind</span>(){ <span class="kw">return</span> <span class="st">"shape"</span>; }   <span class="cm">// 일반 메서드</span>
+}
+<span class="kw">interface</span> <span class="cl">Drawable</span> {
+  <span class="kw">void</span> <span class="fn">draw</span>();
+  <span class="kw">default</span> <span class="nm">String</span> <span class="fn">info</span>(){ <span class="kw">return</span> <span class="st">"drawable"</span>; }  <span class="cm">// default: 본문 가능</span>
+}
+<span class="kw">class</span> <span class="cl">Circle</span> <span class="kw">extends</span> <span class="cl">Shape</span> <span class="kw">implements</span> <span class="cl">Drawable</span> {
+  <span class="nm">double</span> r;
+  <span class="fn">Circle</span>(<span class="nm">double</span> r){ <span class="kw">this</span>.r = r; }
+  <span class="nm">double</span> <span class="fn">area</span>(){ <span class="kw">return</span> <span class="nm">3.0</span> * r * r; }    <span class="cm">// 오버라이드</span>
+  <span class="kw">public</span> <span class="kw">void</span> <span class="fn">draw</span>(){ <span class="fn">System.out.println</span>(<span class="st">"drawing"</span>); }
+}
+<span class="cm">// --- main ---</span>
+<span class="cl">Shape</span> s = <span class="kw">new</span> <span class="cl">Circle</span>(<span class="nm">2</span>);       <span class="cm">// 업캐스팅</span>
+<span class="fn">System.out.println</span>(s.<span class="fn">area</span>());   <span class="cm">// 12.0 (Circle)</span>
+<span class="fn">System.out.println</span>(s.<span class="fn">kind</span>());   <span class="cm">// shape (Shape)</span>
+<span class="cl">Drawable</span> d = <span class="kw">new</span> <span class="cl">Circle</span>(<span class="nm">1</span>);
+d.<span class="fn">draw</span>();                      <span class="cm">// drawing</span>
+<span class="fn">System.out.println</span>(d.<span class="fn">info</span>());   <span class="cm">// drawable (default)</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 추상 메서드는 본문 없이 <code>;</code>로 끝나야 하고(본문을 쓰면 컴파일 오류), <u>추상 클래스는 <code>new</code>로 직접 객체를 만들 수 없습니다</u>. 반대로 인터페이스의 <code>default</code> 메서드는 예외적으로 본문을 가질 수 있고, 인터페이스 필드는 자동으로 <code>public static final</code> 상수가 됩니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "인터페이스에서 <u>구현부(본문)를 가질 수 있는</u> 메서드에 붙이는 예약어를 쓰시오." → 답: <u>default</u> (자바 8부터 추가된 default 메서드)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">EXC</span><h3>예외 처리 — try·catch·finally 실행 순서</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">예외가 터진 뒤 어떤 줄이 실행되고 어떤 줄이 건너뛰어지는지, 그리고 <b>finally가 언제 실행되는지</b>가 핵심입니다.</p>
+      <ul>
+        <li><b>try 안에서 예외 발생</b> — 즉시 <code>catch</code>로 점프. 예외 아래 줄 <code>return 1</code>은 <u>실행되지 않음</u></li>
+        <li><b>finally</b> — 예외가 있든 없든, <u>catch에 return이 있어도</u> 항상 실행</li>
+        <li><b>실행 순서</b> — return 값은 준비만 되고 finally를 끝낸 뒤 반환 → "finally"가 "result:2"보다 먼저</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">Main.java</span></div>
+        <pre><span class="nm">int</span> <span class="fn">test</span>(){
+  <span class="kw">try</span> {
+    <span class="nm">int</span> x = <span class="nm">10</span> / <span class="nm">0</span>;   <span class="cm">// ArithmeticException</span>
+    <span class="kw">return</span> <span class="nm">1</span>;          <span class="cm">// 실행 안 됨</span>
+  } <span class="kw">catch</span>(<span class="cl">ArithmeticException</span> e){
+    <span class="fn">System.out.println</span>(<span class="st">"catch"</span>);
+    <span class="kw">return</span> <span class="nm">2</span>;          <span class="cm">// finally 먼저 실행 후 반환</span>
+  } <span class="kw">finally</span> {
+    <span class="fn">System.out.println</span>(<span class="st">"finally"</span>);  <span class="cm">// 항상 실행</span>
+  }
+}
+<span class="cm">// --- main ---</span>
+<span class="fn">System.out.println</span>(<span class="st">"start"</span>);
+<span class="nm">int</span> r = <span class="fn">test</span>();
+<span class="fn">System.out.println</span>(<span class="st">"result:"</span> + r);</pre>
+      </div>
+      <div class="result-line"><span class="arrow">▶ 출력(줄바꿈)</span> <span class="val">start / catch / finally / result:2</span></div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>catch</code>에 <code>return 2;</code>가 있어도 <u>finally가 먼저 실행</u>되어 "finally"가 "result:2"보다 앞에 출력됩니다. 예외가 발생한 줄 <b>아래</b>의 <code>return 1;</code>은 건너뜁니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "다음 코드의 출력을 순서대로 쓰시오" → 답: <u>start, catch, finally, result:2</u>. <code>finally</code>는 파일·DB 연결을 닫는 <b>자원 정리</b>에 쓴다는 서술형도 단골.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">STATIC</span><h3>static 필드 — 모든 객체가 공유</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted"><code>static</code> 필드는 객체마다 따로 생기지 않고 <b>클래스에 하나만</b> 존재해 모든 인스턴스가 공유합니다. 인스턴스 필드와 대비시키는 게 출제 포인트.</p>
+      <ul>
+        <li><b>static int count</b> — 클래스에 하나. 어느 객체에서 증가시켜도 <u>같은 값</u>을 공유</li>
+        <li><b>int seq</b> — 인스턴스마다 별도. 생성 시점의 count를 각자 복사해 보관</li>
+        <li><b>결과</b> — a.count·b.count는 둘 다 <span class="out">2</span>(공유), seq는 <span class="out">1</span>·<span class="out">2</span>로 갈림</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">Main.java</span></div>
+        <pre><span class="kw">class</span> <span class="cl">Item</span> {
+  <span class="kw">static</span> <span class="nm">int</span> count = <span class="nm">0</span>;   <span class="cm">// 클래스 공유</span>
+  <span class="nm">int</span> seq;                <span class="cm">// 인스턴스 개별</span>
+  <span class="fn">Item</span>(){
+    count++;               <span class="cm">// 공유 카운터 증가</span>
+    seq = count;
+    <span class="fn">System.out.println</span>(<span class="st">"count="</span> + count);
+  }
+}
+<span class="cm">// --- main ---</span>
+<span class="cl">Item</span> a = <span class="kw">new</span> <span class="cl">Item</span>();   <span class="cm">// count 0→1</span>
+<span class="cl">Item</span> b = <span class="kw">new</span> <span class="cl">Item</span>();   <span class="cm">// count 1→2</span>
+<span class="fn">System.out.println</span>(<span class="st">"a.seq="</span> + a.seq + <span class="st">" b.seq="</span> + b.seq);
+<span class="fn">System.out.println</span>(<span class="st">"a.count="</span> + a.count + <span class="st">" b.count="</span> + b.count);</pre>
+      </div>
+      <div class="result-line"><span class="arrow">▶ 출력</span> <span class="val">count=1 / count=2 / a.seq=1 b.seq=2 / a.count=2 b.count=2</span></div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>a.count</code>와 <code>b.count</code>는 다른 변수처럼 보이지만 <u>같은 static 하나</u>라 항상 같은 값(2)입니다. 인스턴스 필드 <code>seq</code>는 생성 시점의 count를 각자 복사하므로 1, 2로 갈립니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "여러 객체가 하나의 값을 <u>공유</u>하도록 만드는 예약어를 쓰시오." → 답: <u>static</u> (클래스 변수). 위 코드의 최종 <code>count</code> 값은 <u>2</u>.</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-java-ctrl">
@@ -556,6 +822,31 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
       <div class="callout"><span class="ic">💡</span> <b>시프트 암기:</b> <code>&lt;&lt;n</code> = ×2ⁿ, <code>&gt;&gt;n</code> = ÷2ⁿ. XOR(^)는 "같으면 0, 다르면 1"이 핵심.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">SHIFT</span><h3>비트 시프트 · 진법 리터럴</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">시프트는 <b>2의 거듭제곱 곱셈·나눗셈</b>, 진법 리터럴은 <b>0(8진)·0x(16진) 접두어</b>로 구별합니다.</p>
+      <ul>
+        <li><b>a &lt;&lt; n</b> — 왼쪽 n칸 = <code>a × 2ⁿ</code>. <code>3 &lt;&lt; 2</code> = 3×4 = <span class="out">12</span></li>
+        <li><b>a &gt;&gt; n</b> — 오른쪽 n칸 = <code>a ÷ 2ⁿ</code>(양수 기준). <code>3 &gt;&gt; 1</code> = 3÷2 = <span class="out">1</span></li>
+        <li><b>010</b> — 앞에 0이 붙으면 <u>8진수</u> → 십진 <span class="out">8</span> (10이 아님)</li>
+        <li><b>0x1A</b> — 앞에 0x가 붙으면 <u>16진수</u> → 1×16+10 = <span class="out">26</span></li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">Main.java</span></div>
+        <pre><span class="nm">int</span> a = <span class="nm">3</span>;                 <span class="cm">// 2진수 011</span>
+<span class="fn">System.out.println</span>(a &lt;&lt; <span class="nm">2</span>);   <span class="cm">// 3 × 4 = 12</span>
+<span class="fn">System.out.println</span>(a &gt;&gt; <span class="nm">1</span>);   <span class="cm">// 3 ÷ 2 = 1</span>
+<span class="nm">int</span> oct = <span class="nm">010</span>;             <span class="cm">// 8진수 → 8</span>
+<span class="nm">int</span> hex = <span class="nm">0x1A</span>;            <span class="cm">// 16진수 → 26</span>
+<span class="fn">System.out.printf</span>(<span class="st">"%d %d%n"</span>, oct, hex);  <span class="cm">// 8 26</span>
+<span class="fn">System.out.println</span>(oct + hex);        <span class="cm">// 8 + 26 = 34</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>010</code>을 십진 <b>10</b>으로 읽으면 틀립니다 — 맨 앞 <code>0</code> 때문에 <u>8진수 8</u>입니다. <code>&gt;&gt;</code>를 ÷2로 외우는 건 <b>양수</b>일 때만 안전하고, 음수는 부호를 보존하는 산술 시프트라 값이 달라질 수 있어 문제엔 보통 양수가 나옵니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "<code>System.out.println(3 &lt;&lt; 2);</code>의 출력값을 쓰시오." → 답: <u>12</u> (3 × 2² = 12). <code>0x1A</code>를 십진수로 바꾸면 <u>26</u>.</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-java2">
@@ -579,6 +870,32 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
 }</pre>
       </div>
       <div class="callout"><span class="ic">💡</span> <code>String.length()</code>는 메서드(괄호 O), <code>배열.length</code>는 필드(괄호 X). 헷갈리지 마세요.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">2D</span><h3>2차원 배열 — length 함정</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">2차원 배열에서 <code>length</code>가 행인지 열인지 헷갈리게 만드는 유형입니다. <b>바깥 length는 행, 안쪽 length는 열</b>.</p>
+      <ul>
+        <li><b>arr.length</b> — 행(row)의 개수. <code>new int[3][4]</code>면 <span class="out">3</span></li>
+        <li><b>arr[0].length</b> — 0행이 가진 열(column)의 개수 → <span class="out">4</span></li>
+        <li><b>가변(jagged) 배열</b> — 행마다 길이가 달라 <code>arr[i].length</code>도 행별로 다름</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">Main.java</span></div>
+        <pre><span class="nm">int</span>[][] arr = <span class="kw">new</span> <span class="nm">int</span>[<span class="nm">3</span>][<span class="nm">4</span>];
+<span class="fn">System.out.println</span>(arr.length);      <span class="cm">// 행 개수 → 3</span>
+<span class="fn">System.out.println</span>(arr[<span class="nm">0</span>].length);   <span class="cm">// 0행의 열 개수 → 4</span>
+
+<span class="nm">int</span>[][] jag = {{<span class="nm">1</span>}, {<span class="nm">1</span>,<span class="nm">2</span>}, {<span class="nm">1</span>,<span class="nm">2</span>,<span class="nm">3</span>}};  <span class="cm">// 가변 배열</span>
+<span class="kw">for</span>(<span class="nm">int</span> i=<span class="nm">0</span>; i&lt;jag.length; i++)
+  <span class="fn">System.out.print</span>(jag[i].length + <span class="st">" "</span>);  <span class="cm">// 1 2 3</span>
+<span class="fn">System.out.println</span>();
+<span class="fn">System.out.println</span>(jag[<span class="nm">2</span>][<span class="nm">1</span>]);            <span class="cm">// {1,2,3}의 1번 → 2</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>arr.length</code>는 <u>열이 아니라 행</u> 개수입니다. 열 개수는 <code>arr[i].length</code>로 얻습니다. 가변 배열에서는 행마다 열 수가 달라 <code>jag[0].length</code>=1, <code>jag[2].length</code>=3처럼 제각각입니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "<code>int[][] a = new int[3][4];</code>일 때 <code>a.length</code>와 <code>a[0].length</code>를 각각 쓰시오." → 답: <u>3, 4</u> (앞이 행, 뒤가 열)</div>
     </div>
   </div>
 </section>
@@ -628,6 +945,90 @@ pp-&gt;x = pp-&gt;x + pp-&gt;y;     <span class="cm">// 3+7=10, 원본 p.x도 10
         <li><b>map(lambda x: x*x, [1,2,3])</b> → <span class="out">[1, 4, 9]</span></li>
       </ul>
       <div class="callout"><span class="ic">🎯</span> <code>list(map(함수, 리스트))</code> = 각 원소에 함수 적용. lambda는 이름 없는 즉석 함수.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">STR</span><h3>문자열 메서드 체인</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted"><code>s = "Hello World"</code> 기준. 각 메서드가 <b>새 문자열을 반환</b>(원본 불변)하고, 못 찾았을 때의 반환값이 함정입니다.</p>
+      <ul>
+        <li><b>upper()</b> — 모두 대문자: <span class="out">HELLO WORLD</span></li>
+        <li><b>replace("l","L")</b> — 모든 소문자 l 치환: <span class="out">HeLLo WorLd</span></li>
+        <li><b>split()</b> — 공백 기준 분리(리스트): <span class="out">['Hello', 'World']</span></li>
+        <li><b>"-".join(리스트)</b> — 구분자로 이어붙임: <span class="out">Hello-World</span></li>
+        <li><b>count("l")</b> — 등장 횟수: <span class="out">3</span>, <b>find("o")</b> — 첫 인덱스: <span class="out">4</span> (없으면 <span class="out">-1</span>)</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">strmethod.py</span></div>
+        <pre>s = <span class="st">"Hello World"</span>
+<span class="fn">print</span>(s.<span class="fn">upper</span>())              <span class="cm"># HELLO WORLD</span>
+<span class="fn">print</span>(s.<span class="fn">replace</span>(<span class="st">"l"</span>, <span class="st">"L"</span>))    <span class="cm"># HeLLo WorLd</span>
+<span class="fn">print</span>(s.<span class="fn">split</span>())              <span class="cm"># ['Hello', 'World']</span>
+<span class="fn">print</span>(<span class="st">"-"</span>.<span class="fn">join</span>(s.<span class="fn">split</span>()))    <span class="cm"># Hello-World</span>
+<span class="fn">print</span>(s.<span class="fn">count</span>(<span class="st">"l"</span>))           <span class="cm"># 3</span>
+<span class="fn">print</span>(s.<span class="fn">find</span>(<span class="st">"o"</span>))            <span class="cm"># 4</span>
+<span class="fn">print</span>(s.<span class="fn">find</span>(<span class="st">"z"</span>))            <span class="cm"># 없으면 -1</span>
+<span class="fn">print</span>(s[:<span class="nm">5</span>].<span class="fn">lower</span>())          <span class="cm"># hello</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <code>find()</code>는 못 찾으면 <u>-1</u>을 돌려주지만, <code>index()</code>는 같은 상황에서 <u>ValueError 예외</u>를 냅니다. 또 <code>count</code>·<code>find</code>는 <b>대소문자를 구분</b>해 <code>count("L")</code>은 0입니다(원본엔 소문자 l만 있음).</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "<code>'Hello World'.split()</code>의 결과를 쓰시오." → 답: <u>['Hello', 'World']</u> (인자 없는 split은 공백 기준). 없는 문자에 대한 <code>find</code> 반환값은 <u>-1</u>.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">FUNC</span><h3>함수 — 기본값 인자 · *args</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">인자를 생략하면 <b>기본값</b>이 쓰이고, <code>*args</code>는 <b>개수가 정해지지 않은 인자를 튜플</b>로 받습니다. 키워드 인자로 부르면 순서를 바꿔도 됩니다.</p>
+      <ul>
+        <li><b>def f(a, b=10)</b> — <code>f(5)</code>는 b 생략 → 5+10 = <span class="out">15</span></li>
+        <li><b>키워드 인자</b> — <code>f(b=3, a=7)</code>은 이름으로 매칭 → 7+3 = <span class="out">10</span></li>
+        <li><b>def g(*args)</b> — <code>g(1,2,3)</code>은 <code>args=(1,2,3)</code>, sum → <span class="out">6</span></li>
+        <li><b>g()</b> — 인자 0개면 빈 튜플, 합 → <span class="out">0</span></li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">args.py</span></div>
+        <pre><span class="kw">def</span> <span class="fn">f</span>(a, b=<span class="nm">10</span>):
+    <span class="kw">return</span> a + b
+
+<span class="kw">def</span> <span class="fn">g</span>(*args):
+    <span class="kw">return</span> <span class="fn">sum</span>(args)
+
+<span class="fn">print</span>(<span class="fn">f</span>(<span class="nm">5</span>))           <span class="cm"># 5 + 10 = 15</span>
+<span class="fn">print</span>(<span class="fn">f</span>(<span class="nm">5</span>, <span class="nm">20</span>))       <span class="cm"># 5 + 20 = 25</span>
+<span class="fn">print</span>(<span class="fn">f</span>(b=<span class="nm">3</span>, a=<span class="nm">7</span>))    <span class="cm"># 키워드 인자 → 7 + 3 = 10</span>
+<span class="fn">print</span>(<span class="fn">g</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>))     <span class="cm"># (1,2,3) 합 → 6</span>
+<span class="fn">print</span>(<span class="fn">g</span>(<span class="nm">1</span>, <span class="nm">2</span>, <span class="nm">3</span>, <span class="nm">4</span>))  <span class="cm"># 합 → 10</span>
+<span class="fn">print</span>(<span class="fn">g</span>())            <span class="cm"># 빈 튜플 → 0</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 기본값 인자는 <u>반드시 뒤쪽</u>에 와야 합니다. <code>def f(a=1, b)</code>처럼 기본값 뒤에 일반 인자를 두면 <code>SyntaxError</code>입니다. <code>*args</code>는 리스트가 아니라 <b>튜플</b>로 들어옵니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "가변 인자를 하나의 <u>튜플</u>로 받는 매개변수 표기를 쓰시오." → 답: <u>*args</u> (별표 하나). <code>f(b=3, a=7)</code>의 출력을 묻는 유형이면 답은 <u>10</u>.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">COMP</span><h3>리스트 컴프리헨션 + 조건</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted"><code>[식 for 변수 in 반복 if 조건]</code> 한 줄로 리스트를 만듭니다. <b>필터 if</b>와 <b>삼항 if-else</b>의 위치가 다르다는 게 최대 함정.</p>
+      <ul>
+        <li><b>필터 if</b> — <code>for</code> <u>뒤</u>에 옴. <code>[x*2 for x in range(5) if x%2==0]</code> → <span class="out">[0, 4, 8]</span></li>
+        <li><b>중첩 for</b> — 왼쪽(앞) for가 바깥, <u>오른쪽(뒤) for가 안쪽</u> 루프</li>
+        <li><b>삼항 if-else</b> — 값을 고르는 식이라 <code>for</code> <u>앞</u>에 옴</li>
+        <li><b>dict/set 컴프리헨션</b> — <code>{}</code>로 감싸면 딕셔너리·집합도 생성</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">comp.py</span></div>
+        <pre><span class="fn">print</span>([x*<span class="nm">2</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">5</span>) <span class="kw">if</span> x%<span class="nm">2</span>==<span class="nm">0</span>])
+<span class="cm"># 짝수만 필터 → [0, 4, 8]</span>
+<span class="fn">print</span>([(i, j) <span class="kw">for</span> i <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">2</span>) <span class="kw">for</span> j <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">3</span>)])
+<span class="cm"># 뒤 for가 안쪽 → [(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2)]</span>
+<span class="fn">print</span>([x <span class="kw">if</span> x%<span class="nm">2</span>==<span class="nm">0</span> <span class="kw">else</span> -x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">5</span>)])
+<span class="cm"># if-else는 for 앞 → [0, -1, 2, -3, 4]</span>
+<span class="fn">print</span>({x: x*x <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">3</span>)})  <span class="cm"># {0: 0, 1: 1, 2: 4}</span>
+<span class="fn">print</span>({x%<span class="nm">3</span> <span class="kw">for</span> x <span class="kw">in</span> <span class="fn">range</span>(<span class="nm">6</span>)})    <span class="cm"># {0, 1, 2}</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <u>필터 if는 for 뒤</u>(<code>for x in ... if 조건</code>), <u>삼항 if-else는 for 앞</u>(<code>x if 조건 else y for x in ...</code>)입니다. 위치를 바꾸면 <code>SyntaxError</code>. 중첩 <code>for</code>는 <b>왼쪽이 바깥, 오른쪽이 안쪽</b> 루프 순서로 실행됩니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "<code>[x*2 for x in range(5) if x%2==0]</code>의 결과를 쓰시오." → 답: <u>[0, 4, 8]</u> (0·2·4를 2배)</div>
     </div>
   </div>
 </section>

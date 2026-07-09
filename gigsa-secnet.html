@@ -266,6 +266,35 @@
       <div class="callout mnemonic"><span class="ic">🔑</span> <b>기·무·가</b> (기밀성·무결성·가용성). 추가로 부인방지(Non-repudiation), 인증(Authentication)도 함께 외우면 좋습니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">RISK</span><h3>보안 요소 확장 — 5요소 + 위험 관리 용어</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p>위 표의 3요소에 <b>인증</b>·<b>부인방지</b>를 더해 <b>정보보안 5요소</b>로 출제됩니다. 시험은 "설명 문장을 주고 요소 이름을 쓰라"는 매칭형으로 구별시키므로 요소마다 핵심 동사 하나로 기억하세요 — 인증은 "확인한다", 부인방지는 "부인 못 하게 한다". 특히 부인방지는 전자서명과 묶여 나오는 단답 단골입니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">인증</span><span class="td">Authentication — 접근하는 사용자·메시지가 <b>진짜 본인·원본이 맞는지 확인</b>. 전형 시나리오: 로그인 시 ID와 비밀번호 검증</span></div>
+        <div class="termrow"><span class="tt">부인방지</span><span class="td">Non-repudiation — 송수신 사실을 <b>사후에 부인하지 못하도록 증거를 확보</b>. 전형 시나리오: 전자서명으로 "내가 보낸 적 없다"는 주장 차단</span></div>
+      </div>
+      <p>위험 관리 용어 4개는 관계식으로 묶어야 안 헷갈립니다. <b>위험(Risk)은 자산·위협·취약점의 함수</b> — 위협이 취약점을 통해 자산을 때릴 때 위험이 생기므로, 셋 중 하나라도 없으면 위험도 없습니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">자산</span><span class="td">Asset — 조직이 보호해야 할 <b>가치 있는 대상</b> (서버·데이터·소프트웨어·인력)</span></div>
+        <div class="termrow"><span class="tt">위협</span><span class="td">Threat — 자산에 <b>손실을 일으킬 수 있는 잠재적 사건·행위자</b> (해커, 악성코드, 화재)</span></div>
+        <div class="termrow"><span class="tt">취약점</span><span class="td">Vulnerability — 위협이 파고들 수 있는 <b>자산이 가진 약점</b> (패치 안 된 서버, 허술한 비밀번호 정책)</span></div>
+        <div class="termrow"><span class="tt">위험</span><span class="td">Risk — 위협이 취약점을 이용해 자산에 <b>손실을 입힐 가능성</b></span></div>
+      </div>
+      <p>식별된 위험은 4가지 전략 중 하나로 처리합니다. 각 전략을 대표 예시와 짝지어 두세요.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">회피</span><span class="td">Avoidance — 위험을 낳는 활동·자산 자체를 <b>중단·제거</b>. 예: 위험한 서비스 폐기</span></div>
+        <div class="termrow"><span class="tt">전가</span><span class="td">Transfer — 손실 부담을 <b>제3자에게 이전</b>. 대표 예가 <b>보험 가입</b>, 아웃소싱</span></div>
+        <div class="termrow"><span class="tt">감소</span><span class="td">Mitigation(완화) — 보안 대책을 구현해 위험을 <b>수용 가능한 수준까지 낮춤</b>. 예: 방화벽·백업 도입</span></div>
+        <div class="termrow"><span class="tt">수용</span><span class="td">Acceptance — 대책 비용이 손실보다 크다고 판단되면 <b>위험을 감수하기로 결정</b>하고 운영</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>위협 vs 취약점 혼동 주의:</b> 손실을 <u>일으키는 쪽</u>(해커·악성코드·화재)이 위협, <u>뚫리는 약점</u>(미패치 서버·허술한 정책)이 취약점입니다. 설명에 "약점·결함"이 보이면 취약점, "사건·행위자"가 보이면 위협.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 위험 처리 4전략은 <b>회·전·감·수</b>(회피·전가·감소·수용) — "회전하며 감수한다". 전가 하면 반사적으로 "보험"이 나와야 합니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "메시지의 송수신 사실을 사후에 부인할 수 없도록 증거를 제공하는 정보보안 요소는?" → 답: <u>부인방지(Non-repudiation)</u> (전자서명이 이를 보장하는 대표 기술)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "위험 처리 전략 중, 보험 가입처럼 위험에 따른 손실 부담을 제3자에게 넘기는 전략은?" → 답: <u>위험 전가(Risk Transfer)</u> (회피=활동 중단, 감소=대책 구현, 수용=감수 결정)</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-crypto">
@@ -282,6 +311,61 @@
       </div>
       <div class="callout warn"><span class="ic">⚠</span> <b>핵심 함정:</b> 비대칭키는 <u>공개키로 암호화 → 개인키로 복호화</u>가 기본(기밀성). 반대로 개인키로 서명 → 공개키로 검증은 전자서명(부인방지). 방향을 정확히.</div>
       <div class="callout mnemonic"><span class="ic">🔑</span> 대칭 = <b>다·에·시·아</b>(DES·AES·SEED·ARIA) / 비대칭 = <b>RSA·ECC</b> / 해시 = <b>SHA·MD5</b>.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">ALGO</span><h3>암호 알고리즘 지도 — 국산·경량·수학 근거</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">위 표가 "대칭이냐 비대칭이냐"라면, 여기는 이름을 특정하게 만드는 세부 스펙.</p>
+      <p>실기는 알고리즘을 길게 설명하지 않습니다. <b>국산 여부 · 블록/키 크기 · 경량(IoT) 대상 · 근거 수학 문제</b> 같은 시그널 두어 개를 나열하고 이름을 쓰게 하죠. 아래 굵은 시그널만 잡으면 답이 하나로 좁혀집니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">DES</span><span class="td">블록 <b>64비트</b> · 키는 64비트 중 패리티 8비트를 뺀 <b>유효 56비트</b>. 현재는 취약 — <b>3DES</b>(DES 3회 적용)를 거쳐 AES로 대체</span></div>
+        <div class="termrow"><span class="tt">AES</span><span class="td">DES를 대체한 <b>미국(NIST) 표준</b>. 블록 <b>128비트 고정</b>, 키 <b>128/192/256비트</b>. 시나리오: HTTPS·디스크 암호화 등 현대 대칭키의 사실상 표준</span></div>
+        <div class="termrow"><span class="tt">SEED</span><span class="td"><b>국산</b>(KISA 개발) 블록 암호. 블록·키 모두 <b>128비트</b>. 국내 금융·전자상거래에서 오래 사용</span></div>
+        <div class="termrow"><span class="tt">ARIA</span><span class="td"><b>국산 · 국가 표준(KS)</b>. <b>경량 환경·하드웨어 구현 효율에 최적화</b>. 블록 128비트, 키 128/192/256(AES와 동일 규격). 이름은 학계·연구소·정부(Academy·Research Institute·Agency) 합작의 약자</span></div>
+        <div class="termrow"><span class="tt">LEA</span><span class="td"><b>국산 경량 고속</b>(Lightweight Encryption Algorithm). 블록 128비트. 모바일·IoT·빅데이터 등 <b>고속 경량 환경</b>용</span></div>
+        <div class="termrow"><span class="tt">HIGHT</span><span class="td"><b>국산 초경량</b>. 블록 <b>64비트</b>·키 128비트. <b>RFID·USN 등 저전력 장비</b>를 위해 개발</span></div>
+        <div class="termrow"><span class="tt">IDEA</span><span class="td">블록 64비트·키 128비트. 이메일 암호화 <b>PGP에 채택</b>된 것으로 유명</span></div>
+      </div>
+      <p><b>스트림 암호</b>는 비트·바이트 단위로 키 스트림과 XOR하는 방식입니다. 대표가 <b>RC4</b>(WEP·초기 SSL에 사용, 현재는 취약)이고, <b>LFSR</b>(선형 피드백 시프트 레지스터)은 키 스트림을 만들어내는 기본 부품으로 출제됩니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">RSA</span><span class="td">근거: <b>큰 수의 소인수분해</b>가 어렵다는 문제. 암호화·전자서명 모두 가능한 범용 공개키</span></div>
+        <div class="termrow"><span class="tt">ECC</span><span class="td">근거: <b>타원곡선 이산대수</b> 문제. RSA보다 <b>훨씬 짧은 키로 동등한 보안 강도</b> → 모바일·IoT에 유리</span></div>
+        <div class="termrow"><span class="tt">디피-헬만</span><span class="td">근거: <b>이산대수</b> 문제. <b>키 교환 전용</b>(최초의 공개키 개념) — 자체 암호화·서명 기능은 없고, 인증 없이 쓰면 중간자 공격에 취약</span></div>
+        <div class="termrow"><span class="tt">ElGamal</span><span class="td">근거: <b>이산대수</b> 문제. 난수를 써서 같은 평문도 매번 다른 암호문이 되고, <b>암호문 길이가 2배</b>로 커지는 단점</span></div>
+      </div>
+      <p class="muted">실무 시나리오 한 줄: HTTPS(TLS)는 (타원곡선) 디피-헬만으로 세션 키를 합의하고 본문은 AES로 암호화 — 비대칭(키 분배) + 대칭(속도)을 결합한 하이브리드 방식.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> "DES의 키 길이"는 묻는 방식에 따라 답이 다릅니다. 전체 키는 64비트지만 8비트는 패리티(오류 검출)용이라 <u>유효 키 길이는 56비트</u>. "실제 암호화에 쓰이는(유효) 키"를 물으면 56이 답입니다.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 국산 4형제 = <b>SEED</b>(원조·금융) / <b>ARIA</b>(국가 표준) / <b>LEA</b>(경량 고속) / <b>HIGHT</b>(초경량 IoT) — 국산 중 블록이 64비트인 건 HIGHT뿐. 수학 근거는 "RSA만 소인수분해, ECC는 '타원곡선'이 붙은 이산대수, DH·ElGamal은 이산대수".</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "경량 환경 및 하드웨어 구현 효율성을 위해 개발된 국산 128비트 블록 암호로, 국가 표준으로 제정된 알고리즘은?" → 답: <u>ARIA</u> ("국가 표준"이 결정적 시그널 — SEED와 구별)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "타원곡선 수학 구조를 이용해 RSA보다 짧은 키로 동등한 수준의 보안을 제공하는 공개키 암호 방식은?" → 답: <u>ECC(타원곡선 암호)</u> ("짧은 키"가 시그널)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">HASH</span><h3>해시 심화 — 솔트 · 레인보우 테이블 · 키 스트레칭</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p>해시는 임의 길이 입력을 고정 길이 <b>다이제스트</b>로 압축하는 일방향 함수입니다. 실기는 두 각도로 구별시킵니다 — ① 해시의 성질과 <b>다이제스트 비트 수</b>(MD5는 몇 비트?) ② 비밀번호 저장을 지키는 <b>기법 이름</b>(설명→솔트/키 스트레칭). 특히 ②는 서술형 소재로도 좋아 정의를 문장으로 써 볼 것.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">고정 길이 출력</span><span class="td">입력이 1글자든 1GB든 <b>다이제스트 길이는 항상 동일</b></span></div>
+        <div class="termrow"><span class="tt">일방향성</span><span class="td">다이제스트에서 <b>원문을 복원할 수 없음</b> — 복호화 과정 자체가 존재하지 않음</span></div>
+        <div class="termrow"><span class="tt">충돌 저항성</span><span class="td">같은 다이제스트를 갖는 <b>서로 다른 두 입력을 찾기 어려워야</b> 함 (충돌 회피)</span></div>
+        <div class="termrow"><span class="tt">MD5</span><span class="td">다이제스트 <b>128비트</b>. 충돌이 실제로 발견돼 <b>보안 용도로는 취약</b></span></div>
+        <div class="termrow"><span class="tt">SHA-1</span><span class="td">다이제스트 <b>160비트</b>. 역시 충돌 발견 → 취약, 퇴출 수순</span></div>
+        <div class="termrow"><span class="tt">SHA-2</span><span class="td">SHA-256/384/512 등 — <b>이름의 숫자가 곧 다이제스트 비트 수</b>. 현재 표준</span></div>
+      </div>
+      <p>비밀번호를 해시로 저장해도 <b>미리 계산해 둔 표</b>로 역추적당할 수 있습니다. 그래서 공격(레인보우 테이블) ↔ 방어(솔트·키 스트레칭)를 한 세트로 외웁니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">레인보우<br>테이블</span><span class="td">평문→해시 쌍을 <b>사전에 대량 계산해 둔 역추적용 표</b>. 훔친 해시값을 표에서 찾아 원래 비밀번호를 알아냄</span></div>
+        <div class="termrow"><span class="tt">솔트</span><span class="td">Salt — 해싱 전에 비밀번호에 <b>사용자별 랜덤 값을 첨가</b>. 같은 비밀번호라도 저장 해시가 달라져 <b>레인보우 테이블 무력화</b></span></div>
+        <div class="termrow"><span class="tt">키 스트레칭</span><span class="td">해시를 <b>수천~수만 회 반복</b> 적용해 검증 1회를 일부러 느리게 → 무차별 대입 비용 폭증. 구현: <b>PBKDF2 · bcrypt · scrypt</b></span></div>
+      </div>
+      <p class="muted">시나리오 한 줄: alice와 bob이 똑같이 "1234"를 써도 솔트가 다르면 저장된 해시가 서로 달라, 공격자는 표를 사용자마다 새로 계산해야 합니다.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 해시는 <u>복호화 과정이 없는 일방향 방식</u>입니다 — "키로 복호화해 원문을 얻는다"는 서술이 있으면 해시가 아닙니다. 그리고 솔트는 비밀 키가 아니어서 <u>해시와 나란히 저장해도 됩니다</u> — 목적은 은닉이 아니라 "사전 계산(레인보우 테이블) 무력화"이기 때문.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 공격은 <b>표</b>(레인보우 테이블), 표를 깨는 건 <b>소금</b>(솔트), 시간을 끄는 건 <b>반복</b>(키 스트레칭).</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "비밀번호를 해시로 저장할 때 사용자마다 다른 임의의 값을 덧붙여, 동일한 비밀번호라도 서로 다른 해시가 생성되게 하는 기법은?" → 답: <u>솔트(Salt)</u> (레인보우 테이블 공격 무력화가 목적)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "해시 함수를 수만 회 반복 적용해 무차별 대입 공격 속도를 늦추는 기법으로 PBKDF2, bcrypt, scrypt가 대표적인 이것은?" → 답: <u>키 스트레칭(Key Stretching)</u></div>
     </div>
   </div>
 </section>
@@ -344,6 +428,57 @@
       <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 전자서명은 <u>기밀성을 제공하지 않습니다</u>. 기밀성(암호화)은 수신자의 공개키로 별도 암호화해야 보장됩니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">AUTH</span><h3>인증 4유형 + AAA · SSO · 커버로스 · OAuth</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p>인증 수단은 <b>4가지 유형</b>으로 분류되고, 시험은 "OTP는 무슨 기반 인증인가"처럼 <b>수단→유형 매칭</b>으로 구별시킵니다. 이어서 AAA·커버로스·OAuth는 "설명→용어" 단답감 — 각각 <b>3요소 / 티켓·KDC / 토큰 위임</b>이라는 시그널로 판별합니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">지식 기반</span><span class="td">Something you <b>know</b> — 머릿속에만 있는 것. <b>비밀번호 · PIN</b> · 보안 질문</span></div>
+        <div class="termrow"><span class="tt">소유 기반</span><span class="td">Something you <b>have</b> — 갖고 있는 물건. <b>OTP 토큰 · 스마트카드 · 인증서</b> · 휴대폰</span></div>
+        <div class="termrow"><span class="tt">생체 기반</span><span class="td">Something you <b>are</b>(존재 기반) — 몸 그 자체. <b>지문 · 홍채 · 정맥</b> · 얼굴</span></div>
+        <div class="termrow"><span class="tt">행위 기반</span><span class="td">Something you <b>do</b> — 행동의 패턴. <b>서명 · 키스트로크</b>(타이핑 리듬) · 걸음걸이</span></div>
+      </div>
+      <p><b>2요소 인증(2FA)</b>은 <b>서로 다른 유형 2가지 이상</b>의 조합입니다. 비밀번호+OTP는 지식+소유라 2요소가 맞습니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">AAA</span><span class="td"><b>인증</b>(Authentication, 누구인가) → <b>인가</b>(Authorization, 무엇이 허용되나) → <b>계정관리</b>(Accounting, 무엇을 했는지 기록·과금). 대표 프로토콜: RADIUS, DIAMETER</span></div>
+        <div class="termrow"><span class="tt">SSO</span><span class="td">Single Sign-On — <b>한 번의 인증</b>으로 연동된 여러 시스템에 재로그인 없이 접근. 편의성이 크지만 <b>계정 하나가 뚫리면 전체가 위험</b>해 강한 인증과 병행</span></div>
+        <div class="termrow"><span class="tt">커버로스</span><span class="td">Kerberos — <b>대칭키 기반 티켓 인증 프로토콜</b>. <b>KDC</b>(키 분배 센터)가 발급한 <b>TGT</b>·티켓으로 각 서버에 인증하므로 비밀번호를 매번 전송하지 않음. 시나리오: 윈도우 AD 도메인 로그인</span></div>
+        <div class="termrow"><span class="tt">OAuth</span><span class="td">비밀번호를 제3자 앱에 알려주지 않고 <b>액세스 토큰으로 권한을 위임</b>하는 개방형 표준. 시나리오: "구글 계정으로 로그인"(단, 소셜 로그인의 <b>인증</b> 자체는 OAuth 위에 얹은 <b>OIDC</b>가 담당 — OAuth는 권한 위임)</span></div>
+      </div>
+      <p class="muted">커버로스 동작 한 줄: 로그인 → AS(인증 서버)가 TGT 발급 → TGS(티켓 발급 서버)에 TGT를 내고 서비스 티켓 수령 → 서버에 티켓 제시. KDC = AS + TGS.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>인증 vs 인가:</b> Authentication은 <u>신원 확인</u>("너 누구야"), Authorization은 <u>권한 부여</u>("뭘 해도 되나") — 인증이 먼저, 인가가 다음입니다. 한 글자 차이로 채점이 갈립니다.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>2요소 함정:</b> 비밀번호+PIN은 <u>둘 다 지식 기반</u>이라 2요소 인증이 아닙니다. "서로 다른 유형"이 정의의 핵심.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "시스템 접근 통제를 위해 인증(Authentication) · 인가(Authorization) · 계정관리(Accounting)를 제공하는 정보보호 프레임워크는?" → 답: <u>AAA</u> (구현 프로토콜로 RADIUS·DIAMETER)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "KDC가 발급하는 티켓(TGT)을 기반으로 사용자를 인증하는 대칭키 기반의 중앙집중식 인증 프로토콜은?" → 답: <u>커버로스(Kerberos)</u> ("티켓·KDC"가 결정적 시그널)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">MODEL</span><h3>접근통제 보안 모델 — BLP · Biba · 클락-윌슨</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">위의 DAC·MAC·RBAC가 "누가 권한을 주나"의 분류라면, 보안 모델은 그 규칙을 정형화한 이론.</p>
+      <p>시험은 모델 설명을 주고 이름을 쓰게 하며, 구별 축은 딱 두 개입니다 — ① 지키려는 것이 <b>기밀성이냐 무결성이냐</b> ② <b>No Read/Write의 방향</b>이 위냐 아래냐. 이 두 축만 잡으면 4개 모델이 전부 갈라집니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">벨-라파둘라</span><span class="td">BLP — <b>기밀성</b> 모델(군사 기밀 등급에서 출발한 <b>최초의 수학적 보안 모델</b>). <b>No Read Up + No Write Down</b>. MAC 계열</span></div>
+        <div class="termrow"><span class="tt">비바</span><span class="td">Biba — <b>무결성</b> 모델. <b>No Read Down + No Write Up</b> — BLP와 <b>방향이 정반대</b>. 신뢰도 낮은 데이터가 위로 스미는 것을 차단</span></div>
+        <div class="termrow"><span class="tt">클락-윌슨</span><span class="td">Clark-Wilson — <b>무결성</b> 모델(상업 환경). 데이터에 직접 접근 금지, 반드시 <b>잘 구성된 트랜잭션</b>(검증된 프로그램)을 통해서만 + <b>직무 분리</b>. 시나리오: 은행 계좌는 이체 프로그램으로만 수정 가능</span></div>
+        <div class="termrow"><span class="tt">만리장성</span><span class="td">Chinese Wall(브루어-나쉬) — <b>이해 충돌 방지</b>. A사 자료에 접근한 컨설턴트는 경쟁사 B 자료 접근이 차단 — <b>접근 이력에 따라 동적으로</b> 권한 결정</span></div>
+      </div>
+      <p>네 규칙은 방향까지 정확히 — 어느 모델의 규칙인지 뒤집어 내는 게 전형 함정입니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">No Read Up</span><span class="td"><b>BLP</b> — 자기보다 <b>높은 기밀 등급을 읽기 금지</b> (기밀 열람 차단)</span></div>
+        <div class="termrow"><span class="tt">No Write Down</span><span class="td"><b>BLP</b> — 자기보다 <b>낮은 등급에 쓰기 금지</b> (기밀이 아래로 새는 것 차단)</span></div>
+        <div class="termrow"><span class="tt">No Read Down</span><span class="td"><b>Biba</b> — 무결성 <b>낮은 데이터 읽기 금지</b> (오염된 정보 수혈 방지)</span></div>
+        <div class="termrow"><span class="tt">No Write Up</span><span class="td"><b>Biba</b> — 무결성 <b>높은 데이터에 쓰기 금지</b> (신뢰 데이터 훼손 방지)</span></div>
+      </div>
+      <p class="muted">시나리오 한 줄: "2급 인가자는 1급 문서를 열람할 수 없고, 자기 2급 보고서를 3급 게시판에 올릴 수 없다" — 이 문장이 보이면 BLP.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <u>BLP=기밀성, Biba=무결성</u>이고 Read/Write 금지 방향이 서로 정반대입니다. "No Read <u>Up</u>"이 보이면 BLP, "No Read <u>Down</u>"이 보이면 Biba — Up/Down 한 단어를 바꿔치기해 출제합니다.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> B<b>i</b>ba의 i = <b>I</b>ntegrity(무결성). 무결성 모델이 두 개 나오면 — 등급 규칙이면 비바, "트랜잭션·직무 분리"가 보이면 클락-윌슨.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "군사 보안 등급에서 출발한 기밀성 중심 모델로, 자신보다 높은 등급의 정보를 읽을 수 없고(No Read Up) 낮은 등급으로 쓸 수 없는(No Write Down) 접근통제 모델은?" → 답: <u>벨-라파둘라(BLP) 모델</u></div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "데이터 무결성을 위해 낮은 등급의 데이터를 읽을 수 없고 높은 등급의 객체에 쓸 수 없도록 한, BLP와 규칙 방향이 반대인 모델은?" → 답: <u>비바(Biba) 모델</u></div>
+    </div>
+  </div>
 </section>
 
 <section id="s-solution">
@@ -374,6 +509,32 @@
       <div class="callout warn"><span class="ic">⚠</span> <b>AH vs ESP:</b> AH는 <u>기밀성을 제공하지 않습니다</u>(암호화 X). 기밀성이 필요하면 <b>ESP</b>를 사용.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">SOLUTION</span><h3>보안 솔루션 총정리 — 시그널 키워드 사전</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p>솔루션명 단답은 정의 전체가 아니라 <b>설명 속 시그널 단어 한두 개</b>로 판별합니다 — "웹 공격 특화"면 WAF, "접속 시 검사·격리"면 NAC, "유출 방지"면 DLP, "빅데이터 상관 분석"이면 SIEM. 아래 표의 굵은 글씨가 그 시그널입니다.</p>
+      <p class="muted">① 막는 쪽 — 트래픽·데이터를 통제하는 솔루션.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">WAF</span><span class="td">웹 방화벽(Web Application Firewall) — SQL 인젝션·XSS 등 <b>웹 공격에 특화</b>. 일반 방화벽이 못 보는 HTTP 요청 내용을 검사</span></div>
+        <div class="termrow"><span class="tt">NAC</span><span class="td">Network Access Control — 단말이 내부망에 <b>접속하는 시점</b>에 백신·패치 등 <b>보안 정책 준수를 검사</b>, 미달 단말은 <b>격리(검역)</b></span></div>
+        <div class="termrow"><span class="tt">DLP</span><span class="td">Data Loss Prevention — 이메일·USB·인쇄 등 유출 경로를 감시해 <b>내부 정보의 외부 유출을 차단</b>. 시나리오: 설계도면의 USB 복사 차단</span></div>
+        <div class="termrow"><span class="tt">DRM</span><span class="td">Digital Rights Management — 문서·콘텐츠를 암호화하고 <b>열람·인쇄·복사 권한을 통제</b> (디지털 저작권·기밀문서 보호)</span></div>
+      </div>
+      <p class="muted">② 보는 쪽 — 탐지·관제·분석 솔루션.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">ESM</span><span class="td">Enterprise Security Management — 방화벽·IDS 등 <b>여러 보안 장비의 로그를 모아 통합 관제</b></span></div>
+        <div class="termrow"><span class="tt">SIEM</span><span class="td">Security Information &amp; Event Management — ESM의 진화형. <b>빅데이터 기반으로 로그·이벤트를 상관 분석</b>해 숨은 위협 탐지</span></div>
+        <div class="termrow"><span class="tt">EDR</span><span class="td">Endpoint Detection &amp; Response — PC·서버 등 <b>엔드포인트</b>의 행위를 지속 수집·분석해 위협 <b>탐지·대응</b></span></div>
+        <div class="termrow"><span class="tt">샌드박스</span><span class="td">의심 파일을 <b>격리된 가상 환경에서 실행</b>시켜 행위를 분석 — 시그니처 없는 신종 악성코드 탐지</span></div>
+        <div class="termrow"><span class="tt">허니팟</span><span class="td">일부러 취약해 보이게 만든 <b>미끼 시스템</b> — 공격자를 유인해 수법을 분석하고 시간을 지연</span></div>
+        <div class="termrow"><span class="tt">Tripwire</span><span class="td">파일의 해시를 보관해 두고 주기적으로 비교 — <b>파일 무결성 점검·변조 탐지</b> 도구. 시나리오: 침입자가 바꿔치기한 시스템 파일(백도어) 적발</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>혼동 세트:</b> ESM vs SIEM — 둘 다 "통합"이지만 <u>빅데이터 상관 분석</u>이 나오면 SIEM. 방화벽 vs WAF — <u>웹(HTTP) 특화</u>라는 말이 있으면 WAF. DLP vs DRM — <u>유출 차단</u>은 DLP, <u>권한(열람·인쇄) 통제</u>는 DRM.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "네트워크에 접속하려는 단말의 보안 정책 준수 여부를 검사해 접속을 통제하고, 미준수 단말을 격리하는 보안 솔루션은?" → 답: <u>NAC</u> ("접속 시점 검사 + 격리"가 시그널)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "다양한 보안 장비의 로그·이벤트를 빅데이터 기반으로 수집하고 상관 분석하여 위협을 탐지하는 보안 관제 솔루션은?" → 답: <u>SIEM</u> (통합 수집만 하면 ESM, 상관 분석까지면 SIEM)</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-attack2">
@@ -392,6 +553,58 @@
         <div class="termrow"><span class="tt">사회공학</span><span class="td">Social Engineering — <b>사람의 심리·신뢰</b>를 이용해 정보를 빼냄 (기술적 취약점 X)</span></div>
       </div>
       <div class="callout"><span class="ic">💡</span> <b>구분:</b> 무차별 대입=모든 조합, 사전 공격=사전 단어 목록. 스미싱의 "S"는 <u>SMS(문자)</u>를 의미.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">MODERN</span><h3>최신 공격 용어 사전</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">위 표(APT·랜섬웨어·피싱 등)에 이어, 최근 단답에 자주 등장하는 용어들.</p>
+      <p>전부 "설명→용어" 단답감이고, 구별 축은 세 개입니다 — <b>누구를 노리나</b>(불특정 다수/특정인/임원), <b>무엇을 조작하나</b>(QR/DNS/Wi-Fi/도메인 철자), 계정 공격이면 <b>무엇을 대입하나</b>(모든 조합/유출 목록/흔한 비번 하나).</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">공급망 공격</span><span class="td">SW <b>개발·업데이트·유통 과정에 악성코드를 심어</b>, 정상 업데이트를 설치한 사용자들을 일괄 감염 (Supply Chain Attack)</span></div>
+        <div class="termrow"><span class="tt">크리덴셜<br>스터핑</span><span class="td"><b>이미 유출된 ID·비밀번호 목록</b>을 다른 사이트에 자동 대입 — 비밀번호 재사용 습관을 노림 (Credential Stuffing)</span></div>
+        <div class="termrow"><span class="tt">패스워드<br>스프레이</span><span class="td"><b>흔한 비밀번호 한두 개</b>를 다수 계정에 넓게 시도 — 한 계정을 연타하지 않아 <b>계정 잠금을 회피</b></span></div>
+        <div class="termrow"><span class="tt">스피어 피싱</span><span class="td"><b>특정 개인·조직을 표적</b>으로 맞춤 정보를 담아 보내는 피싱 메일 (Spear Phishing). 시나리오: 인사팀을 사칭한 "연봉계약서" 첨부</span></div>
+        <div class="termrow"><span class="tt">웨일링</span><span class="td">스피어 피싱 중에서도 <b>CEO 등 고위 임원("고래")</b>을 노리는 공격 (Whaling)</span></div>
+        <div class="termrow"><span class="tt">큐싱</span><span class="td"><b>QR 코드</b> + 피싱(Qshing) — 가짜 QR로 악성 앱 설치나 가짜 사이트 접속 유도</span></div>
+        <div class="termrow"><span class="tt">파밍</span><span class="td"><b>DNS(또는 hosts 파일)를 변조</b>해, 사용자가 <b>올바른 주소를 입력해도</b> 가짜 사이트로 연결 (Pharming)</span></div>
+        <div class="termrow"><span class="tt">워터링 홀</span><span class="td">표적이 <b>자주 방문하는 사이트를 미리 감염</b>시켜 접속을 기다리는 매복형 공격 (Watering Hole)</span></div>
+        <div class="termrow"><span class="tt">이블 트윈</span><span class="td">정상 AP와 같은 이름(SSID)의 <b>가짜 Wi-Fi AP</b>를 세워 접속을 유도, 트래픽을 가로챔 (Evil Twin)</span></div>
+        <div class="termrow"><span class="tt">타이포스쿼팅</span><span class="td"><b>오타 도메인</b>(예: gogle.com)을 선점해 잘못 입력한 사용자를 가짜 사이트로 유도 — <b>URL 하이재킹</b>이라고도 (Typosquatting)</span></div>
+        <div class="termrow"><span class="tt">드라이브 바이<br>다운로드</span><span class="td">감염된 웹페이지 <b>방문만으로</b> 사용자 모르게 악성코드가 내려받아져 설치 — 브라우저·플러그인 취약점 악용 (Drive-by Download)</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>계정 공격 3종 구분:</b> 무차별 대입 = <u>모든 조합을 생성해 대입</u> / 크리덴셜 스터핑 = <u>유출된 진짜 계정 목록을 재사용</u> / 패스워드 스프레이 = <u>흔한 비번 하나로 여러 계정</u>. "유출 목록"이라는 말이 있으면 크리덴셜 스터핑.</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>피싱 vs 파밍:</b> 피싱은 가짜 링크·메일로 <u>사용자를 속여 유인</u>, 파밍은 DNS를 속여 <u>올바른 URL을 입력해도 끌려감</u>. 문제에 "올바른 주소를 입력했는데도"가 보이면 파밍.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 표적이 좁아지는 순서 — 피싱(불특정 다수) → 스피어 피싱(특정인) → 웨일링(임원). 창(spear)으로 겨누다 고래(whale)까지.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "다른 곳에서 유출된 로그인 정보 목록을 확보해 여러 사이트에 자동으로 대입하며 로그인을 시도하는 공격은?" → 답: <u>크리덴셜 스터핑</u> ("유출 목록 재사용"이 무차별 대입과의 차이)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "공격 대상이 자주 방문하는 웹사이트를 미리 감염시켜 두고 접속하기를 기다리는 표적 공격 기법은?" → 답: <u>워터링 홀(Watering Hole)</u> (맹수가 물웅덩이에서 사냥감을 기다리는 데서 유래)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">KILLCHAIN</span><h3>사이버 킬 체인 7단계</h3><span class="freq star">★☆☆</span></div>
+    <div class="concept-body">
+      <p><b>록히드 마틴</b>이 제안한 APT 공격의 <b>7단계 모델</b>입니다. 공격은 이 사슬을 순서대로 거치므로 <b>한 단계만 끊어도 전체 공격이 무산</b>된다는 것이 핵심 발상이고, 단계별 탐지·차단 체계를 세우는 데 씁니다. 시험은 <b>단계 순서 빈칸 채우기</b>나 단계 이름 쓰기로 구별시킵니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">1. 정찰</span><span class="td">Reconnaissance — 표적 정보 수집. 예: 임직원 이메일·SNS·공개 서버 조사</span></div>
+        <div class="termrow"><span class="tt">2. 무기화</span><span class="td">Weaponization — 익스플로잇+악성코드를 <b>전달 가능한 형태로 결합</b>. 예: 악성 매크로를 심은 문서 파일 제작 (아직 공격자 내부의 준비 단계)</span></div>
+        <div class="termrow"><span class="tt">3. 전달</span><span class="td">Delivery — 무기를 표적에 운반. 예: 스피어 피싱 메일 첨부, 악성 URL, USB</span></div>
+        <div class="termrow"><span class="tt">4. 익스플로잇</span><span class="td">Exploitation — 도착한 무기가 <b>취약점을 격발</b>해 코드 실행. 예: 첨부 파일을 여는 순간 실행</span></div>
+        <div class="termrow"><span class="tt">5. 설치</span><span class="td">Installation — 지속 거점 확보. 예: 백도어·원격 제어 도구(RAT) 설치</span></div>
+        <div class="termrow"><span class="tt">6. 명령·제어</span><span class="td">Command &amp; Control(C2) — 감염 시스템이 <b>공격자 서버와 통신 채널</b>을 열고 원격 조종 대기</span></div>
+        <div class="termrow"><span class="tt">7. 목적 달성</span><span class="td">Actions on Objectives — 최종 목표 실행. 예: 내부 이동 후 데이터 유출·파괴·암호화</span></div>
+      </div>
+      <p>방어 관점: 뒤로 갈수록 피해가 커지므로 <b>앞 단계에서 끊을수록 이득</b>입니다.</p>
+      <ul>
+        <li><b>전달</b> 차단 — 스팸 필터, 첨부 파일 샌드박스 분석</li>
+        <li><b>익스플로잇·설치</b> 차단 — 보안 패치, 백신·EDR</li>
+        <li><b>C2</b> 차단 — 비정상 아웃바운드 트래픽 탐지·차단으로 원격 조종 끊기</li>
+      </ul>
+      <p class="muted">함께 나오는 용어: <b>MITRE ATT&amp;CK</b> — 킬 체인이 "단계 모델"이라면, ATT&amp;CK은 실제 공격에서 관찰된 전술(Tactics)·기법(Techniques)을 정리한 지식 베이스(매트릭스).</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>순서 함정:</b> <u>무기화는 표적에게 아무것도 보내기 전</u>인 공격자 내부 준비 단계라 전달보다 앞입니다. 그리고 전달(도착) 뒤에 익스플로잇(격발) — "도착 후 폭발" 순서를 뒤집어 출제합니다.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 정찰 → 무기화 → 전달 → 익스플로잇 → 설치 → C2 → 목적 달성. 동사 7개로 — "살피고, 만들고, 보내고, 터뜨리고, 심고, 조종하고, 훔친다".</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "사이버 킬 체인의 빈칸을 채우시오: 정찰 → ( ① ) → 전달 → 익스플로잇 → 설치 → ( ② ) → 목적 달성" → 답: <u>① 무기화(Weaponization), ② 명령·제어(C2, Command &amp; Control)</u></div>
     </div>
   </div>
 </section>
@@ -441,6 +654,52 @@
       <div class="callout"><span class="ic">🌐</span> <b>TCP/IP 4계층:</b> 응용 / 전송 / 인터넷 / 네트워크액세스. 실제 인터넷의 표준 모델로, OSI 7계층을 통합한 형태입니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag cyan">DHCP</span><h3>DHCP · DNS · ARP 동작 원리</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">IP를 자동으로 받고, 이름을 주소로, 주소를 물리주소로 바꾸는 흐름 — 그 순서가 그대로 문제가 됩니다.</p>
+    <p><b>DHCP</b>는 IP를 자동 할당하며, 4단계 흐름 <b>DORA</b>가 단골입니다. Discover(클라이언트가 브로드캐스트로 서버 탐색) → Offer(서버가 IP 제안) → Request(클라이언트가 그 IP 요청) → Ack(서버가 확정). 포트는 서버 <b>UDP 67</b>, 클라이언트 <b>UDP 68</b>로 고정.</p>
+    <p><b>DNS 레코드</b>는 종류별 역할을 매칭하는 형태로 나옵니다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">A / AAAA</span><span class="td">A=도메인→<b>IPv4</b> 주소 / AAAA=도메인→<b>IPv6</b> 주소(쿼드A)</span></div>
+      <div class="termrow"><span class="tt">CNAME</span><span class="td">한 도메인을 다른 도메인 이름에 연결하는 <b>별칭(alias)</b></span></div>
+      <div class="termrow"><span class="tt">MX</span><span class="td"><b>메일 서버</b>(Mail eXchanger)를 지정</span></div>
+      <div class="termrow"><span class="tt">NS</span><span class="td">해당 도메인을 관리하는 <b>네임서버</b>를 지정</span></div>
+      <div class="termrow"><span class="tt">PTR</span><span class="td">IP→도메인 <b>역방향(reverse)</b> 조회용</span></div>
+    </div>
+    <p><b>주소 변환·제어</b> — ARP=IP→MAC(브로드캐스트로 “이 IP의 MAC 알려줘” 질의) / RARP=MAC→IP(반대). ICMP는 오류·제어 메시지 프로토콜로 타입 번호가 포인트입니다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">ICMP 8/0</span><span class="td">8=Echo Request, 0=Echo Reply → <b>ping</b>이 사용</span></div>
+      <div class="termrow"><span class="tt">ICMP 11</span><span class="td">Time Exceeded(TTL 만료) → <b>traceroute</b> 원리</span></div>
+      <div class="termrow"><span class="tt">ICMP 3</span><span class="td">Destination Unreachable(<b>목적지 도달 불가</b>)</span></div>
+    </div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>ARP vs RARP 방향:</b> ARP는 <u>IP→MAC</u>(논리→물리), RARP는 <u>MAC→IP</u>. 화살표를 반대로 쓰면 오답. DHCP 포트도 서버=67·클라이언트=68로 짝을 고정하세요.</div>
+    <div class="callout mnemonic"><span class="ic">🔑</span> <b>두문자:</b> DHCP 4단계 = <b>DORA</b>(Discover·Offer·Request·Ack).</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “클라이언트가 IP 주소를 자동으로 할당받는 DHCP의 4단계 과정을 순서대로 쓰시오.” → 답: <u>Discover → Offer → Request → Ack</u> (DORA)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “traceroute가 경로를 추적할 때 이용하는, TTL이 0이 되어 패킷이 폐기될 때 발생하는 ICMP 메시지는?” → 답: <u>Time Exceeded(Type 11)</u></div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag cyan">DEVICE</span><h3>계층별 장비 · PDU 총정리</h3><span class="freq star">★★★</span></div>
+  <div class="concept-body">
+    <p class="muted">“이 장비는 몇 계층?”, “이 계층의 전송 단위는?” — 매칭형으로 거의 매회 출제됩니다.</p>
+    <p>장비는 <b>동작하는 계층 = 읽는 주소</b>로 구별합니다. 아래로 갈수록 상위 계층을 처리합니다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">1계층</span><span class="td">리피터·허브 — <b>비트</b>. 신호 증폭·재생, <b>모든 포트로 전달</b>(충돌 도메인 1개)</span></div>
+      <div class="termrow"><span class="tt">2계층</span><span class="td">브리지·스위치 — <b>프레임</b>. <b>MAC 주소 학습</b>, 포트별 충돌 도메인 분리</span></div>
+      <div class="termrow"><span class="tt">3계층</span><span class="td">라우터·L3 스위치 — <b>패킷</b>. IP 라우팅, <b>브로드캐스트 도메인 분리</b></span></div>
+      <div class="termrow"><span class="tt">4계층</span><span class="td">L4 스위치 — <b>세그먼트</b>. <b>포트 번호</b> 기반 로드밸런싱</span></div>
+      <div class="termrow"><span class="tt">7계층</span><span class="td">게이트웨이·L7 — <b>데이터</b>. 콘텐츠 기반 스위칭·프로토콜 변환</span></div>
+    </div>
+    <p><b>PDU(전송 단위) 아래→위:</b> 비트 → 프레임 → 패킷 → 세그먼트 → 데이터(메시지). 캡슐화하며 계층마다 헤더가 붙습니다.</p>
+    <div class="callout warn"><span class="ic">⚠</span> <b>허브 vs 스위치:</b> 허브는 모든 포트가 <u>하나의 충돌 도메인</u>(대역폭 공유)이지만 스위치는 <u>포트마다 충돌 도메인을 분리</u>. 단, <b>브로드캐스트 도메인</b>을 나누는 것은 스위치가 아니라 <b>라우터</b>(3계층)입니다.</div>
+    <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> PDU 순서(1→7계층) = <b>비·프·패·세·데</b>(비트·프레임·패킷·세그먼트·데이터).</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “리피터·허브가 1계층, 브리지·스위치가 2계층 장비라면 라우터는 몇 계층 장비인가?” → 답: <u>3계층(네트워크 계층)</u></div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “데이터링크 계층에서 데이터의 전송 단위(PDU)를 무엇이라 하는가?” → 답: <u>프레임(Frame)</u></div>
+  </div>
+</div>
 </section>
 
 <section id="s-net-addr">
@@ -459,6 +718,69 @@
       <div class="callout"><span class="ic">🌐</span> <b>네트워크 장비:</b> <b>라우터</b>(경로 결정, 3계층) / <b>스위치</b>(2계층) / <b>허브</b>(1계층) / <b>게이트웨이</b>(프로토콜 변환).</div>
     </div>
   </div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag cyan">SUBNET</span><h3>서브네팅 계산 완전 정복</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">약술이 아니라 “계산”으로 나오는 유일한 네트워크 파트. 절차만 외우면 항상 맞힙니다.</p>
+    <p><b>계산 3단계</b> — 필요 개수로 빌릴 비트를 정하고, 블록 크기로 경계를 끊습니다.</p>
+    <ul>
+      <li><b>① 차용 비트</b> — 서브넷 N개 필요 시 2^m ≥ N인 최소 m비트를 호스트부에서 빌려 프리픽스에 더한다</li>
+      <li><b>② 블록 크기</b> — 256 − (해당 옥텟의 마스크값) = 서브넷 사이 간격</li>
+      <li><b>③ 범위</b> — 각 블록의 첫 주소=네트워크, 마지막=브로드캐스트, 그 사이가 호스트</li>
+    </ul>
+    <p><b>예제 1 — 192.168.10.0/24를 4개 서브넷으로:</b> 4개=2^2 → <b>2비트 차용</b> → /24+2=<b>/26</b>. 4옥텟 마스크 192 → 블록 크기 256−192=<b>64</b>. 서브넷당 호스트 = 2^(32−26)−2 = <b>62개</b>.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">서브넷 1</span><span class="td">네트워크 <b>192.168.10.0</b> · 브로드캐스트 <b>.63</b> · 호스트 .1~.62 (62개)</span></div>
+      <div class="termrow"><span class="tt">서브넷 2</span><span class="td">네트워크 <b>.64</b> · 브로드캐스트 <b>.127</b> · 호스트 .65~.126</span></div>
+      <div class="termrow"><span class="tt">서브넷 3</span><span class="td">네트워크 <b>.128</b> · 브로드캐스트 <b>.191</b> · 호스트 .129~.190</span></div>
+      <div class="termrow"><span class="tt">서브넷 4</span><span class="td">네트워크 <b>.192</b> · 브로드캐스트 <b>.255</b> · 호스트 .193~.254</span></div>
+    </div>
+    <p><b>예제 2 — 호스트 500대 필요:</b> 2^8−2=254(부족), 2^9−2=<b>510 ≥ 500</b> → 호스트 비트 9 → 프리픽스 32−9=<b>/23</b>.</p>
+    <div class="callout mnemonic"><span class="ic">🔑</span> <b>공식:</b> 서브넷당 호스트 = 2^(호스트비트)−2 (네트워크·브로드캐스트 주소 2개 제외) / 서브넷 수 = 2^(차용비트).</div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>−2 함정:</b> 사용 가능 호스트는 <u>네트워크 주소와 브로드캐스트 주소 2개를 반드시 뺀다</u>. /26이면 64개가 아니라 62개. 이 −2를 빠뜨리는 것이 최다 감점 실수입니다.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “C클래스 네트워크를 /27로 서브네팅할 때 한 서브넷에서 실제 사용 가능한 호스트 수를 쓰시오.” → 답: <u>30개</u> (2^5−2=30)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “한 부서에 호스트 100대를 수용하려면 최소 서브넷 마스크(프리픽스)는?” → 답: <u>/25</u> (2^7−2=126 ≥ 100, 마스크 255.255.255.128)</div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag cyan">ROUTE</span><h3>라우팅 프로토콜 심화 — RIP vs OSPF vs BGP</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">AS(자율 시스템) 안이냐 밖이냐로 크게 갈리고, 그 안에서 알고리즘·메트릭으로 세분됩니다.</p>
+    <p><b>분류</b> — AS <b>내부=IGP</b>(RIP·OSPF), <b>AS 간=EGP</b>(BGP). 세 프로토콜은 아래 시그널로 구별합니다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">RIP</span><span class="td"><b>거리 벡터</b>(벨만-포드), 메트릭=<b>홉 수</b>, 최대 15홉(<b>16=도달 불가</b>), 30초 주기 갱신, 소규모</span></div>
+      <div class="termrow"><span class="tt">OSPF</span><span class="td"><b>링크 상태</b>(다익스트라·SPF), 메트릭=비용(cost), <b>에어리어 분할</b>, 빠른 수렴, 대규모</span></div>
+      <div class="termrow"><span class="tt">BGP</span><span class="td"><b>경로 벡터</b>, <b>AS 간</b>(EGP), <b>TCP 179</b>, 인터넷 백본의 표준</span></div>
+    </div>
+    <p><b>정적 vs 동적</b> — 정적 라우팅=관리자가 경로를 수동 설정(소규모·안정적, 장애 자동 대응 X) / 동적 라우팅=프로토콜이 경로를 자동 학습·갱신(대규모·장애 시 자동 우회).</p>
+    <div class="callout warn"><span class="ic">⚠</span> <b>RIP 15홉 함정:</b> RIP는 홉 수 <u>최대 15</u>까지만 유효하고 <u>16홉은 무한대(∞)=도달 불가</u>로 처리합니다. “16홉까지 가능”은 오답. IGP/EGP 분류에서 <b>BGP만 EGP</b>인 점도 단골입니다.</div>
+    <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 거리벡터=<b>RIP=벨만포드</b> / 링크상태=<b>OSPF=다익스트라</b>. OSPF의 SPF(Shortest Path First)를 다익스트라와 묶어 기억하세요.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “거리 벡터 방식으로 홉 수를 메트릭으로 사용하며 최대 15홉으로 제한되는 라우팅 프로토콜은?” → 답: <u>RIP</u></div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “링크 상태 알고리즘(다익스트라)을 사용하고 에어리어로 분할해 대규모 망에서 빠르게 수렴하는 IGP는?” → 답: <u>OSPF</u></div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag cyan">IPv6</span><h3>IPv6 상세 · IPv4 전환 · NAT</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">IPv4 주소 고갈의 해법 3종 세트 — 더 긴 주소(IPv6), 전환 기술, 주소 재사용(NAT).</p>
+    <p><b>IPv6</b>는 <b>128비트</b>를 콜론(:)으로 나눈 <b>16진수 4자리 8그룹</b>으로 표기합니다. 주소 유형은 3종 — <b>유니캐스트</b>(1:1), <b>멀티캐스트</b>(1:그룹), <b>애니캐스트</b>(가장 가까운 하나). 이 밖에 헤더 단순화(고정 길이 기본 헤더), <b>IPSec 기본 지원</b>, 주소 자동 구성이 특징입니다.</p>
+    <p><b>IPv4 → IPv6 전환 3기술</b>과 <b>NAT 3방식</b>을 각각 구별하세요.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">듀얼 스택</span><span class="td">IPv4·IPv6 <b>프로토콜을 동시</b>에 구동 (전환 기술)</span></div>
+      <div class="termrow"><span class="tt">터널링</span><span class="td"><b>IPv6 패킷을 IPv4로 캡슐화</b>해 IPv4 망을 통과 (전환 기술)</span></div>
+      <div class="termrow"><span class="tt">주소 변환</span><span class="td">IPv6↔IPv4 <b>헤더/주소를 변환</b>(NAT-PT 등, 전환 기술)</span></div>
+      <div class="termrow"><span class="tt">정적 NAT</span><span class="td">사설↔공인 IP를 <b>1:1 고정</b> 매핑</span></div>
+      <div class="termrow"><span class="tt">동적 NAT</span><span class="td">공인 IP <b>풀</b>에서 가용 주소를 동적으로 할당(N:M)</span></div>
+      <div class="termrow"><span class="tt">PAT(NAPT)</span><span class="td">한 공인 IP를 <b>포트로 구분</b>해 다수가 공유(1:N) — 가정용 공유기</span></div>
+    </div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>IPv6 브로드캐스트 함정:</b> IPv6에는 <u>브로드캐스트가 없습니다</u>. 유니캐스트·멀티캐스트·애니캐스트 3종뿐이며, 브로드캐스트 역할은 <b>멀티캐스트</b>가 대신합니다.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “IPv6의 주소 지정 방식(유형) 3가지를 쓰시오.” → 답: <u>유니캐스트, 멀티캐스트, 애니캐스트</u> (브로드캐스트 없음)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> “하나의 공인 IP를 여러 사설 IP가 포트 번호로 구분하여 공유하는 NAT 방식은?” → 답: <u>PAT(NAPT)</u></div>
+  </div>
+</div>
 </section>
 
 </div>

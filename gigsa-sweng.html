@@ -307,6 +307,61 @@
       <div class="callout mnemonic"><span class="ic">🔑</span> <b>기·순·교·절·시·논·우</b> (기능적이 최고, 우연적이 최악). "관련 없는 요소들" = 우연적 응집도.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">SIGNAL</span><h3>결합도·응집도 — 단계별 실전 구분법</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">순서 암기(자·스·제·외·공·내, 기·순·교·절·시·논·우)는 위 블록에서 끝. 실기는 <b>시나리오 문장을 주고 "몇 단계인지"</b>를 묻습니다.</p>
+      <p>문장 속 <b>시그널 키워드</b>를 잡으면 바로 답이 나옵니다. <b>결합도</b>는 "모듈 사이에 <u>무엇이 오가는가</u>"를 봅니다:</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">자료 결합도</span><span class="td">낱개 값만 파라미터로 주고받음 — 시그널: <b>단순 매개변수(값)만 전달</b></span></div>
+        <div class="termrow"><span class="tt">스탬프 결합도</span><span class="td">구조체·배열·객체를 통째로 전달(받는 쪽은 일부 필드만 쓰기도) — 시그널: <b>자료 구조 전달</b></span></div>
+        <div class="termrow"><span class="tt">제어 결합도</span><span class="td">플래그·스위치를 넘겨 상대 모듈의 처리 흐름(논리)을 좌우 — 시그널: <b>제어 신호(플래그) 전달</b></span></div>
+        <div class="termrow"><span class="tt">외부 결합도</span><span class="td">다른 모듈에서 선언한 변수(데이터)를 참조 — 시그널: <b>외부에 선언된 데이터 참조</b></span></div>
+        <div class="termrow"><span class="tt">공통 결합도</span><span class="td">전역 변수(공통 데이터 영역)를 여러 모듈이 읽고 씀 — 시그널: <b>전역 변수 공유</b></span></div>
+        <div class="termrow"><span class="tt">내용 결합도</span><span class="td">다른 모듈 내부의 변수·기능을 직접 참조·수정 — 시그널: <b>내부 직접 접근·수정</b>. 최악</span></div>
+      </div>
+      <p><b>응집도</b>는 "모듈 안의 기능들이 <u>무엇으로 묶였는가</u>"를 봅니다:</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">기능적 응집도</span><span class="td">모든 요소가 단 하나의 기능 수행(예: 제곱근 계산만 하는 모듈) — 시그널: <b>단일 기능</b>. 최선</span></div>
+        <div class="termrow"><span class="tt">순차적 응집도</span><span class="td">한 활동의 출력을 다음 활동이 입력으로 사용(예: 파일을 읽고 → 그 데이터를 가공) — 시그널: <b>출력→입력 연결</b></span></div>
+        <div class="termrow"><span class="tt">교환적 응집도</span><span class="td">같은 입출력 데이터를 여러 활동이 사용하되 순서는 무관(예: 같은 성적 데이터로 평균·최고점 산출) — 시그널: <b>동일 입출력 데이터 사용</b></span></div>
+        <div class="termrow"><span class="tt">절차적 응집도</span><span class="td">데이터 연결 없이 실행 순서만 공유(예: 접근 권한 확인 후 파일 열기) — 시그널: <b>순서대로 수행되기만 함</b></span></div>
+        <div class="termrow"><span class="tt">시간적 응집도</span><span class="td">같은 시점에 함께 실행될 것끼리 묶음(예: 초기화 모듈, 오류 발생 시 일괄 처리) — 시그널: <b>특정 시점·초기화</b></span></div>
+        <div class="termrow"><span class="tt">논리적 응집도</span><span class="td">비슷한 성격의 기능을 모아 인자로 골라 실행(예: 프린터/화면/파일 출력을 한 모듈이 case로 분기) — 시그널: <b>유사 기능 묶음+선택 인자</b></span></div>
+        <div class="termrow"><span class="tt">우연적 응집도</span><span class="td">서로 아무 관련 없는 기능들이 한 모듈에 — 시그널: <b>관련 없는 요소</b>. 최악</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>2대 혼동 포인트:</b> ① 자료 vs 스탬프 — <u>낱개 값</u>이면 자료, <u>구조체·배열 통째</u>면 스탬프("전달받은 구조체의 일부만 사용"도 스탬프의 단서). ② 외부 vs 공통 — 특정 모듈이 선언한 데이터를 참조하면 외부, <u>"전역 변수"</u>가 보이면 공통.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "모듈 A는 처리 결과에 따라 플래그 값을 모듈 B에 전달하고, B는 그 값에 따라 서로 다른 로직을 수행한다. 두 모듈 간의 결합도는?" → 답: <u>제어 결합도</u> (흐름을 조종하는 신호가 오감)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "한 모듈 안의 여러 기능이 동일한 입력 자료를 사용하지만 수행 순서는 중요하지 않다. 이 모듈의 응집도는?" → 답: <u>교환적(통신적) 응집도</u> (출력이 다음 입력으로 이어지면 순차적)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag blue">FAN</span><h3>팬인(Fan-In) · 팬아웃(Fan-Out)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">모듈 구조도를 주고 특정 모듈의 팬인·팬아웃 값을 계산시키는 문제가 나옵니다.</p>
+      <p><b>팬인</b> = 해당 모듈을 <u>호출하는 상위 모듈의 수</u>(들어오는 화살표), <b>팬아웃</b> = 해당 모듈이 <u>호출하는 하위 모듈의 수</u>(나가는 화살표). 구조도에서 화살표 방향만 세면 됩니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">module-tree.txt</span></div>
+        <pre>            A
+          / | \
+         B  C  D        <span class="cm">// 호출 관계: A→B·C·D / B→F / C→F / D→F·G</span>
+          \ | / \
+            F    G
+
+<span class="kw">F</span>: 팬인 <span class="out">3</span> (B·C·D가 호출) · 팬아웃 <span class="nm">0</span>
+<span class="kw">D</span>: 팬인 <span class="nm">1</span> (A) · 팬아웃 <span class="out">2</span> (F·G)
+<span class="kw">A</span>: 팬인 <span class="nm">0</span> · 팬아웃 <span class="nm">3</span> (B·C·D)</pre>
+      </div>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">팬인 높음</span><span class="td">여러 모듈이 공유하는 공통 모듈 — <b>재사용성·공유도가 높다</b>는 신호. 단, 수정 시 파급이 커서 중점 관리·충분한 테스트 필요</span></div>
+        <div class="termrow"><span class="tt">팬아웃 높음</span><span class="td">한 모듈이 너무 많은 하위 모듈을 제어 — <b>제어 복잡도 증가</b>. 3~4 이하 권장, 불필요한 호출인지 점검</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> Fan-<b>In</b>은 "인기" — 팬(호출자)은 많을수록 좋다. 시스템 복잡도 최적화 원칙은 <b>팬인은 높게, 팬아웃은 낮게</b>.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "위 구조도에서 모듈 F의 팬인과 팬아웃을 구하시오" → 답: <u>팬인 3, 팬아웃 0</u> (F로 들어오는 화살표 3개, 나가는 화살표 없음)</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-cost">
@@ -328,6 +383,27 @@
 <span class="kw">생산성</span> = 총 LOC ÷ 노력(인월)</pre>
       </div>
       <div class="callout"><span class="ic">🧮</span> <b>계산식을 반드시 쓰세요.</b> 답만 쓰면 감점될 수 있습니다. 단위(개월, 인월)도 정확히.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag blue">MODEL</span><h3>COCOMO · Putnam · FP — 프로젝트 산정 모형</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">LOC 계산과 함께 "설명 → 모형 이름"을 묻는 용어 문제로 나옵니다. 모형마다 <b>고유 키워드</b>가 답의 근거입니다.</p>
+      <p>산정 기법의 큰 분류: <b>하향식</b> = 경험 기반(<u>전문가 감정</u>, 그 주관적 편견을 조정자+여러 전문가 의견 종합으로 보완한 <u>델파이</u>) / <b>상향식</b> = 세부 단위 기반(<u>LOC</u>, <u>개발 단계별 인월수</u>, 수학적 산정 모형 <u>COCOMO·Putnam·FP</u>).</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">COCOMO</span><span class="td">보헴(Boehm) 제안, <b>LOC(원시 코드 라인 수) 기반</b>. 개발 유형 3가지 구분이 단골 ↓</span></div>
+        <div class="termrow"><span class="tt">└ 조직형</span><span class="td">Organic — <b>5만 라인 이하</b> 소규모. 사무 처리·업무·과학용 응용</span></div>
+        <div class="termrow"><span class="tt">└ 반분리형</span><span class="td">Semi-Detached — <b>30만 라인 이하</b>, 조직형과 내장형의 중간. 트랜잭션 처리 시스템·운영체제 등</span></div>
+        <div class="termrow"><span class="tt">└ 내장형</span><span class="td">Embedded — <b>30만 라인 이상</b> 초대형. 신호기 제어 같은 <b>실시간·임베디드</b> 시스템</span></div>
+        <div class="termrow"><span class="tt">└ 모형 종류</span><span class="td">기본형(Basic, LOC만)·중간형(Intermediate, +15개 특성)·발전형(Detailed, 단계별 세분화 적용)</span></div>
+        <div class="termrow"><span class="tt">Putnam</span><span class="td"><b>생명주기 전 과정의 노력(인력) 분포</b>를 가정·예측. <b>Rayleigh-Norden 곡선</b> 기반, 대형 프로젝트용. 자동화 도구 <b>SLIM</b></span></div>
+        <div class="termrow"><span class="tt">FP</span><span class="td">알브레히트(Albrecht) 제안, 라인 수 대신 <b>기능 증대 요인별 가중치 합산</b>(입력·출력·질의·파일·외부 인터페이스 수). 자동화 도구 <b>ESTIMACS</b></span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> COCOMO·Putnam은 <u>LOC 기반</u>, FP는 <u>기능 기반</u> — "라인 수" 없이 "기능별 가중치"가 보이면 FP. 도구 짝(<u>SLIM↔Putnam</u>, <u>ESTIMACS↔FP</u>)을 서로 바꿔 놓는 문제도 나옵니다.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 조직형→반분리형→내장형 순으로 <b>조(5만)·반(30만)·내(그 이상)</b> 규모가 커진다. "<b>슬림</b>한 <b>퍼트남</b>" — SLIM은 Putnam의 도구.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "소프트웨어 생명주기 전 과정에 사용될 노력의 분포를 Rayleigh-Norden 곡선으로 가정하는 산정 모형은?" → 답: <u>Putnam 모형</u> (자동화 도구까지 물으면 SLIM)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "COCOMO의 개발 유형 중 5만 라인 이하의 사무 처리·과학용 응용 등 소규모 소프트웨어에 적합한 유형은?" → 답: <u>조직형(Organic Mode)</u> (30만 이하 중간은 반분리형, 그 이상은 내장형)</div>
     </div>
   </div>
 </section>
@@ -359,6 +435,139 @@
       <div class="callout"><span class="ic">📊</span> <b>통합 방식:</b> 하향식(Top-down)은 스텁(Stub) 사용, 상향식(Bottom-up)은 드라이버(Driver) 사용.<br><b>분류:</b> 비점진적=빅뱅(Big-Bang), 점진적=하향식·상향식·혼합식(샌드위치).</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">COVER</span><h3>테스트 커버리지 6종</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">화이트박스의 "얼마나 훑었나" 기준. 정의를 주고 이름을 맞히게 하거나, 주어진 케이스가 어떤 커버리지를 만족하는지 묻습니다.</p>
+      <p>핵심 축은 <b>전체 조건식(결정)</b>을 보느냐 <b>개별 조건식(조건)</b>을 보느냐입니다. 각 커버리지가 "무엇을 100% 만족해야 하는지"로 구분하세요:</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">구문(문장)</span><span class="td"><b>모든 문장</b>을 최소 1회 실행 — 가장 약한 기준</span></div>
+        <div class="termrow"><span class="tt">결정(분기)</span><span class="td"><b>전체 조건식의 결과</b>가 참 1회·거짓 1회 이상 — 분기 방향을 모두 타 봄</span></div>
+        <div class="termrow"><span class="tt">조건</span><span class="td"><b>개별 조건식</b> 각각이 참 1회·거짓 1회 이상 — 전체 결과는 안 봄</span></div>
+        <div class="termrow"><span class="tt">조건/결정</span><span class="td">전체 조건식과 개별 조건식 <b>모두</b> 참·거짓 1회 이상</span></div>
+        <div class="termrow"><span class="tt">변경 조건/결정</span><span class="td"><b>MC/DC</b> — 각 개별 조건식이 다른 조건식에 영향받지 않고 <b>단독으로 전체 결과를 바꿈</b>을 보장. 항공 등 안전 필수 SW에서 요구</span></div>
+        <div class="termrow"><span class="tt">다중 조건</span><span class="td">개별 조건식의 <b>가능한 모든 논리 조합</b>을 100% 커버 — 가장 강한 기준</span></div>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">coverage.trace</span></div>
+        <pre><span class="kw">if</span> (A &gt; <span class="nm">0</span> &amp;&amp; B &gt; <span class="nm">0</span>)   <span class="cm">// 개별 조건식 2개, 전체 조건식은 &amp;&amp;의 결과</span>
+
+케이스        A&gt;0   B&gt;0   전체(결정)
+A=1, B=0       T     F      F
+A=0, B=1       F     T      F
+<span class="cm">// 개별 조건이 각각 T·F 모두 등장 → 조건 커버리지 100%</span>
+<span class="cm">// 전체 결과는 F뿐(T 없음) → 결정 커버리지 미달. A=1,B=1 추가해야 충족</span></pre>
+      </div>
+      <p>강도(포함) 관계: <b>다중 조건 ⊃ MC/DC ⊃ 조건/결정 ⊃ 결정·조건</b>, 그리고 <b>결정 ⊃ 구문</b>. 위 예처럼 <u>조건 커버리지 100%여도 결정은 미달</u>일 수 있습니다 — 참 분기(then 블록)가 한 번도 실행되지 않아 구문 커버리지조차 미달입니다.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> <u>결정 = 전체 조건식</u>(분기의 결과), <u>조건 = 개별 조건식</u>. 이름의 어감과 반대로 느껴져 바꿔 쓰기 쉽습니다. "개별 조건식이 독립적으로 전체 결과에 영향" 문구가 보이면 무조건 MC/DC.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "각 개별 조건식이 다른 개별 조건식에 영향을 받지 않고 전체 조건식의 결과에 독립적으로 영향을 주도록 하는 커버리지는?" → 답: <u>변경 조건/결정 커버리지(MC/DC)</u> ("독립적으로"가 결정타)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag blue">CALC</span><h3>맥케이브 순환 복잡도 V(G)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">제어 흐름 그래프를 주고 복잡도를 계산시키는 확실한 득점원. 공식 3개 중 무엇을 써도 같은 값이 나옵니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">공식 ①</span><span class="td">V(G) = <b>E − N + 2P</b> (E=간선 수, N=노드 수, P=연결 요소 수 — 보통 1이라 E−N+2)</span></div>
+        <div class="termrow"><span class="tt">공식 ②</span><span class="td">V(G) = <b>폐(닫힌) 영역 수 + 1</b> — 화살표로 둘러싸인 영역을 센다</span></div>
+        <div class="termrow"><span class="tt">공식 ③</span><span class="td">V(G) = <b>단순 분기(조건) 수 + 1</b> — if·while 등 판단 노드를 센다</span></div>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">cfg.example</span></div>
+        <pre>       ┌───────────┐
+       ▼           │
+(1)──▶(2)──▶(3)──▶(5)──▶(6)
+       │           ▲
+       └──▶(4)─────┘
+
+간선 E = <span class="nm">7</span> : 1→2, 2→3, 2→4, 3→5, 4→5, 5→2(루프), 5→6
+노드 N = <span class="nm">6</span> / 분기 노드 2개: ②(3 또는 4로), ⑤(2 또는 6으로)
+
+① E−N+2P = 7 − 6 + 2×1 = <span class="out">3</span>
+② 폐영역 2개(3쪽·4쪽 경로 사이, 5→2 루프가 만드는 영역) + 1 = <span class="out">3</span>
+③ 분기 2개 + 1 = <span class="out">3</span></pre>
+      </div>
+      <p>V(G)=3은 <b>선형 독립 경로가 3개</b>라는 뜻 — 화이트박스 <u>기초 경로 검사(Basis Path Testing)</u>에서 도출할 기본 경로 수이자 최소한 필요한 테스트 케이스 수입니다. 예: ① 1→2→3→5→6 ② 1→2→4→5→6 ③ 루프 5→2를 한 번 도는 경로. McCabe 기준 <b>10 이하</b>가 바람직하며, 초과하면 매우 복잡한 모듈로 봅니다.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 간선(E)이 앞! <u>E−N+2</u>인데 N−E+2로 뒤집어 계산하는 실수가 흔합니다. V(G)는 항상 1 이상 — 0이나 음수가 나오면 뒤집은 것. P는 그래프가 하나로 이어져 있으면 1입니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "제어 흐름 그래프의 간선이 11개, 노드가 9개일 때 순환 복잡도 V(G)를 구하시오" → 답: <u>4</u> (11 − 9 + 2 = 4, 계산식까지 써야 안전)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">BLACKBOX</span><h3>블랙박스 기법 실전 — 동치분할·경계값 계산</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">이름만 아는 걸로는 부족 — "1~100 입력" 조건을 주고 테스트 값을 직접 뽑게 합니다.</p>
+      <p><b>동치 분할</b>은 입력을 유효/무효 클래스로 나눠 <u>클래스당 대표값 1개</u>씩 고르고, <b>경계값 분석</b>은 "오류는 경계에 몰린다"는 전제로 <u>경계와 그 바로 옆</u>을 고릅니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">input-1to100.design</span></div>
+        <pre>조건: 1 ≤ 입력값 ≤ 100 만 유효
+
+<span class="kw">동치 분할</span>  → 클래스 <span class="nm">3</span>개, 케이스도 3개
+  유효: 1 ~ 100     대표값 예 <span class="out">50</span>
+  무효: 1 미만      대표값 예 <span class="out">0</span>
+  무효: 100 초과    대표값 예 <span class="out">150</span>
+
+<span class="kw">경계값 분석</span> → 경계 자신 + 바로 바깥: <span class="out">0, 1, 100, 101</span></pre>
+      </div>
+      <p>나머지 블랙박스 기법은 <b>시그널 한 줄</b>로 구분합니다:</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">원인-효과 그래프</span><span class="td"><b>입력(원인)과 출력(결과)의 논리적 관계</b>를 그래프로 분석해 효용 높은 케이스 선정</span></div>
+        <div class="termrow"><span class="tt">결정 테이블</span><span class="td"><b>조건과 행동(결과)의 조합을 표</b>로 만들어 빠짐없이 검증</span></div>
+        <div class="termrow"><span class="tt">상태 전이</span><span class="td"><b>이벤트에 따른 상태 변화</b>(상태 다이어그램 기반)를 검증</span></div>
+        <div class="termrow"><span class="tt">페어와이즈</span><span class="td">모든 값의 <b>2개 조합(쌍)을 최소 1회씩</b> 커버 — 전체 조합 폭발을 줄임</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> "대표값을 하나씩" = 동치 분할, "경계의 바로 위·아래 값" = 경계값 분석. 두 기법이 한 문제에 같이 나오면 이 표현으로 갈라야 합니다. 둘 다 <u>블랙박스(명세 기반)</u>이지 화이트박스가 아님.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "1~100만 유효한 입력 필드를 경계값 분석으로 테스트할 때 선택할 대표적인 값 4개는?" → 답: <u>0, 1, 100, 101</u> (경계 자신과 바로 바깥)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "입력 자료를 유효한 값과 무효한 값의 클래스로 나누고 각 클래스에서 대표값을 시험 사례로 선정하는 기법은?" → 답: <u>동치 분할 검사(Equivalence Partitioning)</u></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">ORACLE</span><h3>테스트 오라클 · 테스트 하네스</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">"참값을 대입해 결과를 판단하는 이것은?" 류의 용어 단답 세트.</p>
+      <p><b>테스트 오라클</b> = 테스트 결과가 옳은지 판단하기 위해 <u>사전에 정의된 참(True) 값을 대입해 비교</u>하는 기법. "어디까지 참값을 제공하느냐"로 4종을 가릅니다:</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">참 오라클</span><span class="td"><b>모든 입력값</b>에 기대 결과 제공 → 발생한 <b>모든 오류 검출</b> 가능. 미션 크리티컬 분야에서 사용</span></div>
+        <div class="termrow"><span class="tt">샘플링 오라클</span><span class="td"><b>특정한 몇몇 입력값</b>에 대해서만 기대 결과 제공</span></div>
+        <div class="termrow"><span class="tt">휴리스틱 오라클</span><span class="td">샘플링 개선형 — 특정 입력값은 정확한 결과, <b>나머지는 추정(휴리스틱)</b>으로 처리</span></div>
+        <div class="termrow"><span class="tt">일관성 검사</span><span class="td">애플리케이션 <b>변경 전후의 수행 결과가 동일</b>한지 확인 (회귀 테스트 성격)</span></div>
+      </div>
+      <p><b>테스트 하네스</b> = 테스트 환경을 시뮬레이션해 주는 지원 도구·데이터 묶음. 구성요소 6가지:</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">드라이버 / 스텁</span><span class="td"><b>드라이버</b>=상위 모듈 대역(상향식 통합에서), <b>스텁</b>=하위 모듈 대역(하향식 통합에서)</span></div>
+        <div class="termrow"><span class="tt">케이스 / 슈트</span><span class="td"><b>케이스</b>=입력값·실행 조건·기대 결과의 집합, <b>슈트</b>=테스트 케이스들의 묶음</span></div>
+        <div class="termrow"><span class="tt">스크립트 / 목</span><span class="td"><b>스크립트</b>=테스트 실행 절차의 자동화 명세, <b>목 오브젝트</b>=사전에 정의한 행위를 흉내 내는 가짜 객체</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> "모든 입력"=참, "몇몇 입력만"=샘플링, "나머지는 추정"=휴리스틱, "변경 전후 비교"=일관성. 휴리스틱을 샘플링으로 잘못 답하기 쉬움 — <u>추정</u>이라는 단어가 결정타.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "전체 입력 중 특정한 몇 개의 입력값에 대해서만 기대하는 결과를 제공하는 테스트 오라클은?" → 답: <u>샘플링 오라클</u> (나머지 입력을 추정으로 처리하면 휴리스틱 오라클)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">REVIEW</span><h3>정적 vs 동적 분석 · 결함 용어</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">"실행하느냐"가 정적/동적의 전부. 검토 기법 3형제는 주도자·공식성으로 가릅니다.</p>
+      <p><b>정적 테스트</b>는 프로그램을 <u>실행하지 않고</u> 명세·소스 코드를 검토(리뷰, 정적 분석 도구), <b>동적 테스트</b>는 <u>실행하면서</u> 오류를 찾습니다 — 화이트박스·블랙박스 모두 동적입니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">인스펙션</span><span class="td"><b>가장 공식적</b> — 작성자가 아닌 훈련된 전문 검토자(중재자 진행)가 체크리스트 기반 공식 절차로 결함 발견</span></div>
+        <div class="termrow"><span class="tt">워크스루</span><span class="td"><b>작성자가 주도</b>, 회의 전에 자료를 <b>미리 배포</b>해 사전 검토 후 짧은 회의 진행. 인스펙션보다 비공식</span></div>
+        <div class="termrow"><span class="tt">동료 검토</span><span class="td"><b>2~3명</b>의 소규모 — 작성자가 설명하고 동료들이 결함 발견</span></div>
+      </div>
+      <p>결함 용어는 <b>"누구/어디에 있느냐"</b>의 전이 순서로 구분합니다:</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">에러(오류)</span><span class="td"><b>사람(개발자)의 실수</b> — 결함의 원인</span></div>
+        <div class="termrow"><span class="tt">결함(폴트·버그)</span><span class="td">에러의 결과로 <b>제품(코드·문서)에 존재</b>하는 것 — 제거하지 않으면 고장을 유발</span></div>
+        <div class="termrow"><span class="tt">고장(실패)</span><span class="td">결함이 실행될 때 <b>시스템이 요구사항대로 동작하지 못하는 현상</b> — 사용자가 겪는 증상</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>테스트 원리 빈출 3:</b> <b>결함 집중</b>(결함의 대부분은 소수 모듈에 집중 — 파레토 법칙 80:20) / <b>살충제 패러독스</b>(같은 케이스만 반복하면 새 결함을 못 찾음 → 케이스 지속 개선) / <b>오류-부재의 궤변</b>(결함이 없어도 요구사항을 만족 못 하면 품질이 높다고 할 수 없음).</div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> "작성자 주도 + 사전 배포" = 워크스루, "중재자·공식 절차" = 인스펙션 — 주도자를 바꿔서 냅니다. 에러/결함/고장은 <u>사람 → 코드 → 실행 증상</u> 순서: "실행 중 요구사항 미충족"이면 고장(Failure)입니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "검토 회의 전에 명세서를 미리 배포하여 사전 검토하고, 작성자가 주도하는 짧은 회의로 결함을 발견하는 검토 기법은?" → 답: <u>워크스루(Walkthrough)</u> (전문 검토팀이 공식 절차로 하면 인스펙션)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "결함을 모두 제거했더라도 사용자의 요구사항을 만족하지 못하면 품질이 높다고 볼 수 없다는 테스트 원리는?" → 답: <u>오류-부재의 궤변</u> (같은 케이스 반복의 한계는 살충제 패러독스)</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-uml">
@@ -378,6 +587,92 @@
         <li><b>#</b> protected (파생 클래스) / <b>~</b> package (동일 패키지, 자바 default)</li>
       </ul>
       <div class="callout"><span class="ic">🔗</span> <b>관계:</b> 연관, 집합(약한 포함), 복합(강한 포함), 일반화(상속), 의존, 실체화(인터페이스 구현).</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">REL</span><h3>UML 관계 6종 — 기호로 구분</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">관계 이름 나열만으론 못 풉니다. 실기는 "기호 설명 → 관계명"으로 냅니다.</p>
+      <p>구분 축은 3개뿐입니다. ① <b>선</b>(실선/점선) ② <b>속 빈 삼각형</b>(상속 계열) ③ <b>마름모</b>(포함 계열). 조합하면: 실선+삼각형=<b>일반화</b>, 점선+삼각형=<b>실체화</b>, 빈 마름모=<b>집합</b>, 채운 마름모=<b>복합</b>, 그냥 실선=<b>연관</b>, 그냥 점선 화살표=<b>의존</b>.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">연관</span><span class="td">(Association) <b>실선</b> — 코드로 치면 <code>멤버 변수</code>로 다른 객체를 오래 참조. 화살표를 붙이면 참조 방향이 있는 연관</span></div>
+        <div class="termrow"><span class="tt">의존</span><span class="td">(Dependency) <b>점선 화살표</b> — 코드로 치면 메서드 <code>파라미터·지역 변수·리턴 타입</code>으로 잠깐 사용하는 일시적 관계</span></div>
+        <div class="termrow"><span class="tt">일반화</span><span class="td">(Generalization) <b>실선 + 속 빈 삼각형</b> — 상속. 코드로 치면 <code>extends</code>. 화살촉은 자식 → <u>부모</u> 방향</span></div>
+        <div class="termrow"><span class="tt">실체화</span><span class="td">(Realization) <b>점선 + 속 빈 삼각형</b> — 인터페이스 구현. 코드로 치면 <code>implements</code>. 일반화와 삼각형은 같고 <u>선만 점선</u></span></div>
+        <div class="termrow"><span class="tt">집합</span><span class="td">(Aggregation) <b>속 빈 마름모</b> — 약한 포함. 부분이 전체와 <u>독립적으로 존재 가능</u>(생명주기 따로). 마름모는 전체(whole) 쪽에 붙임</span></div>
+        <div class="termrow"><span class="tt">복합</span><span class="td">(Composition) <b>속이 채워진 마름모</b> — 강한 포함. 전체가 소멸하면 부분도 <u>함께 소멸</u>(생명주기 공유)</span></div>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">aggregation_vs_composition.java</span></div>
+        <pre><span class="cm">// 집합(Aggregation) — 부분을 밖에서 받아 참조: 팀이 해체돼도 선수 객체는 남는다</span>
+<span class="kw">class</span> <span class="fn">Team</span> {
+    <span class="kw">private</span> Player p;
+    Team(Player p) { <span class="kw">this</span>.p = p; }   <span class="cm">// 외부에서 주입 = 생명주기 독립</span>
+}
+
+<span class="cm">// 복합(Composition) — 부분을 내부에서 직접 생성: 건물이 철거되면 방도 같이 소멸</span>
+<span class="kw">class</span> <span class="fn">Building</span> {
+    <span class="kw">private</span> Room r = <span class="kw">new</span> Room();   <span class="cm">// 내부에서 생성·소유 = 생명주기 공유</span>
+}
+<span class="cm">// (Player·Room 클래스 선언은 생략)</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>집합 vs 복합 함정:</b> 부분이 전체 없이도 존재할 수 있으면 <u>집합</u>(빈 마름모), 전체가 사라질 때 부분도 사라지면 <u>복합</u>(채운 마름모). 예: 팀-선수=집합, 건물-방=복합. 마름모 위치도 함정 — <b>부분이 아니라 전체 쪽</b>에 그립니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "클래스 다이어그램에서 속이 채워진 마름모로 표기하며, 전체 객체가 소멸하면 부분 객체도 함께 소멸하는 관계를 쓰시오." → 답: <u>복합(Composition) 관계</u> (마름모 속이 비어 있으면 집합 관계)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">USECASE</span><h3>유스케이스 — include vs extend</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">유스케이스 다이어그램에서 실기가 노리는 곳은 정해져 있습니다 — include/extend 구분과 화살표 방향.</p>
+      <p>유스케이스 다이어그램은 <b>시스템이 제공하는 기능(유스케이스)과 외부 사용자(액터)의 관계</b>를 표현합니다. 시험은 지문 속 <b>"반드시/항상 실행"</b>이면 include, <b>"특정 조건에서만/선택적으로 실행"</b>이면 extend로 구별시키고, 여기에 화살표 방향을 얹어 함정을 팝니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">액터</span><span class="td">시스템 <b>외부</b>에서 상호작용하는 사람·외부 시스템. 스틱맨으로 표기</span></div>
+        <div class="termrow"><span class="tt">유스케이스</span><span class="td">시스템이 제공해야 하는 <b>기능 단위</b>. 타원으로 표기</span></div>
+        <div class="termrow"><span class="tt">시스템 경계</span><span class="td">시스템의 범위를 나타내는 사각형. 유스케이스는 안쪽, 액터는 <u>바깥쪽</u></span></div>
+        <div class="termrow"><span class="tt">&lt;&lt;include&gt;&gt;</span><span class="td"><b>반드시 함께 실행</b>되는 공통 기능 호출. 점선 화살표가 <u>기본 → 포함되는 기능</u> 방향</span></div>
+        <div class="termrow"><span class="tt">&lt;&lt;extend&gt;&gt;</span><span class="td"><b>특정 조건에서만</b> 덧붙는 확장 기능. 점선 화살표가 <u>확장 기능 → 기본</u> 방향 (include와 반대!)</span></div>
+        <div class="termrow"><span class="tt">일반화</span><span class="td">액터·유스케이스 간 <b>상속</b>. 속 빈 삼각형 실선 — 예: 관리자 액터 → 회원 액터(자식→부모)</span></div>
+      </div>
+      <p>전형 시나리오: "게시글 등록"은 실행될 때마다 <b>항상 "로그인 확인"</b>을 거친다 → include. "게시글 등록" 도중 <b>원할 때만 "파일 첨부"</b>가 붙는다 → extend.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">usecase_arrows.txt</span></div>
+        <pre><span class="cm">// 화살표 방향 암기용 — 둘 다 점선, 방향이 서로 반대다</span>
+(주문) ──&lt;&lt;include&gt;&gt;──▶ (결제 승인)    <span class="cm">// 기본 → 포함: 항상 실행</span>
+(쿠폰 적용) ──&lt;&lt;extend&gt;&gt;──▶ (주문)     <span class="cm">// 확장 → 기본: 조건부 실행</span>
+
+<span class="cm">// include = 기본이 공통 부품을 "가져다 쓴다" / extend = 옵션이 기본에 "끼어든다"</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>최대 함정 — 화살표 방향:</b> include는 <u>기본 유스케이스가 포함할 기능을 가리키고</u>(기본→포함), extend는 <u>확장 기능이 기본 유스케이스를 가리킵니다</u>(확장→기본). "extend니까 기본에서 뻗어나간다"고 그리면 틀립니다. 둘 다 점선 화살표라 <b>스테레오타입과 방향</b>만이 구분 포인트.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "'주문' 유스케이스는 어떤 경우에도 '결제 승인' 유스케이스를 반드시 실행한다. 두 유스케이스를 잇는 점선 화살표 위에 표기할 스테레오타입을 쓰시오." → 답: <u>&lt;&lt;include&gt;&gt;</u> (조건부로만 실행되면 &lt;&lt;extend&gt;&gt;, 화살표 방향도 반대)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag blue">SEQ</span><h3>시퀀스 다이어그램 구성요소</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">지문에 "시간의 흐름", "메시지 순서"가 보이면 답은 시퀀스 다이어그램입니다.</p>
+      <p>시퀀스 다이어그램은 <b>객체 간 상호작용을 시간 순서에 따라 메시지로</b> 표현하는 행위(동적) 다이어그램입니다. 시험은 ① 다이어그램 이름 맞히기 ② 구성요소 이름 맞히기(생명선·활성 상자) ③ 화살표 종류 구분(동기/비동기/응답), 세 갈래로 냅니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">액터·객체</span><span class="td">상호작용의 주체. 다이어그램 <b>맨 위에 가로로</b> 배치</span></div>
+        <div class="termrow"><span class="tt">생명선</span><span class="td">(Lifeline) 객체 아래로 <b>수직으로 뻗은 점선</b> — 객체가 존재하는 기간을 표현</span></div>
+        <div class="termrow"><span class="tt">활성 상자</span><span class="td">(Activation) 생명선 위의 <b>가늘고 긴 직사각형</b> — 객체가 연산을 실행 중인 구간. 실행 상자라고도 함</span></div>
+        <div class="termrow"><span class="tt">동기 메시지</span><span class="td">실선 + <b>채운(속이 찬) 화살촉</b> — 보낸 뒤 <u>응답을 기다림</u></span></div>
+        <div class="termrow"><span class="tt">비동기 메시지</span><span class="td">실선 + <b>열린(빈) 화살촉</b> — 응답을 <u>기다리지 않고</u> 진행</span></div>
+        <div class="termrow"><span class="tt">응답 메시지</span><span class="td">(Return) <b>점선 화살표</b> — 처리 결과를 되돌려줌</span></div>
+        <div class="termrow"><span class="tt">자체 호출</span><span class="td">(Self-Message) 화살표가 <b>자신의 생명선으로 되돌아옴</b> — 내부 메서드 호출·재귀</span></div>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">login_sequence.txt</span></div>
+        <pre><span class="cm">// 로그인 시퀀스 — 위에서 아래가 시간 순서</span>
+회원 ──로그인 요청──▶ 로그인화면            <span class="cm">// 실선+채운 화살촉 = 동기</span>
+로그인화면 ──정보 조회──▶ 회원정보(DB)
+회원정보(DB) ---조회 결과---▶ 로그인화면    <span class="cm">// 점선 = 응답(반환)</span>
+로그인화면 ---로그인 결과---▶ 회원</pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>혼동 포인트:</b> 커뮤니케이션 다이어그램도 객체 간 상호작용을 그리지만 <u>시간 축 없이 객체 간 연결(링크) 중심</u>입니다. "시간의 흐름에 따라"가 있으면 시퀀스. 화살촉도 바꿔치기해 출제 — <b>채움=동기, 열림=비동기, 점선=응답</b>을 세트로.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "객체 간의 상호작용을 시간의 흐름에 따라 표현하며, 생명선·활성 상자·메시지 등으로 구성되는 UML 다이어그램을 쓰시오." → 답: <u>시퀀스(Sequence) 다이어그램</u> (구성요소 변형: 객체 아래 수직 점선 = 생명선)</div>
     </div>
   </div>
 </section>
@@ -413,6 +708,268 @@
       <div class="callout mnemonic"><span class="ic">🔑</span> <b>S·O·L·I·D</b>. 특히 <b>OCP</b>(개방-폐쇄)가 단답으로 자주 나옵니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">AGILE</span><h3>애자일 심화 — XP · 스크럼</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">"애자일이 뭔가"는 이제 안 나옵니다. XP는 5가치 빈칸, 스크럼은 역할·산출물 용어를 채우게 합니다.</p>
+      <p><b>XP(eXtreme Programming)</b>는 의사소통·피드백을 중시하며 릴리즈 주기를 극단적으로 짧게 가져가는 기법이고, <b>스크럼(Scrum)</b>은 스프린트라는 고정 주기로 반복 개발하는 프레임워크입니다. 시험은 XP에서 "5가지 가치 중 빈칸 하나", 스크럼에서 "역할 설명 → 이름"으로 구별시킵니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">XP 5가치</span><span class="td"><b>용기 · 단순성 · 의사소통 · 피드백 · 존중</b> — 다섯 중 하나를 빈칸으로 뚫는 문제가 단골</span></div>
+        <div class="termrow"><span class="tt">XP 실천법</span><span class="td">짝 프로그래밍(2인 1조 코딩), TDD(테스트 먼저), CI(지속적 통합), 리팩토링, 소규모 릴리즈, 공동 코드 소유</span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>두문자:</b> XP 5가치는 <b>용·단·의·피·존</b> (용기·단순성·의사소통·피드백·존중).</div>
+      <p style="margin-top:12px"><b>스크럼</b> — 역할 3 · 백로그 2 · 회의로 굴러가는 프레임워크.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">제품 책임자</span><span class="td">(Product Owner, PO) <b>제품 백로그 관리·우선순위 결정</b> — 요구사항의 최종 결정권자</span></div>
+        <div class="termrow"><span class="tt">스크럼 마스터</span><span class="td">(SM) 프로세스가 잘 돌도록 <b>장애물을 제거</b>하고 팀을 코칭 — <u>팀을 통제하는 관리자가 아님</u></span></div>
+        <div class="termrow"><span class="tt">개발팀</span><span class="td">실제로 제품을 만드는 팀. 스스로 작업 방식을 정하는 <b>자기 조직화</b> 팀</span></div>
+        <div class="termrow"><span class="tt">스프린트</span><span class="td"><b>1~4주의 고정 기간</b>으로 반복하는 개발 주기</span></div>
+        <div class="termrow"><span class="tt">백로그</span><span class="td"><b>제품 백로그</b>=제품 전체 요구사항 목록(PO 관리) / <b>스프린트 백로그</b>=이번 스프린트에서 할 작업 목록</span></div>
+        <div class="termrow"><span class="tt">데일리 스크럼</span><span class="td">매일 약 <b>15분</b>, 서서 진행 상황을 공유하는 짧은 회의</span></div>
+        <div class="termrow"><span class="tt">번다운 차트</span><span class="td"><b>남은 작업량</b>을 시간 축에 따라 그래프로 표시 — 스프린트 진척 확인</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>애자일 선언 4가치 — 방향 함정:</b> "공정과 도구<u>보다</u> 개인과 상호작용", "포괄적 문서<u>보다</u> 동작하는 SW", "계약 협상<u>보다</u> 고객과의 협력", "계획 준수<u>보다</u> 변화에 대응" — 항상 <b>뒤쪽(오른쪽)이 더 중시하는 가치</b>입니다. 서술형에서 좌우를 뒤집어 "동작하는 SW보다 문서를"로 쓰면 정반대 의미로 오답.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "XP의 5가지 가치: 용기, 단순성, 피드백, 존중, ( )" → 답: <u>의사소통(Communication)</u> (다섯 개 중 어느 것이든 빈칸이 될 수 있음)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "스크럼에서 제품 백로그를 관리하고 요구사항의 우선순위를 결정하는 역할을 쓰시오." → 답: <u>제품 책임자(Product Owner)</u> (장애물 제거·프로세스 지원이면 스크럼 마스터)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag red">OMT</span><h3>럼바우 OMT + 객체지향 방법론 계보</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">객체지향 분석 방법론은 "학자 이름 ↔ 키워드" 매칭 게임입니다. 럼바우는 순서까지 묻습니다.</p>
+      <p><b>럼바우(Rumbaugh) 객체 모델링 기법(OMT)</b>은 소프트웨어 구성요소를 그래픽 표기법으로 모델링하는 분석 기법입니다. 시험은 ① 3가지 모델링의 <b>수행 순서</b> ② 각 모델링이 사용하는 <b>다이어그램</b>을 짝지어 구별시킵니다.</p>
+      <div class="scale">
+        <div class="scale-item"><span class="rank">1</span><span class="sname">객체 모델링</span><span class="sdesc">(Object) 객체·클래스와 그 관계를 식별 — <b>객체 다이어그램</b>. 가장 먼저 수행, 가장 중요</span></div>
+        <div class="scale-item"><span class="rank">2</span><span class="sname">동적 모델링</span><span class="sdesc">(Dynamic) 시간 흐름에 따른 객체의 상태·동작·제어 흐름 — <b>상태 다이어그램(상태도)</b></span></div>
+        <div class="scale-item"><span class="rank">3</span><span class="sname">기능 모델링</span><span class="sdesc">(Functional) 입력에 대해 어떤 처리·출력이 일어나는지 — <b>자료 흐름도(DFD)</b></span></div>
+      </div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>객·동·기</b> (객체 → 동적 → 기능). 다이어그램까지 세트로: 객체=객체 다이어그램, 동적=상태 다이어그램, 기능=DFD.</div>
+      <p style="margin-top:12px"><b>객체지향 방법론 계보</b> — 학자 이름과 키워드만 매칭하면 됩니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">Booch</span><span class="td">(부치) <b>미시적(Micro) + 거시적(Macro)</b> 개발 프로세스를 모두 사용. 클래스·객체 식별과 속성·연산 정의</span></div>
+        <div class="termrow"><span class="tt">Jacobson</span><span class="td">(제이콥슨) <b>유스케이스(Use Case)</b>를 강조하여 사용하는 방법론 — OOSE</span></div>
+        <div class="termrow"><span class="tt">Coad-Yourdon</span><span class="td">(코드-요든) <b>E-R 다이어그램</b>으로 객체의 행위를 모델링. 객체 식별 → 구조 식별 → 주제 정의 → 속성·연산 정의 순</span></div>
+        <div class="termrow"><span class="tt">Wirfs-Brock</span><span class="td">(워프스-브록) <b>분석과 설계의 구분이 없음</b> — 고객 명세서 평가에서 설계 작업까지 연속적으로 수행</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>키워드 즉답표:</b> "유스케이스"=Jacobson, "E-R 다이어그램"=Coad-Yourdon, "미시·거시"=Booch, "분석·설계 구분 없음"=Wirfs-Brock, "3가지 모델링"=럼바우. 럼바우 안에서는 <u>동적=상태 다이어그램</u>과 <u>기능=DFD</u>를 서로 바꿔치기한 선지가 단골.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "객체지향 분석 방법론 중 유스케이스를 강조하여 사용하는 방법론을 쓰시오." → 답: <u>Jacobson(제이콥슨) 방법론</u> (OOSE)</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "럼바우 분석 기법의 3가지 모델링을 순서대로 쓰시오." → 답: <u>객체 모델링 → 동적 모델링 → 기능 모델링</u> (두문자 '객동기')</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag blue">CMMI</span><h3>CMMI 5단계 + SPICE</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">둘 다 "프로세스가 얼마나 성숙한가"를 평가하는 모델. 단계 설명을 주고 단계명을 맞히게 합니다.</p>
+      <p><b>CMMI</b>(능력 성숙도 모델 통합)는 조직의 프로세스 성숙도를 <b>1~5의 5단계</b>로, <b>SPICE(ISO/IEC 15504)</b>는 프로세스 수행 능력을 <b>0~5의 6수준</b>으로 평가합니다. 시험은 단계 개수(5 vs 6), 표준 번호(15504), 각 단계의 핵심 키워드로 둘을 구별시킵니다.</p>
+      <div class="scale-label"><span class="b">◀ 1단계 (미성숙)</span><span class="g">5단계 (최적화) ▶</span></div>
+      <div class="scale">
+        <div class="scale-item scale-bad"><span class="rank">1</span><span class="sname">초기</span><span class="sdesc">(Initial) 정의된 프로세스 없음 — 성공이 <b>개인의 역량</b>에 좌우</span></div>
+        <div class="scale-item"><span class="rank">2</span><span class="sname">관리</span><span class="sdesc">(Managed) <b>프로젝트 단위</b>로 프로세스를 계획·관리 — 반복 가능한 수준</span></div>
+        <div class="scale-item"><span class="rank">3</span><span class="sname">정의</span><span class="sdesc">(Defined) <b>조직 표준 프로세스</b>를 확립·문서화하고 프로젝트가 이를 따름</span></div>
+        <div class="scale-item"><span class="rank">4</span><span class="sname">정량적 관리</span><span class="sdesc">(Quantitatively Managed) 프로세스를 <b>정량적으로 측정·통제</b></span></div>
+        <div class="scale-item scale-good"><span class="rank">5</span><span class="sname">최적화</span><span class="sdesc">(Optimizing) 측정 결과를 바탕으로 <b>지속적으로 프로세스 개선</b></span></div>
+      </div>
+      <p style="margin-top:12px"><b>SPICE(ISO/IEC 15504) 수행 능력 6수준</b> — 0부터 시작하는 것이 CMMI와 다른 점.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">0 불완전</span><span class="td">(Incomplete) 프로세스가 구현되지 않거나 목적을 달성하지 못함</span></div>
+        <div class="termrow"><span class="tt">1 수행</span><span class="td">(Performed) 프로세스가 수행되고 <b>목적이 달성</b>됨</span></div>
+        <div class="termrow"><span class="tt">2 관리</span><span class="td">(Managed) 정해진 절차에 따라 <b>계획·관리</b>되어 작업 산출물을 냄</span></div>
+        <div class="termrow"><span class="tt">3 확립</span><span class="td">(Established) <b>표준(정의된) 프로세스</b>를 기반으로 수행</span></div>
+        <div class="termrow"><span class="tt">4 예측</span><span class="td">(Predictable) <b>정량적 측정·통제</b>로 일관되게 수행</span></div>
+        <div class="termrow"><span class="tt">5 최적화</span><span class="td">(Optimizing) 비즈니스 목표에 맞춰 <b>지속적으로 개선</b></span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>혼동 포인트:</b> CMMI는 <u>1~5 (5단계)</u>, SPICE는 <u>0~5 (6수준)</u> — "0 불완전"이 보이면 SPICE. 지문에 <b>ISO/IEC 15504</b>가 있어도 SPICE. 둘 다 최상위가 "최적화"라 마지막 단계로는 구분이 안 되니 <u>단계 수와 시작 번호</u>로 구분하세요.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> CMMI는 <b>초 → 관 → 정 → 정량 → 최</b> (초기·관리·정의·정량적 관리·최적화) — 앞 글자 순서로.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "CMMI 성숙도 단계 중 조직의 표준 프로세스가 확립·문서화되어 있고 프로젝트가 이를 테일러링하여 사용하는 단계를 쓰시오." → 답: <u>3단계 정의(Defined) 단계</u> (프로젝트 단위 관리에 그치면 2단계 관리)</div>
+    </div>
+  </div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag violet">GOF</span><h3>GoF 패턴 — 설명 보고 이름 맞히기 (빈출 시그널 사전)</h3><span class="freq star">★★★</span></div>
+  <div class="concept-body">
+    <p class="muted">실기 최다 빈출 유형: 패턴의 "정의 문장"을 주고 이름을 쓰게 한다. 문장 속 시그널 단어만 잡으면 즉답 가능.</p>
+    <p>GoF 23개는 <b>생성(5)·구조(7)·행위(11)</b>로 나뉜다. 시험은 분류 자체보다 <b>설명 → 패턴명(국문/영문)</b>을 쓰게 하므로, 패턴마다 결정적 시그널 단어를 1:1로 매칭해 두는 것이 득점 포인트다.</p>
+    <p><b>생성(Creational)</b> — 객체를 어떻게 만들 것인가</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">싱글턴</span><span class="td">Singleton — <b>인스턴스 1개</b>만 생성됨을 보장 + <b>전역 접근점</b> 제공</span></div>
+      <div class="termrow"><span class="tt">팩토리 메서드</span><span class="td">Factory Method — 생성 인터페이스는 상위에, 실제 <b>생성은 서브클래스에 위임</b>(가상 생성자)</span></div>
+      <div class="termrow"><span class="tt">추상 팩토리</span><span class="td">Abstract Factory — 구체 클래스 지정 없이 <b>관련 객체들의 '군(family)'</b>을 묶어 생성</span></div>
+      <div class="termrow"><span class="tt">빌더</span><span class="td">Builder — 복잡한 객체를 <b>단계적으로 조립</b>, 생성 과정과 표현을 분리</span></div>
+      <div class="termrow"><span class="tt">프로토타입</span><span class="td">Prototype — <b>원본을 복제(clone)</b>해 새 객체 생성, 생성 비용이 클 때</span></div>
+    </div>
+    <p><b>구조(Structural)</b> — 클래스·객체를 어떻게 조합할 것인가</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">어댑터</span><span class="td">Adapter — <b>인터페이스를 변환</b>해 호환되지 않는 클래스들을 연결(변환기)</span></div>
+      <div class="termrow"><span class="tt">브리지</span><span class="td">Bridge — <b>추상과 구현을 분리</b>해 각각 <b>독립적으로 확장</b> 가능하게</span></div>
+      <div class="termrow"><span class="tt">컴포지트</span><span class="td">Composite — <b>트리 구조</b>로 구성, <b>부분-전체</b>(개별·복합 객체)를 <b>동일하게 취급</b></span></div>
+      <div class="termrow"><span class="tt">데코레이터</span><span class="td">Decorator — 객체에 <b>동적으로 기능(책임)을 추가</b>, 상속의 대안으로 포장</span></div>
+      <div class="termrow"><span class="tt">퍼사드</span><span class="td">Facade — 복잡한 서브시스템에 <b>단순화된 단일 창구(통합 인터페이스)</b> 제공</span></div>
+      <div class="termrow"><span class="tt">플라이웨이트</span><span class="td">Flyweight — 인스턴스를 <b>공유</b>해 다수의 유사 객체에서 <b>메모리 절약</b></span></div>
+      <div class="termrow"><span class="tt">프록시</span><span class="td">Proxy — <b>대리인</b> 객체를 두어 실제 객체로의 <b>접근을 제어</b>(지연 로딩·권한)</span></div>
+    </div>
+    <p><b>행위(Behavioral)</b> — 상호작용과 책임을 어떻게 분배할 것인가</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">옵서버</span><span class="td">Observer — 한 객체의 <b>상태 변화를 의존 객체들에 자동 통지·갱신</b>, <b>1:N</b> 의존 관계</span></div>
+      <div class="termrow"><span class="tt">전략</span><span class="td">Strategy — <b>알고리즘군을 각각 캡슐화</b>해 클라이언트가 <b>교체(상호 교환)</b> 가능하게</span></div>
+      <div class="termrow"><span class="tt">템플릿 메서드</span><span class="td">Template Method — <b>골격(뼈대)은 상위 클래스</b>에 정의, 일부 단계만 <b>하위에서 재정의</b></span></div>
+      <div class="termrow"><span class="tt">커맨드</span><span class="td">Command — <b>요청 자체를 객체로 캡슐화</b> — 큐 저장·로깅·취소(undo) 지원</span></div>
+      <div class="termrow"><span class="tt">상태</span><span class="td">State — <b>내부 상태에 따라 행위가 바뀜</b>, 상태를 객체화해 클래스가 바뀌는 듯 동작</span></div>
+      <div class="termrow"><span class="tt">책임 연쇄</span><span class="td">Chain of Responsibility — 요청을 <b>처리자 사슬(체인)</b>을 따라 전달, 처리자를 미리 지정 안 함</span></div>
+      <div class="termrow"><span class="tt">이터레이터</span><span class="td">Iterator — <b>내부 구조를 노출하지 않고</b> 집합의 원소를 <b>순차 접근(순회)</b></span></div>
+      <div class="termrow"><span class="tt">중재자</span><span class="td">Mediator — 객체 간 복잡한 <b>상호작용을 중재자 하나로 집중</b>시켜 결합도 감소</span></div>
+      <div class="termrow"><span class="tt">메멘토</span><span class="td">Memento — 객체 <b>상태를 저장해 두었다가 복원</b> — <b>undo(되돌리기)</b> 시그널</span></div>
+      <div class="termrow"><span class="tt">방문자</span><span class="td">Visitor — <b>자료 구조와 연산(처리)을 분리</b>, 구조 변경 없이 새 연산 추가</span></div>
+      <div class="termrow"><span class="tt">인터프리터</span><span class="td">Interpreter — <b>언어의 문법 규칙</b>을 클래스로 표현해 문장을 <b>해석·실행</b></span></div>
+    </div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>단골 혼동 4쌍:</b> ① <b>전략 vs 상태</b> — 전략은 <u>클라이언트가 알고리즘을 골라 끼움</u>, 상태는 <u>내부 상태 변화가 스스로 행위를 바꿈</u>. ② <b>데코레이터 vs 프록시</b> — 둘 다 감싸지만 데코레이터는 <u>기능 추가</u>, 프록시는 <u>접근 제어</u>. ③ <b>팩토리 메서드 vs 추상 팩토리</b> — 생성을 서브클래스에 위임 vs 관련 객체 <u>'군'</u>을 생성. ④ <b>어댑터 vs 퍼사드</b> — 인터페이스 <u>변환</u> vs 복잡한 것을 <u>단순 창구로 통합</u>.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "클래스의 인스턴스가 하나만 생성되도록 보장하고, 그 인스턴스에 대한 전역적인 접근점을 제공하는 디자인 패턴은?" → 답: <u>싱글턴(Singleton)</u> ("하나만"+"전역 접근점"이 고정 시그널)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "한 객체의 상태가 변하면 그 객체에 의존하는 다른 객체들에게 자동으로 통지되어 갱신되도록 일대다(1:N) 의존 관계를 정의한 패턴은?" → 답: <u>옵서버(Observer)</u> (통지·1:N이 보이면 무조건 옵서버)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "알고리즘의 골격을 상위 클래스에서 정의하고, 일부 단계는 하위 클래스에서 재정의하도록 하는 패턴은?" → 답: <u>템플릿 메서드(Template Method)</u> (골격=상위, 일부 재정의=하위)</div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag green">SCM</span><h3>형상 관리(SCM) — 절차·베이스라인·도구</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">"변경 사항을 체계적으로 추적·통제"가 보이면 형상 관리. 정의 서술형·절차 빈칸형·도구 분류형 세 방향으로 나온다.</p>
+    <p><b>형상 관리(SCM, Software Configuration Management)</b>는 소프트웨어 개발 과정에서 발생하는 <b>산출물의 변경 사항을 체계적으로 추적·통제</b>하여 <b>무결성을 보장</b>하는 활동이다. 소스 코드만이 아니라 요구사항 명세서·설계서 등 <b>전 단계 산출물</b>이 대상이라는 점이 서술형 채점 포인트다.</p>
+    <div class="scale">
+      <div class="scale-item"><span class="rank">1</span><span class="sname">형상 식별</span><span class="sdesc">관리 대상(형상 항목)을 정의·식별하고 기준선을 정함</span></div>
+      <div class="scale-item"><span class="rank">2</span><span class="sname">형상 통제</span><span class="sdesc">변경 요청을 검토·<b>승인</b>해 반영 — 형상통제위원회(CCB)가 결정</span></div>
+      <div class="scale-item"><span class="rank">3</span><span class="sname">형상 감사</span><span class="sdesc">베이스라인 변경이 제대로 됐는지 <b>무결성을 검증·평가</b></span></div>
+      <div class="scale-item"><span class="rank">4</span><span class="sname">형상 기록</span><span class="sdesc">형상·변경 이력을 <b>기록·보고</b>(상태 보고)</span></div>
+    </div>
+    <p><b>베이스라인(Baseline, 기준선)</b>: 공식적으로 검토·합의된 시점의 산출물 기준선. 이후 변경은 반드시 <b>공식 형상 통제 절차</b>를 거쳐야 한다 — "개발 기준점", "변경 통제의 기준"이 시그널.</p>
+    <p>도구는 <b>저장소가 어디에 있느냐</b>로 구분하고, 조작 용어 3개는 세트로 외운다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">체크아웃</span><span class="td">Check-Out — 저장소에서 파일(버전) 사본을 <b>받아오기</b></span></div>
+      <div class="termrow"><span class="tt">체크인</span><span class="td">Check-In — 수정한 파일을 저장소에 <b>새 버전으로 갱신</b></span></div>
+      <div class="termrow"><span class="tt">커밋</span><span class="td">Commit — 체크인 시 <b>충돌(conflict)이 있으면 알리고, diff로 수정 후 최종 반영</b></span></div>
+      <div class="termrow"><span class="tt">중앙집중형</span><span class="td">서버 한 곳에 저장소 — <b>SVN, CVS</b>. 서버 장애 시 전체 작업 영향</span></div>
+      <div class="termrow"><span class="tt">분산형</span><span class="td">개발자마다 로컬 저장소를 복제 — <b>Git</b>(원격+로컬 이중 저장소)</span></div>
+    </div>
+    <div class="callout mnemonic"><span class="ic">🔑</span> <b>두문자:</b> 절차는 "<b>식통감기</b>" — 형상 <b>식</b>별 → 형상 <b>통</b>제 → 형상 <b>감</b>사 → 형상 <b>기</b>록.</div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> Git을 중앙집중형이라고 쓰면 오답 — Git은 <u>분산형</u>, SVN·CVS가 <u>중앙집중형</u>이다. 또 <u>승인·반영은 '통제'</u>, <u>검증·평가는 '감사'</u>로 갈라 써야 하며, 버전 관리는 형상 관리의 <u>일부</u>이지 동의어가 아니다.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "소프트웨어 개발 과정에서 발생하는 산출물의 변경 사항을 버전별로 관리하여 무결성을 유지하는 활동을 쓰시오." → 답: <u>형상 관리</u> (절차 빈칸형 "식별 → ( ) → 감사 → 기록"이면 답은 <u>형상 통제</u>)</div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag cyan">MW</span><h3>미들웨어 종류 — 설명 보고 이름 맞히기</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">미들웨어 = 응용 프로그램과 운영 환경(OS·네트워크·DB) 사이에서 연결·통신을 중개하는 소프트웨어.</p>
+    <p>실기에서는 6종의 <b>정의 문장을 주고 이름</b>을 쓰게 한다. 결정적 시그널: <b>프로시저 호출</b>=RPC, <b>메시지·비동기</b>=MOM, <b>트랜잭션·예약 업무</b>=TP 모니터, <b>객체·CORBA</b>=ORB, <b>동적 콘텐츠·웹</b>=WAS.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">RPC</span><span class="td">Remote Procedure Call — 원격 프로시저를 <b>마치 로컬(자기 것) 프로시저처럼 호출</b></span></div>
+      <div class="termrow"><span class="tt">MOM</span><span class="td">Message Oriented Middleware — <b>메시지 기반 비동기(Asynchronous) 전달</b>, 이기종 분산 시스템의 <b>데이터 동기화</b>에 사용</span></div>
+      <div class="termrow"><span class="tt">TP 모니터</span><span class="td">Transaction Processing Monitor — <b>온라인 트랜잭션을 처리·감시</b>, <b>항공기·철도 예약</b>처럼 다수 동시 요청 업무</span></div>
+      <div class="termrow"><span class="tt">ORB</span><span class="td">Object Request Broker — <b>객체 지향</b> 미들웨어, <b>CORBA</b> 표준 스펙 구현</span></div>
+      <div class="termrow"><span class="tt">WAS</span><span class="td">Web Application Server — 웹 서버와 달리 <b>동적 콘텐츠</b>를 처리, DB 연동·트랜잭션 처리</span></div>
+      <div class="termrow"><span class="tt">DB 미들웨어</span><span class="td">클라이언트에서 <b>원격 데이터베이스와 연결</b>해 주는 접속 소프트웨어(ODBC 등) — 보통 2-Tier 구조</span></div>
+    </div>
+    <p>구별 1순위 축은 <b>동기 vs 비동기</b>다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">동기</span><span class="td"><b>RPC</b> — 호출하고 결과가 올 때까지 기다리는 방식이 기본</span></div>
+      <div class="termrow"><span class="tt">비동기</span><span class="td"><b>MOM</b> — 메시지를 맡겨두고 기다리지 않음, 느슨한 연계</span></div>
+    </div>
+    <p class="muted">대표 제품 예: TP 모니터 = Tuxedo·Tmax / WAS = Tomcat·JEUS·WebLogic — 제품명을 주고 종류를 묻기도 한다.</p>
+    <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> "비동기"가 보이면 무조건 <u>MOM</u>(RPC로 쓰면 오답). 또 WAS와 웹 서버를 혼동하지 말 것 — 웹 서버는 <u>정적</u> 콘텐츠, WAS는 <u>동적</u> 콘텐츠 처리다.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "항공기나 철도 예약 업무처럼 온라인 트랜잭션 업무에서 트랜잭션을 처리·감시하는 미들웨어는?" → 답: <u>TP 모니터(트랜잭션 처리 모니터)</u> ("예약 업무"가 고정 시그널)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "메시지 기반의 비동기형 메시지 전달 방식으로, 이기종 분산 시스템 간 데이터 동기화에 주로 사용되는 미들웨어는?" → 답: <u>MOM(Message Oriented Middleware)</u> (비동기+메시지 = MOM)</div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag blue">EAI</span><h3>인터페이스 구현 — EAI 4유형 · ESB</h3><span class="freq star">★★★</span></div>
+  <div class="concept-body">
+    <p class="muted">토폴로지 그림을 주고 유형명을 쓰게 하는 단골 문제 — 연결 모양만 보면 즉답 가능.</p>
+    <p><b>EAI(Enterprise Application Integration)</b>는 기업 내 상호 연동이 필요한 애플리케이션·플랫폼을 통합하는 솔루션이다. 실기는 <b>구축 유형 4가지</b>를 그림 또는 설명으로 구별시킨다.</p>
+    <div class="code">
+      <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">EAI 4유형 토폴로지</span></div>
+      <pre>Point-to-Point       Hub &amp; Spoke        Message Bus
+  A ──── B             A       B         A    B    C
+  │ ╲  ╱ │              ╲     ╱          │    │    │
+  │  ╳   │              [ Hub ]       ═══╪════╪════╪═══ Bus
+  │ ╱  ╲ │              ╱     ╲          │    │    │
+  C ──── D             C       D         D    E    F</pre>
+    </div>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">Point-to-Point</span><span class="td">애플리케이션을 <b>1:1로 직접 연결</b> — 가장 기본, 저렴하지만 <b>변경·재사용 어려움</b>(N개면 연결 폭증)</span></div>
+      <div class="termrow"><span class="tt">Hub &amp; Spoke</span><span class="td"><b>중앙 허브 시스템에 집중</b> 연결 — 확장·유지보수 용이, 단 <b>허브 장애 시 전체 영향</b></span></div>
+      <div class="termrow"><span class="tt">Message Bus</span><span class="td">애플리케이션 사이에 <b>미들웨어(버스)를 두고</b> 처리 — <b>뛰어난 확장성·대용량 처리</b>, 'ESB 방식'이라고도 부름</span></div>
+      <div class="termrow"><span class="tt">Hybrid</span><span class="td"><b>혼합형</b> — 그룹 내부는 Hub &amp; Spoke, 그룹 간에는 Message Bus, 데이터 병목 최소화</span></div>
+    </div>
+    <p><b>ESB(Enterprise Service Bus)</b>: 애플리케이션보다 <b>서비스 중심</b>의 통합을 지향하는 아키텍처. Bus 방식을 서비스 지향으로 확장한 개념으로, 특정 서비스에 국한되지 않도록 <b>결합도를 약하게(Loosely Coupled) 유지</b>한다는 문구가 고정 시그널이다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">JSON</span><span class="td"><b>속성-값 쌍</b>으로 이루어진 경량 데이터 포맷 — AJAX에서 XML을 대체해 널리 사용</span></div>
+      <div class="termrow"><span class="tt">XML</span><span class="td"><b>태그 기반 마크업 언어</b> — 특수 목적 마크업 언어를 만드는 다목적 언어, 송수신 데이터 표현</span></div>
+      <div class="termrow"><span class="tt">AJAX</span><span class="td">JavaScript로 서버와 <b>비동기 통신</b> — 화면 전체 새로고침 없이 일부 데이터만 갱신</span></div>
+    </div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> Hub &amp; Spoke와 Message Bus 구별 — 허브는 <u>중앙 시스템 집중(허브 장애 = 전체 마비)</u>, 버스는 <u>미들웨어 경유(뛰어난 확장성)</u>. 유형명을 물으면 <u>Message Bus</u>로 쓰는 게 안전하고, ESB는 4유형이 아니라 <u>서비스 중심 통합 아키텍처</u>로 별도 출제된다.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "EAI 구축 유형 중 중앙에 허브 시스템을 두고 각 애플리케이션을 연결하는 방식으로, 허브 장애 시 시스템 전체에 영향을 주는 유형은?" → 답: <u>Hub &amp; Spoke</u> (1:1 직접이면 Point-to-Point, 미들웨어 경유면 Message Bus)</div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag red">ISO</span><h3>ISO/IEC 25010 — 제품 품질 특성 8가지</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">ISO/IEC 9126을 대체한 소프트웨어 제품 품질 국제 표준. "9126의 6개 → 25010의 8개" 재편이 출제 포인트.</p>
+    <p><b>ISO/IEC 25010</b>은 기존 <b>ISO/IEC 9126</b>(기능성·신뢰성·사용성·효율성·유지보수성·이식성 6개)을 대체하면서, 9126에서 부특성이던 <b>보안성</b>과 <b>호환성</b>이 <b>별도 특성으로 승격</b>되어 8개가 되었다. 실기는 특성의 <b>정의 문장 → 특성명</b>으로 구별시킨다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">기능 적합성</span><span class="td">명시된 <b>요구 기능을 충족</b>하는 정도 — 부특성: 기능 완전성·정확성·적절성</span></div>
+      <div class="termrow"><span class="tt">성능 효율성</span><span class="td">사용 <b>자원 대비 성능</b> 정도 — 부특성: 시간 반응성·자원 활용률·용량</span></div>
+      <div class="termrow"><span class="tt">호환성</span><span class="td">다른 제품과 <b>공존하며 정보를 교환</b>하는 능력 — 부특성: 공존성·상호운용성</span></div>
+      <div class="termrow"><span class="tt">사용성</span><span class="td"><b>배우기 쉽고 사용하기 편한</b> 정도 — 부특성: 학습성·운용성·접근성 등</span></div>
+      <div class="termrow"><span class="tt">신뢰성</span><span class="td">정해진 조건·시간에서 <b>기능 수준을 유지</b>하는 능력 — 부특성: 성숙성·가용성·결함 허용성·회복성</span></div>
+      <div class="termrow"><span class="tt">보안성</span><span class="td">정보·데이터를 <b>보호</b>하고 권한에 따라 접근을 허용하는 능력 — 부특성: 기밀성·무결성·부인 방지·인증성</span></div>
+      <div class="termrow"><span class="tt">유지보수성</span><span class="td"><b>수정·개선이 쉬운</b> 정도 — 부특성: 모듈성·재사용성·분석성·수정 가능성·시험 가능성</span></div>
+      <div class="termrow"><span class="tt">이식성</span><span class="td"><b>다른 환경으로 이전·설치</b>하기 쉬운 정도 — 부특성: 적응성·설치성·대체성</span></div>
+    </div>
+    <p>부특성이 <b>어느 특성 소속인지</b> 묻는 각도도 있다 — 아래 3개가 특히 헷갈리는 매칭이다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">가용성</span><span class="td"><b>신뢰성</b>의 부특성 (별도 특성 아님)</span></div>
+      <div class="termrow"><span class="tt">상호운용성</span><span class="td"><b>호환성</b>의 부특성 (정보 교환 능력)</span></div>
+      <div class="termrow"><span class="tt">학습성</span><span class="td"><b>사용성</b>의 부특성 (배우기 쉬운 정도)</span></div>
+    </div>
+    <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 9126 6개는 앞 글자 "기신사효유이"(기능성·신뢰성·사용성·효율성·유지보수성·이식성). 25010은 여기서 효율성→<b>성능 효율성</b>, 기능성→<b>기능 적합성</b>으로 이름이 바뀌고 <b>보안성·호환성</b> 2개가 추가된 8개.</div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 9126을 물으면 <u>6개</u>(보안성·호환성 없음, 명칭은 "효율성"), 25010이면 <u>8개</u>("성능 효율성"). "가용성"을 8특성 중 하나로 쓰면 오답 — 가용성은 <u>신뢰성의 부특성</u>이다.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "ISO/IEC 25010 품질 특성 중, 소프트웨어를 다른 하드웨어·소프트웨어 환경으로 옮겨 설치하거나 적응시키기 쉬운 정도를 뜻하는 것은?" → 답: <u>이식성(Portability)</u> ("다른 환경으로"가 시그널)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "두 개 이상의 시스템이 같은 환경을 공유하며 서로 정보를 교환하여 사용할 수 있는 정도를 뜻하는 특성은?" → 답: <u>호환성(Compatibility)</u> (교환만 콕 집으면 부특성인 상호운용성)</div>
+  </div>
+</div>
+
+  <div class="concept">
+  <div class="concept-head"><span class="tag">REQ</span><h3>요구공학 — 기능 vs 비기능, 프로세스, 명세 기법</h3><span class="freq star">★★☆</span></div>
+  <div class="concept-body">
+    <p class="muted">요구사항 문장을 주고 "기능/비기능"을 고르게 하거나, 개발 프로세스의 빈칸을 채우게 한다.</p>
+    <p><b>기능 요구사항</b>은 시스템이 <b>"무엇을 하는가"</b>(제공할 서비스·동작 자체)이고, <b>비기능 요구사항</b>은 <b>품질·제약 조건</b>(얼마나 잘, 어떤 조건에서)이다. 문장에 <b>숫자·품질 단어(초, %, 명, 보안, 가용성)</b>가 보이면 대부분 비기능이다.</p>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">기능</span><span class="td">"사용자는 ID/PW로 <b>로그인할 수 있어야</b> 한다" — 시스템이 하는 일 자체</span></div>
+      <div class="termrow"><span class="tt">비기능(성능)</span><span class="td">"모든 조회 화면은 <b>3초 이내</b>에 응답해야 한다" — 속도 제약</span></div>
+      <div class="termrow"><span class="tt">비기능(성능·용량)</span><span class="td">"<b>동시 사용자 1,000명</b>을 수용해야 한다" — 처리 규모 제약</span></div>
+      <div class="termrow"><span class="tt">비기능(가용성)</span><span class="td">"시스템은 <b>연중 99.9%</b> 가동되어야 한다" — 품질 수준 제약</span></div>
+    </div>
+    <p><b>요구사항 개발 프로세스</b> — 순서 빈칸형이 단골이다.</p>
+    <div class="scale">
+      <div class="scale-item"><span class="rank">1</span><span class="sname">도출(Elicitation)</span><span class="sdesc">이해관계자에게서 수집 — 인터뷰·브레인스토밍·워크숍·설문</span></div>
+      <div class="scale-item"><span class="rank">2</span><span class="sname">분석(Analysis)</span><span class="sdesc">상충 조정, 타당성·우선순위 분석</span></div>
+      <div class="scale-item"><span class="rank">3</span><span class="sname">명세(Specification)</span><span class="sdesc"><b>SRS(요구사항 명세서)</b>로 문서화</span></div>
+      <div class="scale-item"><span class="rank">4</span><span class="sname">확인(Validation)</span><span class="sdesc">명세서가 요구를 제대로 담았는지 검증</span></div>
+    </div>
+    <div class="termtable">
+      <div class="termrow"><span class="tt">정형 명세</span><span class="td"><b>수학·논리 기반</b> 표기 — <b>Z, VDM</b>, Petri-Net. 모호성 없음, 작성 어려움</span></div>
+      <div class="termrow"><span class="tt">비정형 명세</span><span class="td"><b>자연어·다이어그램</b> 중심 — 이해 쉬움, 모호성 발생 가능</span></div>
+      <div class="termrow"><span class="tt">확인 기법</span><span class="td"><b>요구사항 리뷰(검토)</b>, <b>프로토타이핑</b>, 모델 검증, 인수 테스트</span></div>
+    </div>
+    <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 프로세스는 "<b>도분명확</b>" — <b>도</b>출 → <b>분</b>석 → <b>명</b>세 → <b>확</b>인 (요구를 "더 분명확하게" 만드는 순서).</div>
+    <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> "로그인 기능은 3초 이내에 완료되어야 한다"처럼 한 문장에 섞이면, <u>동작 자체(로그인)는 기능</u>, <u>3초 제약은 비기능</u>으로 갈라 봐야 한다. 또 Z·VDM을 비정형이라고 쓰면 오답 — 수학 기호 기반은 무조건 <u>정형 명세</u>다.</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "'시스템은 동시 접속자 1,000명까지 3초 이내로 응답해야 한다'는 기능/비기능 요구사항 중 무엇인가?" → 답: <u>비기능 요구사항</u> (성능·용량이라는 품질 제약이므로)</div>
+    <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "요구사항 개발 프로세스의 빈칸을 채우시오: 도출 → 분석 → ( ) → 확인" → 답: <u>명세(Specification)</u> (SRS 요구사항 명세서를 작성하는 단계)</div>
+  </div>
+</div>
 </section>
 
 </div>
