@@ -334,6 +334,31 @@
       <div class="callout warn"><span class="ic">⚠</span> <b>NULL 함정:</b> <code>WHERE 점수 = NULL</code> 은 절대 동작 안 함. <code>IS NULL</code> 로 써야 0점을 면합니다.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">TRACE</span><h3>LIKE · BETWEEN · IN — 결과 행 추적</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">연산자 뜻은 앞에서 봤으니, 여기선 <b>같은 데이터에 조건을 걸면 정확히 몇 행·누가 나오는지</b>를 손으로 셉니다. 실기는 "결과 행 수"와 "출력되는 값"을 직접 적게 시킵니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">사원 (샘플)</span></div>
+        <pre><span class="cm">이름      급여</span>
+김철수    3200
+김영희    2800
+박민수    4500
+이수민    3500
+최민아    5000</pre>
+      </div>
+      <ul>
+        <li><b>LIKE '김%'</b> → 이름이 '김'으로 시작 → <b>김철수 · 김영희 (2행)</b></li>
+        <li><b>LIKE '%수'</b> → 이름이 '수'로 끝 → <b>김철수 · 박민수 (2행)</b> <span class="muted">(영희→희, 수민→민, 민아→아 라 제외)</span></li>
+        <li><b>LIKE '_민%'</b> → <u>2번째 글자</u>가 '민' → <b>박민수 · 최민아 (2행)</b></li>
+        <li><b>급여 BETWEEN 3000 AND 4500</b> → <u>양끝 포함</u> → <b>김철수(3200) · 이수민(3500) · 박민수(4500) (3행)</b></li>
+        <li><b>급여 IN (2800, 5000)</b> → 목록 값과 정확히 일치(= <code>급여=2800 OR 급여=5000</code>) → <b>김영희 · 최민아 (2행)</b></li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정 ① _ 위치:</b> <code>'_민%'</code>는 "민이 2번째 글자"라는 뜻이라 <b>이수민(수-민, 민이 3번째)은 빠지고</b> 박민수·최민아만 나옵니다. <code>_</code>=정확히 1글자, <code>%</code>=0글자 이상. <b>함정 ② 경계값:</b> BETWEEN은 <u>양끝값을 포함</u>하므로 4500(박민수)도 결과에 들어갑니다("초과/미만"이면 제외).</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> 위 &lt;사원&gt;에서 <code>SELECT 이름 FROM 사원 WHERE 이름 LIKE '_민%';</code> 의 결과로 출력되는 이름을 모두 쓰시오. → 답: <u>박민수, 최민아</u> (2번째 글자가 '민'인 행만; 이수민은 제외)</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-agg">
@@ -376,6 +401,46 @@
       </ul>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">GROUP</span><h3>GROUP BY + HAVING — 결과 추적 (NULL 분모 함정)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">그룹으로 묶은 뒤 <b>몇 행이 남고, 평균이 어떤 분모로 나뉘는지</b>를 셉니다. 급여가 NULL인 사원이 섞이면 <code>COUNT(*)</code>와 <code>AVG</code>의 분모가 <b>달라지는</b> 게 최대 함정입니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">사원 (샘플)</span></div>
+        <pre><span class="cm">부서    급여</span>
+영업    3000
+영업    5000
+개발    4000
+개발    6000
+개발    NULL
+인사    4500</pre>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">groupby.sql</span></div>
+        <pre><span class="kw">SELECT</span> 부서, <span class="fn">COUNT</span>(*) <span class="kw">AS</span> 인원, <span class="fn">AVG</span>(급여) <span class="kw">AS</span> 평균급여
+<span class="kw">FROM</span>   사원
+<span class="kw">GROUP BY</span> 부서
+<span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt;= <span class="nm">2</span>;</pre>
+      </div>
+      <p><b>결과</b> — HAVING(&gt;=2)으로 인사(1명)는 탈락:</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">결과</span></div>
+        <pre><span class="cm">부서    인원    평균급여</span>
+영업    2      4000     <span class="cm">← (3000+5000)/2</span>
+개발    3      5000     <span class="cm">← (4000+6000)/2, NULL은 분모에서 제외!</span></pre>
+      </div>
+      <p class="muted"><b>개발 부서 뜯어보기:</b> 행은 3개(<code>COUNT(*)=3</code>)지만 평균은 NULL을 뺀 2명으로 나눠 <b>5000</b>. 분모를 <code>COUNT(급여)</code>로 확인하면 2가 나옵니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">분모 확인.sql</span></div>
+        <pre><span class="kw">SELECT</span> 부서, <span class="fn">COUNT</span>(*), <span class="fn">COUNT</span>(급여)
+<span class="kw">FROM</span> 사원 <span class="kw">GROUP BY</span> 부서 <span class="kw">HAVING</span> <span class="fn">COUNT</span>(*) &gt;= <span class="nm">2</span>;
+<span class="cm">-- 개발 → 3, 2   |   영업 → 2, 2</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정 — 순서와 분모:</b> ① 개별 행 조건은 <b>WHERE</b>(그룹 <u>전</u>), 그룹·집계 조건은 <b>HAVING</b>(그룹 <u>후</u>) — 집계함수는 WHERE에 못 씀. ② <code>AVG</code>는 <b>NULL을 분모에서 제외</b>하므로 <code>COUNT(*)</code>와 분모가 다를 수 있음. "급여합 ÷ COUNT(*)"로 계산하면 오답.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> 위 &lt;사원&gt;에서 개발 부서의 <code>COUNT(*)</code>와 <code>AVG(급여)</code> 값을 각각 쓰시오. → 답: <u>COUNT(*) = 3, AVG(급여) = 5000</u> (행은 3개지만 NULL 급여는 평균 분모에서 빠져 10000 / 2 = 5000)</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-join">
@@ -402,6 +467,44 @@
 <span class="kw">WHERE</span>  학생.학과코드 = 학과.학과코드;</pre>
       </div>
       <div class="callout"><span class="ic">📝</span> <b>명칭 정리:</b> 콤마+WHERE 방식은 <b>묵시적(암시적) 조인</b>(옛 방식). 한편 <b>동등조인(equi-join)</b>은 조인 조건을 <u>등호(=)로 잇는</u> 것을 가리키는 별개 분류로, <code>INNER JOIN ... ON a=b</code> 도 동등조인입니다. 즉 "옛 방식이냐(문법 분류)"와 "등호로 잇느냐(조건 분류)"는 다른 축입니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">JOIN</span><h3>JOIN 결과 행수 계산 (INNER · OUTER · CROSS)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">조인 문제의 절반은 "결과가 몇 행이냐"입니다. <b>한쪽에만 있는 행</b>과 <b>NULL 외래키</b>가 행 수를 가릅니다. 미매칭이 섞인 샘플로 직접 세어 봅니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">샘플</span></div>
+        <pre>[사원 4행]
+<span class="cm">사번  이름    부서코드</span>
+ 1    김사원   D1
+ 2    이사원   D2
+ 3    박사원   D2
+ 4    최사원   NULL    <span class="cm">← 부서코드가 NULL</span>
+
+[부서 3행]
+<span class="cm">부서코드  부서명</span>
+ D1      영업
+ D2      개발
+ D3      인사    <span class="cm">← 소속 사원 없음</span></pre>
+      </div>
+      <ul>
+        <li><b>INNER JOIN</b> → 코드가 <u>맞는 짝만</u>: 김-영업, 이-개발, 박-개발 → <b>3행</b> (최사원·인사 제외)</li>
+        <li><b>LEFT OUTER JOIN</b>(사원 기준) → <u>사원 4명 전부</u>, 최사원의 부서명은 <b>NULL</b> → <b>4행</b></li>
+        <li><b>RIGHT OUTER JOIN</b>(부서 기준) → <u>부서 3개 전부</u>, 인사의 사원값 NULL → <b>4행</b> (영업1+개발2+인사1)</li>
+        <li><b>CROSS JOIN</b> → 조건 없이 모든 조합 = <b>4 × 3 = 12행</b> (카티션 곱, m×n)</li>
+      </ul>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">left_join.sql</span></div>
+        <pre><span class="kw">SELECT</span> 사원.이름, <span class="fn">COALESCE</span>(부서.부서명, <span class="st">'없음'</span>) <span class="kw">AS</span> 부서명
+<span class="kw">FROM</span>   사원 <span class="kw">LEFT OUTER JOIN</span> 부서
+<span class="kw">ON</span>     사원.부서코드 = 부서.부서코드
+<span class="kw">ORDER BY</span> 사원.사번;
+<span class="cm">-- 김사원 영업 / 이사원 개발 / 박사원 개발 / 최사원 없음  → 4행</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정 — 행 수:</b> INNER는 <u>미매칭을 버려서</u> 가장 적고(3행), OUTER는 기준 테이블 행을 <u>전부 보존</u>(4행)합니다. NULL 부서코드(최사원)는 INNER·RIGHT에선 사라지지만 LEFT에선 남습니다. CROSS는 조건이 없어 항상 <b>두 테이블 행수의 곱</b>(4×3=12)이라는 게 계산 문제로 단골.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> 사원 4행(1명은 부서코드 NULL), 부서 3행(1개는 소속 사원 없음)을 <u>CROSS JOIN</u>하면 결과는 몇 행인가? → 답: <u>12행</u> (4 × 3, 조인 조건이 없는 카티션 곱)</div>
     </div>
   </div>
 </section>
@@ -434,6 +537,37 @@
       </ul>
       <div class="callout"><span class="ic">🔗</span> <b>FK 참조 동작 (ON DELETE / ON UPDATE):</b> 부모 행이 삭제·변경될 때 자식 행을 어떻게 처리할지 지정. <b>CASCADE</b>=연쇄 삭제·변경, <b>SET NULL</b>=자식의 외래키를 NULL로, <b>SET DEFAULT</b>=기본값으로, <b>RESTRICT</b>·<b>NO ACTION</b>=참조 중이면 거부. 예: <code>FOREIGN KEY(학과코드) REFERENCES 학과(학과코드) ON DELETE CASCADE</code></div>
       <div class="callout"><span class="ic">📝</span> <b>ALTER 빈출:</b> 컬럼 추가 <code>ALTER TABLE 학생 ADD 전화 VARCHAR(15);</code> / 수정 <code>MODIFY</code> / 삭제 <code>DROP COLUMN</code></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag green">DDL</span><h3>ALTER TABLE + DROP … CASCADE vs RESTRICT</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">CREATE로 만든 테이블의 <b>구조를 바꾸는</b> ALTER, 그리고 삭제·회수 시 <b>참조 관계를 어떻게 처리할지</b> 정하는 CASCADE/RESTRICT. 앞의 <code>REVOKE … CASCADE</code>와 <u>같은 결</u>(연쇄 vs 거부)로 묶어 외우면 편합니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">alter.sql</span></div>
+        <pre><span class="cm">-- 컬럼 추가 (ADD 뒤 COLUMN 없이 바로 컬럼명·타입)</span>
+<span class="kw">ALTER TABLE</span> 회원 <span class="kw">ADD</span> 등급 <span class="nm">CHAR</span>(<span class="nm">1</span>);
+<span class="cm">-- 자료형/제약 변경: Oracle은 MODIFY, 표준·SQL Server는 ALTER COLUMN</span>
+<span class="kw">ALTER TABLE</span> 회원 <span class="kw">MODIFY</span> 등급 <span class="nm">VARCHAR</span>(<span class="nm">10</span>);
+<span class="cm">-- 컬럼 삭제 (이때는 COLUMN 명시)</span>
+<span class="kw">ALTER TABLE</span> 회원 <span class="kw">DROP COLUMN</span> 등급;
+<span class="cm">-- 테이블 이름 변경</span>
+<span class="kw">ALTER TABLE</span> 회원 <span class="kw">RENAME TO</span> 고객;</pre>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">drop.sql</span></div>
+        <pre><span class="kw">DROP TABLE</span> 부서 <span class="kw">CASCADE</span>;   <span class="cm">-- 부서를 참조하는 FK 등 종속 객체까지 연쇄 삭제</span>
+<span class="kw">DROP TABLE</span> 부서 <span class="kw">RESTRICT</span>;  <span class="cm">-- 참조하는 객체가 있으면 삭제 거부(취소)</span></pre>
+      </div>
+      <ul>
+        <li><b>CASCADE</b> — 삭제·회수 대상을 <u>참조하는 것들까지 연쇄</u>로 함께 처리</li>
+        <li><b>RESTRICT</b> — 참조하는 객체가 <u>하나라도 있으면 거부</u>(안전장치)</li>
+        <li>같은 짝: <code>REVOKE … CASCADE</code>=물려준 권한까지 연쇄 회수 / <code>REVOKE … RESTRICT</code>=물려준 게 있으면 거부</li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정 ① ADD/DROP 비대칭:</b> 컬럼 추가는 <code>ADD 컬럼 타입</code>(COLUMN 생략), 컬럼 삭제는 <code>DROP COLUMN 컬럼</code>(COLUMN 명시). <b>함정 ② 방향:</b> CASCADE=연쇄 삭제(공격적), RESTRICT=참조 있으면 거부(보수적) — 반대로 쓰면 오답. <span class="muted">(외우기 팁: CASCADE=계단식으로 줄줄이, RESTRICT=제한·거부)</span></div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다 ①:</b> 회원 테이블에 <code>VARCHAR(15)</code> 타입의 '전화' 컬럼을 추가하는 SQL을 작성하시오. → 답: <u>ALTER TABLE 회원 ADD 전화 VARCHAR(15);</u></div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다 ②:</b> DROP TABLE 시 삭제할 테이블을 참조하는 다른 객체가 있으면 <u>삭제를 거부</u>하는 옵션은? → 답: <u>RESTRICT</u> (연쇄 삭제는 CASCADE)</div>
     </div>
   </div>
 </section>
@@ -600,6 +734,34 @@
       <div class="callout"><span class="ic">🔍</span> <b>부속질의(서브쿼리):</b> <code>WHERE 점수 > (SELECT AVG(점수) FROM 성적)</code> — 평균 이상 조회 같은 문제로 출제.</div>
     </div>
   </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">INDEX</span><h3>인덱스(INDEX) — 문법과 장단점</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">"검색을 빠르게 하는 객체"를 단답으로 묻거나, <b>왜 인덱스를 함부로 많이 걸면 안 되는지</b>(쓰기 성능 저하)를 서술로 물어봅니다. 뷰가 "저장 안 하는 가상 테이블"이라면, 인덱스는 "검색을 돕는 별도 자료구조"라는 대비로 기억하세요.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">index.sql</span></div>
+        <pre><span class="cm">-- 생성 (UNIQUE 붙이면 중복 방지 인덱스)</span>
+<span class="kw">CREATE</span> [<span class="cl">UNIQUE</span>] <span class="kw">INDEX</span> idx_사원_이름 <span class="kw">ON</span> 사원(이름);
+<span class="cm">-- 여러 컬럼을 묶는 복합 인덱스도 가능</span>
+<span class="kw">CREATE INDEX</span> idx_사원_부서 <span class="kw">ON</span> 사원(부서코드, 직급);
+<span class="cm">-- 삭제</span>
+<span class="kw">DROP INDEX</span> idx_사원_이름;</pre>
+      </div>
+      <ul>
+        <li>대부분 <b>B-트리(B-tree)</b> 기반의 <u>정렬된</u> 자료구조 → 전체 스캔 대신 빠른 탐색</li>
+        <li><b>장점</b> — WHERE·JOIN·ORDER BY의 <u>검색 속도 향상</u></li>
+        <li><b>단점</b> — INSERT/UPDATE/DELETE 때 인덱스도 <u>같이 갱신</u> → 쓰기 성능 저하 + 저장 공간 추가</li>
+      </ul>
+      <p><b>어디에 걸고, 어디는 피하나</b></p>
+      <ul>
+        <li><b>적합</b> — WHERE·조인 키로 <u>자주 검색</u>되는 컬럼, 값이 다양한(<b>카디널리티 높은</b>) 컬럼</li>
+        <li><b>부적합</b> — <u>자주 변경</u>(삽입·수정·삭제 잦은)되는 컬럼, 중복이 많은(카디널리티 낮은, 예: 성별) 컬럼</li>
+      </ul>
+      <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> 인덱스는 <u>SELECT는 빠르게, INSERT/UPDATE/DELETE는 느리게</u> 만드는 <b>트레이드오프</b>입니다. "많이 걸수록 좋다"는 오답 — 갱신이 잦거나 성별처럼 값 종류가 적은 컬럼엔 오히려 비효율. 또 일반 뷰(VIEW)에는 인덱스를 만들 수 없습니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> 테이블의 특정 컬럼 <u>검색 속도를 향상</u>시키기 위해 만드는, B-트리 기반의 별도 정렬 자료구조는 무엇인가? → 답: <u>인덱스(INDEX)</u> (대신 삽입·수정·삭제 성능은 저하됨)</div>
+    </div>
+  </div>
 </section>
 
 <section id="s-window">
@@ -641,6 +803,35 @@
 <span class="kw">SELECT</span> 이름 <span class="kw">FROM</span> B;</pre>
       </div>
       <div class="callout warn"><span class="ic">⚠</span> <b>함정:</b> UNION은 중복을 없애지만 <b>UNION ALL</b>은 중복을 그대로 둡니다. "중복 포함/제거" 단서를 놓치면 오답. 양쪽 SELECT의 컬럼 수·자료형이 같아야 합니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">WINDOW</span><h3>순위 함수 — 동점(TIE) 결과표로 굳히기</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">함수 정의는 앞 블록에서 봤으니, 같은 데이터에 세 함수를 돌린 <b>결과 차이</b>만 확실히.</p>
+      <p>점수 <b>90, 90, 80, 70</b>을 내림차순으로 순위 매기면 동점(90) 처리에서 세 함수가 갈립니다.</p>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">rank_compare.sql</span></div>
+        <pre><span class="kw">SELECT</span> 점수,
+  <span class="fn">RANK</span>()       <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> 점수 <span class="cl">DESC</span>) <span class="kw">AS</span> r,
+  <span class="fn">DENSE_RANK</span>() <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> 점수 <span class="cl">DESC</span>) <span class="kw">AS</span> dr,
+  <span class="fn">ROW_NUMBER</span>() <span class="kw">OVER</span> (<span class="kw">ORDER BY</span> 점수 <span class="cl">DESC</span>) <span class="kw">AS</span> rn
+<span class="kw">FROM</span> 성적
+<span class="kw">ORDER BY</span> 점수 <span class="cl">DESC</span>, 이름;</pre>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">result</span></div>
+        <pre><span class="cm"> score  | RANK | DENSE_RANK | ROW_NUMBER
+--------+------+------------+-----------</span>
+   90   |  1   |     1      |     1
+   90   |  1   |     1      |     <span class="out">2</span>
+   80   |  <span class="out">3</span>   |     <span class="out">2</span>      |     3
+   70   |  4   |     3      |     4</pre>
+      </div>
+      <p><code>OVER</code>에 <code>PARTITION BY 반</code>을 넣으면 <b>그룹(반)별로 순위가 각각 1부터</b> 다시 시작합니다.</p>
+      <div class="callout warn"><span class="ic">⚠</span> <b>RANK vs DENSE_RANK:</b> RANK는 동점 수만큼 다음 순위를 <b>건너뛰고</b>(…1, 1, <b>3</b>), DENSE_RANK는 <b>건너뛰지 않습니다</b>(…1, 1, <b>2</b>). ROW_NUMBER는 동점이어도 항상 유일한 번호를 매깁니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "점수가 90, 90, 80인 세 학생에게 순위를 매길 때 <b>80점 학생</b>의 순위는 RANK=( ㉠ ), DENSE_RANK=( ㉡ ), ROW_NUMBER=( ㉢ )이다." → 답: <u>㉠ 3 ㉡ 2 ㉢ 3</u></div>
     </div>
   </div>
 </section>
@@ -751,6 +942,80 @@
         <li><b>낙관적 검증</b> — 일단 수행 후 종료 시점에 검증</li>
       </ul>
       <div class="callout"><span class="ic">🔒</span> <b>로킹 단위:</b> 단위가 <b>작아지면</b> 병행성(공유도)도, 관리 오버헤드도 <b>함께 증가</b>(단위↓ ⇒ 둘 다 ↑). 단위가 커지면 둘 다 감소(단위↑ ⇒ 둘 다 ↓). 공유도와 오버헤드가 같은 방향으로 움직인다는 점을 묻습니다.</div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag blue">DENORM</span><h3>반정규화(De-normalization)</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">정규화의 <b>역과정</b> — 시험은 "정규화와 반대로, 왜 일부러 중복을 허용하나"를 묻습니다.</p>
+      <p>조회 성능 향상이나 개발 편의를 위해 <b>의도적으로 정규화 원칙을 위배</b>해 중복을 허용하는 설계 기법입니다. 정규화가 "중복 제거 → 이상현상 방지"라면, 반정규화는 "중복 허용 → 조인·집계 비용 감소"로 정반대 방향이라는 점이 핵심 구별 포인트입니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">테이블 통합</span><span class="td">자주 함께 조회되는 두 테이블을 하나로 합침 — <b>조인 자체를 제거</b></span></div>
+        <div class="termrow"><span class="tt">테이블 분할</span><span class="td"><b>수평 분할</b>=행 기준(예: 연도별), <b>수직 분할</b>=컬럼 기준(자주 쓰는 컬럼만 분리)</span></div>
+        <div class="termrow"><span class="tt">중복 테이블 추가</span><span class="td">집계·이력 등 목적에 맞춘 <b>별도 사본 테이블</b>을 추가</span></div>
+        <div class="termrow"><span class="tt">중복/파생 컬럼</span><span class="td">조인해야 얻는 값이나 계산 결과(합계 등)를 <b>컬럼으로 미리 저장</b></span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>트레이드오프:</b> 조회 성능은 오르지만 같은 데이터가 여러 곳에 중복돼 <b>갱신 시 정합성이 깨질 위험(갱신 이상)</b>과 저장 공간이 늘어납니다. "조인이 과도하거나 집계가 빈번"할 때 <u>선택적으로</u> 적용하는 것이지, 항상 좋은 것이 아닙니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "시스템의 성능 향상과 개발·운영의 편의를 위해 정규화된 데이터 모델을 의도적으로 통합·중복·분리하는 데이터 모델링 기법은?" → 답: <u>반정규화(De-normalization)</u> <span class="muted">— 정규화의 역과정</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">DIST-DB</span><h3>분산 데이터베이스 — 투명성(Transparency)</h3><span class="freq star">★★★</span></div>
+    <div class="concept-body">
+      <p class="muted">분산돼 있음을 사용자가 <b>의식하지 못하게</b> 숨기는 성질 — "무엇을 숨기느냐"가 곧 답입니다.</p>
+      <p>분산 DB는 여러 사이트에 데이터가 흩어져 있지만 사용자에게는 <b>하나의 논리적 DB</b>처럼 보여야 합니다. 그 목표를 이루는 4대 투명성은 각각 숨기는 대상이 다릅니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">위치 투명성</span><span class="td">데이터가 어느 사이트에 있는지 몰라도 이름만으로 접근 — <b>물리적 저장 위치</b>를 숨김</span></div>
+        <div class="termrow"><span class="tt">중복(복제) 투명성</span><span class="td">같은 데이터의 사본이 여러 개 있어도 하나처럼 사용 — <b>사본의 존재</b>를 숨김</span></div>
+        <div class="termrow"><span class="tt">병행 투명성</span><span class="td">여러 트랜잭션이 동시에 수행돼도 서로 간섭 없이 일관된 결과 — <b>동시 실행</b>을 숨김</span></div>
+        <div class="termrow"><span class="tt">장애 투명성</span><span class="td">일부 사이트·통신 장애가 나도 트랜잭션을 정확히(원자적으로) 처리 — <b>장애</b>를 숨김</span></div>
+      </div>
+      <p>위 4가지에 <b>분할(단편화) 투명성</b>(데이터가 어떻게 나뉘어 저장됐는지 모름)과 <b>지역사상(local mapping) 투명성</b>(지역 DBMS 이름과 무관하게 접근)을 더하면 <b>6대 투명성</b>으로도 분류합니다.</p>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> "무엇을 숨기나"로 묶기 — 위치=<u>어디</u>, 중복=<u>사본</u>, 병행=<u>동시</u>, 장애=<u>고장</u>.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "분산 데이터베이스에서 사용자가 데이터의 <b>물리적 저장 위치</b>를 알지 못해도 접근할 수 있게 하는 투명성은?" → 답: <u>위치 투명성</u> <span class="muted">(사본 존재를 숨기면 중복 투명성)</span></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag cyan">ERD</span><h3>ER 모델 표기법 · 카디널리티 · 디그리</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">피터 첸(Peter Chen) 표기의 기호와, 매번 헷갈리는 두 용어를 한 번에.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">사각형 □</span><span class="td"><b>개체(Entity)</b> — 저장 대상(예: 학생, 과목)</span></div>
+        <div class="termrow"><span class="tt">타원 ○</span><span class="td"><b>속성(Attribute)</b>. <b>이중 타원</b>=다중값 속성, 속성명에 <b>밑줄</b>=기본키</span></div>
+        <div class="termrow"><span class="tt">마름모 ◇</span><span class="td"><b>관계(Relationship)</b> — 개체 간 연관(예: 수강)</span></div>
+        <div class="termrow"><span class="tt">선 —</span><span class="td">개체·속성·관계를 연결. 선 위에 <b>1:1 / 1:N / M:N</b>으로 <b>대응 수(매핑 카디널리티)</b>를 표시</span></div>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>최다 함정 — 카디널리티 vs 디그리:</b> <b>카디널리티(Cardinality)</b>=릴레이션의 <u>튜플(행) 수</u>, <b>디그리(Degree, 차수)</b>=<u>속성(열) 수</u>. 둘을 반대로 외우는 실수가 가장 많습니다.</div>
+      <div class="callout mnemonic"><span class="ic">🔑</span> <b>외우기 팁:</b> 릴레이션 <code>학생(학번, 이름, 학과)</code>에 튜플이 100개면 → <b>디그리=3</b>(속성 수), <b>카디널리티=100</b>(튜플 수).</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "ER 다이어그램에서 개체는 ( ㉠ ), 속성은 ( ㉡ ), 관계는 ( ㉢ ) 기호로 표현한다." → 답: <u>㉠ 사각형 ㉡ 타원 ㉢ 마름모</u></div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "릴레이션에서 속성의 수를 ( ㉠ ), 튜플의 수를 ( ㉡ )(이)라 한다." → 답: <u>㉠ 디그리(차수) ㉡ 카디널리티</u></div>
+    </div>
+  </div>
+
+  <div class="concept">
+    <div class="concept-head"><span class="tag violet">SUBQUERY</span><h3>부속질의 심화 — IN · EXISTS · ANY · ALL</h3><span class="freq star">★★☆</span></div>
+    <div class="concept-body">
+      <p class="muted">서브쿼리가 <b>여러 행</b>을 돌려줄 때 쓰는 다중 행 연산자 구분.</p>
+      <p>단일 행 연산자(<code>=</code>, <code>&gt;</code>, <code>&lt;</code> …)는 서브쿼리 결과가 <b>딱 1행</b>일 때만 쓸 수 있습니다. 결과가 여러 행이면 아래 다중 행 연산자를 써야 하며, 각각 "집합을 어떻게 비교하는지"가 다릅니다.</p>
+      <div class="termtable">
+        <div class="termrow"><span class="tt">IN</span><span class="td">집합에 <b>포함</b>되면 참. <code>= ANY</code>와 같은 의미</span></div>
+        <div class="termrow"><span class="tt">&gt; ALL</span><span class="td">집합의 <b>모든</b> 값보다 커야 참 → 사실상 <b>최댓값보다 큰</b></span></div>
+        <div class="termrow"><span class="tt">&gt; ANY</span><span class="td"><b>하나라도</b> 만족하면 참(=SOME) → 사실상 <b>최솟값보다 큰</b></span></div>
+        <div class="termrow"><span class="tt">EXISTS</span><span class="td">서브쿼리 결과가 <b>한 행이라도 있으면</b> 참. <b>상관(correlated) 서브쿼리</b>와 궁합</span></div>
+      </div>
+      <div class="code">
+        <div class="code-top"><span>●</span><span>●</span><span>●</span><span class="lbl">subquery.sql</span></div>
+        <pre><span class="cm">-- 서울에 있는 부서 소속 사원 (IN + 부속질의)</span>
+<span class="kw">SELECT</span> 이름 <span class="kw">FROM</span> 사원
+<span class="kw">WHERE</span>  부서 <span class="kw">IN</span> (<span class="kw">SELECT</span> 코드 <span class="kw">FROM</span> 부서 <span class="kw">WHERE</span> 지역=<span class="st">'서울'</span>)
+<span class="kw">ORDER BY</span> 사번;
+<span class="cm">-- 결과: </span><span class="out">김철수, 이영희, 박민수</span></pre>
+      </div>
+      <div class="callout warn"><span class="ic">⚠</span> <b>NOT IN + NULL 함정:</b> 부속질의 결과에 <b>NULL이 하나라도</b> 섞이면 <code>NOT IN</code>은 어떤 행도 참이 될 수 없어 결과가 통째로 <b>공집합</b>이 됩니다. 이럴 땐 <code>NOT EXISTS</code>로 바꿔 쓰면 안전합니다.</div>
+      <div class="callout"><span class="ic">📝</span> <b>실기 이렇게 나온다:</b> "서브쿼리가 반환한 값들 중 <b>가장 큰 값보다 커야</b> 참이 되는 다중 행 연산자는?" → 답: <u>&gt; ALL</u> <span class="muted">(반대로 <code>&gt; ANY</code>는 최솟값보다 크면 참)</span></div>
     </div>
   </div>
 </section>
